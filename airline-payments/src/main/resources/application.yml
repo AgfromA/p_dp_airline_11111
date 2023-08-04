@@ -9,3 +9,44 @@ paypal:
   client:
     id: ATOLWJkYu4yYYvOcYjTqjblIESKbbUMWnkwtc1T_5JgMIxXgYm3kOMc0jB4Cb3hscdAaNbAqr1awxQ9E
     secret: EOkg1jdtlyT1bANvDZCaJdfdstBBvOljyNap1nYanCYcH6FVMCH-EQ-JkKsmvjG6-GwGRUQ961PmHZvV
+
+liquibase:
+  change-log: classpath:db/changelog/db.changelog-master.xml
+  application:
+    name: app
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/airline_db?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Europe/Moscow
+    username: postgres
+    password: root
+    hikari:
+      leak-detection-threshold: 60000
+      maximum-pool-size: 20
+      cloud:
+        openfeign:
+          client:
+            config:
+              default:
+                connectTimeout: 5000
+                readTimeout: 5000
+                loggerLevel: basic
+jpa:
+  show-sql: false
+  hibernate:
+    ddl-auto: validate
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      storage_engine: innodb
+      current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+      format_sql: true
+      jdbc:
+        time_zone: Europe/Moscow
+      cache:
+        use_second_level_cache: true
+        region:
+          factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+        ehcache:
+          missing_cache_strategy: create
