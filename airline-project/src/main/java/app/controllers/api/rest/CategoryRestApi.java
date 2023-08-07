@@ -30,7 +30,7 @@ public interface CategoryRestApi {
             @ApiResponse(code = 200, message = "Categories found"),
             @ApiResponse(code = 404, message = "Categories not found")
     })
-    ResponseEntity<List<Category>> getAll();
+    ResponseEntity<List<Category>> getAllCategories();
 
     @ApiIgnore
     @GetMapping("/{category_type}")
@@ -40,7 +40,7 @@ public interface CategoryRestApi {
             @ApiResponse(code = 404, message = "category not found")
     })
     @Deprecated
-    ResponseEntity<Category> getByCategoryType(
+    ResponseEntity<Category> getCategoryByType(
             @ApiParam(
                     name = "category_type",
                     value = "CategoryType model"

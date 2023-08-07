@@ -34,7 +34,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flights found"),
             @ApiResponse(code = 204, message = "Flights not found")
     })
-    ResponseEntity<Page<FlightDTO>> getAllFlightsByDestinationsAndDates(
+    ResponseEntity<Page<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
             @ApiParam(value = "Departure cityName", example = "Москва")
             @RequestParam(name = "cityFrom", required = false) String cityFrom,
             @ApiParam(value = "Arrival cityName", example = "Омск")
@@ -51,7 +51,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flight found"),
             @ApiResponse(code = 404, message = "Flight not found")
     })
-    ResponseEntity<FlightDTO> getById(
+    ResponseEntity<FlightDTO> getFlightDTOById(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
@@ -64,7 +64,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "flight found"),
             @ApiResponse(code = 404, message = "flight not found")
     })
-    ResponseEntity<FlightDTO> getByIdAndDates(
+    ResponseEntity<FlightDTO> getFlightDTOByIdAndDates(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
@@ -89,7 +89,7 @@ public interface FlightRestApi {
     @PostMapping
     @ApiOperation(value = "Create Flight")
     @ApiResponse(code = 201, message = "Flight created")
-    ResponseEntity<Flight> create(
+    ResponseEntity<Flight> createFlight(
             @ApiParam(
                     name = "flight",
                     value = "Flight model"
@@ -102,7 +102,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flight updated"),
             @ApiResponse(code = 404, message = "Flight not found")
     })
-    ResponseEntity<Flight> update(
+    ResponseEntity<Flight> updateFlightById(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
@@ -120,7 +120,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 204, message = "Flight deleted"),
             @ApiResponse(code = 404, message = "Flight not found")
     })
-    ResponseEntity<HttpStatus> delete(
+    ResponseEntity<HttpStatus> deleteFlightById(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"

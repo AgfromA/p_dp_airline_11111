@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -48,7 +47,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "Абакан";
         var country = "";
         var timezone = "";
-        Page<Destination> destination = destinationService.findDestinationByNameAndTimezone(pageable, city, country, timezone);
+        Page<Destination> destination = destinationService.getDestinationByNameAndTimezone(pageable, city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
@@ -67,7 +66,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page<Destination> destination = destinationService.findDestinationByNameAndTimezone(pageable, city, country, timezone);
+        Page<Destination> destination = destinationService.getDestinationByNameAndTimezone(pageable, city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
@@ -86,7 +85,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page<Destination> destination = destinationService.findDestinationByNameAndTimezone(pageable, city, country, timezone);
+        Page<Destination> destination = destinationService.getDestinationByNameAndTimezone(pageable, city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=3")
                         .param("cityName", city)
                         .param("countryName", country)
@@ -105,7 +104,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "";
         var timezone = "gtm%20+5";
-        Page<Destination> destination = destinationService.findDestinationByNameAndTimezone(pageable, city, country, timezone);
+        Page<Destination> destination = destinationService.getDestinationByNameAndTimezone(pageable, city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)

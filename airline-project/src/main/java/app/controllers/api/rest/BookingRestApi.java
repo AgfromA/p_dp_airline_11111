@@ -32,7 +32,7 @@ public interface BookingRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Bookings found"),
             @ApiResponse(code = 204, message = "Bookings not found")})
-    ResponseEntity<Page<BookingDTO>> getAll(Pageable pageable);
+    ResponseEntity<Page<BookingDTO>> getAllPagesBookingsDTO(Pageable pageable);
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get Booking by \"id\"")
@@ -40,7 +40,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking found"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> getById(
+    ResponseEntity<BookingDTO> getBookingDTOById(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"
@@ -53,7 +53,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking found"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> getByNumber(
+    ResponseEntity<BookingDTO> getBookingDTOByBookingNumber(
             @ApiParam(
                     value = "bookingNumber",
                     example = "SV-221122",
@@ -66,7 +66,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking created"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    ResponseEntity<BookingDTO> create(
+    ResponseEntity<BookingDTO> createBookingDTO(
             @ApiParam(
                     name = "booking",
                     value = "Booking model"
@@ -80,7 +80,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> update(
+    ResponseEntity<BookingDTO> updateBookingDTOById(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"
@@ -98,7 +98,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 204, message = "Booking deleted"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<HttpStatus> delete(
+    ResponseEntity<HttpStatus> deleteBookingById(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"

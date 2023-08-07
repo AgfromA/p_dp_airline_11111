@@ -80,7 +80,7 @@ public class PaymentRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/payments/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(paymentService.findPaymentById(id))));
+                .andExpect(content().json(objectMapper.writeValueAsString(paymentService.getPaymentById(id))));
     }
 
 

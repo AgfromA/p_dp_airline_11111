@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,8 +26,8 @@ public class PassengerRestController implements PassengerRestApi {
     private final PassengerMapper passengerMapper;
 
     @Override
-    public ResponseEntity<Page<PassengerDTO>> getAll(Integer page, Integer size) {
-        var passengerPage = passengerService.findAll(page, size);
+    public ResponseEntity<Page<PassengerDTO>> getAllPagesPassengersDTO(Integer page, Integer size) {
+        var passengerPage = passengerService.getAllPagesPassengers(page, size);
         if (passengerPage == null) {
             log.error("getAll: Passengers not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -40,15 +38,15 @@ public class PassengerRestController implements PassengerRestApi {
     }
 
     @Override
-    public ResponseEntity<Page<PassengerDTO>> getAllFiltered(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
+    public ResponseEntity<Page<PassengerDTO>> getAllPagesPassengersDTOFiltered(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
         Page<Passenger> passengers;
         if (firstName == null && lastName == null && email == null && serialNumberPassport == null) {
-            passengers = passengerService.findAll(pageable);
+            passengers = passengerService.getAllPagesPassengers(pageable);
             log.info("getAll: get all Passenger");
             log.info(passengers.toString());
         } else {
             log.info("filter: filter Passenger by firstname or lastname or email or serialNumberPassport");
-            passengers = passengerService.findAllByKeyword(pageable, firstName, lastName, email, serialNumberPassport);
+            passengers = passengerService.getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, serialNumberPassport);
             log.info(passengers.toString());
         }
         log.info("passenger пустой: " + passengers.isEmpty());
@@ -63,9 +61,9 @@ public class PassengerRestController implements PassengerRestApi {
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> getById(Long id) {
+    public ResponseEntity<PassengerDTO> getPassengerDTOById(Long id) {
         log.info("getById: get passenger by ID = {}", id);
-        var passenger = passengerService.findById(id);
+        var passenger = passengerService.getPassengerById(id);
 
         if (passenger.isEmpty()) {
             log.error("getById: passenger with this id={} doesnt exist", id);
@@ -76,29 +74,29 @@ public class PassengerRestController implements PassengerRestApi {
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> create(PassengerDTO passengerDTO) {
+    public ResponseEntity<PassengerDTO> createPassengerDTO(PassengerDTO passengerDTO) {
         if (passengerDTO.getId() != null) {
             log.error("create: passenger already exist in database");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.info("create: new passenger added");
-        return new ResponseEntity<>(new PassengerDTO(passengerService.save(passengerMapper.convertToPassengerEntity(passengerDTO))),
+        return new ResponseEntity<>(new PassengerDTO(passengerService.savePassenger(passengerMapper.convertToPassengerEntity(passengerDTO))),
                 HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> update(Long id, PassengerDTO passengerDTO) {
+    public ResponseEntity<PassengerDTO> updatePassengerDTOById(Long id, PassengerDTO passengerDTO) {
         passengerDTO.setId(id);
         log.info("update: update Passenger with id = {}", id);
-        return new ResponseEntity<>(new PassengerDTO(passengerService.update(id,
+        return new ResponseEntity<>(new PassengerDTO(passengerService.updatePassengerById(id,
                 passengerMapper.convertToPassengerEntity(passengerDTO))),
                 HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<HttpStatus> delete(Long id) {
+    public ResponseEntity<HttpStatus> deletePassengerById(Long id) {
         log.info("delete: passenger with id={} deleted", id);
-        passengerService.deleteById(id);
+        passengerService.deletePassengerById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

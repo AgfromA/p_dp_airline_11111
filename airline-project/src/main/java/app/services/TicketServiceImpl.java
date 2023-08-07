@@ -18,12 +18,12 @@ public class TicketServiceImpl implements TicketService {
     private final FlightSeatRepository flightSeatRepository;
 
     @Override
-    public Page<Ticket> findAll(int page, int size) {
+    public Page<Ticket> getAllTickets(int page, int size) {
         return ticketRepository.findAll(PageRequest.of(page, size));
     }
 
     @Override
-    public Ticket findTicketByTicketNumber(String ticketNumber) {
+    public Ticket getTicketByTicketNumber(String ticketNumber) {
         return ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
     }
 
@@ -49,7 +49,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public Ticket updateTicket(Long id, Ticket updatedTicket) {
+    public Ticket updateTicketById(Long id, Ticket updatedTicket) {
         updatedTicket.setId(id);
         if (updatedTicket.getFlight() == null) {
             updatedTicket.setFlight(ticketRepository.findTicketById(id).getFlight());
@@ -67,7 +67,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public long [] findArrayOfFlightSeatIdByPassengerId(long passengerId) {
+    public long [] getArrayOfFlightSeatIdByPassengerId(long passengerId) {
         return ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId);
     }
     @Override

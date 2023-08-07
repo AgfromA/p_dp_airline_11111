@@ -3,6 +3,7 @@ package app.exceptions;
 import app.controllers.IntegrationTestBase;
 import app.controllers.rest.AccountRestController;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.mockito.Mock;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
-@Sql(value = {"/sqlQuery/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/sqlQuery/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class RuntimeExceptionHandlerTestIT extends IntegrationTestBase {
     @Mock
     private AccountRestController accountRestController;
@@ -29,7 +30,7 @@ class RuntimeExceptionHandlerTestIT extends IntegrationTestBase {
     public void runtimeExceptionHandlerTestIT() throws Exception {
         Long id = 1L;
 
-        when(accountRestController.getById(id)).thenThrow(new RuntimeException("Runtime Exception"));
+        when(accountRestController.getAccountDTOById(id)).thenThrow(new RuntimeException("Runtime Exception"));
 
         mockMvc.perform(
                         get("http://localhost:8080/api/accounts/{id}", id))

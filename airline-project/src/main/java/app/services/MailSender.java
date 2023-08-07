@@ -15,7 +15,7 @@ public class MailSender {
     @Value("${spring.mail.username}")
     private String username;
 
-    public void send(String emailTo, String subject, String message) {
+    public void sendEmail(String emailTo, String subject, String message) {
         var mailMessage = new SimpleMailMessage();
 
         mailMessage.setFrom(username + "@yandex.ru");

@@ -22,20 +22,20 @@ public interface DestinationRestApi {
             @ApiResponse(code = 200, message = "Destinations found"),
             @ApiResponse(code = 404, message = "Destinations not found")
     })
-    ResponseEntity<Page<DestinationDTO>> getAll(@PageableDefault(sort = {"id"}) Pageable pageable,
+    ResponseEntity<Page<DestinationDTO>> getAllPagesDestinationsDTO(@PageableDefault(sort = {"id"}) Pageable pageable,
 
-            @ApiParam(
+                                                                    @ApiParam(
                     name = "cityName",
                     value = "cityName",
                     example = "Волгоград"
             )
             @RequestParam(value = "cityName", required = false) String cityName,
-            @ApiParam(
+                                                                    @ApiParam(
                     name = "countryName",
                     value = "countryName"
             )
             @RequestParam(value = "countryName", required = false) String countryName,
-            @ApiParam(
+                                                                    @ApiParam(
                     name = "timezone",
                     value = "timezone",
                     example = "gmt%20%2b5"
@@ -45,7 +45,7 @@ public interface DestinationRestApi {
     @ApiOperation(value = "Create new Destination")
     @ApiResponse(code = 201, message = "Destination created")
     @PostMapping
-    ResponseEntity<DestinationDTO> create(
+    ResponseEntity<DestinationDTO> createDestinationDTO(
             @ApiParam(
                     name = "Destination",
                     value = "Destination"
@@ -55,7 +55,7 @@ public interface DestinationRestApi {
     @ApiOperation(value = "Edit Destination by id")
     @ApiResponse(code = 200, message = "Destination has been updated")
     @PatchMapping("/{id}")
-    ResponseEntity<DestinationDTO> update(
+    ResponseEntity<DestinationDTO> updateDestinationDTOById(
             @ApiParam(
                     name = "id",
                     value = "Destination.id"
@@ -72,7 +72,7 @@ public interface DestinationRestApi {
             @ApiResponse(code = 200, message = "Destination deleted"),
     })
     @DeleteMapping(value = "/{id}")
-    ResponseEntity<HttpStatus> delete(
+    ResponseEntity<HttpStatus> deleteDestinationById(
             @ApiParam(
                     name = "id",
                     value = "Destination.id",

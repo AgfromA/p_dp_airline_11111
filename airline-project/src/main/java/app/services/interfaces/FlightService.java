@@ -25,15 +25,15 @@ public interface FlightService {
 
     Flight getFlightByIdAndDates(Long id, String start, String finish);
 
-    Optional<Flight> findById(Long id);
+    Optional<Flight> getFlightById(Long id);
 
-    Flight save(Flight flight);
+    Flight saveFlight(Flight flight);
 
-    Flight update(Long id, Flight updated);
+    Flight updateFlight(Long id, Flight updated);
 
     List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo, Date departureDate);
 
     List<Flight> getListNonDirectFlightsByFromAndToAndDepartureDate(int airportIdFrom, int airportIdTo, Date departureDate);
 
-    void deleteById(Long id);
+    void deleteFlightById(Long id);
 }

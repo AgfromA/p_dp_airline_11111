@@ -37,7 +37,7 @@ public class RouteRestController {
 
     @PostMapping
     @ApiOperation(value = "Create new Route")
-    public ResponseEntity<Route> addRoute(
+    public ResponseEntity<Route> createRoute(
             @ApiParam(
                     name = "route",
                     value = "Route model"
@@ -72,7 +72,7 @@ public class RouteRestController {
 
     @PatchMapping("/{id}")
     @ApiOperation(value = "Edit Route by \"id\"")
-    public ResponseEntity<Route> editRoute(
+    public ResponseEntity<Route> editRouteById(
             @ApiParam(
                     name = "id",
                     value = "Route.id"
@@ -95,7 +95,7 @@ public class RouteRestController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete Route by \"id\"")
-    public ResponseEntity<HttpStatus> deleteRoute(
+    public ResponseEntity<HttpStatus> deleteRouteById(
             @ApiParam(
                     name = "id",
                     value = "Route.id"

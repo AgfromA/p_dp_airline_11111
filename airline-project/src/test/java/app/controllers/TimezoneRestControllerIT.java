@@ -48,7 +48,7 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
     void shouldGetAllTimezones() throws Exception {
         int page = 0;
         int size = 10;
-        Page<Timezone> timezonePage = timezoneService.findAll(page, size);
+        Page<Timezone> timezonePage = timezoneService.getAllPagesTimezones(page, size);
         mockMvc.perform(get("http://localhost:8080/api/timezones"))
                 .andDo(print())
                 .andExpect(status().isOk())

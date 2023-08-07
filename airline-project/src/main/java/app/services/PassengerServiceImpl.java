@@ -36,19 +36,19 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     @Transactional
-    public Passenger save(Passenger passenger) {
+    public Passenger savePassenger(Passenger passenger) {
         return passengerRepository.save(passenger);
     }
 
     @Override
-    public Optional<Passenger> findById(Long id) {
+    public Optional<Passenger> getPassengerById(Long id) {
         return passengerRepository.findById(id);
     }
 
 
     @Override
     @Transactional
-    public Passenger update(Long id, Passenger passenger) {
+    public Passenger updatePassengerById(Long id, Passenger passenger) {
         var editPassenger = new Passenger();
         editPassenger.setFirstName(passenger.getFirstName());
         editPassenger.setLastName(passenger.getLastName());
@@ -61,7 +61,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Page<Passenger> findAllByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
+    public Page<Passenger> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
         if (firstName != null) {
             return passengerRepository.findAllByFirstName(pageable, firstName);
         }
@@ -79,21 +79,22 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
-        flightSeatService.editIsSoldToFalseByFlightSeatId(ticketService.findArrayOfFlightSeatIdByPassengerId(id));
+    public void deletePassengerById(Long id) {
+        flightSeatService.editFlightSeatIsSoldToFalseByFlightSeatId(ticketService.getArrayOfFlightSeatIdByPassengerId(id));
         bookingService.deleteBookingByPassengerId(id);
         ticketService.deleteTicketByPassengerId(id);
         passengerRepository.deleteById(id);
     }
 
     @Override
-    public Page<Passenger> findAll(Pageable pageable) {
+    public Page<Passenger> getAllPagesPassengers(Pageable pageable) {
         return passengerRepository.findAll(pageable);
     }
 
     @Override
-    public Page<Passenger> findAll(int page, int size) {
+    public Page<Passenger> getAllPagesPassengers(int page, int size) {
         return passengerRepository.findAll(PageRequest.of(page, size));
     }
 
 }
+

@@ -18,12 +18,12 @@ public class DestinationServiceImpl implements DestinationService {
     private final DestinationRepository destinationRepository;
 
     @Override
-    public Page<Destination> findAll(Pageable pageable) {
+    public Page<Destination> getAllDestinations(Pageable pageable) {
         return destinationRepository.findAll(pageable);
     }
 
     @Override
-    public Page<Destination> findDestinationByNameAndTimezone(Pageable pageable, String cityName, String countryName, String timezone) {
+    public Page<Destination> getDestinationByNameAndTimezone(Pageable pageable, String cityName, String countryName, String timezone) {
         if (cityName != null) {
             return destinationRepository.findByCityNameContainingIgnoreCase(pageable, cityName);
         } else if(countryName != null) {
@@ -41,7 +41,7 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     @Transactional
-    public void updateDestination(Long id, Destination destination) {
+    public void updateDestinationById(Long id, Destination destination) {
         destination.setId(id);
         destinationRepository.save(destination);
     }
@@ -52,12 +52,12 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public Destination findDestinationByAirportCode(Airport airportCode) {
+    public Destination getDestinationByAirportCode(Airport airportCode) {
         return destinationRepository.findDestinationByAirportCode(airportCode).orElse(null);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteDestinationById(Long id) {
         destinationRepository.deleteById(id);
     }
 }

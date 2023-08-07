@@ -18,9 +18,9 @@ public class EmailController implements EmailControllerApi {
     private final MailSender mailSender;
 
     @Override
-    public @ResponseBody ResponseEntity<String> sendSimpleEmail(String email) {
+    public @ResponseBody ResponseEntity<String> sendEmail(String email) {
         try {
-            mailSender.send(email, "Welcome", "This is a welcome email for your!!");
+            mailSender.sendEmail(email, "Welcome", "This is a welcome email for your!!");
         } catch (MailException mailException) {
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
         }

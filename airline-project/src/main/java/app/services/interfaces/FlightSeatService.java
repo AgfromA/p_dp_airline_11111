@@ -13,16 +13,16 @@ import java.util.Set;
 
 public interface FlightSeatService {
 
-    Set<FlightSeat> findAll();
+    Set<FlightSeat> getAllFlightSeats();
 
-    Page<FlightSeat> findAll(Pageable pageable);
+    Page<FlightSeat> getAllFlightSeats(Pageable pageable);
 
-    Optional<FlightSeat> findById(Long id);
+    Optional<FlightSeat> getFlightSeatById(Long id);
 
-    Set<FlightSeat> findByFlightId(Long flightId);
-    Page<FlightSeat> getFreeSeats(Pageable pageable, Long id);
-    Page<FlightSeat> findByFlightId(Long flightId, Pageable pageable);
-    Set<FlightSeat> findByFlightNumber(String flightNumber);
+    Set<FlightSeat> getFlightSeatsByFlightId(Long flightId);
+    Page<FlightSeat> getFreeSeatsById(Pageable pageable, Long id);
+    Page<FlightSeat> getFlightSeatsByFlightId(Long flightId, Pageable pageable);
+    Set<FlightSeat> getFlightSeatsByFlightNumber(String flightNumber);
 
     Set<FlightSeat> addFlightSeatsByFlightId(Long flightId);
 
@@ -30,17 +30,17 @@ public interface FlightSeatService {
 
     FlightSeat saveFlightSeat(FlightSeat flightSeat);
     int getNumberOfFreeSeatOnFlight(Flight flight);
-    Set<Seat> getSetOfFeeSeatOnFlightByFlightId(Long id);
-    Set<FlightSeat> findFlightSeatsBySeat(Seat seat);
+    Set<Seat> getSetOfFreeSeatsOnFlightByFlightId(Long id);
+    Set<FlightSeat> getFlightSeatsBySeat(Seat seat);
 
-    void deleteById(Long id);
+    void deleteFlightSeatById(Long id);
 
-    Set<FlightSeat> findNotSoldById(Long id);
+    Set<FlightSeat> getNotSoldFlightSeatsById(Long id);
 
     List<FlightSeat> getCheapestFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type);
 
-    Page<FlightSeat> findNotSoldById(Long id, Pageable pageable);
-    Page<FlightSeat> findNotRegisteredById(Long id, Pageable pageable);
+    Page<FlightSeat> getNotSoldFlightSeatsById(Long id, Pageable pageable);
+    Page<FlightSeat> findNotRegisteredFlightSeatsById(Long id, Pageable pageable);
 
-    void editIsSoldToFalseByFlightSeatId(long[] flightSeatId);
+    void editFlightSeatIsSoldToFalseByFlightSeatId(long[] flightSeatId);
 }

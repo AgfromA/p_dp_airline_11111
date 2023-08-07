@@ -33,7 +33,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     @Override
     @Loggable
-    public Set<FlightSeat> findAll() {
+    public Set<FlightSeat> getAllFlightSeats() {
         Set<FlightSeat> flightSeatSet = new HashSet<>();
         flightSeatRepository.findAll().forEach(flightSeatSet::add);
         return flightSeatSet;
@@ -42,34 +42,34 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public Page<FlightSeat> getFreeSeats(Pageable pageable, Long id) {
+    public Page<FlightSeat> getFreeSeatsById(Pageable pageable, Long id) {
         return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalse(id, pageable);
     }
 
     @Override
-    public Page<FlightSeat> findAll(Pageable pageable) {
+    public Page<FlightSeat> getAllFlightSeats(Pageable pageable) {
         return flightSeatRepository.findAll(pageable);
     }
 
     @Override
-    public Optional<FlightSeat> findById(Long id) {
+    public Optional<FlightSeat> getFlightSeatById(Long id) {
         return flightSeatRepository.findById(id);
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     @Override
     @Loggable
-    public Set<FlightSeat> findByFlightId(Long flightId) {
+    public Set<FlightSeat> getFlightSeatsByFlightId(Long flightId) {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId);
     }
 
     @Override
-    public Page<FlightSeat> findByFlightId(Long flightId, Pageable pageable) {
+    public Page<FlightSeat> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable);
     }
 
     @Override
-    public Set<FlightSeat> findByFlightNumber(String flightNumber) {
+    public Set<FlightSeat> getFlightSeatsByFlightNumber(String flightNumber) {
         Set<FlightSeat> flightSeatSet = new HashSet<>();
         flightSeatRepository.findFlightSeatByFlight(flightRepository.getByCode(flightNumber))
                 .forEach(flightSeatSet::add);
@@ -81,7 +81,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Loggable
     public Set<FlightSeat> addFlightSeatsByFlightId(Long flightId) {
         Set<FlightSeat> newFlightSeats = new HashSet<>();
-        var flight = flightService.findById(flightId).get();
+        var flight = flightService.getFlightById(flightId).get();
         var seats = seatRepository.findByAircraftId(flight.getAircraft().getId());
         for (Seat s : seats) {
             var flightSeat = new FlightSeat();
@@ -104,7 +104,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Loggable
     public Set<FlightSeat> addFlightSeatsByFlightNumber(String flightNumber) {
         Set<FlightSeat> seatsForAdd = new HashSet<>();
-        var allFlightSeats = findAll();
+        var allFlightSeats = getAllFlightSeats();
         var flight = flightRepository.getByCode(flightNumber);
         if (flight != null) {
            var seatsAircraft = flight.getAircraft().getSeatSet();
@@ -167,7 +167,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     @Override
     @Loggable
-    public Set<Seat> getSetOfFeeSeatOnFlightByFlightId(Long id) {
+    public Set<Seat> getSetOfFreeSeatsOnFlightByFlightId(Long id) {
         var targetFlight = flightRepository.getById(id);
         var setOfSeat = targetFlight.getAircraft().getSeatSet();
         var setOfReservedSeat = flightSeatRepository.findFlightSeatByFlight(targetFlight)
@@ -181,25 +181,25 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     @Override
     @Loggable
-    public Set<FlightSeat> findFlightSeatsBySeat(Seat seat) {
+    public Set<FlightSeat> getFlightSeatsBySeat(Seat seat) {
         return flightSeatRepository.findFlightSeatsBySeat(seat);
     }
 
     @Override
     @Loggable
-    public void deleteById(Long id) {
+    public void deleteFlightSeatById(Long id) {
         flightSeatRepository.deleteById(id);
     }
 
     @Override
     @Loggable
-    public Set<FlightSeat> findNotSoldById(Long id) {
+    public Set<FlightSeat> getNotSoldFlightSeatsById(Long id) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(id);
     }
 
     @Override
     @Loggable
-    public Page<FlightSeat> findNotRegisteredById(Long id, Pageable pageable) {
+    public Page<FlightSeat> findNotRegisteredFlightSeatsById(Long id, Pageable pageable) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(id, pageable);
     }
 
@@ -209,13 +209,13 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     }
 
 
-    public Page<FlightSeat> findNotSoldById(Long id, Pageable pageable) {
+    public Page<FlightSeat> getNotSoldFlightSeatsById(Long id, Pageable pageable) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(id, pageable);
     }
 
     @Override
     @Transactional
-    public void editIsSoldToFalseByFlightSeatId(long[] flightSeatId) {
+    public void editFlightSeatIsSoldToFalseByFlightSeatId(long[] flightSeatId) {
         flightSeatRepository.editIsSoldToFalseByFlightSeatId(flightSeatId);
     }
 

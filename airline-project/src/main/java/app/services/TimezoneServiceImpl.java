@@ -25,12 +25,12 @@ public class TimezoneServiceImpl implements TimezoneService {
 
     @Override
     @Transactional
-    public Timezone update(Timezone timezone) {
+    public Timezone updateTimezone(Timezone timezone) {
         return timezoneRepository.save(timezone);
     }
 
     @Override
-    public Page<Timezone> findAll(int page, int size) {
+    public Page<Timezone> getAllPagesTimezones(int page, int size) {
         return timezoneRepository.findAll(PageRequest.of(page, size));
     }
 
@@ -41,7 +41,7 @@ public class TimezoneServiceImpl implements TimezoneService {
 
     @Transactional
     @Override
-    public void deleteById(Long id) {
+    public void deleteTimezoneById(Long id) {
         timezoneRepository.deleteById(id);
     }
 }

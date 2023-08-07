@@ -37,7 +37,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 404, message = "FlightSeat not found")
     })
     @GetMapping("/{id}")
-    ResponseEntity<FlightSeatDTO> get(
+    ResponseEntity<FlightSeatDTO> getFlightSeatDTOById(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id",
@@ -52,7 +52,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 404, message = "Not found")
     })
     @GetMapping("/all-flight-seats")
-    ResponseEntity<Page<FlightSeatDTO>> getAll(
+    ResponseEntity<Page<FlightSeatDTO>> getAllPagesFlightSeatsDTO(
             @PageableDefault(sort = {"id"}) Pageable pageable,
             @ApiParam(
                     name = "flightId",
@@ -88,7 +88,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "free seats found"),
             @ApiResponse(code = 204, message = "no data found")
     })
-    ResponseEntity<Page<FlightSeatDTO>> getFreeSeats(
+    ResponseEntity<Page<FlightSeatDTO>> getPagesFreeSeatsById(
             @PageableDefault(sort = {"id"}) Pageable pageable,
             @ApiParam(
                     name = "id",
@@ -104,7 +104,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 404, message = "Flight with this id not found")
     })
     @PostMapping("/all-flight-seats/{flightId}")
-    ResponseEntity<Set<FlightSeatDTO>> generate(
+    ResponseEntity<Set<FlightSeatDTO>> generateAllFlightSeatsDTOByFlightId(
             @ApiParam(
                     name = "flightId",
                     value = "Flight.id",
@@ -119,7 +119,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PatchMapping("/{id}")
-    ResponseEntity<FlightSeatDTO> update(
+    ResponseEntity<FlightSeatDTO> updateFlightSeatDTOById(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id",
@@ -140,7 +140,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 204, message = "FlightSeat deleted"),
             @ApiResponse(code = 404, message = "FlightSeat not found")
     })
-    ResponseEntity<String> delete(
+    ResponseEntity<String> deleteFlightSeatById(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id"

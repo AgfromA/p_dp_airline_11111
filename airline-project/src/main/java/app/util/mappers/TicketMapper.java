@@ -20,13 +20,13 @@ public class TicketMapper {
     public Ticket convertToTicketEntity(TicketDTO ticketDTO) {
         var ticket = new Ticket();
         ticket.setTicketNumber(ticketDTO.getTicketNumber());
-        ticket.setPassenger(passengerService.findById(ticketDTO.getPassengerId())
+        ticket.setPassenger(passengerService.getPassengerById(ticketDTO.getPassengerId())
                 .orElseThrow(() -> new EntityNotFoundException("Operation was not finished because Passenger was not found with id = "
                         + ticketDTO.getPassengerId())));
-        ticket.setFlight(flightService.findById(ticketDTO.getFlightId())
+        ticket.setFlight(flightService.getFlightById(ticketDTO.getFlightId())
                 .orElseThrow(() -> new EntityNotFoundException("Operation was not finished because Flight was not found with id = "
                         + ticketDTO.getFlightId())));
-        ticket.setFlightSeat(flightSeatService.findById(ticketDTO.getFlightSeatId())
+        ticket.setFlightSeat(flightSeatService.getFlightSeatById(ticketDTO.getFlightSeatId())
                 .orElseThrow(() -> new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = "
                         + ticketDTO.getFlightSeatId())));
         return ticket;

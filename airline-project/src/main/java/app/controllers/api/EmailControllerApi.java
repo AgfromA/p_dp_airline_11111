@@ -20,7 +20,7 @@ public interface EmailControllerApi {
     @GetMapping(value = "/simple-email/{user-email}")
     @ApiOperation(value = "Send email to User")
     @ResponseBody
-    ResponseEntity<String> sendSimpleEmail(
+    ResponseEntity<String> sendEmail(
             @ApiParam(
                     name = "email",
                     value = "User's email"

@@ -27,7 +27,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passengers not found")
     })
     @GetMapping
-    ResponseEntity<Page<PassengerDTO>> getAll(
+    ResponseEntity<Page<PassengerDTO>> getAllPagesPassengersDTO(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size
     );
@@ -38,7 +38,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 400, message = "Passenger not found")
     })
     @GetMapping("/filter")
-    ResponseEntity<Page<PassengerDTO>> getAllFiltered(
+    ResponseEntity<Page<PassengerDTO>> getAllPagesPassengersDTOFiltered(
             @PageableDefault(sort = {"id"}) Pageable pageable,
             @RequestParam(value = "firstName", required = false) String firstName,
             @RequestParam(value = "lastName", required = false) String lastName,
@@ -52,7 +52,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @GetMapping("/{id}")
-    ResponseEntity<PassengerDTO> getById(
+    ResponseEntity<PassengerDTO> getPassengerDTOById(
             @ApiParam(
                     name = "id",
                     value = "User.id",
@@ -66,7 +66,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping
-    ResponseEntity<PassengerDTO> create(
+    ResponseEntity<PassengerDTO> createPassengerDTO(
             @ApiParam(
                     name = "Passenger",
                     value = "Passenger model",
@@ -80,7 +80,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @PatchMapping(value = "/{id}")
-    ResponseEntity<PassengerDTO> update(
+    ResponseEntity<PassengerDTO> updatePassengerDTOById(
             @ApiParam(
                     name = "id",
                     value = "User.id",
@@ -100,7 +100,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @DeleteMapping(value = "/{id}")
-    ResponseEntity<HttpStatus> delete(
+    ResponseEntity<HttpStatus> deletePassengerById(
             @ApiParam(
                     name = "id",
                     value = "User.id",

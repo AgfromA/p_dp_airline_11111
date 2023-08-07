@@ -55,11 +55,11 @@ public class SeatServiceImplTest {
         aircraft.setId(AIRCRAFT_TEST_ID);
         aircraft.setModel(AIRCRAFT_TEST_MODEL);
 
-        when(categoryService.findByCategoryType(CategoryType.ECONOMY))
+        when(categoryService.getCategoryByType(CategoryType.ECONOMY))
                 .thenReturn(economyCategory);
-        when(categoryService.findByCategoryType(CategoryType.BUSINESS))
+        when(categoryService.getCategoryByType(CategoryType.BUSINESS))
                 .thenReturn(businessCategory);
-        when(aircraftService.findById(AIRCRAFT_TEST_ID))
+        when(aircraftService.getAircraftById(AIRCRAFT_TEST_ID))
                 .thenReturn(aircraft);
         when(seatRepository.findByAircraftId(eq(AIRCRAFT_TEST_ID), any()))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
@@ -79,7 +79,7 @@ public class SeatServiceImplTest {
                     return seat;
                 });
 
-        List<SeatDTO> seatDTOs = seatService.generate(AIRCRAFT_TEST_ID);
+        List<SeatDTO> seatDTOs = seatService.generateSeatsDTOByAircraftId(AIRCRAFT_TEST_ID);
 
         long businessSeatsCount = seatDTOs.stream()
                 .map(SeatDTO::getCategory)

@@ -38,31 +38,31 @@ public class SeatServiceImpl implements SeatService {
 
     @Transactional
     @Override
-    public Seat save(Seat seat) {
+    public Seat saveSeat(Seat seat) {
         if (seat.getId() != 0) {
-            Seat aldSeat = findById(seat.getId());
+            Seat aldSeat = getSeatById(seat.getId());
             if (aldSeat != null && aldSeat.getAircraft() != null) {
                 seat.setAircraft(aldSeat.getAircraft());
             }
         }
-        seat.setCategory(categoryService.findByCategoryType(seat.getCategory().getCategoryType()));
+        seat.setCategory(categoryService.getCategoryByType(seat.getCategory().getCategoryType()));
         return seatRepository.saveAndFlush(seat);
     }
 
     @Override
-    public Seat findById(long id) {
+    public Seat getSeatById(long id) {
         return seatRepository.findById(id).orElse(null);
     }
 
     @Override
     @Transactional
-    public Seat editById(Long id, Seat seat) {
+    public Seat editSeatById(Long id, Seat seat) {
         var targetSeat = seatRepository.findById(id).orElse(null);
         if (seat.getCategory() != null && seat.getCategory().getCategoryType() != targetSeat.getCategory().getCategoryType()) {
-            targetSeat.setCategory(categoryService.findByCategoryType(seat.getCategory().getCategoryType()));
+            targetSeat.setCategory(categoryService.getCategoryByType(seat.getCategory().getCategoryType()));
         }
         if (seat.getAircraft() != null && !seat.getAircraft().equals(targetSeat.getAircraft())) {
-            targetSeat.setAircraft(aircraftService.findByAircraftNumber(seat.getAircraft().getAircraftNumber()));
+            targetSeat.setAircraft(aircraftService.getAircraftByAircraftNumber(seat.getAircraft().getAircraftNumber()));
         }
         targetSeat.setSeatNumber(seat.getSeatNumber());
         targetSeat.setIsNearEmergencyExit(seat.getIsNearEmergencyExit());
@@ -72,8 +72,8 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     @Transactional
-    public void delete(Long id) throws ViolationOfForeignKeyConstraintException {
-        if (!(flightSeatRepository.findFlightSeatsBySeat(findById(id))).isEmpty()) {
+    public void deleteSeatById(Long id) throws ViolationOfForeignKeyConstraintException {
+        if (!(flightSeatRepository.findFlightSeatsBySeat(getSeatById(id))).isEmpty()) {
             throw new ViolationOfForeignKeyConstraintException(
                     String.format("Seat with id = %d cannot be deleted because it is locked by the table \"flight_seat\"", id));
         }
@@ -81,57 +81,57 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Page<Seat> findByAircraftId(Long id, Pageable pageable) {
+    public Page<Seat> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
         return seatRepository.findByAircraftId(id, pageable);
     }
 
     @Override
     @Transactional
-    public List<SeatDTO> generate(long aircraftId) {
-       var economyCategory = categoryService.findByCategoryType(CategoryType.ECONOMY);
-       var businessCategory = categoryService.findByCategoryType(CategoryType.BUSINESS);
+    public List<SeatDTO> generateSeatsDTOByAircraftId(long aircraftId) {
+       var economyCategory = categoryService.getCategoryByType(CategoryType.ECONOMY);
+       var businessCategory = categoryService.getCategoryByType(CategoryType.BUSINESS);
 
-        List<SeatDTO> savedSeatsDTO = new ArrayList<>(getNumbersOfSeatsByAircraft(aircraftId).getTotalNumberOfSeats());
-        if (findByAircraftId(aircraftId, Pageable.unpaged()).getTotalElements() > 0) {
+        List<SeatDTO> savedSeatsDTO = new ArrayList<>(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats());
+        if (getPagesSeatsByAircraftId(aircraftId, Pageable.unpaged()).getTotalElements() > 0) {
             return savedSeatsDTO;
         }
         int enumSeatsCounter = 0;
-        for (SeatDTO seatDTO : getSeatsDTO(aircraftId)) {
-            seatDTO.setSeatNumber(getAircraftSeats(aircraftId)[enumSeatsCounter].getNumber());
+        for (SeatDTO seatDTO : getSeatsDTOByAircraftId(aircraftId)) {
+            seatDTO.setSeatNumber(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].getNumber());
             seatDTO.setAircraftId(aircraftId);
-            if (enumSeatsCounter < getNumbersOfSeatsByAircraft(aircraftId).getNumberOfBusinessClassSeats()) { //Назначаем категории
+            if (enumSeatsCounter < getNumbersOfSeatsByAircraftId(aircraftId).getNumberOfBusinessClassSeats()) { //Назначаем категории
                 seatDTO.setCategory(businessCategory);
             } else {
                 seatDTO.setCategory(economyCategory);
             }
-            seatDTO.setIsNearEmergencyExit(getAircraftSeats(aircraftId)[enumSeatsCounter].isNearEmergencyExit());
-            seatDTO.setIsLockedBack(getAircraftSeats(aircraftId)[enumSeatsCounter].isLockedBack());
+            seatDTO.setIsNearEmergencyExit(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isNearEmergencyExit());
+            seatDTO.setIsLockedBack(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isLockedBack());
             enumSeatsCounter += 1;
 
-            var savedSeat = save(seatMapper.convertToSeatEntity(seatDTO));
+            var savedSeat = saveSeat(seatMapper.convertToSeatEntity(seatDTO));
             savedSeatsDTO.add(new SeatDTO(savedSeat));
         }
         return savedSeatsDTO;
     }
 
-    private SeatsNumbersByAircraft getNumbersOfSeatsByAircraft(long aircraftId) {
-        var aircraft = aircraftService.findById(aircraftId); //создается объект САМОЛЕТ
+    private SeatsNumbersByAircraft getNumbersOfSeatsByAircraftId(long aircraftId) {
+        var aircraft = aircraftService.getAircraftById(aircraftId); //создается объект САМОЛЕТ
         return SeatsNumbersByAircraft.valueOf(aircraft.getModel() //количество мест в самолете
                 .toUpperCase().replaceAll("[^A-Za-z0-9]","_"));
     }
 
-    private AircraftSeats[] getAircraftSeats(long aircraftId) {
-        return getNumbersOfSeatsByAircraft(aircraftId).getAircraftSeats();
+    private AircraftSeats[] getAircraftSeatsByAircraftId(long aircraftId) {
+        return getNumbersOfSeatsByAircraftId(aircraftId).getAircraftSeats();
     }
 
-    private List<SeatDTO> getSeatsDTO(long aircraftId) {
+    private List<SeatDTO> getSeatsDTOByAircraftId(long aircraftId) {
         return Stream.generate(SeatDTO::new)
-                .limit(getNumbersOfSeatsByAircraft(aircraftId).getTotalNumberOfSeats())
+                .limit(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Page<Seat> findAll(Pageable pageable) {
+    public Page<Seat> getAllPagesSeats(Pageable pageable) {
         return seatRepository.findAll(pageable);
     }
 }

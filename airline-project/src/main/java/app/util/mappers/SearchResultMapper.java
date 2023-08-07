@@ -21,7 +21,7 @@ public class SearchResultMapper {
     public SearchResult convertToSearchResultEntity(SearchResultDTO searchResultDTO) {
         var searchResult = new SearchResult();
         searchResult.setId(searchResultDTO.getId());
-        searchResult.setSearch(searchService.findSearchById(searchResultDTO.getSearchId()));
+        searchResult.setSearch(searchService.getSearchById(searchResultDTO.getSearchId()));
         List<Flight> departFlights = searchResultDTO.getDepartFlight().stream().map(f -> flightMapper.convertToFlightEntity(f)).collect(Collectors.toList());
         searchResult.setDepartFlight(departFlights);
         if (searchResultDTO.getReturnFlight() != null) {

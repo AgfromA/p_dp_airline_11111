@@ -23,7 +23,7 @@ public interface PaymentRestApi {
             @ApiResponse(code = 200, message = "payments found"),
             @ApiResponse(code = 404, message = "payments not found")
     })
-    ResponseEntity<Page<Payment>> getAll(
+    ResponseEntity<Page<Payment>> getAllPagesPayments(
             @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
             @RequestParam(value = "count", defaultValue = "10") @Min(1) @Max(10) Integer count
     );
@@ -34,7 +34,7 @@ public interface PaymentRestApi {
             @ApiResponse(code = 200, message = "payment found"),
             @ApiResponse(code = 404, message = "payment not found")
     })
-    ResponseEntity<Payment> get(
+    ResponseEntity<Payment> getPaymentById(
             @ApiParam(
                     name = "id",
                     value = "Payment.id"
@@ -47,7 +47,7 @@ public interface PaymentRestApi {
             @ApiResponse(code = 201, message = "payment created"),
             @ApiResponse(code = 400, message = "payment not created")
     })
-    ResponseEntity<?> create(
+    ResponseEntity<?> createPayment(
             @ApiParam(
                     name = "payment",
                     value = "Payment model"

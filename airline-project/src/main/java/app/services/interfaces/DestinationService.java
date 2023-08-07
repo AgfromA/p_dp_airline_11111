@@ -9,17 +9,17 @@ import org.springframework.data.domain.Pageable;
 
 public interface DestinationService {
 
-    Page<Destination> findAll(Pageable pageable);
+    Page<Destination> getAllDestinations(Pageable pageable);
 
-    Page<Destination> findDestinationByNameAndTimezone(Pageable pageable, String cityName, String countryName, String timezone);
+    Page<Destination> getDestinationByNameAndTimezone(Pageable pageable, String cityName, String countryName, String timezone);
 
     void saveDestination(Destination destination);
 
-    void updateDestination(Long id, Destination destination);
+    void updateDestinationById(Long id, Destination destination);
 
     Destination getDestinationById(Long id);
 
-    Destination findDestinationByAirportCode(Airport airportCode);
+    Destination getDestinationByAirportCode(Airport airportCode);
 
-    void deleteById(Long id);
+    void deleteDestinationById(Long id);
 }

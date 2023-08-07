@@ -1,7 +1,6 @@
 package app.controllers;
 
 import app.dto.AircraftDTO;
-import app.entities.Aircraft;
 import app.services.interfaces.AircraftService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +55,13 @@ class AircraftRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(new AircraftDTO(aircraftService.findById(id)))));
+                        .writeValueAsString(new AircraftDTO(aircraftService.getAircraftById(id)))));
     }
 
     @Test
     void shouldEditById() throws Exception {
         long id = 2;
-        var aircraft = new AircraftDTO(aircraftService.findById(id));
+        var aircraft = new AircraftDTO(aircraftService.getAircraftById(id));
         aircraft.setAircraftNumber("531487");
         aircraft.setModel("Boeing 737");
         aircraft.setModelYear(2001);

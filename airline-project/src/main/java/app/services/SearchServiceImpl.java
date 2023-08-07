@@ -37,8 +37,8 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     public SearchResult saveSearch(Search search) {
         log.debug("saveSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
-        search.setFrom(destinationService.findDestinationByAirportCode(search.getFrom().getAirportCode()));
-        search.setTo(destinationService.findDestinationByAirportCode(search.getTo().getAirportCode()));
+        search.setFrom(destinationService.getDestinationByAirportCode(search.getFrom().getAirportCode()));
+        search.setTo(destinationService.getDestinationByAirportCode(search.getTo().getAirportCode()));
         searchRepository.save(search);
         var searchResult = searchDirectAndNonDirectFlights(search);
         log.debug("saveSearch: output data, searchResult = {}", LogsUtils.objectToJson(searchResult));
@@ -47,7 +47,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     @Loggable
-    public Search findSearchById(long id) {
+    public Search getSearchById(long id) {
         log.debug("findSearchById: incoming data, search \"id\" = {}", id);
         var search = searchRepository.findById(id).orElse(null);
         log.debug("findSearchById: output data, search = {}", LogsUtils.objectToJson(search));
@@ -81,7 +81,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Loggable
     private void addDirectDepartFlightsToSearchDepartFlight(Search search, List<Flight> searchFlightList) {
-        var departFlight = findDirectDepartFlights(search);
+        var departFlight = getDirectDepartFlights(search);
         //проверка рейсов на наличие мест. если места есть, то рейс добавлется в список рейсов
         for (Flight f : departFlight) {
             if (checkFlightForNumberSeats(f, search)) {
@@ -92,7 +92,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Loggable
     private void addDirectReturnFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
-        var returnFlight = findDirectReturnFlights(search);
+        var returnFlight = getDirectReturnFlights(search);
         //проверка прямых рейсов на наличие мест. если места есть, то рейс добавлется в список рейсов
         for (Flight f : returnFlight) {
             if (checkFlightForNumberSeats(f, search)) {
@@ -103,7 +103,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Loggable
     private void addNonDirectDepartFlightsToSearchDepartFlight(Search search, List<Flight> searchFlightList) {
-        var nonDirectDepartFlights = findNonDirectDepartFlights(search);
+        var nonDirectDepartFlights = getNonDirectDepartFlights(search);
         //проверка непрямых рейсов на наличие мест. если места есть, то соответствующая пара добавляется в список рейсов
         for (Flight f : nonDirectDepartFlights) {
             if (checkFlightForNumberSeats(f, search)) {
@@ -119,7 +119,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Loggable
     private void addNonDirectDepartFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
-        var nonDirectReturnFlights = findNonDirectReturnFlights(search);
+        var nonDirectReturnFlights = getNonDirectReturnFlights(search);
         //проверка непрямых обратных рейсов на наличие мест: если места есть, то соответствующая пара добавляется в список рейсов
         for (Flight f : nonDirectReturnFlights) {
             if (checkFlightForNumberSeats(f, search)) {
@@ -134,7 +134,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Loggable
-    private List<Flight> findDirectDepartFlights(Search search) {
+    private List<Flight> getDirectDepartFlights(Search search) {
         return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
                 search.getFrom().getAirportCode(),
                 search.getTo().getAirportCode(),
@@ -143,7 +143,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Loggable
-    private List<Flight> findDirectReturnFlights(Search search) {
+    private List<Flight> getDirectReturnFlights(Search search) {
         return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
                 search.getTo().getAirportCode(),
                 search.getFrom().getAirportCode(),
@@ -152,7 +152,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Loggable
-    private List<Flight> findNonDirectDepartFlights(Search search) {
+    private List<Flight> getNonDirectDepartFlights(Search search) {
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
                 search.getFrom().getId().intValue(),
                 search.getTo().getId().intValue(),
@@ -161,7 +161,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Loggable
-    private List<Flight> findNonDirectReturnFlights(Search search) {
+    private List<Flight> getNonDirectReturnFlights(Search search) {
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
                 search.getTo().getId().intValue(),
                 search.getFrom().getId().intValue(),
@@ -184,7 +184,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     @Loggable
-    public SearchResultProjection findSearchResultByID(Long id) {
+    public SearchResultProjection getSearchResultProjectionByID(Long id) {
         log.debug("findSearchResultByID: incoming data, searchResult \"id\" = {}", id);
         var searchResult = searchResultRepository.findAllProjectedBy(id);
         log.debug("findSearchResultByID: output data, searchResult = {}", LogsUtils.objectToJson(searchResult));

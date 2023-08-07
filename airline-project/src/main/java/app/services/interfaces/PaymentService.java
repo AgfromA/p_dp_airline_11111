@@ -12,9 +12,9 @@ public interface PaymentService {
 
     ResponseEntity<PaymentResponse> createPayment(PaymentRequest payment);
 
-    List<Payment> findAllPayments();
+    List<Payment> getAllPayments();
 
-    Payment findPaymentById(long id);
+    Payment getPaymentById(long id);
 
     Page<Payment> pagePagination(int page, int count);
 }

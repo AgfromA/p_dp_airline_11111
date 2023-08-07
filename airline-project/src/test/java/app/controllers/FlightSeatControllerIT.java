@@ -7,7 +7,6 @@ import app.services.interfaces.FlightSeatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -40,7 +39,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(flightSeatService.findByFlightId((Long.parseLong(flightId)), pageable).map(FlightSeatDTO::new))));
+                        .writeValueAsString(flightSeatService.getFlightSeatsByFlightId((Long.parseLong(flightId)), pageable).map(FlightSeatDTO::new))));
     }
 
     @Test
@@ -55,7 +54,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(flightSeatService.getFreeSeats(pageable, Long.parseLong(flightId)).map(FlightSeatDTO::new))));
+                        .writeValueAsString(flightSeatService.getFreeSeatsById(pageable, Long.parseLong(flightId)).map(FlightSeatDTO::new))));
     }
 
     @Test
@@ -69,7 +68,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(flightSeatService.findNotSoldById((Long.parseLong(flightId)), pageable).map(FlightSeatDTO::new))));
+                        .writeValueAsString(flightSeatService.getNotSoldFlightSeatsById((Long.parseLong(flightId)), pageable).map(FlightSeatDTO::new))));
     }
 
     @Test
@@ -88,10 +87,10 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldAddFlightSeatsByFlightId() throws Exception {
         var flightId = "1";
-        Set<FlightSeat> flightSeatSet = flightSeatService.findByFlightId(1L);
+        Set<FlightSeat> flightSeatSet = flightSeatService.getFlightSeatsByFlightId(1L);
         List<Long> idList = flightSeatSet.stream().map(FlightSeat::getId).collect(Collectors.toList());
         for (Long id : idList) {
-            flightSeatService.deleteById(id);
+            flightSeatService.deleteFlightSeatById(id);
         }
         mockMvc.perform(
                         post("http://localhost:8080/api/flight-seats/all-flight-seats/{flightId}", flightId)
@@ -104,7 +103,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldEditFlightSeatById() throws Exception {
         Long id = (long) 2;
-        var flightSeat = flightSeatService.findById(id).get();
+        var flightSeat = flightSeatService.getFlightSeatById(id).get();
         flightSeat.setFare(100);
         flightSeat.setIsSold(false);
         flightSeat.setIsRegistered(false);

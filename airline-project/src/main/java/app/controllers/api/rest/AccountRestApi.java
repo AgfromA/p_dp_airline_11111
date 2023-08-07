@@ -34,14 +34,14 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Accounts found"),
             @ApiResponse(code = 204, message = "Accounts not found")})
-    ResponseEntity<Page> getAll(@PageableDefault(sort = {"id"}) Pageable pageable);
+    ResponseEntity<Page> getAllAccountsPages(@PageableDefault(sort = {"id"}) Pageable pageable);
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get Account by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account found"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<AccountDTO> getById(
+    ResponseEntity<AccountDTO> getAccountDTOById(
             @ApiParam(
                     name = "id",
                     value = "Account.id"
@@ -56,7 +56,7 @@ public interface AccountRestApi {
     @PostMapping
     @ApiOperation(value = "Create Account")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Account created")})
-    ResponseEntity<AccountDTO> create(
+    ResponseEntity<AccountDTO> createAccountDTO(
             @ApiParam(
                     name = "account",
                     value = "Account model"
@@ -68,7 +68,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account updated"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<AccountDTO> update(
+    ResponseEntity<AccountDTO> updateAccountDTOById(
             @ApiParam(
                     name = "id",
                     value = "Account.id"
@@ -85,7 +85,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account deleted"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<Void> delete(
+    ResponseEntity<Void> deleteAccountById(
             @ApiParam(
                     name = "id",
                     value = "Account.id"

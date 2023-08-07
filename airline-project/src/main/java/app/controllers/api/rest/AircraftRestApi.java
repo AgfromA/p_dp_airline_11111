@@ -32,21 +32,21 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircrafts found"),
             @ApiResponse(code = 204, message = "Aircrafts not found")})
-    ResponseEntity<Page<AircraftDTO>> getAll(Pageable pageable);
+    ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Pageable pageable);
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get Aircraft by it's \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft found"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDTO> getById(
+    ResponseEntity<AircraftDTO> getAircraftDTOById(
             @ApiParam(name = "id", value = "Aircraft.id")
             @PathVariable("id") Long id);
 
     @PostMapping
     @ApiOperation(value = "Create new Aircraft")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Aircraft created")})
-    ResponseEntity<Aircraft> create(
+    ResponseEntity<Aircraft> createAircraft(
             @ApiParam(
                     name = "Aircraft",
                     value = "Aircraft model"
@@ -58,7 +58,7 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft updated"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<Aircraft> update(
+    ResponseEntity<Aircraft> updateAircraftById(
             @ApiParam(
                     name = "id",
                     value = "Aircraft.id"
@@ -75,7 +75,7 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft deleted"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<HttpStatus> delete(
+    ResponseEntity<HttpStatus> deleteAircraftById(
             @ApiParam(
                     name = "id",
                     value = "Aircraft.id"

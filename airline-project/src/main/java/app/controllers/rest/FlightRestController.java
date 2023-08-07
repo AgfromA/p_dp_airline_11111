@@ -27,7 +27,7 @@ public class FlightRestController implements FlightRestApi {
     private final FlightMapper flightMapper;
 
     @Override
-    public ResponseEntity<Page<FlightDTO>> getAllFlightsByDestinationsAndDates(
+    public ResponseEntity<Page<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
             @RequestParam(required = false) String cityFrom,
             @RequestParam(required = false) String cityTo,
             @RequestParam(required = false) String dateStart,
@@ -44,16 +44,16 @@ public class FlightRestController implements FlightRestApi {
     }
 
     @Override
-    public ResponseEntity<FlightDTO> getById(Long id) {
+    public ResponseEntity<FlightDTO> getFlightDTOById(Long id) {
         log.info("getById: get Flight by id. id = {}", id);
-        var flight = flightService.findById(id);
+        var flight = flightService.getFlightById(id);
         return flight.isPresent()
                 ? new ResponseEntity<>(new FlightDTO(flight.get()), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Override
-    public ResponseEntity<FlightDTO> getByIdAndDates(Long id, String start, String finish) {
+    public ResponseEntity<FlightDTO> getFlightDTOByIdAndDates(Long id, String start, String finish) {
         log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
         var flight = flightService.getFlightByIdAndDates(id, start, finish);
         return flight != null
@@ -70,31 +70,31 @@ public class FlightRestController implements FlightRestApi {
     }
 
     @Override
-    public ResponseEntity<Flight> create(FlightDTO flightDTO) {
+    public ResponseEntity<Flight> createFlight(FlightDTO flightDTO) {
         log.info("create: create new Flight");
-        return new ResponseEntity<>(flightService.save(flightMapper.convertToFlightEntity(flightDTO)),
+        return new ResponseEntity<>(flightService.saveFlight(flightMapper.convertToFlightEntity(flightDTO)),
                 HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Flight> update(Long id, FlightDTO flightDTO) {
-        var flight = flightService.findById(id);
+    public ResponseEntity<Flight> updateFlightById(Long id, FlightDTO flightDTO) {
+        var flight = flightService.getFlightById(id);
         if (flight.isEmpty()) {
             log.error("update: Flight with id={} doesn't exist.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("update: Flight with id = {} updated", id);
-        return new ResponseEntity<>(flightService.update(id, flightMapper.convertToFlightEntity(flightDTO)),
+        return new ResponseEntity<>(flightService.updateFlight(id, flightMapper.convertToFlightEntity(flightDTO)),
                 HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<HttpStatus> delete(Long id) {
-        log.info("delete: Flight with id = {}", id);
+    public ResponseEntity<HttpStatus> deleteFlightById(Long id) {
+        log.info("deleteAircraftById: Flight with id = {}", id);
         try {
-            flightService.deleteById(id);
+            flightService.deleteFlightById(id);
         } catch (Exception e) {
-            log.error("delete: error of deleting - Flight with id = {} not found", id);
+            log.error("deleteAircraftById: error of deleting - Flight with id = {} not found", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

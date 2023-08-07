@@ -45,9 +45,9 @@ public class SearchController implements SearchControllerApi {
     }
 
     @Override
-    public ResponseEntity<SearchResultDTO> getSearchResultById(Long id) {
+    public ResponseEntity<SearchResultDTO> getSearchResultDTOById(Long id) {
 
-        var searchResult = searchService.findSearchResultByID(id);
+        var searchResult = searchService.getSearchResultProjectionByID(id);
         if (searchResult != null) {
             log.info("getSearchResultById: find search result with id = {}", id);
             return new ResponseEntity<>(new SearchResultDTO(searchResult), HttpStatus.OK);

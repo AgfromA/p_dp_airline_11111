@@ -23,14 +23,14 @@ public interface TicketRestApi {
 
     @GetMapping
     @ApiOperation(value = "Get list of all Tickets")
-    ResponseEntity<Page<TicketDTO>> getAll(
+    ResponseEntity<Page<TicketDTO>> getAllPagesTicketsDTO(
             @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
             @RequestParam(value = "size", defaultValue = "10") @Max(10) Integer size);
 
     @ApiOperation(value = "Get Ticket by ticketNumber")
     @ApiResponse(code = 200, message = "Found the ticket")
     @GetMapping("/{ticketNumber}")
-    ResponseEntity<TicketDTO> getByNumber(
+    ResponseEntity<TicketDTO> getTicketDTOByTicketNumber(
             @ApiParam(
                     name = "ticketNumber",
                     value = "ticketNumber",
@@ -41,7 +41,7 @@ public interface TicketRestApi {
     @ApiOperation(value = "Create new Ticket")
     @ApiResponse(code = 201, message = "Ticket created")
     @PostMapping
-    ResponseEntity<TicketDTO> create(
+    ResponseEntity<TicketDTO> createTicketDTO(
             @ApiParam(
                     name = "ticket",
                     value = "Ticket model"
@@ -51,7 +51,7 @@ public interface TicketRestApi {
     @ApiOperation(value = "Edit Ticket by \"id\"")
     @ApiResponse(code = 200, message = "Ticket has been updated")
     @PatchMapping("/{id}")
-    ResponseEntity<?> update(
+    ResponseEntity<?> updateTicketById(
             @ApiParam(
                     name = "id",
                     value = "Ticket.id"
@@ -65,7 +65,7 @@ public interface TicketRestApi {
     @ApiOperation(value = "Delete Ticket by \"id\"")
     @ApiResponse(code = 200, message = "Ticket has been removed")
     @DeleteMapping("/{id}")
-    ResponseEntity<HttpStatus> delete(
+    ResponseEntity<HttpStatus> deleteTicketById(
             @ApiParam(
                     name = "id",
                     value = "Ticket.id"

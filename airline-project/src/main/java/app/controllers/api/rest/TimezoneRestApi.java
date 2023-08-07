@@ -25,7 +25,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 200, message = "Timezones found"),
             @ApiResponse(code = 404, message = "Timezones not found")
     })
-    ResponseEntity<Page<TimezoneDTO>> getAll(
+    ResponseEntity<Page<TimezoneDTO>> getAllPagesTimezonesDTO(
             @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
             @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size
     );
@@ -36,7 +36,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 404, message = "Timezone not found")
     })
     @GetMapping("/{id}")
-    ResponseEntity<TimezoneDTO> getById(
+    ResponseEntity<TimezoneDTO> getTimezoneDTOById(
             @ApiParam(
                     name = "id",
                     value = "Timezone.id",
@@ -50,7 +50,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 405, message = "Bad request")
     })
     @PostMapping
-    ResponseEntity<TimezoneDTO> create(
+    ResponseEntity<TimezoneDTO> createTimezoneDTO(
             @ApiParam(
                     name = "timezone",
                     value = "Timezone model"
@@ -63,7 +63,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 404, message = "Timezone not found")
     })
     @PatchMapping("/{id}")
-    ResponseEntity<TimezoneDTO> update(
+    ResponseEntity<TimezoneDTO> updateTimezoneDTOById(
             @ApiParam(
                     name = "id",
                     value = "Timezone.id",
@@ -81,7 +81,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 404, message = "Timezone not found")
     })
     @DeleteMapping(value = "/{id}")
-    ResponseEntity<HttpStatus> delete(
+    ResponseEntity<HttpStatus> deleteTimezoneById(
             @ApiParam(
                     name = "id",
                     value = "Timezone.id",

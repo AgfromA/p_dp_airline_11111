@@ -26,7 +26,7 @@ public class EmailNotificationService {
 
     @Scheduled(fixedRateString = "${notification.periodOfDbCheck.milliseconds}")
     public void sendEmailNotification() {
-        List<Booking> books = bookingService.getAllBooksForEmailNotification(LocalDateTime.now().plusSeconds(beforeDeparture),
+        List<Booking> books = bookingService.getAllBookingsForEmailNotification(LocalDateTime.now().plusSeconds(beforeDeparture),
                 LocalDateTime.now().plusSeconds(beforeDeparture - (periodOfDbCheck / 1000)));
 
         List<Passenger> passengers = books.stream()
@@ -34,8 +34,8 @@ public class EmailNotificationService {
                 .collect(Collectors.toList());
 
         for (Passenger passenger : passengers) {
-            mailSender.send(passenger.getEmail(), "Регистрация на рейс", "Ваш вылет через 24 часа, " +
-                    "пожалуйста, зарегистрируйтесь на рейс!");
+            mailSender.sendEmail(passenger.getEmail(), "Регистрация на рейс", "Ваш вылет через 24 часа, " +
+                                                                              "пожалуйста, зарегистрируйтесь на рейс!");
         }
     }
 }

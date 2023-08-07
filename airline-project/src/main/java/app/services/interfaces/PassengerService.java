@@ -7,17 +7,17 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface PassengerService {
-    Passenger save(Passenger passenger);
+    Passenger savePassenger(Passenger passenger);
 
-    Passenger update(Long id, Passenger passenger);
+    Passenger updatePassengerById(Long id, Passenger passenger);
 
-    Page<Passenger> findAllByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport);
+    Page<Passenger> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport);
 
-    Optional<Passenger> findById(Long id);
+    Optional<Passenger> getPassengerById(Long id);
 
-    void deleteById(Long id);
+    void deletePassengerById(Long id);
 
-    Page<Passenger> findAll (Pageable pageable);
+    Page<Passenger> getAllPagesPassengers(Pageable pageable);
 
-    Page<Passenger> findAll(int page, int size);
+    Page<Passenger> getAllPagesPassengers(int page, int size);
 }

@@ -47,7 +47,7 @@ public interface SearchControllerApi {
             @ApiResponse(code = 200, message = "search result found"),
             @ApiResponse(code = 404, message = "search result not found")
     })
-    ResponseEntity<SearchResultDTO> getSearchResultById(
+    ResponseEntity<SearchResultDTO> getSearchResultDTOById(
 
             @ApiParam(
                     name = "id",

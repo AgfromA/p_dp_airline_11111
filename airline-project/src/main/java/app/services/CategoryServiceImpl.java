@@ -20,19 +20,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void save(Category category) {
+    public void saveCategory(Category category) {
         categoryRepository.save(category);
     }
 
     @Override
-    public Category findByCategoryType(CategoryType categoryType) {
+    public Category getCategoryByType(CategoryType categoryType) {
         return categoryRepository
                 .findByCategoryType(categoryType)
                 .orElseThrow(() -> new RuntimeException("Передан несуществующий CategoryType"));
     }
 
     @Override
-    public List<Category> findAll() {
+    public List<Category> getAllCategories() {
 
         return categoryRepository.findAll();
     }

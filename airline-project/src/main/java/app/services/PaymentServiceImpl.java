@@ -3,7 +3,6 @@ package app.services;
 import app.clients.PaymentFeignClient;
 import app.dto.PaymentRequest;
 import app.dto.PaymentResponse;
-import app.entities.Booking;
 import app.entities.Payment;
 import app.enums.State;
 import app.repositories.PaymentRepository;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 
 @Slf4j
@@ -37,7 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public ResponseEntity<PaymentResponse> createPayment(PaymentRequest paymentRequest) {
         paymentRequest.getBookingsId().forEach(id -> {
-            var bookingFromDb = bookingService.findById(id);
+            var bookingFromDb = bookingService.getBookingById(id);
             if (bookingFromDb == null) {
                 throw new NoSuchElementException(String.format("booking with id=%d not exists", id));
             }
@@ -55,12 +53,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<Payment> findAllPayments() {
+    public List<Payment> getAllPayments() {
         return paymentRepository.findAll();
     }
 
     @Override
-    public Payment findPaymentById(long id) {
+    public Payment getPaymentById(long id) {
         return paymentRepository.findById(id).orElse(null);
     }
 

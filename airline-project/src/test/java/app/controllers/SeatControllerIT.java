@@ -31,7 +31,7 @@ public class SeatControllerIT extends IntegrationTestBase {
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(true);
         seatDTO.setIsNearEmergencyExit(false);
-        seatDTO.setCategory(categoryService.findByCategoryType(CategoryType.ECONOMY));
+        seatDTO.setCategory(categoryService.getCategoryByType(CategoryType.ECONOMY));
         seatDTO.setAircraftId(1);
 
         mockMvc.perform(post("http://localhost:8080/api/seats")
@@ -49,7 +49,7 @@ public class SeatControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/seats/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(new SeatDTO(seatService.findById(id)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(new SeatDTO(seatService.getSeatById(id)))));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldEditSeat() throws Exception {
-        var seatDTO = new SeatDTO(seatService.findById(1));
+        var seatDTO = new SeatDTO(seatService.getSeatById(1));
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(false);
         seatDTO.setIsNearEmergencyExit(true);
@@ -79,7 +79,7 @@ public class SeatControllerIT extends IntegrationTestBase {
     void editNotExistedSeat() throws Exception {
         long id = 100;
         mockMvc.perform(patch("http://localhost:8080/api/seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(seatService.findById(100)))
+                        .content(objectMapper.writeValueAsString(seatService.getSeatById(100)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());

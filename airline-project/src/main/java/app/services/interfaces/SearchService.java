@@ -7,7 +7,7 @@ import app.repositories.SearchResultProjection;
 public interface SearchService {
 
     SearchResult saveSearch(Search search);
-    Search findSearchById(long id);
+    Search getSearchById(long id);
     void saveSearchResult(SearchResult searchResult);
-    SearchResultProjection findSearchResultByID(Long id);
+    SearchResultProjection getSearchResultProjectionByID(Long id);
 }

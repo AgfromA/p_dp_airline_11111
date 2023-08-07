@@ -19,7 +19,7 @@ public class SeatMapper {
         seat.setIsNearEmergencyExit(seatDTO.getIsNearEmergencyExit());
         seat.setIsLockedBack(seatDTO.getIsLockedBack());
         seat.setCategory(seatDTO.getCategory());
-        seat.setAircraft(aircraftService.findById(seatDTO.getAircraftId()));
+        seat.setAircraft(aircraftService.getAircraftById(seatDTO.getAircraftId()));
         return seat;
     }
 
@@ -30,7 +30,7 @@ public class SeatMapper {
         seatDTO.setIsNearEmergencyExit(seat.getIsNearEmergencyExit());
         seatDTO.setIsLockedBack(seat.getIsLockedBack());
         seatDTO.setCategory(seat.getCategory());
-        seatDTO.setAircraftId(aircraftService.findById(seat.getAircraft().getId()).getId());
+        seatDTO.setAircraftId(aircraftService.getAircraftById(seat.getAircraft().getId()).getId());
         return seatDTO;
     }
 }

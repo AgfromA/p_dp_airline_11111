@@ -95,33 +95,33 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public Optional<Flight> findById(Long id) {
+    public Optional<Flight> getFlightById(Long id) {
         return flightRepository.findById(id);
     }
 
 
     @Override
     @Loggable
-    public Flight save(Flight flight) {
+    public Flight saveFlight(Flight flight) {
         return flightRepository.save(flight);
     }
 
     @Override
     @Loggable
-    public Flight update(Long id, Flight updated) {
+    public Flight updateFlight(Long id, Flight updated) {
         updated.setId(id);
         if (updated.getAircraft() == null) {
-            updated.setAircraft(findById(id).get().getAircraft());
+            updated.setAircraft(getFlightById(id).get().getAircraft());
         } else {
             updated.setAircraft(aircraftRepository.findByAircraftNumber(updated.getAircraft().getAircraftNumber()));
         }
         if (updated.getFrom() == null) {
-            updated.setFrom(findById(id).get().getFrom());
+            updated.setFrom(getFlightById(id).get().getFrom());
         } else {
             updated.setFrom(destinationRepository.findDestinationByAirportCode(updated.getFrom().getAirportCode()).orElse(null));
         }
         if (updated.getTo() == null) {
-            updated.setTo(findById(id).get().getTo());
+            updated.setTo(getFlightById(id).get().getTo());
         } else {
             updated.setTo(destinationRepository.findDestinationByAirportCode(updated.getTo().getAirportCode()).orElse(null));
         }
@@ -130,7 +130,7 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Loggable
-    public void deleteById(Long id) {
+    public void deleteFlightById(Long id) {
         flightRepository.deleteById(id);
     }
 }

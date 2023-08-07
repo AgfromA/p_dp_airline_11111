@@ -9,11 +9,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface SeatService {
-    Seat save (Seat seat);
-    Seat findById (long id);
-    Seat editById(Long id, Seat Seat);
-    void delete(Long id) throws ViolationOfForeignKeyConstraintException;
-    Page<Seat> findByAircraftId(Long id, Pageable pageable);
-    List<SeatDTO> generate(long aircraftId);
-    Page<Seat> findAll(Pageable pageable);
+    Seat saveSeat(Seat seat);
+    Seat getSeatById(long id);
+    Seat editSeatById(Long id, Seat Seat);
+    void deleteSeatById(Long id) throws ViolationOfForeignKeyConstraintException;
+    Page<Seat> getPagesSeatsByAircraftId(Long id, Pageable pageable);
+    List<SeatDTO> generateSeatsDTOByAircraftId(long aircraftId);
+    Page<Seat> getAllPagesSeats(Pageable pageable);
 }

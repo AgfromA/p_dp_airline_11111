@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface AircraftService {
 
-    Aircraft save(Aircraft aircraft);
+    Aircraft saveAircraft(Aircraft aircraft);
 
-    Page<Aircraft> findAll(Pageable pageable);
+    Page<Aircraft> getAllAircrafts(Pageable pageable);
 
-    Aircraft findById(Long id);
+    Aircraft getAircraftById(Long id);
 
-    Aircraft findByAircraftNumber(String aircraftNumber);
+    Aircraft getAircraftByAircraftNumber(String aircraftNumber);
 
-    void delete(Long id);
+    void deleteAircraftById(Long id);
 }

@@ -27,37 +27,37 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public Booking save(Booking booking) {
-        booking.setPassenger((passengerService.findById(booking.getPassenger().getId())).get());
+    public Booking saveBooking(Booking booking) {
+        booking.setPassenger((passengerService.getPassengerById(booking.getPassenger().getId())).get());
         booking.setFlight(flightService.getFlightByCode(booking.getFlight().getCode()));
-        booking.setCategory(categoryService.findByCategoryType(booking.getCategory().getCategoryType()));
+        booking.setCategory(categoryService.getCategoryByType(booking.getCategory().getCategoryType()));
 
         return bookingRepository.save(booking);
     }
 
     @Override
-    public Page<Booking> findAll(Pageable pageable) {
+    public Page<Booking> getAllBookings(Pageable pageable) {
         return bookingRepository.findAll(pageable);
     }
 
     @Override
-    public Booking findById(Long id) {
+    public Booking getBookingById(Long id) {
         return bookingRepository.findById(id).orElse(null);
     }
 
     @Transactional
     @Override
-    public void deleteById(Long id) {
+    public void deleteBookingById(Long id) {
         bookingRepository.deleteById(id);
     }
 
     @Override
-    public List<Booking> getAllBooksForEmailNotification(LocalDateTime departureIn, LocalDateTime gap) {
+    public List<Booking> getAllBookingsForEmailNotification(LocalDateTime departureIn, LocalDateTime gap) {
         return bookingRepository.getAllBooksForEmailNotification(departureIn, gap);
     }
 
     @Override
-    public Booking findByBookingNumber(String number) {
+    public Booking getBookingByNumber(String number) {
         return bookingRepository.findByBookingNumber(number).orElse(null);
     }
 

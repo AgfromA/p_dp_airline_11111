@@ -10,12 +10,12 @@ public interface TimezoneService {
 
     Timezone saveTimezone(Timezone timezone);
 
-    Timezone update(Timezone timezone);
+    Timezone updateTimezone(Timezone timezone);
 
-    Page<Timezone> findAll(int page, int size);
+    Page<Timezone> getAllPagesTimezones(int page, int size);
 
     Optional<Timezone> getTimezoneById(Long id);
 
-    void deleteById(Long id);
+    void deleteTimezoneById(Long id);
 
 }
