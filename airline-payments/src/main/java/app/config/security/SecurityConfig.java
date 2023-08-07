@@ -1,7 +1,6 @@
 package app.config.security;
 
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.description.type.TypeList;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
+                .antMatchers("/api/payments/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

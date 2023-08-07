@@ -7,9 +7,7 @@
     <include file="01-select-table-account.sql" relativeToChangelogFile="true"/>
 
     <changeSet id="1.0" author="timur-khabibullin">
-<!--        <tagDatabase tag="01-select-table-account"/>-->
-        <sql>
-            SELECT * FROM account;
-        </sql>
+        <tagDatabase tag="01-select-table-account"/>
+
     </changeSet>
 </databaseChangeLog>
