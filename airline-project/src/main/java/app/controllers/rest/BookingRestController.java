@@ -2,8 +2,11 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.BookingRestApi;
 import app.dto.BookingDTO;
+import app.mappers.BookingMapper;
 import app.services.interfaces.BookingService;
-import app.util.mappers.BookingMapper;
+import app.services.interfaces.CategoryService;
+import app.services.interfaces.FlightService;
+import app.services.interfaces.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,14 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingRestController implements BookingRestApi {
 
     private final BookingService bookingService;
-    private final BookingMapper bookingMapper;
+    private final PassengerService passengerService;
+    private final FlightService flightService;
+    private final CategoryService categoryService;
 
     @Override
     public ResponseEntity<Page<BookingDTO>> getAllPagesBookingsDTO(Pageable pageable) {
         log.info("getAll: search all Bookings");
         Page<BookingDTO> bookings = bookingService.getAllBookings(pageable).map(entity -> {
-            var dto = bookingMapper.convertToBookingDTOEntity(entity);
-            return dto;
+            return BookingMapper.INSTANCE.convertToBookingDTOEntity(entity,passengerService,flightService,categoryService);
         });
         if (bookings == null) {
             log.info("getAll: Bookings not found");
@@ -60,8 +64,9 @@ public class BookingRestController implements BookingRestApi {
     @Override
     public ResponseEntity<BookingDTO> createBookingDTO(BookingDTO bookingDTO) {
         log.info("create: creating a new Booking");
-        return new ResponseEntity<>(new BookingDTO(bookingService.saveBooking(bookingMapper
-                .convertToBookingEntity(bookingDTO))),
+        return new ResponseEntity<>(new BookingDTO(bookingService.saveBooking(BookingMapper.INSTANCE
+                        .convertToBookingEntity(bookingDTO,passengerService,flightService,categoryService)
+                )),
                 HttpStatus.CREATED);
     }
 
@@ -73,8 +78,8 @@ public class BookingRestController implements BookingRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         bookingDTO.setId(id);
-        return new ResponseEntity<>(new BookingDTO(bookingService.saveBooking(bookingMapper
-                .convertToBookingEntity(bookingDTO))),
+        return new ResponseEntity<>(new BookingDTO(bookingService.saveBooking(BookingMapper.INSTANCE
+                .convertToBookingEntity(bookingDTO,passengerService,flightService,categoryService))),
                 HttpStatus.OK);
     }
 
