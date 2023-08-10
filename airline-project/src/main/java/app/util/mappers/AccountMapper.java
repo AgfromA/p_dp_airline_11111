@@ -5,6 +5,7 @@ import app.dto.AccountDTO;
 import app.entities.account.Account;
 import org.springframework.stereotype.Component;
 
+@Deprecated
 @Component
 public class AccountMapper {
     public AccountDTO convertToAccountDTO(Account account) {

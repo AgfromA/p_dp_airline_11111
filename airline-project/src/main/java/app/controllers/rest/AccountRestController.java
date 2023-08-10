@@ -3,9 +3,9 @@ package app.controllers.rest;
 import app.controllers.api.rest.AccountRestApi;
 import app.dto.AccountDTO;;
 import app.entities.account.Role;
+import app.mappers.AccountMapper;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
-import app.util.mappers.AccountMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,6 @@ public class AccountRestController implements AccountRestApi {
 
     private final AccountService accountService;
     private final RoleService roleService;
-    private final AccountMapper accountMapper;
 
     @Override
     public ResponseEntity<Page> getAllAccountsPages(Pageable pageable) {
@@ -58,7 +57,7 @@ public class AccountRestController implements AccountRestApi {
     public ResponseEntity<AccountDTO> createAccountDTO(AccountDTO accountDTO)
             throws MethodNotSupportedException {
         log.info("create: create new Account with email={}", accountDTO.getEmail());
-        return ResponseEntity.ok(new AccountDTO(accountService.saveAccount(accountMapper.convertToAccount(accountDTO))));
+        return ResponseEntity.ok(new AccountDTO(accountService.saveAccount(AccountMapper.INSTANCE.convertToAccount(accountDTO))));
     }
 
     @Override
@@ -66,7 +65,7 @@ public class AccountRestController implements AccountRestApi {
             throws MethodNotSupportedException {
         log.info("update: update Account with id = {}", id);
         return new ResponseEntity<>(new AccountDTO( accountService.updateAccount(id,
-                accountMapper.convertToAccount(accountDTO))), HttpStatus.OK);
+                AccountMapper.INSTANCE.convertToAccount(accountDTO))), HttpStatus.OK);
     }
 
     @Override
