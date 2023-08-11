@@ -12,6 +12,7 @@ import app.services.interfaces.FlightService;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
 import app.util.aop.Loggable;
+import app.util.mappers.DestinationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class SearchServiceImpl implements SearchService {
     private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
     private final SearchResultRepository searchResultRepository;
+    private final DestinationMapper destinationMapper;
 
 
     @Override
@@ -37,8 +39,8 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     public SearchResult saveSearch(Search search) {
         log.debug("saveSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
-        search.setFrom(destinationService.getDestinationByAirportCode(search.getFrom().getAirportCode()));
-        search.setTo(destinationService.getDestinationByAirportCode(search.getTo().getAirportCode()));
+        search.setFrom(destinationMapper.convertToDestinationEntity(destinationService.getDestinationByAirportCode(search.getFrom().getAirportCode())));
+        search.setTo(destinationMapper.convertToDestinationEntity(destinationService.getDestinationByAirportCode(search.getTo().getAirportCode())));
         searchRepository.save(search);
         var searchResult = searchDirectAndNonDirectFlights(search);
         log.debug("saveSearch: output data, searchResult = {}", LogsUtils.objectToJson(searchResult));

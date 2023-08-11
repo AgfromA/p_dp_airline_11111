@@ -1,12 +1,13 @@
 package app.services;
 
+import app.dto.AircraftDTO;
 import app.entities.Aircraft;
 import app.entities.Flight;
 import app.repositories.AircraftRepository;
 import app.repositories.FlightRepository;
 import app.services.interfaces.AircraftService;
+import app.util.mappers.AircraftMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,17 +21,21 @@ public class AircraftServiceImpl implements AircraftService {
 
     private final AircraftRepository aircraftRepository;
     private final FlightRepository flightRepository;
+    private final AircraftMapper aircraftMapper;
 
     @Transactional
-    public Aircraft saveAircraft(Aircraft aircraft) {
+    public Aircraft saveAircraft(AircraftDTO aircraftDTO) {
+        var aircraft = aircraftMapper.convertToAircraftEntity(aircraftDTO);
         if (!aircraft.getSeatSet().isEmpty()) {
             aircraft.getSeatSet().forEach(seat -> seat.setAircraft(aircraft));
         }
         return aircraftRepository.save(aircraft);
     }
 
-    public Page<Aircraft> getAllAircrafts(Pageable pageable) {
-        return aircraftRepository.findAll(pageable);
+    public Page<AircraftDTO> getAllAircrafts(Pageable pageable) {
+        return aircraftRepository.findAll(pageable).map(entity -> {
+            return aircraftMapper.convertToAircarftDTOEntity(entity);
+        });
     }
 
     public Aircraft getAircraftById(Long id) {

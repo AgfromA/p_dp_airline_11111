@@ -20,8 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {"/sqlQuery/create-aircraftCategorySeat-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Transactional
 class AircraftRestControllerIT extends IntegrationTestBase {
+
+    private final AircraftService aircraftService;
+
     @Autowired
-    private AircraftService aircraftService;
+    AircraftRestControllerIT(AircraftService aircraftService) {
+        this.aircraftService = aircraftService;
+    }
 
     @Test
     void shouldSaveAircraft() throws Exception {

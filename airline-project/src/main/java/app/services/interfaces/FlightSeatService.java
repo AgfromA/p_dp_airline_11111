@@ -1,5 +1,6 @@
 package app.services.interfaces;
 
+import app.dto.FlightSeatDTO;
 import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.entities.Seat;
@@ -15,13 +16,13 @@ public interface FlightSeatService {
 
     Set<FlightSeat> getAllFlightSeats();
 
-    Page<FlightSeat> getAllFlightSeats(Pageable pageable);
+    Page<FlightSeatDTO> getAllFlightSeats(Pageable pageable);
 
     Optional<FlightSeat> getFlightSeatById(Long id);
 
     Set<FlightSeat> getFlightSeatsByFlightId(Long flightId);
-    Page<FlightSeat> getFreeSeatsById(Pageable pageable, Long id);
-    Page<FlightSeat> getFlightSeatsByFlightId(Long flightId, Pageable pageable);
+    Page<FlightSeatDTO> getFreeSeatsById(Pageable pageable, Long id);
+    Page<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId, Pageable pageable);
     Set<FlightSeat> getFlightSeatsByFlightNumber(String flightNumber);
 
     Set<FlightSeat> addFlightSeatsByFlightId(Long flightId);
@@ -39,8 +40,8 @@ public interface FlightSeatService {
 
     List<FlightSeat> getCheapestFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type);
 
-    Page<FlightSeat> getNotSoldFlightSeatsById(Long id, Pageable pageable);
-    Page<FlightSeat> findNotRegisteredFlightSeatsById(Long id, Pageable pageable);
+    Page<FlightSeatDTO> getNotSoldFlightSeatsById(Long id, Pageable pageable);
+    Page<FlightSeatDTO> findNotRegisteredFlightSeatsById(Long id, Pageable pageable);
 
     void editFlightSeatIsSoldToFalseByFlightSeatId(long[] flightSeatId);
 }

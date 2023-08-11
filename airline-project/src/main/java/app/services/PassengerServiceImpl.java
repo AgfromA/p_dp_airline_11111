@@ -1,11 +1,13 @@
 package app.services;
 
+import app.dto.PassengerDTO;
 import app.entities.Passenger;
 import app.repositories.PassengerRepository;
 import app.services.interfaces.BookingService;
 import app.services.interfaces.FlightSeatService;
 import app.services.interfaces.PassengerService;
 import app.services.interfaces.TicketService;
+import app.util.mappers.PassengerMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,20 +25,23 @@ public class PassengerServiceImpl implements PassengerService {
     private final BookingService bookingService;
     private final TicketService ticketService;
     private final FlightSeatService flightSeatService;
+    private final PassengerMapper passengerMapper;
 
     // FIXME Отрефакторить
     public PassengerServiceImpl(PassengerRepository passengerRepository,
                                 @Lazy BookingService bookingService, @Lazy TicketService ticketService,
-                                @Lazy FlightSeatService flightSeatService) {
+                                @Lazy FlightSeatService flightSeatService, PassengerMapper passengerMapper) {
         this.passengerRepository = passengerRepository;
         this.bookingService = bookingService;
         this.ticketService = ticketService;
         this.flightSeatService = flightSeatService;
+        this.passengerMapper = passengerMapper;
     }
 
     @Override
     @Transactional
-    public Passenger savePassenger(Passenger passenger) {
+    public Passenger savePassenger(PassengerDTO passengerDTO) {
+        var passenger = passengerMapper.convertToPassengerEntity(passengerDTO);
         return passengerRepository.save(passenger);
     }
 
@@ -48,7 +53,8 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     @Transactional
-    public Passenger updatePassengerById(Long id, Passenger passenger) {
+    public Passenger updatePassengerById(Long id, PassengerDTO passengerDTO) {
+        var passenger = passengerMapper.convertToPassengerEntity(passengerDTO);
         var editPassenger = new Passenger();
         editPassenger.setFirstName(passenger.getFirstName());
         editPassenger.setLastName(passenger.getLastName());
@@ -61,20 +67,35 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Page<Passenger> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
+    public Page<PassengerDTO> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
         if (firstName != null) {
-            return passengerRepository.findAllByFirstName(pageable, firstName);
+            return passengerRepository.findAllByFirstName(pageable, firstName).map(entity -> {
+                var dto = passengerMapper.convertToPassengerDTO(entity);
+                return dto;
+            });
         }
         if (lastName != null) {
-            return passengerRepository.findByLastName(pageable, lastName);
+            return passengerRepository.findByLastName(pageable, lastName).map(entity -> {
+                var dto = passengerMapper.convertToPassengerDTO(entity);
+                return dto;
+            });
         }
         if (email != null) {
-            return passengerRepository.findByEmail(pageable, email);
+            return passengerRepository.findByEmail(pageable, email).map(entity -> {
+                var dto = passengerMapper.convertToPassengerDTO(entity);
+                return dto;
+            });
         }
         if (serialNumberPassport != null) {
-            return passengerRepository.findByPassportSerialNumber(pageable, serialNumberPassport);
+            return passengerRepository.findByPassportSerialNumber(pageable, serialNumberPassport).map(entity -> {
+                var dto = passengerMapper.convertToPassengerDTO(entity);
+                return dto;
+            });
         }
-        return passengerRepository.findAll(pageable);
+        return passengerRepository.findAll(pageable).map(entity -> {
+            var dto = passengerMapper.convertToPassengerDTO(entity);
+            return dto;
+        });
     }
 
     @Override
@@ -87,13 +108,19 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Page<Passenger> getAllPagesPassengers(Pageable pageable) {
-        return passengerRepository.findAll(pageable);
+    public Page<PassengerDTO> getAllPagesPassengers(Pageable pageable) {
+        return passengerRepository.findAll(pageable).map(entity -> {
+            var dto = passengerMapper.convertToPassengerDTO(entity);
+            return dto;
+        });
     }
 
     @Override
-    public Page<Passenger> getAllPagesPassengers(int page, int size) {
-        return passengerRepository.findAll(PageRequest.of(page, size));
+    public Page<PassengerDTO> getAllPagesPassengers(int page, int size) {
+        return passengerRepository.findAll(PageRequest.of(page, size)).map(entity -> {
+            var dto = passengerMapper.convertToPassengerDTO(entity);
+            return dto;
+        });
     }
 
 }

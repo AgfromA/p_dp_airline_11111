@@ -25,10 +25,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {"/sqlQuery/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class AccountControllerIT extends IntegrationTestBase {
 
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private RoleService roleService;
+
+    private final AccountService accountService;
+    private final RoleService roleService;
+
+@Autowired
+    AccountControllerIT(AccountService accountService, RoleService roleService) {
+        this.accountService = accountService;
+        this.roleService = roleService;
+    }
 
     @Test
     void shouldGetAllAccounts() throws Exception {

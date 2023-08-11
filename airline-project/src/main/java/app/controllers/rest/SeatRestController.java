@@ -6,7 +6,6 @@ import app.dto.SeatDTO;
 import app.exceptions.ViolationOfForeignKeyConstraintException;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.SeatService;
-import app.util.mappers.SeatMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,13 +24,10 @@ public class SeatRestController implements SeatRestApi {
 
     private final SeatService seatService;
     private final AircraftService aircraftService;
-    private final SeatMapper seatMapper;
 
     @Override
     public ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTO(Pageable pageable) {
-        var seats = seatService.getAllPagesSeats(pageable).map(entity -> {
-            return seatMapper.convertToSeatDTOEntity(entity);
-        });
+        var seats = seatService.getAllPagesSeats(pageable);
         if (!seats.isEmpty()) {
             log.info("getAll: found {} Seats", seats.getSize());
             return new ResponseEntity<>(seats, HttpStatus.OK);
@@ -43,10 +39,7 @@ public class SeatRestController implements SeatRestApi {
 
     @Override
     public ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTOByAircraftId(Pageable pageable, Long aircraftId) {
-        var seats = seatService.getPagesSeatsByAircraftId(aircraftId, pageable).map(entity -> {
-            return seatMapper.convertToSeatDTOEntity(entity);
-
-        });
+        var seats = seatService.getPagesSeatsByAircraftId(aircraftId, pageable);
         if (!seats.isEmpty()) {
             log.info("getAllByAircraftId: found {} Seats with aircraftId = {}", seats.getSize(), aircraftId);
             return new ResponseEntity<>(seats, HttpStatus.OK);
@@ -70,10 +63,9 @@ public class SeatRestController implements SeatRestApi {
 
     @Override
     public ResponseEntity<SeatDTO> createSeatDTO(SeatDTO seatDTO) {
-        var seat = seatMapper.convertToSeatEntity(seatDTO);
-        seatService.saveSeat(seat);
-        log.info("create: Seat saved with id= {}", seat.getId());
-        return new ResponseEntity<>(new SeatDTO(seatService.getSeatById(seat.getId())), HttpStatus.CREATED);
+        seatService.saveSeat(seatDTO);
+        log.info("create: Seat saved with id= {}", seatDTO.getId());
+        return new ResponseEntity<>(new SeatDTO(seatService.getSeatById(seatDTO.getId())), HttpStatus.CREATED);
     }
 
     @Override
@@ -95,7 +87,7 @@ public class SeatRestController implements SeatRestApi {
             log.error("Seat not found id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        seatService.editSeatById(id, seatMapper.convertToSeatEntity(seatDTO));
+        seatService.editSeatById(id, seatDTO);
         log.info("update: Seat with id = {} has been edited.", id);
         return new ResponseEntity<>(new SeatDTO(seatService.getSeatById(id)), HttpStatus.OK);
     }

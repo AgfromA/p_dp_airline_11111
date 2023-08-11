@@ -1,5 +1,6 @@
 package app.services.interfaces;
 
+import app.dto.AccountDTO;
 import app.entities.account.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface AccountService {
-    Account saveAccount(Account account);
+    Account saveAccount(AccountDTO accountDTO);
 
-    Account updateAccount(Long id, Account account);
+    Account updateAccount(Long id, AccountDTO accountDTO);
 
     Page<Account> getAllAccounts(Pageable pageable);
 

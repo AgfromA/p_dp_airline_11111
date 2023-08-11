@@ -1,8 +1,8 @@
 package app.controllers;
 
-import app.entities.Destination;
 import app.entities.search.Search;
 import app.services.interfaces.DestinationService;
+import app.util.mappers.DestinationMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-search-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class SearchControllerIT extends IntegrationTestBase {
+
+    private final DestinationService destinationService;
+    private final DestinationMapper destinationMapper;
+
     @Autowired
-    DestinationService destinationService;
+    SearchControllerIT(DestinationService destinationService, DestinationMapper destinationMapper) {
+        this.destinationService = destinationService;
+        this.destinationMapper = destinationMapper;
+    }
 
     @Test
     void CheckSearchResultNotFound() throws Exception {
@@ -30,8 +37,8 @@ class SearchControllerIT extends IntegrationTestBase {
 
     @Test
     void CreateSearchResultCreate() throws Exception {
-        var from = destinationService.getDestinationById(1L);
-        var to = destinationService.getDestinationById(2L);
+        var from = destinationMapper.convertToDestinationEntity(destinationService.getDestinationById(1L));
+        var to = destinationMapper.convertToDestinationEntity(destinationService.getDestinationById(2L));
         var search = new Search(from, to, LocalDate.of(2023, 04, 01), null, 1);
         mockMvc.perform(post("http://localhost:8080/api/search")
                         .content(objectMapper.writeValueAsString(search))
@@ -42,8 +49,8 @@ class SearchControllerIT extends IntegrationTestBase {
 
     @Test
     void CheckSearchResult() throws Exception {
-        var from = destinationService.getDestinationById(1L);
-        var to = destinationService.getDestinationById(2L);
+        var from = destinationMapper.convertToDestinationEntity(destinationService.getDestinationById(1L));
+        var to = destinationMapper.convertToDestinationEntity(destinationService.getDestinationById(2L));
         var search = new Search(from, to, LocalDate.of(2023, 04, 01), null, 1);
         var search_result = mockMvc.perform(post("http://localhost:8080/api/search")
                         .content(objectMapper.writeValueAsString(search))
@@ -57,8 +64,8 @@ class SearchControllerIT extends IntegrationTestBase {
 
     @Test
     void CheckSearchNotFound() throws Exception {
-        var from = destinationService.getDestinationById(1L);
-        var to = destinationService.getDestinationById(2L);
+        var from = destinationMapper.convertToDestinationEntity(destinationService.getDestinationById(1L));
+        var to = destinationMapper.convertToDestinationEntity(destinationService.getDestinationById(2L));
         var search = new Search(from, to, LocalDate.of(1999, 12, 01), null, 1);
         mockMvc.perform(post("http://localhost:8080/api/search")
                         .content(objectMapper.writeValueAsString(search))

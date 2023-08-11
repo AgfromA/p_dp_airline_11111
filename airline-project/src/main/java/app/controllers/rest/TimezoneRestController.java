@@ -3,7 +3,6 @@ package app.controllers.rest;
 import app.controllers.api.rest.TimezoneRestApi;
 import app.dto.TimezoneDTO;
 import app.services.interfaces.TimezoneService;
-import app.util.mappers.TimezoneMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class TimezoneRestController implements TimezoneRestApi {
 
     private final TimezoneService timezoneService;
-    private final TimezoneMapper timezoneMapper;
 
     @Override
     public ResponseEntity<Page<TimezoneDTO>> getAllPagesTimezonesDTO(Integer page, Integer size) {
@@ -51,7 +49,7 @@ public class TimezoneRestController implements TimezoneRestApi {
     @Override
     public ResponseEntity<TimezoneDTO> createTimezoneDTO(TimezoneDTO timezoneDTO) {
         log.info("create: new Timezone");
-        return new ResponseEntity<>(new TimezoneDTO(timezoneService.saveTimezone(timezoneMapper.convertToTimezoneEntity(timezoneDTO))),
+        return new ResponseEntity<>(new TimezoneDTO(timezoneService.saveTimezone(timezoneDTO)),
                 HttpStatus.CREATED);
     }
 
@@ -59,7 +57,7 @@ public class TimezoneRestController implements TimezoneRestApi {
     public ResponseEntity<TimezoneDTO> updateTimezoneDTOById(Long id, TimezoneDTO timezoneDTO) {
         timezoneDTO.setId(id);
         log.info("update: timezone = {}", timezoneDTO);
-        return new ResponseEntity<>(new TimezoneDTO(timezoneService.updateTimezone(timezoneMapper.convertToTimezoneEntity(timezoneDTO))),
+        return new ResponseEntity<>(new TimezoneDTO(timezoneService.updateTimezone(timezoneDTO)),
                 HttpStatus.OK);
     }
 

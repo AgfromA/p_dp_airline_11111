@@ -1,5 +1,6 @@
 package app.services.interfaces;
 
+import app.dto.TicketDTO;
 import app.entities.Ticket;
 import org.springframework.data.domain.Page;
 
@@ -11,9 +12,9 @@ public interface TicketService {
 
     void deleteTicketById(Long id);
 
-    Ticket saveTicket(Ticket ticket);
+    Ticket saveTicket(TicketDTO ticketDTO);
 
-    Ticket updateTicketById(Long id, Ticket updatedTicket);
+    Ticket updateTicketById(Long id, TicketDTO updatedTicketDTO);
 
 
     long [] getArrayOfFlightSeatIdByPassengerId(long passengerId);

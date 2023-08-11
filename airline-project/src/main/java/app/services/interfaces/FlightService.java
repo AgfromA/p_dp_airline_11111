@@ -1,5 +1,6 @@
 package app.services.interfaces;
 
+import app.dto.FlightDTO;
 import app.entities.Destination;
 import app.entities.Flight;
 import app.enums.Airport;
@@ -19,7 +20,8 @@ public interface FlightService {
 
     Flight getFlightByCode(String code);
 
-    Page<Flight> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo, String dateStart, String dateFinish, Pageable pageable);
+    Page<FlightDTO> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo, String dateStart,
+                                                        String dateFinish, Pageable pageable);
 
     List<Flight> getFlightsByDestinationsAndDepartureDate(Destination fromId, Destination toId, LocalDate departureDate);
 
@@ -27,13 +29,15 @@ public interface FlightService {
 
     Optional<Flight> getFlightById(Long id);
 
-    Flight saveFlight(Flight flight);
+    Flight saveFlight(FlightDTO flightDTO);
 
-    Flight updateFlight(Long id, Flight updated);
+    Flight updateFlight(Long id, FlightDTO updatedFlightDTO);
 
-    List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo, Date departureDate);
+    List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo,
+                                                                 Date departureDate);
 
-    List<Flight> getListNonDirectFlightsByFromAndToAndDepartureDate(int airportIdFrom, int airportIdTo, Date departureDate);
+    List<Flight> getListNonDirectFlightsByFromAndToAndDepartureDate(int airportIdFrom, int airportIdTo,
+                                                                    Date departureDate);
 
     void deleteFlightById(Long id);
 }

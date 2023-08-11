@@ -1,8 +1,6 @@
 package app.services;
 
 import app.dto.SeatDTO;
-import app.entities.Aircraft;
-import app.entities.Category;
 import app.entities.Seat;
 import app.enums.seats.SeatsNumbersByAircraft;
 import app.enums.seats.interfaces.AircraftSeats;
@@ -38,7 +36,8 @@ public class SeatServiceImpl implements SeatService {
 
     @Transactional
     @Override
-    public Seat saveSeat(Seat seat) {
+    public Seat saveSeat(SeatDTO seatDTO) {
+        var seat = seatMapper.convertToSeatEntity(seatDTO);
         if (seat.getId() != 0) {
             Seat aldSeat = getSeatById(seat.getId());
             if (aldSeat != null && aldSeat.getAircraft() != null) {
@@ -56,7 +55,8 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     @Transactional
-    public Seat editSeatById(Long id, Seat seat) {
+    public Seat editSeatById(Long id, SeatDTO seatDTO) {
+        var seat = seatMapper.convertToSeatEntity(seatDTO);
         var targetSeat = seatRepository.findById(id).orElse(null);
         if (seat.getCategory() != null && seat.getCategory().getCategoryType() != targetSeat.getCategory().getCategoryType()) {
             targetSeat.setCategory(categoryService.getCategoryByType(seat.getCategory().getCategoryType()));
@@ -81,8 +81,11 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Page<Seat> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
-        return seatRepository.findByAircraftId(id, pageable);
+    public Page<SeatDTO> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
+        return seatRepository.findByAircraftId(id, pageable).map(entity -> {
+            return seatMapper.convertToSeatDTOEntity(entity);
+
+        });
     }
 
     @Override
@@ -108,7 +111,7 @@ public class SeatServiceImpl implements SeatService {
             seatDTO.setIsLockedBack(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isLockedBack());
             enumSeatsCounter += 1;
 
-            var savedSeat = saveSeat(seatMapper.convertToSeatEntity(seatDTO));
+            var savedSeat = saveSeat(seatDTO);
             savedSeatsDTO.add(new SeatDTO(savedSeat));
         }
         return savedSeatsDTO;
@@ -131,7 +134,9 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Page<Seat> getAllPagesSeats(Pageable pageable) {
-        return seatRepository.findAll(pageable);
+    public Page<SeatDTO> getAllPagesSeats(Pageable pageable) {
+        return seatRepository.findAll(pageable).map(entity -> {
+            return seatMapper.convertToSeatDTOEntity(entity);
+        });
     }
 }

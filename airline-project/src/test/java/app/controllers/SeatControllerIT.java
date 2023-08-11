@@ -32,7 +32,7 @@ public class SeatControllerIT extends IntegrationTestBase {
         seatDTO.setIsLockedBack(true);
         seatDTO.setIsNearEmergencyExit(false);
         seatDTO.setCategory(categoryService.getCategoryByType(CategoryType.ECONOMY));
-        seatDTO.setAircraftId(1);
+        seatDTO.setAircraftId(1L);
 
         mockMvc.perform(post("http://localhost:8080/api/seats")
                         .content(objectMapper.writeValueAsString(seatDTO))
