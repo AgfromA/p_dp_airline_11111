@@ -16,58 +16,51 @@ import org.springframework.data.domain.Page;
 @Service
 @RequiredArgsConstructor
 public class DestinationServiceImpl implements DestinationService {
-
     private final DestinationRepository destinationRepository;
     private final DestinationMapper destinationMapper;
 
     @Override
-    public Page<Destination> getAllDestinations(Integer page, Integer size) {
-        return destinationRepository.findAll(PageRequest.of(page, size));
-//    public Page<DestinationDTO> getAllDestinations(Pageable pageable) {
-//        return destinationRepository.findAll(pageable).map(entity -> {
-//            var dto = destinationMapper.convertToDestinationDTOEntity(entity);
-//            return dto;
-//        });
-//    }
+    public Page<DestinationDTO> getAllDestinations(Integer page, Integer size) {
+        return destinationRepository.findAll(PageRequest.of(page, size)).map(destinationMapper::convertToDestinationDTOEntity);
+    }
 
     @Override
-    public Page<Destination> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
+    public Page<DestinationDTO> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
         if (cityName != null) {
-            return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName);
+            return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName)
+                    .map(destinationMapper::convertToDestinationDTOEntity);
         } else if(countryName != null) {
-            return destinationRepository.findByCountryNameContainingIgnoreCase(PageRequest.of(page, size), countryName);
+            return destinationRepository.findByCountryNameContainingIgnoreCase(PageRequest.of(page, size), countryName)
+                    .map(destinationMapper::convertToDestinationDTOEntity);
         } else {
-            return destinationRepository.findByTimezoneContainingIgnoreCase(PageRequest.of(page, size), timezone);
+            return destinationRepository.findByTimezoneContainingIgnoreCase(PageRequest.of(page, size), timezone)
+                    .map(destinationMapper::convertToDestinationDTOEntity);
         }
     }
 
     @Override
     @Transactional
     public void saveDestination(DestinationDTO destinationDTO) {
-        destinationRepository.save(destinationMapper.convertToDestinationEntity(destinationDTO));
+        var destination = destinationMapper.convertToDestinationEntity(destinationDTO);
+        destinationRepository.save(destination);
     }
 
     @Override
     @Transactional
     public void updateDestinationById(Long id, DestinationDTO destinationDTO) {
-        destinationDTO.setId(id);
-        destinationRepository.save(destinationMapper.convertToDestinationEntity(destinationDTO));
+        var destination = destinationMapper.convertToDestinationEntity(destinationDTO);
+        destination.setId(id);
+        destinationRepository.save(destination);
     }
 
     @Override
-    public DestinationDTO getDestinationById(Long id) {
-        return destinationRepository.findById(id).map(entity -> {
-            var dto = destinationMapper.convertToDestinationDTOEntity(entity);
-            return dto;
-        }).orElse(null);
+    public Destination getDestinationById(Long id) {
+        return destinationRepository.findById(id).orElse(null);
     }
 
     @Override
-    public DestinationDTO getDestinationByAirportCode(Airport airportCode) {
-        return destinationRepository.findDestinationByAirportCode(airportCode).map(entity -> {
-            var dto = destinationMapper.convertToDestinationDTOEntity(entity);
-            return dto;
-        }).orElse(null);
+    public Destination getDestinationByAirportCode(Airport airportCode) {
+        return destinationRepository.findDestinationByAirportCode(airportCode).orElse(null);
     }
 
     @Override

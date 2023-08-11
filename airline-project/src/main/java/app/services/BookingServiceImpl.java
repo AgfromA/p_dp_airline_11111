@@ -46,13 +46,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<Booking> getAllBookings(Integer page, Integer size) {
-        return bookingRepository.findAll(PageRequest.of(page, size));
-//    public Page<BookingDTO> getAllBookings(Pageable pageable) {
-//        return bookingRepository.findAll(pageable).map(entity -> {
-//            return BookingMapper.INSTANCE.convertToBookingDTOEntity(entity,passengerService,flightService,categoryService);
-//        });
-//    }
+    public Page<BookingDTO> getAllBookings(Integer page, Integer size) {
+        return bookingRepository.findAll(PageRequest.of(page, size)).map(entity -> {
+            return BookingMapper.INSTANCE.convertToBookingDTOEntity(entity,passengerService,flightService,categoryService);
+        });
+    }
 
     @Override
     public Booking getBookingById(Long id) {

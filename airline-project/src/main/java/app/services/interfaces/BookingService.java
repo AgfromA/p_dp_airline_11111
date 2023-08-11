@@ -11,7 +11,7 @@ public interface BookingService {
 
     Booking saveBooking(BookingDTO bookingDTO);
 
-    Page<Booking> getAllBookings(Integer page, Integer size);
+    Page<BookingDTO> getAllBookings(Integer page, Integer size);
 
     Booking getBookingById(Long id);
 

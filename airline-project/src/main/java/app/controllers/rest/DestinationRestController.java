@@ -2,6 +2,7 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDTO;
+import app.entities.Destination;
 import app.services.interfaces.DestinationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,11 +42,12 @@ public class DestinationRestController implements DestinationRestApi {
     }
 
     @Override
-    public ResponseEntity<DestinationDTO> updateDestinationDTOById(Long id, DestinationDTO destinationDTO) {
+    public ResponseEntity<Destination> updateDestinationDTOById(Long id, DestinationDTO destinationDTO) {
         log.info("update: update Destination with id={}", id);
         destinationService.updateDestinationById(id, destinationDTO);
         var updatedDestination = destinationService.getDestinationById(id);
         if (updatedDestination != null) {
+//            DestinationDTO updatedDTO = destinationMapper.convertToDestinationDTOEntity(updatedDestination);
             return new ResponseEntity<>(updatedDestination, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

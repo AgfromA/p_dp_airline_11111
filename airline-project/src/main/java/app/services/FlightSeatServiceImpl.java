@@ -47,22 +47,15 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Transactional(readOnly = true)
     @Loggable
     public Page<FlightSeatDTO> getFreeSeatsById(Pageable pageable, Long id) {
-        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalse(id, pageable)
-                .map(entity -> {
-                    FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
-            return dto;
+        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalse(id, pageable).map(entity -> {
+            return flightSeatMapper.convertToFlightSeatDTOEntity(entity);
         });
     }
 
     @Override
     public Page<FlightSeat> getAllFlightSeats(Integer page, Integer size) {
         return flightSeatRepository.findAll(PageRequest.of(page, size));
-//    public Page<FlightSeatDTO> getAllFlightSeats(Pageable pageable) {
-//        return flightSeatRepository.findAll(pageable).map(entity -> {
-//            FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
-//            return dto;
-//        });
-//    }
+    }
 
     @Override
     public Optional<FlightSeat> getFlightSeatById(Long id) {
@@ -154,8 +147,8 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     @Loggable
     public FlightSeat editFlightSeat(Long id, FlightSeatDTO flightSeatDTO) {
-        var targetFlightSeat = flightSeatRepository.findById(id).orElse(null);
         var flightSeat = flightSeatMapper.convertToFlightSeatEntity(flightSeatDTO);
+        var targetFlightSeat = flightSeatRepository.findById(id).orElse(null);
         flightSeat.setId(id);
 
         if (flightSeat.getFare() == null) {

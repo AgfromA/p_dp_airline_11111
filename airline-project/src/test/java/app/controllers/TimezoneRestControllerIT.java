@@ -20,11 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -104,6 +99,8 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
         long id = 5L;
         var timezoneDTO = new TimezoneDTO(timezoneService.getTimezoneById(id).get());
         timezoneDTO.setCountryName("Чехия");
+        long numberOfTimezone = timezoneRepository.count();
+
         mockMvc.perform(patch("http://localhost:8080/api/timezones/{id}", id)
                         .content(objectMapper.writeValueAsString(timezoneDTO))
                         .contentType(MediaType.APPLICATION_JSON)

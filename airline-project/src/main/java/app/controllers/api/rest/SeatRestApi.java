@@ -1,6 +1,7 @@
 package app.controllers.api.rest;
 
 import app.dto.SeatDTO;
+import app.entities.Seat;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -78,7 +79,7 @@ public interface SeatRestApi {
                     name = "seat",
                     value = "Seat model"
             )
-            @RequestBody @Valid SeatDTO seatDTO);
+            @RequestBody @Valid Seat seat);
 
     @PostMapping("/aircraft/{aircraftId}")
     @ApiOperation(value = "Generate Seats for provided Aircraft based on Aircraft's model")

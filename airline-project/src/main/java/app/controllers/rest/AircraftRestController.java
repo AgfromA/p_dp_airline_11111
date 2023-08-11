@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public class AircraftRestController implements AircraftRestApi {
     @Override
     public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
         log.info("getAll: get all Aircrafts");
-        Page<AircraftDTO> aircrafts = aircraftService.getAllAircrafts(pageable);
+        Page<AircraftDTO> aircrafts = aircraftService.getAllAircrafts(page, size);
         return aircrafts.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(aircrafts, HttpStatus.OK);

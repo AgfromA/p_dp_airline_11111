@@ -1,11 +1,9 @@
 package app.services.interfaces;
 
 import app.dto.DestinationDTO;
-import app.dto.DestinationDTO;
 import app.entities.Destination;
 import app.enums.Airport;
 import org.springframework.data.domain.Page;
-
 
 
 public interface DestinationService {
@@ -18,9 +16,9 @@ public interface DestinationService {
 
     void updateDestinationById(Long id, DestinationDTO destinationDTO);
 
-    DestinationDTO getDestinationById(Long id);
+    Destination getDestinationById(Long id);
 
-    DestinationDTO getDestinationByAirportCode(Airport airportCode);
+    Destination getDestinationByAirportCode(Airport airportCode);
 
     void deleteDestinationById(Long id);
 }

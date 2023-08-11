@@ -3,9 +3,11 @@ package app.controllers.rest;
 import app.controllers.api.rest.SeatRestApi;
 import app.dto.SeatDTO;
 
+import app.entities.Seat;
 import app.exceptions.ViolationOfForeignKeyConstraintException;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.SeatService;
+import app.util.mappers.SeatMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,14 +26,11 @@ public class SeatRestController implements SeatRestApi {
 
     private final SeatService seatService;
     private final AircraftService aircraftService;
+    private final SeatMapper seatMapper;
 
     @Override
     public ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTO(Integer page, Integer size) {
-        var seats = seatService.getAllPagesSeats(page, size).map(entity -> {
-            return seatMapper.convertToSeatDTOEntity(entity);
-        });
-//    public ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTO(Pageable pageable) {
-//        var seats = seatService.getAllPagesSeats(pageable);
+        var seats = seatService.getAllPagesSeats(page, size);
         if (!seats.isEmpty()) {
             log.info("getAll: found {} Seats", seats.getSize());
             return new ResponseEntity<>(seats, HttpStatus.OK);
@@ -66,10 +65,10 @@ public class SeatRestController implements SeatRestApi {
     }
 
     @Override
-    public ResponseEntity<SeatDTO> createSeatDTO(SeatDTO seatDTO) {
-        seatService.saveSeat(seatDTO);
-        log.info("create: Seat saved with id= {}", seatDTO.getId());
-        return new ResponseEntity<>(new SeatDTO(seatService.getSeatById(seatDTO.getId())), HttpStatus.CREATED);
+    public ResponseEntity<SeatDTO> createSeatDTO(Seat seat) {
+        seatService.saveSeat(seat);
+        log.info("create: Seat saved with id= {}", seat.getId());
+        return new ResponseEntity<>(new SeatDTO(seatService.getSeatById(seat.getId())), HttpStatus.CREATED);
     }
 
     @Override

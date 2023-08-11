@@ -39,8 +39,8 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     public SearchResult saveSearch(Search search) {
         log.debug("saveSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
-        search.setFrom(destinationMapper.convertToDestinationEntity(destinationService.getDestinationByAirportCode(search.getFrom().getAirportCode())));
-        search.setTo(destinationMapper.convertToDestinationEntity(destinationService.getDestinationByAirportCode(search.getTo().getAirportCode())));
+        search.setFrom(destinationService.getDestinationByAirportCode(search.getFrom().getAirportCode()));
+        search.setTo(destinationService.getDestinationByAirportCode(search.getTo().getAirportCode()));
         searchRepository.save(search);
         var searchResult = searchDirectAndNonDirectFlights(search);
         log.debug("saveSearch: output data, searchResult = {}", LogsUtils.objectToJson(searchResult));

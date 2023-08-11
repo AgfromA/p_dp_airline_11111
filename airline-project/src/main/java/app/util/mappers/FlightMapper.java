@@ -20,8 +20,8 @@ public class FlightMapper {
         var flight = new Flight();
         flight.setId(flightDTO.getId());
         flight.setCode(flightDTO.getCode());
-        flight.setFrom(destinationMapper.convertToDestinationEntity(destinationService.getDestinationByAirportCode(flightDTO.getAirportFrom())));
-        flight.setTo(destinationMapper.convertToDestinationEntity(destinationService.getDestinationByAirportCode(flightDTO.getAirportTo())));
+        flight.setFrom(destinationService.getDestinationByAirportCode(flightDTO.getAirportFrom()));
+        flight.setTo(destinationService.getDestinationByAirportCode(flightDTO.getAirportTo()));
         flight.setDepartureDateTime(flightDTO.getDepartureDateTime());
         flight.setArrivalDateTime(flightDTO.getArrivalDateTime());
         flight.setAircraft(aircraftService.getAircraftById(flightDTO.getAircraftId()));

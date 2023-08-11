@@ -8,7 +8,7 @@ public interface AircraftService {
 
     Aircraft saveAircraft(AircraftDTO aircraftDTO);
 
-    Page<Aircraft> getAllAircrafts(Integer page, Integer size);
+    Page<AircraftDTO> getAllAircrafts(Integer page, Integer size);
 
     Aircraft getAircraftById(Long id);
 

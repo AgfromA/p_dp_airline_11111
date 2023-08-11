@@ -34,7 +34,6 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
     }
 
-
     @Override
     @Transactional
     public void deleteTicketById(Long id) {

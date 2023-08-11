@@ -32,8 +32,10 @@ public class AircraftServiceImpl implements AircraftService {
         return aircraftRepository.save(aircraft);
     }
 
-    public Page<Aircraft> getAllAircrafts(Integer page, Integer size) {
-        return aircraftRepository.findAll(PageRequest.of(page, size));
+    public Page<AircraftDTO> getAllAircrafts(Integer page, Integer size) {
+        return aircraftRepository.findAll(PageRequest.of(page, size)).map(entity -> {
+            return aircraftMapper.convertToAircarftDTOEntity(entity);
+        });
     }
 
     public Aircraft getAircraftById(Long id) {

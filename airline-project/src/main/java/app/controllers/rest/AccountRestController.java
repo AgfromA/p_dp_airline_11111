@@ -17,8 +17,6 @@ import javax.mail.MethodNotSupportedException;
 import java.util.Collections;
 import java.util.List;
 
-;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
