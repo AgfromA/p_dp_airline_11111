@@ -20,9 +20,9 @@ public class BookingRestController implements BookingRestApi {
     private final BookingService bookingService;
 
     @Override
-    public ResponseEntity<Page<BookingDTO>> getAllPagesBookingsDTO(Pageable pageable) {
+    public ResponseEntity<Page<BookingDTO>> getAllPagesBookingsDTO(Integer page, Integer size) {
         log.info("getAll: search all Bookings");
-        Page<BookingDTO> bookings = bookingService.getAllBookings(pageable);
+        Page<BookingDTO> bookings = bookingService.getAllBookings(page, size);
         if (bookings == null) {
             log.info("getAll: Bookings not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

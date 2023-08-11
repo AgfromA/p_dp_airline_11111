@@ -49,7 +49,7 @@ class BookingMapperTest {
         Booking booking = new Booking();
         booking.setId(1L);
         booking.setBookingNumber("BK-111111");
-        booking.setBookingData(LocalDateTime.now());
+        booking.setBookingDate(LocalDateTime.now());
         booking.setPassenger(passengerServiceMock.getPassengerById(1001L).get());
         booking.setFlight(flightServiceMock.getFlightById(4001L).get());
         booking.setCategory(categoryServiceMock.getCategoryByType(CategoryType.ECONOMY));
@@ -59,7 +59,7 @@ class BookingMapperTest {
 
         Assertions.assertEquals(booking.getId(), bookingDTO.getId());
         Assertions.assertEquals(booking.getBookingNumber(), bookingDTO.getBookingNumber());
-        Assertions.assertEquals(booking.getBookingData(), bookingDTO.getBookingData());
+        Assertions.assertEquals(booking.getBookingDate(), bookingDTO.getBookingDate());
         Assertions.assertEquals(booking.getPassenger().getId(), bookingDTO.getPassengerId());
         Assertions.assertEquals(booking.getFlight().getId(), bookingDTO.getFlightId());
         Assertions.assertEquals(booking.getCategory().getCategoryType(), bookingDTO.getCategoryType());
@@ -84,7 +84,7 @@ class BookingMapperTest {
         BookingDTO bookingDTO = new BookingDTO();
         bookingDTO.setId(1L);
         bookingDTO.setBookingNumber("BK-111111");
-        bookingDTO.setBookingData(LocalDateTime.now());
+        bookingDTO.setBookingDate(LocalDateTime.now());
         bookingDTO.setPassengerId(passengerServiceMock.getPassengerById(1001L).get().getId());
         bookingDTO.setFlightId(flightServiceMock.getFlightById(4001L).get().getId());
         bookingDTO.setCategoryType(CategoryType.ECONOMY);
@@ -93,7 +93,7 @@ class BookingMapperTest {
 
         Assertions.assertEquals(bookingDTO.getId(), booking.getId());
         Assertions.assertEquals(bookingDTO.getBookingNumber(), booking.getBookingNumber());
-        Assertions.assertEquals(bookingDTO.getBookingData(), booking.getBookingData());
+        Assertions.assertEquals(bookingDTO.getBookingDate(), booking.getBookingDate());
         Assertions.assertEquals(bookingDTO.getPassengerId(), booking.getPassenger().getId());
         Assertions.assertEquals(bookingDTO.getFlightId(), booking.getFlight().getId());
         Assertions.assertEquals(bookingDTO.getCategoryType(), booking.getCategory().getCategoryType());

@@ -7,7 +7,6 @@ import app.services.interfaces.AircraftService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +20,7 @@ public class AircraftRestController implements AircraftRestApi {
     private final AircraftService aircraftService;
 
     @Override
-    public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Pageable pageable) {
+    public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
         log.info("getAll: get all Aircrafts");
         Page<AircraftDTO> aircrafts = aircraftService.getAllAircrafts(pageable);
         return aircrafts.isEmpty()

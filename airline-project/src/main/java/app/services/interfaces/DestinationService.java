@@ -1,17 +1,18 @@
 package app.services.interfaces;
 
 import app.dto.DestinationDTO;
+import app.dto.DestinationDTO;
 import app.entities.Destination;
 import app.enums.Airport;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
 
 
 public interface DestinationService {
 
-    Page<DestinationDTO> getAllDestinations(Pageable pageable);
+    Page<DestinationDTO> getAllDestinations(Integer page, Integer size);
 
-    Page<DestinationDTO> getDestinationByNameAndTimezone(Pageable pageable, String cityName, String countryName, String timezone);
+    Page<DestinationDTO> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone);
 
     void saveDestination(DestinationDTO destinationDTO);
 

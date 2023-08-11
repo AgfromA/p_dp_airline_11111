@@ -10,12 +10,13 @@ import app.services.interfaces.FlightService;
 import app.services.interfaces.PassengerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,16 +36,23 @@ public class BookingServiceImpl implements BookingService {
         booking.setPassenger((passengerService.getPassengerById(booking.getPassenger().getId())).get());
         booking.setFlight(flightService.getFlightByCode(booking.getFlight().getCode()));
         booking.setCategory(categoryService.getCategoryByType(booking.getCategory().getCategoryType()));
+        if (booking.getId() == 0) {
+            booking.setBookingNumber(generateBookingNumber());
+        } else {
+            booking.setBookingNumber(bookingRepository.findById(booking.getId()).get().getBookingNumber());
+        }
 
         return bookingRepository.save(booking);
     }
 
     @Override
-    public Page<BookingDTO> getAllBookings(Pageable pageable) {
-        return bookingRepository.findAll(pageable).map(entity -> {
-            return BookingMapper.INSTANCE.convertToBookingDTOEntity(entity,passengerService,flightService,categoryService);
-        });
-    }
+    public Page<Booking> getAllBookings(Integer page, Integer size) {
+        return bookingRepository.findAll(PageRequest.of(page, size));
+//    public Page<BookingDTO> getAllBookings(Pageable pageable) {
+//        return bookingRepository.findAll(pageable).map(entity -> {
+//            return BookingMapper.INSTANCE.convertToBookingDTOEntity(entity,passengerService,flightService,categoryService);
+//        });
+//    }
 
     @Override
     public Booking getBookingById(Long id) {
@@ -71,5 +79,9 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public void deleteBookingByPassengerId(long passengerId) {
         bookingRepository.deleteBookingByPassengerId(passengerId);
+    }
+
+    private String generateBookingNumber() {
+        return UUID.randomUUID().toString().substring(0, 9);
     }
 }

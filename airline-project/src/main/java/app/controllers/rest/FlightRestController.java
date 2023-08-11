@@ -5,6 +5,7 @@ import app.dto.FlightDTO;
 import app.entities.Flight;
 import app.enums.FlightStatus;
 import app.services.interfaces.FlightService;
+import app.util.mappers.FlightMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

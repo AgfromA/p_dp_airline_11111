@@ -7,10 +7,10 @@ import app.repositories.DestinationRepository;
 import app.services.interfaces.DestinationService;
 import app.util.mappers.DestinationMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 
 @Service
@@ -21,30 +21,23 @@ public class DestinationServiceImpl implements DestinationService {
     private final DestinationMapper destinationMapper;
 
     @Override
-    public Page<DestinationDTO> getAllDestinations(Pageable pageable) {
-        return destinationRepository.findAll(pageable).map(entity -> {
-            var dto = destinationMapper.convertToDestinationDTOEntity(entity);
-            return dto;
-        });
-    }
+    public Page<Destination> getAllDestinations(Integer page, Integer size) {
+        return destinationRepository.findAll(PageRequest.of(page, size));
+//    public Page<DestinationDTO> getAllDestinations(Pageable pageable) {
+//        return destinationRepository.findAll(pageable).map(entity -> {
+//            var dto = destinationMapper.convertToDestinationDTOEntity(entity);
+//            return dto;
+//        });
+//    }
 
     @Override
-    public Page<DestinationDTO> getDestinationByNameAndTimezone(Pageable pageable, String cityName, String countryName, String timezone) {
+    public Page<Destination> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
         if (cityName != null) {
-            return destinationRepository.findByCityNameContainingIgnoreCase(pageable, cityName).map(entity -> {
-                var dto = destinationMapper.convertToDestinationDTOEntity(entity);
-                return dto;
-            });
+            return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName);
         } else if(countryName != null) {
-            return destinationRepository.findByCountryNameContainingIgnoreCase(pageable, countryName).map(entity -> {
-                var dto = destinationMapper.convertToDestinationDTOEntity(entity);
-                return dto;
-            });
+            return destinationRepository.findByCountryNameContainingIgnoreCase(PageRequest.of(page, size), countryName);
         } else {
-            return destinationRepository.findByTimezoneContainingIgnoreCase(pageable, timezone).map(entity -> {
-                var dto = destinationMapper.convertToDestinationDTOEntity(entity);
-                return dto;
-            });
+            return destinationRepository.findByTimezoneContainingIgnoreCase(PageRequest.of(page, size), timezone);
         }
     }
 

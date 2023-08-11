@@ -1,6 +1,7 @@
 package app.controllers;
 
 import app.dto.AccountDTO;
+import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
 import org.junit.jupiter.api.Test;
@@ -20,20 +21,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
+import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class AccountControllerIT extends IntegrationTestBase {
 
-
-    private final AccountService accountService;
-    private final RoleService roleService;
-
-@Autowired
-    AccountControllerIT(AccountService accountService, RoleService roleService) {
-        this.accountService = accountService;
-        this.roleService = roleService;
-    }
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Test
     void shouldGetAllAccounts() throws Exception {
@@ -100,11 +100,15 @@ class AccountControllerIT extends IntegrationTestBase {
         Long id = 2L;
         var updatableAccount = new AccountDTO(accountService.getAccountById(id).get());
         updatableAccount.setEmail("test@mail.ru");
+        long numberOfAccounts = accountRepository.count();
+
         mockMvc.perform(patch("http://localhost:8080/api/accounts/{id}", id)
                         .content(objectMapper.writeValueAsString(updatableAccount))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("test@mail.ru"));
+                .andExpect(jsonPath("$.email").value("test@mail.ru"))
+                .andExpect(result -> assertThat(accountRepository.count(), equalTo(numberOfAccounts)));
     }
+
 }

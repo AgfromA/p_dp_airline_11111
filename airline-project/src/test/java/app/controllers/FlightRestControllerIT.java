@@ -145,4 +145,5 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
                         .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable))));
     }
+
 }

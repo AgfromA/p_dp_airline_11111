@@ -3,7 +3,6 @@ package app.services.interfaces;
 import app.dto.BookingDTO;
 import app.entities.Booking;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +11,7 @@ public interface BookingService {
 
     Booking saveBooking(BookingDTO bookingDTO);
 
-    Page<BookingDTO> getAllBookings(Pageable pageable);
+    Page<Booking> getAllBookings(Integer page, Integer size);
 
     Booking getBookingById(Long id);
 

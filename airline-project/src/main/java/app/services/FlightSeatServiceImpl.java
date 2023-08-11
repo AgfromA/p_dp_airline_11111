@@ -14,6 +14,7 @@ import app.util.aop.Loggable;
 import app.util.mappers.FlightSeatMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,12 +55,14 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     }
 
     @Override
-    public Page<FlightSeatDTO> getAllFlightSeats(Pageable pageable) {
-        return flightSeatRepository.findAll(pageable).map(entity -> {
-            FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
-            return dto;
-        });
-    }
+    public Page<FlightSeat> getAllFlightSeats(Integer page, Integer size) {
+        return flightSeatRepository.findAll(PageRequest.of(page, size));
+//    public Page<FlightSeatDTO> getAllFlightSeats(Pageable pageable) {
+//        return flightSeatRepository.findAll(pageable).map(entity -> {
+//            FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
+//            return dto;
+//        });
+//    }
 
     @Override
     public Optional<FlightSeat> getFlightSeatById(Long id) {

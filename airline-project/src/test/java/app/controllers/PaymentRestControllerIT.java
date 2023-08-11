@@ -27,11 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-payment-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class PaymentRestControllerIT extends IntegrationTestBase {
+class PaymentRestControllerIT extends IntegrationTestBase {
 
     @Autowired
     private PaymentService paymentService;
-
     @MockBean
     private PaymentFeignClient feignClientPayment;
 
