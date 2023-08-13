@@ -1,7 +1,8 @@
 package app.services;
 
 
-import app.entities.Example;
+import app.dto.ExampleDto;
+import app.mappers.ExampleMapper;
 import app.repositories.ExampleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,33 +11,37 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ExampleService {
 
     private final ExampleRepository exampleRepository;
+    private final ExampleMapper exampleMapper;
 
-    public List<Example> findAll() {
-        return exampleRepository.findAll();
+    public List<ExampleDto> findAll() {
+        return exampleRepository.findAll().stream().map(exampleMapper::toDto).collect(Collectors.toList());
     }
 
-    public Page<Example> getPage(int page, int size) {
+    public Page<ExampleDto> getPage(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return exampleRepository.findAll(pageRequest);
+        return exampleRepository.findAll(pageRequest).map(exampleMapper::toDto);
     }
 
-    public Optional<Example> findById(Long id) {
-        return exampleRepository.findById(id);
+    public Optional<ExampleDto> findById(Long id) {
+        return exampleRepository.findById(id).map(exampleMapper::toDto);
     }
 
-    public Example save(Example example) {
-        return exampleRepository.save(example);
+    public ExampleDto save(ExampleDto exampleDto) {
+       var example = exampleMapper.toEntity(exampleDto);
+        return exampleMapper.toDto(exampleRepository.save(example));
     }
 
-    public Optional<Example> update(Long id, Example example) {
-        Optional<Example> optionalSavedExample = findById(id);
-        Example savedExample;
+    public Optional<ExampleDto> update(Long id, ExampleDto exampleDto) {
+        var example = exampleMapper.toEntity(exampleDto);
+        Optional<ExampleDto> optionalSavedExample = findById(id);
+        ExampleDto savedExample;
         if (optionalSavedExample.isEmpty()) {
             return optionalSavedExample;
         } else {
@@ -45,11 +50,11 @@ public class ExampleService {
         if (example.getExampleText() != null) {
             savedExample.setExampleText(example.getExampleText());
         }
-        return Optional.of(exampleRepository.save(savedExample));
+        return Optional.of(exampleMapper.toDto(exampleRepository.save(exampleMapper.toEntity(savedExample))));
     }
 
-    public Optional<Example> delete(Long id) {
-        Optional<Example> optionalSavedExample = findById(id);
+    public Optional<ExampleDto> delete(Long id) {
+        Optional<ExampleDto> optionalSavedExample = findById(id);
         if (optionalSavedExample.isEmpty()) {
             return optionalSavedExample;
         } else {
