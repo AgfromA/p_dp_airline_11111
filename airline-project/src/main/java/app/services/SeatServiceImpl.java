@@ -36,7 +36,8 @@ public class SeatServiceImpl implements SeatService {
 
     @Transactional
     @Override
-    public Seat saveSeat(Seat seat) {
+    public Seat saveSeat(SeatDTO seatDTO) {
+        var seat = seatMapper.convertToSeatEntity(seatDTO);
         if (seat.getId() != 0) {
             Seat aldSeat = getSeatById(seat.getId());
             if (aldSeat != null && aldSeat.getAircraft() != null) {
@@ -110,7 +111,7 @@ public class SeatServiceImpl implements SeatService {
             seatDTO.setIsLockedBack(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isLockedBack());
             enumSeatsCounter += 1;
 
-            var savedSeat = saveSeat(seatMapper.convertToSeatEntity(seatDTO));
+            var savedSeat = saveSeat(seatDTO);
             savedSeatsDTO.add(new SeatDTO(savedSeat));
         }
         return savedSeatsDTO;

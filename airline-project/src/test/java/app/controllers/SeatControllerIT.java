@@ -38,7 +38,6 @@ class SeatControllerIT extends IntegrationTestBase {
     @Autowired
     private AircraftService aircraftService;
 
-    @Disabled
     @Test
     void shouldSaveSeat() throws Exception {
         var seatDTO = new SeatDTO();
@@ -53,7 +52,7 @@ class SeatControllerIT extends IntegrationTestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
 
     }
 

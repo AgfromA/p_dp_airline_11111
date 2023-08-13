@@ -65,10 +65,9 @@ public class SeatRestController implements SeatRestApi {
     }
 
     @Override
-    public ResponseEntity<SeatDTO> createSeatDTO(Seat seat) {
-        seatService.saveSeat(seat);
-        log.info("create: Seat saved with id= {}", seat.getId());
-        return new ResponseEntity<>(new SeatDTO(seatService.getSeatById(seat.getId())), HttpStatus.CREATED);
+    public ResponseEntity<SeatDTO> createSeatDTO(SeatDTO seatDTO) {
+        log.info("create: Seat saved with id= {}", seatDTO.getId());
+        return ResponseEntity.ok(new SeatDTO(seatService.saveSeat(seatDTO)));
     }
 
     @Override

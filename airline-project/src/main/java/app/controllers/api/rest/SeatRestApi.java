@@ -79,7 +79,7 @@ public interface SeatRestApi {
                     name = "seat",
                     value = "Seat model"
             )
-            @RequestBody @Valid Seat seat);
+            @RequestBody @Valid SeatDTO seatDTO);
 
     @PostMapping("/aircraft/{aircraftId}")
     @ApiOperation(value = "Generate Seats for provided Aircraft based on Aircraft's model")

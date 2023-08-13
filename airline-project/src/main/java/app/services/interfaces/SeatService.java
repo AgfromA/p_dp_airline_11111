@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface SeatService {
-    Seat saveSeat(Seat seat);
+    Seat saveSeat(SeatDTO seatDTO);
     Seat getSeatById(long id);
     Seat editSeatById(Long id, SeatDTO seatDTO);
     void deleteSeatById(Long id) throws ViolationOfForeignKeyConstraintException;
