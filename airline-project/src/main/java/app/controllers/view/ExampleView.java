@@ -3,8 +3,9 @@ package app.controllers.view;
 
 import app.dto.ExampleDto;
 import app.entities.Example;
-import app.services.ExampleService;
+import app.services.ExampleServiceImpl;
 import app.mappers.ExampleMapper;
+import app.services.interfaces.ExampleService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;

@@ -3,7 +3,7 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.ExampleRestApi;
 import app.dto.ExampleDto;
-import app.services.ExampleService;
+import app.services.ExampleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExampleRestController implements ExampleRestApi {
 
-    private final ExampleService exampleService;
+    private final ExampleServiceImpl exampleServiceImpl;
 
     @Override
     public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
@@ -33,7 +33,7 @@ public class ExampleRestController implements ExampleRestApi {
             return ResponseEntity.noContent().build();
         }
 
-        var examplePage = exampleService.getPage(page, size);
+        var examplePage = exampleServiceImpl.getPage(page, size);
         if (examplePage.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
@@ -42,7 +42,7 @@ public class ExampleRestController implements ExampleRestApi {
     }
 
     private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {
-        var examples = exampleService.findAll();
+        var examples = exampleServiceImpl.findAll();
         if (examples.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -60,7 +60,7 @@ public class ExampleRestController implements ExampleRestApi {
 
     @Override
     public ResponseEntity<ExampleDto> get(Long id) {
-        return exampleService.findById(id)
+        return exampleServiceImpl.findById(id)
                 .map(value -> ResponseEntity.ok(value))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -68,19 +68,19 @@ public class ExampleRestController implements ExampleRestApi {
     @Override
     public ResponseEntity<ExampleDto> create(ExampleDto exampleDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(exampleService.save(exampleDto));
+                .body(exampleServiceImpl.save(exampleDto));
     }
 
     @Override
     public ResponseEntity<ExampleDto> update(Long id, ExampleDto exampleDto) {
-        return exampleService.update(id, exampleDto)
+        return exampleServiceImpl.update(id, exampleDto)
                 .map(example -> ResponseEntity.ok(exampleDto))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<Void> delete(Long id) {
-        Optional<ExampleDto> example = exampleService.delete(id);
+        Optional<ExampleDto> example = exampleServiceImpl.delete(id);
         if (example.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
