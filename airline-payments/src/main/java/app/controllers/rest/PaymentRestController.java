@@ -4,7 +4,6 @@ import app.dto.PaymentRequest;
 import app.dto.PaymentResponse;
 import app.service.PaypalService;
 import com.paypal.api.payments.Links;
-import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

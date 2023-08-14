@@ -2,7 +2,6 @@ package app.services.interfaces;
 
 import app.entities.Booking;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +10,7 @@ public interface BookingService {
 
     Booking saveBooking(Booking book);
 
-    Page<Booking> getAllBookings(Pageable pageable);
+    Page<Booking> getAllBookings(Integer page, Integer size);
 
     Booking getBookingById(Long id);
 

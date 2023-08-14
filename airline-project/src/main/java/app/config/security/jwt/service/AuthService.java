@@ -2,9 +2,7 @@ package app.config.security.jwt.service;
 
 import app.config.security.jwt.domain.JwtRequest;
 import app.config.security.jwt.domain.JwtResponse;
-import app.entities.account.Account;
 import app.services.interfaces.AccountService;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;

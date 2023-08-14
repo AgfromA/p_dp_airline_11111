@@ -8,7 +8,6 @@ import app.util.mappers.DestinationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,14 +22,14 @@ public class DestinationRestController implements DestinationRestApi {
     private final DestinationMapper destinationMapper;
 
     @Override
-    public ResponseEntity<Page<DestinationDTO>> getAllPagesDestinationsDTO(Pageable pageable, String cityName, String countryName, String timezone) {
+    public ResponseEntity<Page<DestinationDTO>> getAllPagesDestinationsDTO(Integer page, Integer size, String cityName, String countryName, String timezone) {
         Page<Destination> destination = null;
         if (cityName == null && countryName == null && timezone == null) {
-            destination = destinationService.getAllDestinations(pageable);
+            destination = destinationService.getAllDestinations(page, size);
             log.info("getAll: get all Destinations");
         } else {
             log.info("getAll: get Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}", countryName, cityName, timezone);
-            destination = destinationService.getDestinationByNameAndTimezone(pageable, cityName, countryName, timezone);
+            destination = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
         }
         return (!destination.isEmpty())
                 ? new ResponseEntity<>(destination.map(entity -> {

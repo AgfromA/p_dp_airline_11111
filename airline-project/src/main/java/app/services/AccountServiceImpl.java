@@ -5,7 +5,7 @@ import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,8 +54,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Account> getAllAccounts(Pageable pageable) {
-        return accountRepository.findAll(pageable);
+    public Page<Account> getAllAccounts(Integer page, Integer size) {
+        return accountRepository.findAll(PageRequest.of(page, size));
     }
 
     @Transactional(readOnly = true)

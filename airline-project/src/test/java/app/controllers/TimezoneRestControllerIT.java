@@ -2,21 +2,29 @@ package app.controllers;
 
 import app.dto.TimezoneDTO;
 import app.entities.Timezone;
+import app.repositories.TimezoneRepository;
 import app.services.interfaces.TimezoneService;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
+import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
@@ -26,6 +34,8 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
 
     @Autowired
     private TimezoneService timezoneService;
+    @Autowired
+    private TimezoneRepository timezoneRepository;
 
     @Test
     @DisplayName("Creating Timezone")
@@ -89,11 +99,14 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
         long id = 5L;
         var timezoneDTO = new TimezoneDTO(timezoneService.getTimezoneById(id).get());
         timezoneDTO.setCountryName("Чехия");
+        long numberOfTimezone = timezoneRepository.count();
+
         mockMvc.perform(patch("http://localhost:8080/api/timezones/{id}", id)
                         .content(objectMapper.writeValueAsString(timezoneDTO))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(result -> assertThat(timezoneRepository.count(), equalTo(numberOfTimezone)));
     }
 }
