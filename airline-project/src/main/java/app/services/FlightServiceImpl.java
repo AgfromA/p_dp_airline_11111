@@ -114,8 +114,8 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Loggable
-    public Flight updateFlight(Long id, FlightDTO updatedFlightDTO) {
-        var updatedFlight = flightMapper.convertToFlightEntity(updatedFlightDTO);
+    public Flight updateFlight(Long id, FlightDTO flightDTO) {
+        var updatedFlight = flightMapper.convertToFlightEntity(flightDTO);
         updatedFlight.setId(id);
         if (updatedFlight.getAircraft() == null) {
             updatedFlight.setAircraft(getFlightById(id).get().getAircraft());

@@ -56,8 +56,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public Ticket updateTicketById(Long id, TicketDTO updatedTicketDTO) {
-        var updatedTicket = ticketMapper.convertToTicketEntity(updatedTicketDTO);
+    public Ticket updateTicketById(Long id, TicketDTO ticketDTO) {
+        var updatedTicket = ticketMapper.convertToTicketEntity(ticketDTO);
         updatedTicket.setId(id);
         if (updatedTicket.getFlight() == null) {
             updatedTicket.setFlight(ticketRepository.findTicketById(id).getFlight());

@@ -31,7 +31,7 @@ public interface FlightService {
 
     Flight saveFlight(FlightDTO flightDTO);
 
-    Flight updateFlight(Long id, FlightDTO updatedFlightDTO);
+    Flight updateFlight(Long id, FlightDTO flightDTO);
 
     List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo,
                                                                  Date departureDate);

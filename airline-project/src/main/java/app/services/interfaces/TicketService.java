@@ -14,7 +14,7 @@ public interface TicketService {
 
     Ticket saveTicket(TicketDTO ticketDTO);
 
-    Ticket updateTicketById(Long id, TicketDTO updatedTicketDTO);
+    Ticket updateTicketById(Long id, TicketDTO ticketDTO);
 
 
     long [] getArrayOfFlightSeatIdByPassengerId(long passengerId);
