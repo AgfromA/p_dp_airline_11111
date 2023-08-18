@@ -13,7 +13,6 @@ paypal:
 jwt:
   secret:
     access: QZnCUVCnP3aukiTOa8XxPkfHODqpXB9xkg/o72yhIh4GE3BPiZszU4fYjJZTbcUcyGM/Bb5N81rv9Csq7blwCA==
-    refresh: 7OTNSWG1vNDf0tgRcVBAFIq6nUlA4QajZUCqn2hpQs1oVKg1qjxB9l9Ik8NltL2QIM6HJYZg8V6zyHJgP0BHEg==
   refreshExpiration:
     accessTokeMin: 1440
     refreshTokeDays: 15

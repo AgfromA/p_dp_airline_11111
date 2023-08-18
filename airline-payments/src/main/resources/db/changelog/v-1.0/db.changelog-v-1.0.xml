@@ -8,6 +8,12 @@
 
     <changeSet id="1.0" author="timur-khabibullin">
         <tagDatabase tag="01-select-table-account"/>
-
     </changeSet>
+
+    <include file="02-userTable.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="2.0" author="timur-khabibullin">
+        <tagDatabase tag="02-userTable"/>
+    </changeSet>
+
 </databaseChangeLog>

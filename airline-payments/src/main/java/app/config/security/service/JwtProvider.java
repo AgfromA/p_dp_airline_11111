@@ -26,51 +26,17 @@ import java.util.Date;
 public class JwtProvider {
 
     private final SecretKey jwtAccessSecret;
-    private final SecretKey jwtRefreshSecret;
-    private final int refreshExpirationAccessToken;
-    private final int refreshExpirationRefreshToken;
+
 
     public JwtProvider(
-            @Value("${jwt.secret.access}") String jwtAccessSecret,
-            @Value("${jwt.secret.refresh}") String jwtRefreshSecret,
-            @Value("${jwt.refreshExpiration.accessTokeMin}") int refreshExpiration,
-            @Value("${jwt.refreshExpiration.refreshTokeDays}") int refreshExpirationRefreshToken
+            @Value("${jwt.secret.access}") String jwtAccessSecret
+
     ) {
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
-        this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
-        this.refreshExpirationAccessToken = refreshExpiration;
-        this.refreshExpirationRefreshToken = refreshExpirationRefreshToken;
-    }
 
-    public String generateAccessToken(@NonNull Account user) {
-        final LocalDateTime now = LocalDateTime.now();
-        final Instant accessExpirationInstant = now.plusMinutes(refreshExpirationAccessToken).atZone(ZoneId.systemDefault()).toInstant();
-        final Date accessExpiration = Date.from(accessExpirationInstant);
-        return Jwts.builder()
-                .setSubject(user.getEmail())
-                .setExpiration(accessExpiration)
-                .signWith(jwtAccessSecret)
-                .claim("roles", user.getRoles())
-                .compact();
     }
-
-    public String generateRefreshToken(@NonNull Account user) {
-        final LocalDateTime now = LocalDateTime.now();
-        final Instant refreshExpirationInstant = now.plusDays(refreshExpirationRefreshToken).atZone(ZoneId.systemDefault()).toInstant();
-        final Date refreshExpiration = Date.from(refreshExpirationInstant);
-        return Jwts.builder()
-                .setSubject(user.getEmail())
-                .setExpiration(refreshExpiration)
-                .signWith(jwtRefreshSecret)
-                .compact();
-    }
-
     public boolean validateAccessToken(@NonNull String accessToken) {
         return validateToken(accessToken, jwtAccessSecret);
-    }
-
-    public boolean validateRefreshToken(@NonNull String refreshToken) {
-        return validateToken(refreshToken, jwtRefreshSecret);
     }
 
     private boolean validateToken(@NonNull String token, @NonNull Key secret) {
@@ -96,10 +62,6 @@ public class JwtProvider {
 
     public Claims getAccessClaims(@NonNull String token) {
         return getClaims(token, jwtAccessSecret);
-    }
-
-    public Claims getRefreshClaims(@NonNull String token) {
-        return getClaims(token, jwtRefreshSecret);
     }
 
     private Claims getClaims(@NonNull String token, @NonNull Key secret) {
