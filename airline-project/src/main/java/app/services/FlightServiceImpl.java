@@ -2,10 +2,8 @@ package app.services;
 
 import app.entities.Destination;
 import app.entities.Flight;
-import app.repositories.AircraftRepository;
-import app.repositories.DestinationRepository;
+import app.repositories.*;
 import app.enums.Airport;
-import app.repositories.FlightRepository;
 import app.services.interfaces.FlightService;
 import app.util.aop.Loggable;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +25,9 @@ public class FlightServiceImpl implements FlightService {
     private final FlightRepository flightRepository;
     private final AircraftRepository aircraftRepository;
     private final DestinationRepository destinationRepository;
+    private final TicketRepository ticketRepository;
+    private final BookingRepository bookingRepository;
+    private final FlightSeatRepository flightSeatRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -125,7 +126,16 @@ public class FlightServiceImpl implements FlightService {
         } else {
             updated.setTo(destinationRepository.findDestinationByAirportCode(updated.getTo().getAirportCode()).orElse(null));
         }
-        return flightRepository.saveAndFlush(updated);
+        if (!updated.getSeats().isEmpty()) {
+            updated.getSeats().forEach(seat -> seat.setFlight(updated));
+        }
+        if (!updated.getTicket().isEmpty()) {
+            updated.getTicket().forEach(ticket -> ticket.setFlight(updated));
+        }
+        if (!updated.getBooking().isEmpty()) {
+            updated.getBooking().forEach(booking -> booking.setFlight(updated));
+        }
+        return flightRepository.save(updated);
     }
 
     @Override

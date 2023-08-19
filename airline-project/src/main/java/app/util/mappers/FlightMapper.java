@@ -2,8 +2,7 @@ package app.util.mappers;
 
 import app.dto.FlightDTO;
 import app.entities.Flight;
-import app.services.interfaces.AircraftService;
-import app.services.interfaces.DestinationService;
+import app.services.interfaces.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,9 @@ public class FlightMapper {
 
     private final AircraftService aircraftService;
     private final DestinationService destinationService;
-
+    private final TicketService ticketService;
+    private final BookingService bookingService;
+    private final FlightSeatService flightSeatService;
 
     public Flight convertToFlightEntity(FlightDTO flightDTO) {
         var flight = new Flight();
@@ -25,6 +26,9 @@ public class FlightMapper {
         flight.setArrivalDateTime(flightDTO.getArrivalDateTime());
         flight.setAircraft(aircraftService.getAircraftById(flightDTO.getAircraftId()));
         flight.setFlightStatus(flightDTO.getFlightStatus());
+        flight.setTicket(ticketService.findByFlightId(flightDTO.getId()));
+        flight.setBooking(bookingService.findByFlightId(flightDTO.getId()));
+        flight.setSeats(flightSeatService.findByFlightId(flightDTO.getId()));
         return flight;
     }
 

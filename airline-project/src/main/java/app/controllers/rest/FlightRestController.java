@@ -4,6 +4,7 @@ import app.controllers.api.rest.FlightRestApi;
 import app.dto.FlightDTO;
 import app.entities.Flight;
 import app.enums.FlightStatus;
+import app.mappers.FlightMapperNew;
 import app.services.interfaces.FlightService;
 import app.util.mappers.FlightMapper;
 import app.util.mappers.FlightSeatMapper;
@@ -83,6 +84,7 @@ public class FlightRestController implements FlightRestApi {
             log.error("update: Flight with id={} doesn't exist.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        flightDTO.setId(id);
         log.info("update: Flight with id = {} updated", id);
         return new ResponseEntity<>(flightService.updateFlight(id, flightMapper.convertToFlightEntity(flightDTO)),
                 HttpStatus.OK);

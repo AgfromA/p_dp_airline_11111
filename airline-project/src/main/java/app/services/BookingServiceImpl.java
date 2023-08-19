@@ -66,4 +66,9 @@ public class BookingServiceImpl implements BookingService {
     public void deleteBookingByPassengerId(long passengerId) {
         bookingRepository.deleteBookingByPassengerId(passengerId);
     }
+
+    @Override
+    public List<Booking> findByFlightId(Long flightId) {
+        return bookingRepository.findByFlightId(flightId);
+    }
 }

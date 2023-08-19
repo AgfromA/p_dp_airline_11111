@@ -22,4 +22,6 @@ public interface BookingService {
     Booking getBookingByNumber(String number);
 
     void deleteBookingByPassengerId(long passengerId);
+
+    List<Booking> findByFlightId (Long flightId);
 }

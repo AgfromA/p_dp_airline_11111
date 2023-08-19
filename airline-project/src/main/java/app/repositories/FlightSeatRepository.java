@@ -46,4 +46,6 @@ public interface FlightSeatRepository extends CrudRepository<FlightSeat, Long> {
     @Query(value = "UPDATE FlightSeat fs SET fs.isSold = false WHERE fs.id in :flightSeatId")
     void editIsSoldToFalseByFlightSeatId(@Param("flightSeatId") long[] flightSeatId);
 
+    List<FlightSeat> findByFlightId (long id);
+
 }

@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TicketServiceImpl implements TicketService {
@@ -74,6 +76,11 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public void deleteTicketByPassengerId(long passengerId) {
         ticketRepository.deleteTicketByPassengerId(passengerId);
+    }
+
+    @Override
+    public List<Ticket> findByFlightId(Long id) {
+        return ticketRepository.findByFlightId(id);
     }
 
 }
