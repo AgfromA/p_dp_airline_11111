@@ -35,8 +35,9 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     @Transactional
-    public void saveDestination(Destination destination) {
-        destinationRepository.save(destination);
+    public Destination saveDestination(Long id, Destination destination) {
+        destination.setId(id);
+        return destinationRepository.save(destination);
     }
 
     @Override

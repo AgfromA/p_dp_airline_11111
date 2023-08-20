@@ -12,7 +12,7 @@ public interface DestinationService {
 
     Page<Destination> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone);
 
-    void saveDestination(Destination destination);
+    Destination saveDestination(Long id, Destination destination);
 
     void updateDestinationById(Long id, Destination destination);
 

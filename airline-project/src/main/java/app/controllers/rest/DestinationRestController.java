@@ -42,7 +42,7 @@ public class DestinationRestController implements DestinationRestApi {
     @Override
     public ResponseEntity<DestinationDTO> createDestinationDTO(DestinationDTO destinationDTO) {
         log.info("create: create new Destination");
-        destinationService.saveDestination(destinationMapper.convertToDestinationEntity(destinationDTO));
+        destinationService.saveDestination(destinationDTO.getId(), destinationMapper.convertToDestinationEntity(destinationDTO));
         return new ResponseEntity<>(destinationDTO, HttpStatus.CREATED);
     }
 
