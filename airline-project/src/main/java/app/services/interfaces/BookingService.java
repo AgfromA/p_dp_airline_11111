@@ -1,5 +1,6 @@
 package app.services.interfaces;
 
+import app.dto.BookingDTO;
 import app.entities.Booking;
 import org.springframework.data.domain.Page;
 
@@ -8,9 +9,9 @@ import java.util.List;
 
 public interface BookingService {
 
-    Booking saveBooking(Booking book);
+    Booking saveBooking(BookingDTO bookingDTO);
 
-    Page<Booking> getAllBookings(Integer page, Integer size);
+    Page<BookingDTO> getAllBookings(Integer page, Integer size);
 
     Booking getBookingById(Long id);
 

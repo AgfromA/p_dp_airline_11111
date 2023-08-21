@@ -13,6 +13,7 @@ public class FlightMapper {
 
     private final AircraftService aircraftService;
     private final DestinationService destinationService;
+    private final DestinationMapper destinationMapper;
 
 
     public Flight convertToFlightEntity(FlightDTO flightDTO) {
