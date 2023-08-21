@@ -1,8 +1,11 @@
 package app.controllers.api.rest;
 
 import app.dto.DestinationDTO;
-import app.entities.Destination;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
@@ -67,7 +70,7 @@ public interface DestinationRestApi {
     @ApiOperation(value = "Edit Destination by id")
     @ApiResponse(code = 200, message = "Destination has been updated")
     @PatchMapping("/{id}")
-    ResponseEntity<Destination> updateDestinationDTOById(
+    ResponseEntity<DestinationDTO> updateDestinationDTOById(
             @ApiParam(
                     name = "id",
                     value = "Destination.id"

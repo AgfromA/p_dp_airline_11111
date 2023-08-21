@@ -1,7 +1,6 @@
 package app.controllers.api.rest;
 
 import app.dto.SeatDTO;
-import app.entities.Seat;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

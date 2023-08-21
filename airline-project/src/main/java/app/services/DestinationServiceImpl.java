@@ -54,8 +54,8 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public Destination getDestinationById(Long id) {
-        return destinationRepository.findById(id).orElse(null);
+    public DestinationDTO getDestinationById(Long id) {
+        return destinationMapper.convertToDestinationDTOEntity(destinationRepository.findById(id).orElse(null));
     }
 
     @Override

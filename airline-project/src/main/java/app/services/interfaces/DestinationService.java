@@ -6,6 +6,7 @@ import app.enums.Airport;
 import org.springframework.data.domain.Page;
 
 
+
 public interface DestinationService {
 
     Page<DestinationDTO> getAllDestinations(Integer page, Integer size);
@@ -16,7 +17,7 @@ public interface DestinationService {
 
     void updateDestinationById(Long id, DestinationDTO destinationDTO);
 
-    Destination getDestinationById(Long id);
+    DestinationDTO getDestinationById(Long id);
 
     Destination getDestinationByAirportCode(Airport airportCode);
 
