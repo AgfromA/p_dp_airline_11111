@@ -1,7 +1,7 @@
 package app.dto;
 
 
-import app.entities.account.User;
+import app.entities.account.Test;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.EqualsAndHashCode;
@@ -18,8 +18,8 @@ import javax.validation.constraints.Size;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-@JsonTypeName(value = "user")
-public class UserDTO {
+@JsonTypeName(value = "Test")
+public class TestDTO {
 
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -40,17 +40,15 @@ public class UserDTO {
 
 
     @NotBlank(message = "The field cannot be empty")
-    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,}", message = "min 8 characters, 1 uppercase latter" +
-            "1 lowercase latter, at least 1 number, 1 special character")
     private String password;
 
 
-    public UserDTO(User user) {
-        this.id = user.getId();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
+    public TestDTO(Test test) {
+        this.id = test.getId();
+        this.firstName = test.getFirstName();
+        this.lastName = test.getLastName();
+        this.email = test.getEmail();
+        this.password = test.getPassword();
 
     }
 }

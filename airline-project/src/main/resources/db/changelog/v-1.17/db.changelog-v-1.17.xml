@@ -4,16 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="01-select-table-account.sql" relativeToChangelogFile="true"/>
+    <include file="01-create-test-table.sql" relativeToChangelogFile="true"/>
 
-    <changeSet id="1.0" author="timur-khabibullin">
-        <tagDatabase tag="01-select-table-account"/>
+    <changeSet id="1.17.1" author="timur-khabibullin">
+        <tagDatabase tag="01-create-test-table"/>
     </changeSet>
-
-    <include file="02-userTable.sql" relativeToChangelogFile="true"/>
-
-    <changeSet id="2.0" author="timur-khabibullin">
-        <tagDatabase tag="02-userTable"/>
-    </changeSet>
-
 </databaseChangeLog>

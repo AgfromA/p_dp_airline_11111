@@ -15,18 +15,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "car")
+@Table(name = "test_table")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"email"})
 @ToString
-public class User {
+public class Test {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "car_id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "first_name")
