@@ -1,5 +1,7 @@
 package app.config.security;
 
+
+
 import app.entities.account.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -47,4 +49,5 @@ public class AccountDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

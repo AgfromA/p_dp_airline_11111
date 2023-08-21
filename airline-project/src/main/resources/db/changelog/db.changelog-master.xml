@@ -106,4 +106,15 @@
         <tagDatabase tag="v-1.15"/>
     </changeSet>
 
+    <include file="v-1.16/db.changelog-v-1.16.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.16" author="denis_pronin">
+        <tagDatabase tag="v-1.16"/>
+    </changeSet>
+
+    <include file="v-1.17/db.changelog-v-1.17.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.17" author="timur-khabibullin">
+        <tagDatabase tag="v-1.17"/>
+    </changeSet>
+
+
 </databaseChangeLog>

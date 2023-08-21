@@ -15,5 +15,5 @@ public interface SeatService {
     void deleteSeatById(Long id) throws ViolationOfForeignKeyConstraintException;
     Page<Seat> getPagesSeatsByAircraftId(Long id, Pageable pageable);
     List<SeatDTO> generateSeatsDTOByAircraftId(long aircraftId);
-    Page<Seat> getAllPagesSeats(Pageable pageable);
+    Page<Seat> getAllPagesSeats(Integer page, Integer size);
 }

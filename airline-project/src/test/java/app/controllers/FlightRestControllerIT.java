@@ -158,4 +158,5 @@ class FlightRestControllerIT extends IntegrationTestBase {
                         .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
                         .map(flightMapper::convertToFlightDTOEntity))));
     }
+
 }

@@ -12,6 +12,7 @@ import app.services.interfaces.FlightService;
 import app.util.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,8 +48,8 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     }
 
     @Override
-    public Page<FlightSeat> getAllFlightSeats(Pageable pageable) {
-        return flightSeatRepository.findAll(pageable);
+    public Page<FlightSeat> getAllFlightSeats(Integer page, Integer size) {
+        return flightSeatRepository.findAll(PageRequest.of(page, size));
     }
 
     @Override

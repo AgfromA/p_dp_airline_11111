@@ -28,7 +28,7 @@ public class Booking {
     private String bookingNumber;
 
     @Column(name = "booking_data_time")
-    private LocalDateTime bookingData;
+    private LocalDateTime bookingDate;
 
     @OneToOne
     @JoinColumn(name = "passenger_id")

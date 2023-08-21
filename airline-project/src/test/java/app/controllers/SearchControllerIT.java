@@ -1,6 +1,5 @@
 package app.controllers;
 
-import app.entities.Destination;
 import app.entities.search.Search;
 import app.services.interfaces.DestinationService;
 import org.json.JSONObject;

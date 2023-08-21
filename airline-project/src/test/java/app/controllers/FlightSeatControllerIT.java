@@ -3,6 +3,7 @@ package app.controllers;
 import app.dto.FlightSeatDTO;
 import app.entities.FlightSeat;
 import app.enums.CategoryType;
+import app.repositories.FlightSeatRepository;
 import app.services.interfaces.FlightSeatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
+import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
+
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-flightSeat-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -28,6 +32,8 @@ class FlightSeatControllerIT extends IntegrationTestBase {
 
     @Autowired
     private FlightSeatService flightSeatService;
+    @Autowired
+    private FlightSeatRepository flightSeatRepository;
 
     @Test
     void shouldGetFlightSeats() throws Exception {
@@ -107,11 +113,14 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         flightSeat.setFare(100);
         flightSeat.setIsSold(false);
         flightSeat.setIsRegistered(false);
+        long numberOfFlightSeat = flightSeatRepository.count();
+
         mockMvc.perform(patch("http://localhost:8080/api/flight-seats/{id}", id)
                         .content(objectMapper.writeValueAsString(new FlightSeatDTO(flightSeat)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(result -> assertThat(flightSeatRepository.count(), equalTo(numberOfFlightSeat)));
     }
 
     @Test

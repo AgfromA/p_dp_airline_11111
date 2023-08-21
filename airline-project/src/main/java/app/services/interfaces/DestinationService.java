@@ -3,15 +3,14 @@ package app.services.interfaces;
 import app.entities.Destination;
 import app.enums.Airport;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 
 
 public interface DestinationService {
 
-    Page<Destination> getAllDestinations(Pageable pageable);
+    Page<Destination> getAllDestinations(Integer page, Integer size);
 
-    Page<Destination> getDestinationByNameAndTimezone(Pageable pageable, String cityName, String countryName, String timezone);
+    Page<Destination> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone);
 
     void saveDestination(Destination destination);
 

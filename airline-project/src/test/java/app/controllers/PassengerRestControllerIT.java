@@ -2,34 +2,39 @@ package app.controllers;
 
 import app.dto.PassengerDTO;
 import app.entities.Passport;
-import app.entities.Passenger;
 import app.enums.Gender;
+import app.repositories.PassengerRepository;
 import app.services.interfaces.PassengerService;
-import app.services.interfaces.RoleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
+import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-passenger-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class PassengerRestControllerIT extends IntegrationTestBase {
+class PassengerRestControllerIT extends IntegrationTestBase {
     @Autowired
     private PassengerService passengerService;
-
     @Autowired
-    private RoleService roleService;
+    private PassengerRepository passengerRepository;
 
     @Test
     @DisplayName("Get all passengers with pagination")
@@ -120,12 +125,14 @@ public class PassengerRestControllerIT extends IntegrationTestBase {
         var id = 4L;
         var passengerDTO = new PassengerDTO(passengerService.getPassengerById(4L).get());
         passengerDTO.setFirstName("Klark");
+        long numberOfPassenger = passengerRepository.count();
+
         mockMvc.perform(patch("http://localhost:8080/api/passengers/{id}", id)
                         .content(objectMapper.writeValueAsString(passengerDTO))
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(result -> assertThat(passengerRepository.count(), equalTo(numberOfPassenger)));
     }
 
     @Test
