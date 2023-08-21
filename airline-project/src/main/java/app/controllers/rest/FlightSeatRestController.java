@@ -2,10 +2,8 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.FlightSeatRestApi;
 import app.dto.FlightSeatDTO;
-import app.entities.FlightSeat;
 import app.enums.CategoryType;
 import app.services.FlightSeatServiceImpl;
-import app.util.mappers.FlightSeatMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +23,6 @@ import java.util.stream.Collectors;
 public class FlightSeatRestController implements FlightSeatRestApi {
 
     private final FlightSeatServiceImpl flightSeatService;
-    private final FlightSeatMapper flightSeatMapper;
 
     @Override
     public ResponseEntity<Page<FlightSeatDTO>> getAllPagesFlightSeatsDTO(
@@ -33,7 +30,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
             Optional<Long> flightId,
             Boolean isSold,
             Boolean isRegistered) {
-        Page<FlightSeat> result = null;
+        Page<FlightSeatDTO> result = null;
         if (isSold != null && !isSold && isRegistered != null && !isRegistered) {
             log.info("getAll: get not sold and not registered FlightSeats by id={}", flightId);
             result = flightSeatService.getFreeSeatsById(pageable, flightId.orElse(null));
@@ -49,10 +46,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         }
         return (result.isEmpty()) ?
                 ResponseEntity.notFound().build() :
-                ResponseEntity.ok(result.map(entity -> {
-                    FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
-                    return dto;
-                }));
+                ResponseEntity.ok(result);
     }
 
 
@@ -80,9 +74,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     @Override
     public ResponseEntity<Page<FlightSeatDTO>> getPagesFreeSeatsById(Pageable pageable, Long id) {
         log.info("getFreeSeats: get free seats on Flight with id = {}", id);
-        var seats = flightSeatService.getFreeSeatsById(pageable, id).map(entity -> {
-            return flightSeatMapper.convertToFlightSeatDTOEntity(entity);
-        });
+        var seats = flightSeatService.getFreeSeatsById(pageable, id);
         return ResponseEntity.ok(seats);
     }
 
@@ -107,7 +99,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         if (flightSeatService.getFlightSeatById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new FlightSeatDTO(flightSeatService.editFlightSeat(id, flightSeatMapper.convertToFlightSeatEntity(flightSeatDTO))));
+        return ResponseEntity.ok(new FlightSeatDTO(flightSeatService.editFlightSeat(id, flightSeatDTO)));
     }
 
     @Override

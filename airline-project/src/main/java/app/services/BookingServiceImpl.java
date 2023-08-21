@@ -1,6 +1,8 @@
 package app.services;
 
+import app.dto.BookingDTO;
 import app.entities.Booking;
+import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import app.services.interfaces.BookingService;
 import app.services.interfaces.CategoryService;
@@ -8,12 +10,13 @@ import app.services.interfaces.FlightService;
 import app.services.interfaces.PassengerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,17 +30,26 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public Booking saveBooking(Booking booking) {
+    public Booking saveBooking(BookingDTO bookingDTO) {
+        var booking = BookingMapper.INSTANCE
+                .convertToBookingEntity(bookingDTO,passengerService,flightService,categoryService);
         booking.setPassenger((passengerService.getPassengerById(booking.getPassenger().getId())).get());
         booking.setFlight(flightService.getFlightByCode(booking.getFlight().getCode()));
         booking.setCategory(categoryService.getCategoryByType(booking.getCategory().getCategoryType()));
+        if (booking.getId() == 0) {
+            booking.setBookingNumber(generateBookingNumber());
+        } else {
+            booking.setBookingNumber(bookingRepository.findById(booking.getId()).get().getBookingNumber());
+        }
 
         return bookingRepository.save(booking);
     }
 
     @Override
-    public Page<Booking> getAllBookings(Pageable pageable) {
-        return bookingRepository.findAll(pageable);
+    public Page<BookingDTO> getAllBookings(Integer page, Integer size) {
+        return bookingRepository.findAll(PageRequest.of(page, size)).map(entity -> {
+            return BookingMapper.INSTANCE.convertToBookingDTOEntity(entity,passengerService,flightService,categoryService);
+        });
     }
 
     @Override
@@ -65,6 +77,10 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public void deleteBookingByPassengerId(long passengerId) {
         bookingRepository.deleteBookingByPassengerId(passengerId);
+    }
+
+    private String generateBookingNumber() {
+        return UUID.randomUUID().toString().substring(0, 9);
     }
 
     @Override

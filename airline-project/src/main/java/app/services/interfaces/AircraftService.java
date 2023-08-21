@@ -1,16 +1,14 @@
 package app.services.interfaces;
 
+import app.dto.AircraftDTO;
 import app.entities.Aircraft;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface AircraftService {
 
-    Aircraft saveAircraft(Aircraft aircraft);
+    Aircraft saveAircraft(AircraftDTO aircraftDTO);
 
-    Page<Aircraft> getAllAircrafts(Pageable pageable);
+    Page<AircraftDTO> getAllAircrafts(Integer page, Integer size);
 
     Aircraft getAircraftById(Long id);
 

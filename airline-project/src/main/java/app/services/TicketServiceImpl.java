@@ -1,8 +1,14 @@
 package app.services;
 
+import app.dto.TicketDTO;
 import app.entities.Ticket;
-import app.repositories.*;
+
+import app.repositories.FlightRepository;
+import app.repositories.FlightSeatRepository;
+import app.repositories.PassengerRepository;
+import app.repositories.TicketRepository;
 import app.services.interfaces.TicketService;
+import app.util.mappers.TicketMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +24,7 @@ public class TicketServiceImpl implements TicketService {
     private final PassengerRepository passengerRepository;
     private final FlightRepository flightRepository;
     private final FlightSeatRepository flightSeatRepository;
+    private final TicketMapper ticketMapper;
 
     @Override
     public Page<Ticket> getAllTickets(int page, int size) {
@@ -29,7 +36,6 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
     }
 
-
     @Override
     @Transactional
     public void deleteTicketById(Long id) {
@@ -38,7 +44,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public Ticket saveTicket(Ticket ticket) {
+    public Ticket saveTicket(TicketDTO ticketDTO) {
+        var ticket = ticketMapper.convertToTicketEntity(ticketDTO);
         ticket.setPassenger(passengerRepository.findByEmail(ticket.getPassenger().getEmail()));
         ticket.setFlight(flightRepository.findByCodeWithLinkedEntities(ticket.getFlight().getCode()));
         ticket.setFlightSeat(flightSeatRepository
@@ -51,7 +58,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public Ticket updateTicketById(Long id, Ticket updatedTicket) {
+    public Ticket updateTicketById(Long id, TicketDTO ticketDTO) {
+        var updatedTicket = ticketMapper.convertToTicketEntity(ticketDTO);
         updatedTicket.setId(id);
         if (updatedTicket.getFlight() == null) {
             updatedTicket.setFlight(ticketRepository.findTicketById(id).getFlight());

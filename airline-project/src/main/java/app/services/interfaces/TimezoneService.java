@@ -1,16 +1,16 @@
 package app.services.interfaces;
 
+import app.dto.TimezoneDTO;
 import app.entities.Timezone;
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;
 
-
 public interface TimezoneService {
 
-    Timezone saveTimezone(Timezone timezone);
+    Timezone saveTimezone(TimezoneDTO timezoneDTO);
 
-    Timezone updateTimezone(Timezone timezone);
+    Timezone updateTimezone(TimezoneDTO timezoneDTO);
 
     Page<Timezone> getAllPagesTimezones(int page, int size);
 

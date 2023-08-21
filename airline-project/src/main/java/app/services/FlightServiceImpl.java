@@ -6,6 +6,7 @@ import app.repositories.*;
 import app.enums.Airport;
 import app.services.interfaces.FlightService;
 import app.util.aop.Loggable;
+import app.util.mappers.FlightMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,7 @@ public class FlightServiceImpl implements FlightService {
     private final TicketRepository ticketRepository;
     private final BookingRepository bookingRepository;
     private final FlightSeatRepository flightSeatRepository;
+    private final FlightMapper flightMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -53,10 +55,11 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public Page<Flight> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo,
-                                                        String dateStart, String dateFinish,
-                                                        Pageable pageable) {
-        return flightRepository.getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable);
+    public Page<FlightDTO> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo,
+                                                               String dateStart, String dateFinish,
+                                                               Pageable pageable) {
+        return flightRepository.getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
+                .map(flightMapper::convertToFlightDTOEntity);
     }
 
     @Override
@@ -70,8 +73,10 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo, Date departureDate) {
-        return flightRepository.getListDirectFlightsByFromAndToAndDepartureDate(airportCodeFrom, airportCodeTo, departureDate);
+    public List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo
+            , Date departureDate) {
+        return flightRepository.getListDirectFlightsByFromAndToAndDepartureDate(airportCodeFrom, airportCodeTo
+                , departureDate);
     }
 
     @Override
@@ -103,39 +108,44 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Loggable
-    public Flight saveFlight(Flight flight) {
-        return flightRepository.save(flight);
+    public Flight saveFlight(FlightDTO flightDTO) {
+        return flightRepository.save(flightMapper.convertToFlightEntity(flightDTO));
     }
 
     @Override
     @Loggable
-    public Flight updateFlight(Long id, Flight updated) {
-        updated.setId(id);
-        if (updated.getAircraft() == null) {
-            updated.setAircraft(getFlightById(id).get().getAircraft());
+    public Flight updateFlight(Long id, FlightDTO flightDTO) {
+        var updatedFlight = flightMapper.convertToFlightEntity(flightDTO);
+        updatedFlight.setId(id);
+        if (updatedFlight.getAircraft() == null) {
+            updatedFlight.setAircraft(getFlightById(id).get().getAircraft());
         } else {
-            updated.setAircraft(aircraftRepository.findByAircraftNumber(updated.getAircraft().getAircraftNumber()));
+            updatedFlight.setAircraft(aircraftRepository.findByAircraftNumber(updatedFlight.getAircraft()
+                    .getAircraftNumber()));
         }
-        if (updated.getFrom() == null) {
-            updated.setFrom(getFlightById(id).get().getFrom());
+        if (updatedFlight.getFrom() == null) {
+            updatedFlight.setFrom(getFlightById(id).get().getFrom());
         } else {
-            updated.setFrom(destinationRepository.findDestinationByAirportCode(updated.getFrom().getAirportCode()).orElse(null));
+            updatedFlight.setFrom(destinationRepository.findDestinationByAirportCode(updatedFlight.getFrom()
+                    .getAirportCode()).orElse(null));
         }
-        if (updated.getTo() == null) {
-            updated.setTo(getFlightById(id).get().getTo());
+        if (updatedFlight.getTo() == null) {
+            updatedFlight.setTo(getFlightById(id).get().getTo());
         } else {
-            updated.setTo(destinationRepository.findDestinationByAirportCode(updated.getTo().getAirportCode()).orElse(null));
+            updatedFlight.setTo(destinationRepository.findDestinationByAirportCode(updatedFlight.getTo()
+                    .getAirportCode()).orElse(null));
         }
-        if (!updated.getSeats().isEmpty()) {
-            updated.getSeats().forEach(seat -> seat.setFlight(updated));
+        return flightRepository.saveAndFlush(updatedFlight);
+        if (!updatedFlight.getSeats().isEmpty()) {
+            updatedFlight.getSeats().forEach(seat -> seat.setFlight(updatedFlight));
         }
-        if (!updated.getTicket().isEmpty()) {
-            updated.getTicket().forEach(ticket -> ticket.setFlight(updated));
+        if (!updatedFlight.getTicket().isEmpty()) {
+            updatedFlight.getTicket().forEach(ticket -> ticket.setFlight(updatedFlight));
         }
-        if (!updated.getBooking().isEmpty()) {
-            updated.getBooking().forEach(booking -> booking.setFlight(updated));
+        if (!updatedFlight.getBooking().isEmpty()) {
+            updatedFlight.getBooking().forEach(booking -> booking.setFlight(updatedFlight));
         }
-        return flightRepository.save(updated);
+        return flightRepository.saveAndFlush(updatedFlight);
     }
 
     @Override

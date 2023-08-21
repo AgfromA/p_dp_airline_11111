@@ -4,15 +4,12 @@ import app.controllers.api.rest.AircraftRestApi;
 import app.dto.AircraftDTO;
 import app.entities.Aircraft;
 import app.services.interfaces.AircraftService;
-import app.util.mappers.AircraftMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @Slf4j
 @RestController
@@ -20,14 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AircraftRestController implements AircraftRestApi {
 
     private final AircraftService aircraftService;
-    private final AircraftMapper aircraftMapper;
 
     @Override
-    public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Pageable pageable) {
+    public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
         log.info("getAll: get all Aircrafts");
-        Page<AircraftDTO> aircrafts = aircraftService.getAllAircrafts(pageable).map(entity -> {
-            return aircraftMapper.convertToAircarftDTOEntity(entity);
-        });
+        Page<AircraftDTO> aircrafts = aircraftService.getAllAircrafts(page, size);
         return aircrafts.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(aircrafts, HttpStatus.OK);
@@ -47,8 +41,7 @@ public class AircraftRestController implements AircraftRestApi {
     @Override
     public ResponseEntity<Aircraft> createAircraft(AircraftDTO aircraftDTO) {
         log.info("create: new Aircraft saved.");
-        return new ResponseEntity<>(aircraftService.saveAircraft(aircraftMapper
-                .convertToAircraftEntity(aircraftDTO)),
+        return new ResponseEntity<>(aircraftService.saveAircraft(aircraftDTO),
                 HttpStatus.CREATED);
     }
 
@@ -60,8 +53,7 @@ public class AircraftRestController implements AircraftRestApi {
         }
         aircraftDTO.setId(id);
         log.info("update: the Aircraft with id={} has been edited.", id);
-        return ResponseEntity.ok(aircraftService.saveAircraft(aircraftMapper
-                .convertToAircraftEntity(aircraftDTO)));
+        return ResponseEntity.ok(aircraftService.saveAircraft(aircraftDTO));
     }
 
     @Override

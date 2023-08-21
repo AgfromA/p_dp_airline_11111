@@ -6,8 +6,6 @@ import app.entities.Flight;
 import app.enums.FlightStatus;
 import app.mappers.FlightMapperNew;
 import app.services.interfaces.FlightService;
-import app.util.mappers.FlightMapper;
-import app.util.mappers.FlightSeatMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +23,6 @@ import java.util.stream.Collectors;
 public class FlightRestController implements FlightRestApi {
 
     private final FlightService flightService;
-    private final FlightMapper flightMapper;
 
     @Override
     public ResponseEntity<Page<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
@@ -36,8 +33,7 @@ public class FlightRestController implements FlightRestApi {
             Pageable pageable) {
 
             var flightsByParams = flightService
-                    .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
-                    .map(flightMapper::convertToFlightDTOEntity);
+                    .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable);
             log.info("getAllFlightsByDestinationsAndDates: get all Flights or Flights by params");
             return flightsByParams.isEmpty()
                     ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
@@ -73,7 +69,7 @@ public class FlightRestController implements FlightRestApi {
     @Override
     public ResponseEntity<Flight> createFlight(FlightDTO flightDTO) {
         log.info("create: create new Flight");
-        return new ResponseEntity<>(flightService.saveFlight(flightMapper.convertToFlightEntity(flightDTO)),
+        return new ResponseEntity<>(flightService.saveFlight(flightDTO),
                 HttpStatus.CREATED);
     }
 
@@ -86,7 +82,7 @@ public class FlightRestController implements FlightRestApi {
         }
         flightDTO.setId(id);
         log.info("update: Flight with id = {} updated", id);
-        return new ResponseEntity<>(flightService.updateFlight(id, flightMapper.convertToFlightEntity(flightDTO)),
+        return new ResponseEntity<>(flightService.updateFlight(id, flightDTO),
                 HttpStatus.OK);
     }
 

@@ -15,6 +15,8 @@ public class FlightMapper {
     private final TicketService ticketService;
     private final BookingService bookingService;
     private final FlightSeatService flightSeatService;
+    private final DestinationMapper destinationMapper;
+
 
     public Flight convertToFlightEntity(FlightDTO flightDTO) {
         var flight = new Flight();

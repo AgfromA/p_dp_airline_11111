@@ -3,8 +3,6 @@ package app.controllers;
 import app.controllers.api.SearchControllerApi;
 import app.dto.SearchResultDTO;
 import app.entities.search.Search;
-import app.entities.search.SearchResult;
-import app.repositories.SearchResultProjection;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;

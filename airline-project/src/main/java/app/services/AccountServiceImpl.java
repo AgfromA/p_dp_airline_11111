@@ -1,11 +1,13 @@
 package app.services;
 
+import app.dto.AccountDTO;
 import app.entities.account.Account;
+import app.mappers.AccountMapper;
 import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,8 @@ public class AccountServiceImpl implements AccountService {
     private final RoleServiceImpl roleService;
 
     @Override
-    public Account saveAccount(Account account) {
+    public Account saveAccount(AccountDTO accountDTO) {
+        var account = AccountMapper.INSTANCE.convertToAccount(accountDTO);
         account.setPassword(encoder.encode(account.getPassword()));
         account.setRoles(roleService.saveRolesToUser(account));
         if (account.getAnswerQuestion() != null) {
@@ -32,8 +35,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateAccount(Long id, Account account) {
+    public Account updateAccount(Long id, AccountDTO accountDTO) {
         var editAccount = accountRepository.getAccountById(id);
+        var account = AccountMapper.INSTANCE.convertToAccount(accountDTO);
         if (!account.getPassword().equals(editAccount.getPassword())) {
             editAccount.setPassword(encoder.encode(account.getPassword()));
         }
@@ -54,8 +58,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Account> getAllAccounts(Pageable pageable) {
-        return accountRepository.findAll(pageable);
+    public Page<Account> getAllAccounts(Integer page, Integer size) {
+        return accountRepository.findAll(PageRequest.of(page, size));
     }
 
     @Transactional(readOnly = true)

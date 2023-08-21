@@ -1,25 +1,23 @@
 package app.services;
 
 import app.dto.SeatDTO;
-import app.entities.Aircraft;
-import app.entities.Category;
 import app.entities.Seat;
+import app.enums.CategoryType;
 import app.enums.seats.SeatsNumbersByAircraft;
 import app.enums.seats.interfaces.AircraftSeats;
-import app.enums.CategoryType;
 import app.exceptions.ViolationOfForeignKeyConstraintException;
 import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.CategoryService;
 import app.services.interfaces.SeatService;
-import lombok.RequiredArgsConstructor;
 import app.util.mappers.SeatMapper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,8 @@ public class SeatServiceImpl implements SeatService {
 
     @Transactional
     @Override
-    public Seat saveSeat(Seat seat) {
+    public Seat saveSeat(SeatDTO seatDTO) {
+        var seat = seatMapper.convertToSeatEntity(seatDTO);
         if (seat.getId() != 0) {
             Seat aldSeat = getSeatById(seat.getId());
             if (aldSeat != null && aldSeat.getAircraft() != null) {
@@ -56,7 +55,8 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     @Transactional
-    public Seat editSeatById(Long id, Seat seat) {
+    public Seat editSeatById(Long id, SeatDTO seatDTO) {
+        var seat = seatMapper.convertToSeatEntity(seatDTO);
         var targetSeat = seatRepository.findById(id).orElse(null);
         if (seat.getCategory() != null && seat.getCategory().getCategoryType() != targetSeat.getCategory().getCategoryType()) {
             targetSeat.setCategory(categoryService.getCategoryByType(seat.getCategory().getCategoryType()));
@@ -81,15 +81,18 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Page<Seat> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
-        return seatRepository.findByAircraftId(id, pageable);
+    public Page<SeatDTO> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
+        return seatRepository.findByAircraftId(id, pageable).map(entity -> {
+            return seatMapper.convertToSeatDTOEntity(entity);
+
+        });
     }
 
     @Override
     @Transactional
     public List<SeatDTO> generateSeatsDTOByAircraftId(long aircraftId) {
-       var economyCategory = categoryService.getCategoryByType(CategoryType.ECONOMY);
-       var businessCategory = categoryService.getCategoryByType(CategoryType.BUSINESS);
+        var economyCategory = categoryService.getCategoryByType(CategoryType.ECONOMY);
+        var businessCategory = categoryService.getCategoryByType(CategoryType.BUSINESS);
 
         List<SeatDTO> savedSeatsDTO = new ArrayList<>(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats());
         if (getPagesSeatsByAircraftId(aircraftId, Pageable.unpaged()).getTotalElements() > 0) {
@@ -108,7 +111,7 @@ public class SeatServiceImpl implements SeatService {
             seatDTO.setIsLockedBack(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isLockedBack());
             enumSeatsCounter += 1;
 
-            var savedSeat = saveSeat(seatMapper.convertToSeatEntity(seatDTO));
+            var savedSeat = saveSeat(seatDTO);
             savedSeatsDTO.add(new SeatDTO(savedSeat));
         }
         return savedSeatsDTO;
@@ -117,7 +120,7 @@ public class SeatServiceImpl implements SeatService {
     private SeatsNumbersByAircraft getNumbersOfSeatsByAircraftId(long aircraftId) {
         var aircraft = aircraftService.getAircraftById(aircraftId); //создается объект САМОЛЕТ
         return SeatsNumbersByAircraft.valueOf(aircraft.getModel() //количество мест в самолете
-                .toUpperCase().replaceAll("[^A-Za-z0-9]","_"));
+                .toUpperCase().replaceAll("[^A-Za-z0-9]", "_"));
     }
 
     private AircraftSeats[] getAircraftSeatsByAircraftId(long aircraftId) {
@@ -131,7 +134,9 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Page<Seat> getAllPagesSeats(Pageable pageable) {
-        return seatRepository.findAll(pageable);
+    public Page<SeatDTO> getAllPagesSeats(Integer page, Integer size) {
+        return seatRepository.findAll(PageRequest.of(page, size)).map(entity -> {
+            return seatMapper.convertToSeatDTOEntity(entity);
+        });
     }
 }

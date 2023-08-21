@@ -1,15 +1,13 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.AccountRestApi;
-import app.dto.AccountDTO;;
+import app.dto.AccountDTO;
 import app.entities.account.Role;
-import app.mappers.AccountMapper;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,9 +26,9 @@ public class AccountRestController implements AccountRestApi {
     private final RoleService roleService;
 
     @Override
-    public ResponseEntity<Page> getAllAccountsPages(Pageable pageable) {
+    public ResponseEntity<Page> getAllAccountsPages(Integer page, Integer size) {
         log.info("getAll: get all Accounts");
-        var users = accountService.getAllAccounts(pageable);
+        var users = accountService.getAllAccounts(page, size);
         return users.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(users, HttpStatus.OK);
@@ -57,15 +55,14 @@ public class AccountRestController implements AccountRestApi {
     public ResponseEntity<AccountDTO> createAccountDTO(AccountDTO accountDTO)
             throws MethodNotSupportedException {
         log.info("create: create new Account with email={}", accountDTO.getEmail());
-        return ResponseEntity.ok(new AccountDTO(accountService.saveAccount(AccountMapper.INSTANCE.convertToAccount(accountDTO))));
+        return ResponseEntity.ok(new AccountDTO(accountService.saveAccount(accountDTO)));
     }
 
     @Override
     public ResponseEntity<AccountDTO> updateAccountDTOById(Long id, AccountDTO accountDTO)
             throws MethodNotSupportedException {
         log.info("update: update Account with id = {}", id);
-        return new ResponseEntity<>(new AccountDTO( accountService.updateAccount(id,
-                AccountMapper.INSTANCE.convertToAccount(accountDTO))), HttpStatus.OK);
+        return new ResponseEntity<>(new AccountDTO( accountService.updateAccount(id,accountDTO)), HttpStatus.OK);
     }
 
     @Override
