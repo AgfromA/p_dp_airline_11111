@@ -1,5 +1,6 @@
 package app.services;
 
+import app.dto.FlightSeatDTO;
 import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.entities.Seat;
@@ -10,6 +11,7 @@ import app.repositories.SeatRepository;
 import app.services.interfaces.FlightSeatService;
 import app.services.interfaces.FlightService;
 import app.util.aop.Loggable;
+import app.util.mappers.FlightSeatMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +33,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     private final FlightRepository flightRepository;
     private final SeatRepository seatRepository;
     private final FlightService flightService;
+    private final FlightSeatMapper flightSeatMapper;
 
     @Override
     @Loggable
@@ -43,8 +46,10 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public Page<FlightSeat> getFreeSeatsById(Pageable pageable, Long id) {
-        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalse(id, pageable);
+    public Page<FlightSeatDTO> getFreeSeatsById(Pageable pageable, Long id) {
+        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalse(id, pageable).map(entity -> {
+            return flightSeatMapper.convertToFlightSeatDTOEntity(entity);
+        });
     }
 
     @Override
@@ -65,8 +70,11 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     }
 
     @Override
-    public Page<FlightSeat> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
-        return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable);
+    public Page<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
+        return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable).map(entity -> {
+            FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
+            return dto;
+        });
     }
 
     @Override
@@ -138,7 +146,8 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     }
 
     @Loggable
-    public FlightSeat editFlightSeat(Long id, FlightSeat flightSeat) {
+    public FlightSeat editFlightSeat(Long id, FlightSeatDTO flightSeatDTO) {
+        var flightSeat = flightSeatMapper.convertToFlightSeatEntity(flightSeatDTO);
         var targetFlightSeat = flightSeatRepository.findById(id).orElse(null);
         flightSeat.setId(id);
 
@@ -200,8 +209,11 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     @Override
     @Loggable
-    public Page<FlightSeat> findNotRegisteredFlightSeatsById(Long id, Pageable pageable) {
-        return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(id, pageable);
+    public Page<FlightSeatDTO> findNotRegisteredFlightSeatsById(Long id, Pageable pageable) {
+        return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(id, pageable).map(entity -> {
+            FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
+            return dto;
+        });
     }
 
     @Override
@@ -210,8 +222,11 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     }
 
 
-    public Page<FlightSeat> getNotSoldFlightSeatsById(Long id, Pageable pageable) {
-        return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(id, pageable);
+    public Page<FlightSeatDTO> getNotSoldFlightSeatsById(Long id, Pageable pageable) {
+        return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(id, pageable).map(entity -> {
+            FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
+            return dto;
+        });
     }
 
     @Override

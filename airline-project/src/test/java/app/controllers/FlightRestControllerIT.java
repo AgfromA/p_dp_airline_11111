@@ -1,8 +1,6 @@
 package app.controllers;
 
-
 import app.services.interfaces.FlightService;
-import app.util.mappers.FlightMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +20,6 @@ class FlightRestControllerIT extends IntegrationTestBase {
 
     @Autowired
     private FlightService flightService;
-    @Autowired
-    private FlightMapper flightMapper;
-
 
     @Test
     void showAllFlights_test() throws Exception {
@@ -52,8 +47,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                        .getAllFlightsByDestinationsAndDates(cityFrom, null, null, null, pageable)
-                        .map(flightMapper::convertToFlightDTOEntity))));
+                        .getAllFlightsByDestinationsAndDates(cityFrom, null, null, null, pageable))));
     }
 
     @Test
@@ -65,8 +59,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                        .getAllFlightsByDestinationsAndDates(null, cityTo, null, null, pageable)
-                        .map(flightMapper::convertToFlightDTOEntity))));
+                        .getAllFlightsByDestinationsAndDates(null, cityTo, null, null, pageable))));
     }
 
     @Test
@@ -78,8 +71,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                        .getAllFlightsByDestinationsAndDates(null, null, dateStart, null, pageable)
-                        .map(flightMapper::convertToFlightDTOEntity))));
+                        .getAllFlightsByDestinationsAndDates(null, null, dateStart, null, pageable))));
     }
 
     @Test
@@ -91,8 +83,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                        .getAllFlightsByDestinationsAndDates(null, null, null, dateFinish, pageable)
-                        .map(flightMapper::convertToFlightDTOEntity))));
+                        .getAllFlightsByDestinationsAndDates(null, null, null, dateFinish, pageable))));
     }
 
     @Test
@@ -106,8 +97,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                        .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, null, null, pageable)
-                        .map(flightMapper::convertToFlightDTOEntity))));
+                        .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, null, null, pageable))));
     }
 
     @Test
@@ -121,8 +111,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                        .getAllFlightsByDestinationsAndDates(null, null, dateStart, dateFinish, pageable)
-                        .map(flightMapper::convertToFlightDTOEntity))));
+                        .getAllFlightsByDestinationsAndDates(null, null, dateStart, dateFinish, pageable))));
     }
 
     @Test
@@ -136,8 +125,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                        .getAllFlightsByDestinationsAndDates(cityFrom, null, dateStart, null, pageable)
-                        .map(flightMapper::convertToFlightDTOEntity))));
+                        .getAllFlightsByDestinationsAndDates(cityFrom, null, dateStart, null, pageable))));
     }
 
     @Test
@@ -155,8 +143,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                        .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
-                        .map(flightMapper::convertToFlightDTOEntity))));
+                        .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable))));
     }
 
 }

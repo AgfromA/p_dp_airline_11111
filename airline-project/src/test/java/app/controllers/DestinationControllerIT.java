@@ -29,6 +29,7 @@ import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 @Sql(value = {"/sqlQuery/create-destination-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class DestinationControllerIT extends IntegrationTestBase {
 
+
     @Autowired
     private DestinationRepository destinationRepository;
     @Autowired
@@ -55,15 +56,14 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "Абакан";
         var country = "";
         var timezone = "";
-        Page<Destination> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination.map(entity ->
-                    destinationMapper.convertToDestinationDTOEntity(entity)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
     }
 
     @Test
@@ -72,15 +72,14 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page<Destination> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination.map(entity ->
-                    destinationMapper.convertToDestinationDTOEntity(entity)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
     }
 
     @Test
@@ -89,15 +88,14 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page<Destination> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=3")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination.map(entity ->
-                    destinationMapper.convertToDestinationDTOEntity(entity)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
     }
 
     @Test
@@ -106,15 +104,14 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "";
         var timezone = "gtm%20+5";
-        Page<Destination> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination.map(entity ->
-                    destinationMapper.convertToDestinationDTOEntity(entity)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
     }
 
     @Transactional

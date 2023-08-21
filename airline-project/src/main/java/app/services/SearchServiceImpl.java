@@ -12,6 +12,7 @@ import app.services.interfaces.FlightService;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
 import app.util.aop.Loggable;
+import app.util.mappers.DestinationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class SearchServiceImpl implements SearchService {
     private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
     private final SearchResultRepository searchResultRepository;
+    private final DestinationMapper destinationMapper;
 
 
     @Override

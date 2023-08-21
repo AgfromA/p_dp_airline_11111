@@ -20,7 +20,6 @@ class CategoryControllerIT extends IntegrationTestBase {
     @Autowired
     private CategoryService categoryService;
 
-
     @Test
     void shouldGetAllCategory() throws Exception {
         mockMvc.perform(get("http://localhost:8080/api/categories"))
