@@ -40,9 +40,9 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     @Transactional
-    public void saveDestination(DestinationDTO destinationDTO) {
+    public Destination saveDestination(DestinationDTO destinationDTO) {
         var destination = destinationMapper.convertToDestinationEntity(destinationDTO);
-        destinationRepository.save(destination);
+        return destinationRepository.save(destination);
     }
 
     @Override

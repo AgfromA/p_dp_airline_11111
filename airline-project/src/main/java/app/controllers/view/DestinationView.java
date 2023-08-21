@@ -38,8 +38,7 @@ public class DestinationView extends VerticalLayout {
         this.destinationMapper = destinationMapper;
         int pageNumber = 0; // Номер страницы
         int pageSize = 100; // Количество элементов на странице
-        this.dataSource = destinationService.getAllDestinations(pageNumber, pageSize).stream()
-                .map(destinationMapper::convertToDestinationDTOEntity).collect(Collectors.toList());
+        this.dataSource = destinationService.getAllDestinations(pageNumber, pageSize).stream().collect(Collectors.toList());
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage destinationTextValidationMessage = new ValidationMessage();
@@ -191,8 +190,8 @@ public class DestinationView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            Destination destinationDto = destinationMapper.convertToDestinationEntity(e.getItem());
-            destinationService.saveDestination(destinationDto.getId(), destinationDto);
+            Destination destination = destinationMapper.convertToDestinationEntity(e.getItem());
+            destinationService.saveDestination(destinationMapper.convertToDestinationDTOEntity(destination));
             grid.getDataProvider().refreshAll();
         });
     }
@@ -243,7 +242,8 @@ public class DestinationView extends VerticalLayout {
             destination.setCountryName(destinationCountryNameField.getValue());
             destination.setAirportCode(Airport.valueOf(destinationAirportCodeField.getValue()));
             destination.setTimezone(destinationTimezoneField.getValue());
-            Destination savedDestination = destinationService.saveDestination(destination.getId(), destination);
+            Destination savedDestination =
+                    destinationService.saveDestination(destinationMapper.convertToDestinationDTOEntity(destination));
             dataSource.add(destinationMapper.convertToDestinationDTOEntity(savedDestination));
             destinationAirportNameField.clear();
             destinationCityNameField.clear();
