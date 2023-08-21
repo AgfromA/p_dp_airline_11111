@@ -20,12 +20,12 @@ jwt:
 spring:
   jpa:
     database: POSTGRESQL
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: validate
   datasource:
     platform: postgres
     url: jdbc:postgresql://localhost:5432/airline_db?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Europe/Moscow
-    username: postgres
+    username: root
     password: root
     driverClassName: org.postgresql.Driver
