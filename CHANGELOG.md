@@ -1,13 +1,14 @@
 # Changelog
 
 ## [Unreleased]
-- #259 в BookingDto поле bookingNumber доступно теперь только для чтения, генерируется в сервисе, удалены тесты в BookingRestControllerIT на валидацию этого поля. bookingData переименовано на bookingDate
-- #263 Смена названий методов контроллеров и сервисов 
-- #257 Переход AccountMapper, BookingMapper на Mapstruct , а также junit тесты к ним.
-- #260 Сделана пагинация во всех контроллерах использующих метод findAll.
 - #237 Исправлен баг с редактированием Ticket. Убраны аннотации @Data из проекта.
-- #no_task - added vaadin
+- #257 Переход AccountMapper, BookingMapper на Mapstruct , а также junit тесты к ним.
+- #258 Добавлена автоматическая конфигурация OpenApi при запуске приложения.
+- #259 в BookingDto поле bookingNumber доступно теперь только для чтения, генерируется в сервисе, удалены тесты в BookingRestControllerIT на валидацию этого поля. bookingData переименовано на bookingDate
+- #260 Сделана пагинация во всех контроллерах использующих метод findAll.
 - #262 В update тестах добавлена проверка, что количество сущностей не изменилось после обновления, поправлен тест shouldCreateManySeats.
+- #263 Смена названий методов контроллеров и сервисов 
+- #no_task - added vaadin
 
 ## [1.0.6] - 30.07.2023
 - #226 Рефакторинг passenger и account - убрано наследование

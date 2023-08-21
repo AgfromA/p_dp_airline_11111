@@ -14,4 +14,26 @@
         <module>airline-project</module>
     </modules>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
+                    <outputFileName>S7_Airlines_API.postman_collection.json</outputFileName>
+                    <outputDir>${project.basedir}</outputDir>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
