@@ -1,5 +1,6 @@
 package app.services.interfaces;
 
+import app.dto.DestinationDTO;
 import app.entities.Destination;
 import app.enums.Airport;
 import org.springframework.data.domain.Page;
@@ -8,15 +9,15 @@ import org.springframework.data.domain.Page;
 
 public interface DestinationService {
 
-    Page<Destination> getAllDestinations(Integer page, Integer size);
+    Page<DestinationDTO> getAllDestinations(Integer page, Integer size);
 
-    Page<Destination> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone);
+    Page<DestinationDTO> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone);
 
-    void saveDestination(Destination destination);
+    void saveDestination(DestinationDTO destinationDTO);
 
-    void updateDestinationById(Long id, Destination destination);
+    void updateDestinationById(Long id, DestinationDTO destinationDTO);
 
-    Destination getDestinationById(Long id);
+    DestinationDTO getDestinationById(Long id);
 
     Destination getDestinationByAirportCode(Airport airportCode);
 

@@ -1,6 +1,8 @@
 package app.services;
 
+import app.dto.BookingDTO;
 import app.entities.Booking;
+import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import app.services.interfaces.BookingService;
 import app.services.interfaces.CategoryService;
@@ -28,7 +30,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public Booking saveBooking(Booking booking) {
+    public Booking saveBooking(BookingDTO bookingDTO) {
+        var booking = BookingMapper.INSTANCE
+                .convertToBookingEntity(bookingDTO,passengerService,flightService,categoryService);
         booking.setPassenger((passengerService.getPassengerById(booking.getPassenger().getId())).get());
         booking.setFlight(flightService.getFlightByCode(booking.getFlight().getCode()));
         booking.setCategory(categoryService.getCategoryByType(booking.getCategory().getCategoryType()));
@@ -42,8 +46,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<Booking> getAllBookings(Integer page, Integer size) {
-        return bookingRepository.findAll(PageRequest.of(page, size));
+    public Page<BookingDTO> getAllBookings(Integer page, Integer size) {
+        return bookingRepository.findAll(PageRequest.of(page, size)).map(entity -> {
+            return BookingMapper.INSTANCE.convertToBookingDTOEntity(entity,passengerService,flightService,categoryService);
+        });
     }
 
     @Override

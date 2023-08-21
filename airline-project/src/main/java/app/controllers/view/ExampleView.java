@@ -3,8 +3,9 @@ package app.controllers.view;
 
 import app.dto.ExampleDto;
 import app.entities.Example;
-import app.services.ExampleService;
+import app.services.ExampleServiceImpl;
 import app.mappers.ExampleMapper;
+import app.services.interfaces.ExampleService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -40,7 +41,7 @@ public class ExampleView extends VerticalLayout {
     public ExampleView(ExampleService exampleService, ExampleMapper exampleMapper) {
         this.exampleService = exampleService;
         this.exampleMapper = exampleMapper;
-        this.dataSource = exampleService.findAll().stream().map(exampleMapper::toDto).collect(Collectors.toList());
+        this.dataSource = exampleService.findAll().stream().collect(Collectors.toList());
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 
@@ -145,7 +146,7 @@ public class ExampleView extends VerticalLayout {
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
             Example exampleDto = exampleMapper.toEntity(e.getItem());
-            exampleService.update(exampleDto.getId(), exampleDto);
+            exampleService.update(exampleDto.getId(), exampleMapper.toDto(exampleDto));
             grid.getDataProvider().refreshAll();
         });
     }
@@ -185,10 +186,10 @@ public class ExampleView extends VerticalLayout {
         Button createButton = new Button("Create");
         formLayout.add(exampleTextField, createButton);
         createButton.addClickListener(event -> {
-            Example example = new Example();
-            example.setExampleText(exampleTextField.getValue());
-            Example savedExample = exampleService.save(example);
-            dataSource.add(exampleMapper.toDto(savedExample));
+            ExampleDto exampleDto = new ExampleDto();
+            exampleDto.setExampleText(exampleTextField.getValue());
+            ExampleDto savedExample = exampleService.save(exampleDto);
+            dataSource.add(savedExample);
             exampleTextField.clear();
             grid.getDataProvider().refreshAll();
         });

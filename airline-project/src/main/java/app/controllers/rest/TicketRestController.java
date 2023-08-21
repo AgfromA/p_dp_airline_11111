@@ -1,10 +1,8 @@
 package app.controllers.rest;
 
-
 import app.controllers.api.rest.TicketRestApi;
 import app.dto.TicketDTO;
 import app.services.interfaces.TicketService;
-import app.util.mappers.TicketMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,7 +20,6 @@ import java.util.stream.Collectors;
 public class TicketRestController implements TicketRestApi {
 
     private final TicketService ticketService;
-    private final TicketMapper ticketMapper;
 
     @Override
     public ResponseEntity<Page<TicketDTO>> getAllPagesTicketsDTO(Integer page, Integer size) {
@@ -48,14 +45,14 @@ public class TicketRestController implements TicketRestApi {
     @Override
     public ResponseEntity<TicketDTO> createTicketDTO(TicketDTO ticketDTO) {
         log.info("create: new Ticket = {}", ticketDTO);
-        var savedTicket = ticketService.saveTicket(ticketMapper.convertToTicketEntity(ticketDTO));
+        var savedTicket = ticketService.saveTicket(ticketDTO);
         return new ResponseEntity<>(new TicketDTO(savedTicket), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<?> updateTicketById(Long id, TicketDTO ticketDTO) {
         log.info("update: Ticket with id = {}", id);
-        var ticket = ticketService.updateTicketById(id, ticketMapper.convertToTicketEntity(ticketDTO));
+        var ticket = ticketService.updateTicketById(id, ticketDTO);
         return new ResponseEntity<>(new TicketDTO(ticket), HttpStatus.OK);
     }
 
