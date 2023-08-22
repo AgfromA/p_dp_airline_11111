@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/api/payments/**").authenticated()
-                .antMatchers(HttpMethod.POST,"/api/users").authenticated()
+                .antMatchers(HttpMethod.POST,"/api/tests").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)

@@ -24,7 +24,7 @@ import javax.validation.constraints.Min;
 
 @Api(tags = "Test REST")
 @Tag(name = "Test REST", description = "API для операций с пользователем")
-@RequestMapping("/api/Tests")
+@RequestMapping("/api/tests")
 public interface TestControllerApi {
     @GetMapping
     @ApiOperation(value = "Get list of all Tests")
