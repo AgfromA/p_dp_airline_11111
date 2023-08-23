@@ -94,5 +94,8 @@ app:
       name: Payments
       url: http://localhost:8081
 
+
+
+
 vaadin:
   excludeUrls: /swagger-ui/**

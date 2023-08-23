@@ -2,7 +2,7 @@ package app.mappers;
 
 
 import app.dto.ExampleDto;
-import app.entities.account.Example;
+import app.entities.example.Example;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

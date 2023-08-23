@@ -2,7 +2,8 @@ package app.repositories;
 
 
 
-import app.entities.account.Example;
+
+import app.entities.example.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

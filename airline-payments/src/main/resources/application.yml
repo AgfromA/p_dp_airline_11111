@@ -13,9 +13,7 @@ paypal:
 jwt:
   secret:
     access: QZnCUVCnP3aukiTOa8XxPkfHODqpXB9xkg/o72yhIh4GE3BPiZszU4fYjJZTbcUcyGM/Bb5N81rv9Csq7blwCA==
-  refreshExpiration:
-    accessTokeMin: 1440
-    refreshTokeDays: 15
+
 
 spring:
   jpa:
@@ -24,7 +22,6 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    platform: postgres
     url: jdbc:postgresql://localhost:5432/airline_db?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Europe/Moscow
     username: root
     password: root
