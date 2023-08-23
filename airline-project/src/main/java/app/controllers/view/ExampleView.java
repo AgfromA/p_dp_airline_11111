@@ -2,8 +2,7 @@ package app.controllers.view;
 
 
 import app.dto.ExampleDto;
-import app.entities.Example;
-import app.services.ExampleServiceImpl;
+import app.entities.account.Example;
 import app.mappers.ExampleMapper;
 import app.services.interfaces.ExampleService;
 import com.vaadin.flow.component.button.Button;
