@@ -4,7 +4,6 @@ import app.controllers.api.rest.FlightRestApi;
 import app.dto.FlightDTO;
 import app.entities.Flight;
 import app.enums.FlightStatus;
-import app.mappers.FlightMapperNew;
 import app.services.interfaces.FlightService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
