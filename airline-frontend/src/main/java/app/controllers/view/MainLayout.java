@@ -46,7 +46,7 @@ public class MainLayout extends AppLayout {
     private Tabs getTabs() {
         Tabs tabs = new Tabs();
         tabs.add(createTab(VaadinIcon.HANDS_UP, "Hello", AdminView.class));
-//        tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
+        tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
 //        tabs.add(createTab(VaadinIcon.ARROWS, "Destination", DestinationView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;

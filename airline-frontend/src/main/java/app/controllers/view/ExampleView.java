@@ -1,6 +1,5 @@
 package app.controllers.view;
 
-
 import app.dto.ExampleDto;
 import app.service.interfaces.ExampleService;
 import com.vaadin.flow.component.button.Button;
@@ -21,7 +20,6 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Тут страшно, но мы справимся
@@ -31,13 +29,14 @@ public class ExampleView extends VerticalLayout {
 
     private final Grid<ExampleDto> grid = new Grid<>(ExampleDto.class, false);
     private final Editor<ExampleDto> editor = grid.getEditor();
-//    private final List<ExampleDto> dataSource;
-    private ExampleService exampleService;
+    private final ExampleService exampleService;
+    private final List<ExampleDto> dataSource;
 
-    public ExampleView() {
+    public ExampleView(ExampleService exampleService) {
+        this.exampleService = exampleService;
         int pageNumber = 0; // Номер страницы
         int pageSize = 100; // Количество элементов на странице
-//        this.dataSource = exampleService.getPage()
+        this.dataSource = exampleService.getPage(pageNumber,pageSize).getBody().toList();
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 
@@ -59,7 +58,7 @@ public class ExampleView extends VerticalLayout {
         updateColumn.setEditorComponent(actions);
 
         addEditorListeners();
-//        grid.setItems(dataSource);
+        grid.setItems(dataSource);
         addTheme();
 
         Div contentContainer = new Div();
@@ -141,7 +140,7 @@ public class ExampleView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-//            exampleService.update(exampleDto.getId());
+            exampleService.update(e.getItem().getId(), e.getItem());
             grid.getDataProvider().refreshAll();
         });
     }
@@ -184,7 +183,7 @@ public class ExampleView extends VerticalLayout {
             ExampleDto exampleDto = new ExampleDto();
             exampleDto.setExampleText(exampleTextField.getValue());
             ExampleDto savedExample = exampleService.create(exampleDto).getBody();
-//            dataSource.add(savedExample);
+            dataSource.add(savedExample);
             exampleTextField.clear();
             grid.getDataProvider().refreshAll();
         });

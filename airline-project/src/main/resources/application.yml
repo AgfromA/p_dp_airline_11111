@@ -26,8 +26,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/airline_db?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Europe/Moscow
-    username: root
-    password: root
+    username: postgres
+    password: postgres
     hikari:
       leak-detection-threshold: 60000
       maximum-pool-size: 20

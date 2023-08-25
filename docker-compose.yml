@@ -22,6 +22,14 @@ services:
     container_name: app-payment
     ports:
       - "8081:8081"
+#  app-frontend:
+#    image: 'denispronin/airline-frontend:1.0.6'
+#    build:
+#      context: .
+#      dockerfile: Dockerfile_Frontend
+#    container_name: app-frontend
+#    ports:
+#      - "8082:8082"
   db:
     image: 'postgres:12.12'
     container_name: db
