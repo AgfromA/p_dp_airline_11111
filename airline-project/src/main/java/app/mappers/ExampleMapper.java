@@ -1,5 +1,6 @@
 package app.mappers;
 
+
 import app.dto.ExampleDto;
 import app.entities.Example;
 import org.mapstruct.Mapper;

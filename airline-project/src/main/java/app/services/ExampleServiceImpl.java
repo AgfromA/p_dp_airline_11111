@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ExampleServiceImpl implements ExampleService {
 
     private final ExampleRepository exampleRepository;
-    private ExampleMapper exampleMapper;
+    private final ExampleMapper exampleMapper;
 
     public List<ExampleDto> findAll() {
         return exampleRepository.findAll().stream().map(exampleMapper::toDto).collect(Collectors.toList());

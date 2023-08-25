@@ -1,7 +1,10 @@
 package app.controllers.view;
 
+
 import app.dto.ExampleDto;
-import app.service.interfaces.ExampleService;
+import app.service.interfaces.ExampleClient;
+
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -18,6 +21,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpEntity;
 
 import java.util.List;
 
@@ -29,14 +34,14 @@ public class ExampleView extends VerticalLayout {
 
     private final Grid<ExampleDto> grid = new Grid<>(ExampleDto.class, false);
     private final Editor<ExampleDto> editor = grid.getEditor();
-    private final ExampleService exampleService;
+    private final ExampleClient exampleClient;
     private final List<ExampleDto> dataSource;
 
-    public ExampleView(ExampleService exampleService) {
-        this.exampleService = exampleService;
-        int pageNumber = 0; // Номер страницы
-        int pageSize = 100; // Количество элементов на странице
-        this.dataSource = exampleService.getPage(pageNumber,pageSize).getBody().toList();
+    public ExampleView(ExampleClient exampleClient) {
+        this.exampleClient = exampleClient;
+        int page = 0;
+        int size = 100;
+        this.dataSource = exampleClient.getPage(page,size).getBody();
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 
@@ -98,7 +103,7 @@ public class ExampleView extends VerticalLayout {
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
                     ListDataProvider<ExampleDto> dataProvider = (ListDataProvider<ExampleDto>) grid.getDataProvider();
-                    exampleService.delete(example.getId());
+                    exampleClient.delete(example.getId());
                     dataProvider.getItems().remove(example);
                 }
                 grid.getDataProvider().refreshAll();
@@ -140,7 +145,7 @@ public class ExampleView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            exampleService.update(e.getItem().getId(), e.getItem());
+            exampleClient.update(e.getItem().getId(), e.getItem());
             grid.getDataProvider().refreshAll();
         });
     }
@@ -182,7 +187,7 @@ public class ExampleView extends VerticalLayout {
         createButton.addClickListener(event -> {
             ExampleDto exampleDto = new ExampleDto();
             exampleDto.setExampleText(exampleTextField.getValue());
-            ExampleDto savedExample = exampleService.create(exampleDto).getBody();
+            ExampleDto savedExample = exampleClient.create(exampleDto).getBody();
             dataSource.add(savedExample);
             exampleTextField.clear();
             grid.getDataProvider().refreshAll();

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @EnableFeignClients
-@RestController
 public class FrontendApplication {
 
     public static void main(String[] args) {

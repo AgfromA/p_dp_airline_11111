@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,20 +26,12 @@ public class ExampleRestController implements ExampleRestApi {
     private final ExampleService exampleService;
 
     @Override
-    public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
-        if (page == null || size == null) {
-            return createUnPagedResponse();
-        }
-        if (page < 0 || size < 1) {
+    public ResponseEntity<List<ExampleDto>> getPage(Integer page, Integer size) {
+        var examples = exampleService.findAll();
+        if (examples.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
-        var examplePage = exampleService.getPage(page, size);
-        if (examplePage.getContent().isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return createPagedResponse(examplePage);
-        }
+        return ResponseEntity.ok(examples.stream().collect(Collectors.toList()));
     }
 
     private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {
