@@ -2,7 +2,7 @@ package app.controllers.view;
 
 
 import app.dto.ExampleDto;
-import app.service.interfaces.ExampleClient;
+import app.clients.ExampleClient;
 
 
 import com.vaadin.flow.component.button.Button;
@@ -21,8 +21,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpEntity;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class ExampleView extends VerticalLayout {
         this.exampleClient = exampleClient;
         int page = 0;
         int size = 100;
-        this.dataSource = exampleClient.getPage(page,size).getBody();
+        this.dataSource = exampleClient.getPage(page,size).getBody().toList();
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 
@@ -57,6 +55,7 @@ public class ExampleView extends VerticalLayout {
 
         Button updateButton = new Button("Update", e -> editor.save());
         Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
+
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
         HorizontalLayout actions = new HorizontalLayout(updateButton, cancelButton);
         actions.setPadding(false);
@@ -74,8 +73,7 @@ public class ExampleView extends VerticalLayout {
     }
 
     private Grid.Column<ExampleDto> createIdColumn() {
-        return grid.addColumn(exampleDto -> exampleDto.getId().intValue())
-                .setHeader("Id").setWidth("120px").setFlexGrow(0);
+        return grid.addColumn(exampleDto -> exampleDto.getId().intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
     }
 
     private Grid.Column<ExampleDto> createExampleTextColumn() {
@@ -141,6 +139,7 @@ public class ExampleView extends VerticalLayout {
                 .withStatusLabel(exampleTextValidationMessage)
                 .bind(ExampleDto::getExampleText, ExampleDto::setExampleText);
         exampleTextColumn.setEditorComponent(exampleTextField);
+
     }
 
     private void addEditorListeners() {

@@ -4,6 +4,8 @@ package app.controllers.rest;
 import app.controllers.api.rest.ExampleRestApi;
 import app.dto.ExampleDto;
 import app.services.interfaces.ExampleService;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,12 +27,20 @@ public class ExampleRestController implements ExampleRestApi {
     private final ExampleService exampleService;
 
     @Override
-    public ResponseEntity<List<ExampleDto>> getPage(Integer page, Integer size) {
-        var examples = exampleService.findAll();
-        if (examples.isEmpty()) {
+    public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
+        if (page == null || size == null) {
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(examples.stream().collect(Collectors.toList()));
+
+        var examplePage = exampleService.getPage(page, size);
+        if (examplePage.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return createPagedResponse(examplePage);
+        }
     }
 
     private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {

@@ -7,15 +7,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Api(tags = "Example REST")
 @Tag(name = "Example REST", description = "API example description")
+@FeignClient(value = "${app.feign.config.name}", url = "${app.feign.config.url}")
 public interface ExampleRestApi {
 
     @GetMapping("/api/example/")
@@ -24,7 +25,7 @@ public interface ExampleRestApi {
             @ApiResponse(code = 200, message = "Examples Page found"),
             @ApiResponse(code = 204, message = "Examples Page not present")}
     )
-    ResponseEntity<List<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false) Integer page,
+    ResponseEntity<Page<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false) Integer page,
                                              @ApiParam(name = "size") @RequestParam(required = false) Integer size);
 
     @GetMapping("/api/example/{id}")
