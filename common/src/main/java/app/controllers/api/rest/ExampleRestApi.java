@@ -40,7 +40,7 @@ public interface ExampleRestApi {
     )
     ResponseEntity<ExampleDto> get(@ApiParam(name = "id", value = "Example.id") @PathVariable(value = "id") Long id);
 
-    @PostMapping("/api/example/")
+    @RequestMapping(value = "/api/example/", method = RequestMethod.POST)
     @ApiOperation(value = "Create Example")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Example created"),
