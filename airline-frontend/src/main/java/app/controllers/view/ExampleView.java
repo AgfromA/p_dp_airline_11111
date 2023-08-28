@@ -93,15 +93,10 @@ public class ExampleView extends VerticalLayout {
     private Grid.Column<ExampleDto> createDeleteColumn() {
         return grid.addComponentColumn(example -> {
             Button deleteButton = new Button("Delete");
-            // FIXME сомнительная конструкция
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
-                if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
-                    ListDataProvider<ExampleDto> dataProvider = (ListDataProvider<ExampleDto>) grid.getDataProvider();
-                    exampleClient.delete(example.getId());
-                    dataProvider.getItems().remove(example);
-                }
+                exampleClient.delete(example.getId());
                 grid.getDataProvider().refreshAll();
             });
             return deleteButton;
@@ -171,6 +166,7 @@ public class ExampleView extends VerticalLayout {
             } else if (selectedTab == createTab) {
                 contentContainer.removeAll();
                 contentContainer.add(formLayout);
+                grid.getDataProvider().refreshAll();
             }
         });
         return tabs;
