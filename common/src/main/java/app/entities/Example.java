@@ -1,4 +1,4 @@
-package app.entities.example;
+package app.entities;
 
 
 import lombok.AllArgsConstructor;

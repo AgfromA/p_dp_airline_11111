@@ -3,7 +3,7 @@ package app.repositories;
 
 
 
-import app.entities.example.Example;
+import app.entities.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

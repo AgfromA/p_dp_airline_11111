@@ -23,6 +23,6 @@ spring:
       ddl-auto: validate
   datasource:
     url: jdbc:postgresql://localhost:5432/airline_db?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Europe/Moscow
-    username: root
+    username: postgres
     password: root
     driverClassName: org.postgresql.Driver
