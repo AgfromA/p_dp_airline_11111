@@ -1,8 +1,8 @@
 package app.controllers;
 
 import app.entities.search.Search;
+import app.mappers.DestinationMapper;
 import app.services.interfaces.DestinationService;
-import app.util.mappers.DestinationMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
