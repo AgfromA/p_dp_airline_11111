@@ -82,4 +82,9 @@ public class BookingServiceImpl implements BookingService {
     private String generateBookingNumber() {
         return UUID.randomUUID().toString().substring(0, 9);
     }
+
+    @Override
+    public List<Booking> findByFlightId(Long flightId) {
+        return bookingRepository.findByFlightId(flightId);
+    }
 }

@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
@@ -25,4 +27,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Modifying
     @Query(value = "DELETE FROM Ticket t WHERE t.passenger.id = :passengerId")
     void deleteTicketByPassengerId(@Param("passengerId") long passengerId);
+
+    List<Ticket> findByFlightId(long id);
 }

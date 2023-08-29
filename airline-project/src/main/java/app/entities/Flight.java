@@ -1,6 +1,7 @@
 package app.entities;
 
 import app.enums.FlightStatus;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -29,15 +30,18 @@ public class Flight {
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @JsonManagedReference
     private List<FlightSeat> seats;
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @JsonManagedReference
     private List<Ticket> ticket;
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<Booking> Booking;
+    @JsonManagedReference
+    private List<Booking> booking;
 
     @Column(name = "code")
     private String code;
