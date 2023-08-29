@@ -12,7 +12,7 @@
 - #278 Перенос мапперов из контроллера в сервис.
 - #285 Фронт для destination
 - #236 Исправлен баг UpdateFlightById, справлен FlightMapper (удален прежний, добавлен FlightMapper интерфейс с использованием MapStruct), написаны unit есты для FlightMapper, интеграционные тесты для FlightController (updateFlightById)
-
+- #294 Добавлен Mapper для Destination через Mapstruct
 ## [1.0.6] - 30.07.2023
 - #226 Рефакторинг passenger и account - убрано наследование
 
