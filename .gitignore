@@ -33,7 +33,5 @@
 ### Frontend(Vaadin) ###
 *.ts
 *.json
-/airline-project/frontend/
-/airline-project/node_modules/
 /airline-frontend/frontend/
 /airline-frontend/node_modules/
