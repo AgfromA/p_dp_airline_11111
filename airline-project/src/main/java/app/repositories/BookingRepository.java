@@ -24,4 +24,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "DELETE FROM Booking b WHERE b.passenger.id = :passengerId")
     void deleteBookingByPassengerId(@Param("passengerId") long passengerId);
 
+    List<Booking> findByFlightId (long flightId);
+
 }

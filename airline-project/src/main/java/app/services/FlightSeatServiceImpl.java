@@ -235,6 +235,11 @@ public class FlightSeatServiceImpl implements FlightSeatService {
         flightSeatRepository.editIsSoldToFalseByFlightSeatId(flightSeatId);
     }
 
+    @Override
+    public List<FlightSeat> findByFlightId(Long id) {
+        return flightSeatRepository.findByFlightId(id);
+    }
+
     public int generateFareForFlightseat(Seat seat) {
         int baseFare = 5000;
         float emergencyExitRatio;

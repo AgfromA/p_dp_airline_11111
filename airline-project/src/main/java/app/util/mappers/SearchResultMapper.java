@@ -3,7 +3,8 @@ package app.util.mappers;
 import app.dto.SearchResultDTO;
 import app.entities.Flight;
 import app.entities.search.SearchResult;
-import app.services.interfaces.SearchService;
+import app.mappers.FlightMapper;
+import app.services.interfaces.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,21 +16,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SearchResultMapper {
     private final SearchService searchService;
-
-    private final FlightMapper flightMapper;
+    private final AircraftService aircraftService;
+    private final DestinationService destinationService;
+    private final TicketService ticketService;
+    private final BookingService bookingService;
+    private final FlightSeatService flightSeatService;
 
     public SearchResult convertToSearchResultEntity(SearchResultDTO searchResultDTO) {
         var searchResult = new SearchResult();
         searchResult.setId(searchResultDTO.getId());
         searchResult.setSearch(searchService.getSearchById(searchResultDTO.getSearchId()));
-        List<Flight> departFlights = searchResultDTO.getDepartFlight().stream().map(f -> flightMapper.convertToFlightEntity(f)).collect(Collectors.toList());
+        List<Flight> departFlights = searchResultDTO.getDepartFlight().stream().map(f -> FlightMapper.INSTANCE.flightDTOtoFlight(f, aircraftService,
+                destinationService, ticketService, bookingService, flightSeatService)).collect(Collectors.toList());
         searchResult.setDepartFlight(departFlights);
         if (searchResultDTO.getReturnFlight() != null) {
-            List<Flight> returnFlights = searchResultDTO.getReturnFlight().stream().map(f -> flightMapper.convertToFlightEntity(f)).collect(Collectors.toList());
+            List<Flight> returnFlights = searchResultDTO.getReturnFlight().stream().map(f -> FlightMapper.INSTANCE.flightDTOtoFlight(f, aircraftService,
+                    destinationService, ticketService, bookingService, flightSeatService)).collect(Collectors.toList());
             searchResult.setReturnFlight(returnFlights);
         }
         return searchResult;
     }
-
-
 }

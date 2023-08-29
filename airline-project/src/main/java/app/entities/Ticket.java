@@ -1,5 +1,6 @@
 package app.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
@@ -48,6 +49,7 @@ public class Ticket {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "flight_id")
     @JsonView
+    @JsonBackReference
     private Flight flight;
 
     @OneToOne

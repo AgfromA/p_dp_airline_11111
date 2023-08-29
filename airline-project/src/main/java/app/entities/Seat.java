@@ -1,5 +1,6 @@
 package app.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -41,5 +42,6 @@ public class Seat {
     @NotNull(message = "Field aircraft cannot be null")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aircraft_id")
+    @JsonBackReference
     private Aircraft aircraft;
 }
