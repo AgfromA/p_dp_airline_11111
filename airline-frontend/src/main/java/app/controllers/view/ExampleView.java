@@ -186,7 +186,6 @@ public class ExampleView extends VerticalLayout {
             ExampleDto exampleDto = new ExampleDto();
             exampleDto.setExampleText(exampleTextField.getValue());
             ExampleDto savedExample = exampleClient.create(exampleDto).getBody();
-            System.out.println(savedExample);
             dataSource.add(savedExample);
             exampleTextField.clear();
             grid.getDataProvider().refreshAll();
