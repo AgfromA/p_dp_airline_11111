@@ -3,14 +3,12 @@ package app.services;
 import app.dto.FlightDTO;
 import app.entities.Destination;
 import app.entities.Flight;
-import app.repositories.AircraftRepository;
-import app.repositories.DestinationRepository;
+import app.mappers.FlightMapper;
+import app.repositories.*;
 import app.enums.Airport;
-import app.repositories.FlightRepository;
-import app.services.interfaces.FlightService;
+import app.services.interfaces.*;
 import app.util.aop.Loggable;
-import app.util.mappers.FlightMapper;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,12 +22,35 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class FlightServiceImpl implements FlightService {
     private final FlightRepository flightRepository;
     private final AircraftRepository aircraftRepository;
     private final DestinationRepository destinationRepository;
-    private final FlightMapper flightMapper;
+    private final TicketRepository ticketRepository;
+    private final BookingRepository bookingRepository;
+    private final FlightSeatRepository flightSeatRepository;
+    private final AircraftService aircraftService;
+    private final DestinationService destinationService;
+    private final FlightSeatService flightSeatService;
+    private final TicketService ticketService;
+    private final BookingService bookingService;
+
+    public FlightServiceImpl(FlightRepository flightRepository, AircraftRepository aircraftRepository, DestinationRepository destinationRepository,
+                             TicketRepository ticketRepository, BookingRepository bookingRepository, FlightSeatRepository flightSeatRepository,
+                             AircraftService aircraftService, DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
+                             @Lazy TicketService ticketService, @Lazy BookingService bookingService) {
+        this.flightRepository = flightRepository;
+        this.aircraftRepository = aircraftRepository;
+        this.destinationRepository = destinationRepository;
+        this.ticketRepository = ticketRepository;
+        this.bookingRepository = bookingRepository;
+        this.flightSeatRepository = flightSeatRepository;
+        this.aircraftService = aircraftService;
+        this.destinationService = destinationService;
+        this.flightSeatService = flightSeatService;
+        this.ticketService = ticketService;
+        this.bookingService = bookingService;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -59,7 +80,7 @@ public class FlightServiceImpl implements FlightService {
                                                                String dateStart, String dateFinish,
                                                                Pageable pageable) {
         return flightRepository.getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
-                .map(flightMapper::convertToFlightDTOEntity);
+                .map(FlightMapper.INSTANCE::flightToFlightDTO);
     }
 
     @Override
@@ -109,32 +130,15 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Loggable
     public Flight saveFlight(FlightDTO flightDTO) {
-        return flightRepository.save(flightMapper.convertToFlightEntity(flightDTO));
+        return flightRepository.save(FlightMapper.INSTANCE.flightDTOtoFlight(flightDTO, aircraftService,
+                destinationService, ticketService, bookingService, flightSeatService));
     }
 
     @Override
     @Loggable
     public Flight updateFlight(Long id, FlightDTO flightDTO) {
-        var updatedFlight = flightMapper.convertToFlightEntity(flightDTO);
-        updatedFlight.setId(id);
-        if (updatedFlight.getAircraft() == null) {
-            updatedFlight.setAircraft(getFlightById(id).get().getAircraft());
-        } else {
-            updatedFlight.setAircraft(aircraftRepository.findByAircraftNumber(updatedFlight.getAircraft()
-                    .getAircraftNumber()));
-        }
-        if (updatedFlight.getFrom() == null) {
-            updatedFlight.setFrom(getFlightById(id).get().getFrom());
-        } else {
-            updatedFlight.setFrom(destinationRepository.findDestinationByAirportCode(updatedFlight.getFrom()
-                    .getAirportCode()).orElse(null));
-        }
-        if (updatedFlight.getTo() == null) {
-            updatedFlight.setTo(getFlightById(id).get().getTo());
-        } else {
-            updatedFlight.setTo(destinationRepository.findDestinationByAirportCode(updatedFlight.getTo()
-                    .getAirportCode()).orElse(null));
-        }
+        var updatedFlight = FlightMapper.INSTANCE.flightDTOtoFlight(flightDTO, aircraftService,
+                destinationService, ticketService, bookingService, flightSeatService);
         return flightRepository.saveAndFlush(updatedFlight);
     }
 

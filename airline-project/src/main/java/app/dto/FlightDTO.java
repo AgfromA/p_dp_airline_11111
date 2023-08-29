@@ -40,5 +40,4 @@ public class FlightDTO {
         this.aircraftId = flight.getAircraft().getId();
         this.flightStatus = flight.getFlightStatus();
     }
-
 }

@@ -2,6 +2,7 @@ package app.repositories;
 
 import app.entities.Destination;
 import app.entities.Flight;
+import app.entities.Ticket;
 import app.enums.Airport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
