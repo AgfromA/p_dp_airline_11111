@@ -79,6 +79,7 @@ public class FlightRestController implements FlightRestApi {
             log.error("update: Flight with id={} doesn't exist.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        flightDTO.setId(id);
         log.info("update: Flight with id = {} updated", id);
         return new ResponseEntity<>(flightService.updateFlight(id, flightDTO),
                 HttpStatus.OK);

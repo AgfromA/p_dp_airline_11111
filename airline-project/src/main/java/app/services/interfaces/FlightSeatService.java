@@ -44,4 +44,7 @@ public interface FlightSeatService {
     Page<FlightSeatDTO> findNotRegisteredFlightSeatsById(Long id, Pageable pageable);
 
     void editFlightSeatIsSoldToFalseByFlightSeatId(long[] flightSeatId);
+
+    List<FlightSeat> findByFlightId (Long id);
+
 }
