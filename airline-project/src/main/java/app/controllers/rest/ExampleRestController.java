@@ -4,8 +4,6 @@ package app.controllers.rest;
 import app.controllers.api.rest.ExampleRestApi;
 import app.dto.ExampleDto;
 import app.services.interfaces.ExampleService;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
