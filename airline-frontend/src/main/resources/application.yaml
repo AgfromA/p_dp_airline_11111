@@ -1,0 +1,15 @@
+server:
+  port: 8082
+  servlet:
+    session:
+      timeout: -1
+
+app:
+  feign:
+    config:
+      name: Project
+      url: http://localhost:8080
+
+feign:
+  okhttp:
+    enabled: true

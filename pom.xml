@@ -12,6 +12,7 @@
         <module>common</module>
         <module>airline-payments</module>
         <module>airline-project</module>
+        <module>airline-frontend</module>
     </modules>
 
     <dependencies>
