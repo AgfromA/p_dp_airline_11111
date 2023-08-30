@@ -1,9 +1,8 @@
 package app.controllers.rest;
 
-import app.controllers.api.rest.SeatRestApi;
+import app.controllers.api.SeatRestApi;
 import app.dto.SeatDTO;
 
-import app.entities.Seat;
 import app.exceptions.ViolationOfForeignKeyConstraintException;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.SeatService;

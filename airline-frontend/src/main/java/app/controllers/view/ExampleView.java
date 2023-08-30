@@ -1,10 +1,8 @@
 package app.controllers.view;
 
-
 import app.dto.ExampleDto;
-import app.entities.Example;
-import app.mappers.ExampleMapper;
-import app.services.interfaces.ExampleService;
+import app.clients.ExampleClient;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -33,14 +31,14 @@ public class ExampleView extends VerticalLayout {
 
     private final Grid<ExampleDto> grid = new Grid<>(ExampleDto.class, false);
     private final Editor<ExampleDto> editor = grid.getEditor();
-    private final ExampleService exampleService;
-    private final ExampleMapper exampleMapper;
+    private final ExampleClient exampleClient;
     private final List<ExampleDto> dataSource;
 
-    public ExampleView(ExampleService exampleService, ExampleMapper exampleMapper) {
-        this.exampleService = exampleService;
-        this.exampleMapper = exampleMapper;
-        this.dataSource = exampleService.findAll().stream().collect(Collectors.toList());
+    public ExampleView(ExampleClient exampleClient) {
+        this.exampleClient = exampleClient;
+        int page = 0;
+        int size = 100;
+        this.dataSource = exampleClient.getPage(page, size).getBody().stream().collect(Collectors.toList());
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 
@@ -56,6 +54,7 @@ public class ExampleView extends VerticalLayout {
 
         Button updateButton = new Button("Update", e -> editor.save());
         Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
+
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
         HorizontalLayout actions = new HorizontalLayout(updateButton, cancelButton);
         actions.setPadding(false);
@@ -73,8 +72,7 @@ public class ExampleView extends VerticalLayout {
     }
 
     private Grid.Column<ExampleDto> createIdColumn() {
-        return grid.addColumn(exampleDto -> exampleDto.getId().intValue())
-                .setHeader("Id").setWidth("120px").setFlexGrow(0);
+        return grid.addColumn(exampleDto -> exampleDto.getId().intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
     }
 
     private Grid.Column<ExampleDto> createExampleTextColumn() {
@@ -96,13 +94,12 @@ public class ExampleView extends VerticalLayout {
     private Grid.Column<ExampleDto> createDeleteColumn() {
         return grid.addComponentColumn(example -> {
             Button deleteButton = new Button("Delete");
-            // FIXME сомнительная конструкция
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
                     ListDataProvider<ExampleDto> dataProvider = (ListDataProvider<ExampleDto>) grid.getDataProvider();
-                    exampleService.delete(example.getId());
+                    exampleClient.delete(example.getId());
                     dataProvider.getItems().remove(example);
                 }
                 grid.getDataProvider().refreshAll();
@@ -140,12 +137,12 @@ public class ExampleView extends VerticalLayout {
                 .withStatusLabel(exampleTextValidationMessage)
                 .bind(ExampleDto::getExampleText, ExampleDto::setExampleText);
         exampleTextColumn.setEditorComponent(exampleTextField);
+
     }
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            Example exampleDto = exampleMapper.toEntity(e.getItem());
-            exampleService.update(exampleDto.getId(), exampleMapper.toDto(exampleDto));
+            exampleClient.update(e.getItem().getId(), e.getItem());
             grid.getDataProvider().refreshAll();
         });
     }
@@ -174,6 +171,7 @@ public class ExampleView extends VerticalLayout {
             } else if (selectedTab == createTab) {
                 contentContainer.removeAll();
                 contentContainer.add(formLayout);
+                grid.getDataProvider().refreshAll();
             }
         });
         return tabs;
@@ -187,7 +185,7 @@ public class ExampleView extends VerticalLayout {
         createButton.addClickListener(event -> {
             ExampleDto exampleDto = new ExampleDto();
             exampleDto.setExampleText(exampleTextField.getValue());
-            ExampleDto savedExample = exampleService.save(exampleDto);
+            ExampleDto savedExample = exampleClient.create(exampleDto).getBody();
             dataSource.add(savedExample);
             exampleTextField.clear();
             grid.getDataProvider().refreshAll();

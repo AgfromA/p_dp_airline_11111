@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.rest.AircraftRestApi;
+import app.controllers.api.AircraftRestApi;
 import app.dto.AircraftDTO;
 import app.entities.Aircraft;
 import app.services.interfaces.AircraftService;

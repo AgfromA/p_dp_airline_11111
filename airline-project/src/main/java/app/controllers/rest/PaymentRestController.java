@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.rest.PaymentRestApi;
+import app.controllers.api.PaymentRestApi;
 import app.dto.PaymentRequest;
 import app.dto.PaymentResponse;
 import app.entities.Payment;

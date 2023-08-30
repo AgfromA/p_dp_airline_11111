@@ -29,19 +29,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/api/payments/**").authenticated()
-                .antMatchers(HttpMethod.POST,"/api/example").authenticated()
+                .antMatchers(HttpMethod.POST,"/api/example/").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new Http403ForbiddenEntryPoint())
                 .and()
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-//                .formLogin()
-//                .loginPage("/login")
-//                .loginProcessingUrl("/login")
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .permitAll();
+
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

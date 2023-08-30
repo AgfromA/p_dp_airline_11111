@@ -1,5 +1,6 @@
 /airline-project/target/
 /airline-payments/target/
+/airline-frontend/target/
 /common/target/
 !.mvn/wrapper/maven-wrapper.jar
 /S7_Airlines_API.postman_collection.json
@@ -32,5 +33,5 @@
 ### Frontend(Vaadin) ###
 *.ts
 *.json
-/airline-project/frontend/
-/airline-project/node_modules/
+/airline-frontend/frontend/
+/airline-frontend/node_modules/

@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.rest.FlightSeatRestApi;
+import app.controllers.api.FlightSeatRestApi;
 import app.dto.FlightSeatDTO;
 import app.enums.CategoryType;
 import app.services.FlightSeatServiceImpl;
