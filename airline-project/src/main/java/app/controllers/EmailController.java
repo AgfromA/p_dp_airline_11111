@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.controllers.api.EmailControllerApi;
+import app.controllers.api.rest.EmailControllerApi;
 import app.services.MailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

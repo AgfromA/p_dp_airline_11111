@@ -1,4 +1,4 @@
-package app.controllers.api;
+package app.controllers.api.rest;
 
 import app.dto.AccountDTO;
 import app.entities.account.Role;

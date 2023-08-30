@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.controllers.api.SearchControllerApi;
+import app.controllers.api.rest.SearchControllerApi;
 import app.dto.SearchResultDTO;
 import app.entities.search.Search;
 import app.services.interfaces.SearchService;

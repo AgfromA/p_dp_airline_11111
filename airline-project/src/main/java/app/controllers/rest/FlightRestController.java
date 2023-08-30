@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.FlightRestApi;
+import app.controllers.api.rest.FlightRestApi;
 import app.dto.FlightDTO;
 import app.entities.Flight;
 import app.enums.FlightStatus;

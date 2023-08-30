@@ -1,4 +1,4 @@
-package app.controllers.api;
+package app.controllers.api.rest;
 
 import app.dto.AircraftDTO;
 import app.entities.Aircraft;

@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.PassengerRestApi;
+import app.controllers.api.rest.PassengerRestApi;
 import app.dto.PassengerDTO;
 import app.services.interfaces.PassengerService;
 import lombok.RequiredArgsConstructor;

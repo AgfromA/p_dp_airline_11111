@@ -1,7 +1,7 @@
 package app.controllers.rest;
 
 
-import app.controllers.api.ExampleRestApi;
+import app.controllers.api.rest.ExampleRestApi;
 import app.dto.ExampleDto;
 import app.services.interfaces.ExampleService;
 import lombok.RequiredArgsConstructor;

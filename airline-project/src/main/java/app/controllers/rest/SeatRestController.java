@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.SeatRestApi;
+import app.controllers.api.rest.SeatRestApi;
 import app.dto.SeatDTO;
 
 import app.exceptions.ViolationOfForeignKeyConstraintException;

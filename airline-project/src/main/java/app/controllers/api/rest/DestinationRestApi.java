@@ -1,4 +1,4 @@
-package app.controllers.api;
+package app.controllers.api.rest;
 
 import app.dto.DestinationDTO;
 import io.swagger.annotations.ApiOperation;

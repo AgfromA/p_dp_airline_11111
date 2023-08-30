@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.BookingRestApi;
+import app.controllers.api.rest.BookingRestApi;
 import app.dto.BookingDTO;
 import app.services.interfaces.BookingService;
 import lombok.RequiredArgsConstructor;

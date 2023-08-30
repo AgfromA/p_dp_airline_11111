@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.TimezoneRestApi;
+import app.controllers.api.rest.TimezoneRestApi;
 import app.dto.TimezoneDTO;
 import app.services.interfaces.TimezoneService;
 import lombok.RequiredArgsConstructor;

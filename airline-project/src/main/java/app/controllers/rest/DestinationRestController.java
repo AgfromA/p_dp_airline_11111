@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.DestinationRestApi;
+import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDTO;
 import app.services.interfaces.DestinationService;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.CategoryRestApi;
+import app.controllers.api.rest.CategoryRestApi;
 import app.entities.Category;
 import app.enums.CategoryType;
 import app.services.interfaces.CategoryService;

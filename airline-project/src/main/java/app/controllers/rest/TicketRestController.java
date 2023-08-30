@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.TicketRestApi;
+import app.controllers.api.rest.TicketRestApi;
 import app.dto.TicketDTO;
 import app.services.interfaces.TicketService;
 import lombok.RequiredArgsConstructor;

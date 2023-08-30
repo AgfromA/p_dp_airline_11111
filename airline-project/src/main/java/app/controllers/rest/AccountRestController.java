@@ -1,6 +1,6 @@
 package app.controllers.rest;
 
-import app.controllers.api.AccountRestApi;
+import app.controllers.api.rest.AccountRestApi;
 import app.dto.AccountDTO;
 import app.entities.account.Role;
 import app.services.interfaces.AccountService;

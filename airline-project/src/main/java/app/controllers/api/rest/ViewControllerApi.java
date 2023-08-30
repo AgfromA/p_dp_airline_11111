@@ -1,4 +1,4 @@
-package app.controllers.api;
+package app.controllers.api.rest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
