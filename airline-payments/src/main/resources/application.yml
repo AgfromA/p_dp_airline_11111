@@ -15,7 +15,8 @@ spring:
       matching-strategy: ant_path_matcher
 springdoc:
   swagger-ui:
+    disable-swagger-default-url: false
     enabled: true
-    path: /swagger-ui.html
+    path: /swagger-ui/
     oauth2:
       enabled: true
