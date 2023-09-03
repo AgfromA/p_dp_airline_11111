@@ -31,7 +31,7 @@
 Чтобы не писать boilerplate-код, используем на проекте [Lombok](https://projectlombok.org/features/all).
 
 Все контроллеры и их методы нужно сразу описывать аннотациями [Swagger](https://docs.swagger.io/swagger-core/v1.5.0/apidocs/allclasses-noframe.html).
-Swagger UI при запущенном приложении крутится [здесь](http://localhost:8080/swagger-ui/).
+Swagger UI при запущенном приложении крутится [здесь](http://localhost:8080/swagger-ui.html).
 
 Таск-борд находится прямо на [Gitlab](https://gitlab.com/de.pronin/p_dp_airline_1/-/boards).
 
