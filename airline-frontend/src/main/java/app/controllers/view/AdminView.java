@@ -8,7 +8,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("Gazon Admin")
+@PageTitle("Arline Admin")
 @Route(value = "admin", layout = MainLayout.class)
 public class AdminView extends HorizontalLayout {
 
