@@ -2,12 +2,13 @@ package app.controllers.api.rest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
-import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
+
+@Hidden
 @Api(tags = "Main")
 @Tag(name = "Main", description = "Получение различных view")
 public interface ViewControllerApi {

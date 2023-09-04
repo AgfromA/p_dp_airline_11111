@@ -2,15 +2,16 @@ package app.controllers;
 
 import app.controllers.api.rest.EmailControllerApi;
 import app.services.MailSender;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
+
+@Hidden
 @RestController
 @RequiredArgsConstructor
 public class EmailController implements EmailControllerApi {

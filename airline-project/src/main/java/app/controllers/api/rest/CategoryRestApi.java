@@ -7,12 +7,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public interface CategoryRestApi {
     })
     ResponseEntity<List<Category>> getAllCategories();
 
-    @ApiIgnore
+    @Hidden
     @GetMapping("/{category_type}")
     @ApiOperation(value = "Get category by CategoryType")
     @ApiResponses(value = {

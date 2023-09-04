@@ -1,11 +1,12 @@
 package app.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Setter;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+
 
 @Data
 @Setter
