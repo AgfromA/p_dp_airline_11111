@@ -6,7 +6,6 @@ server:
 
 springdoc:
   swagger-ui:
-    path: swagger-ui
     enabled: true
     oauth2:
       enabled: true
