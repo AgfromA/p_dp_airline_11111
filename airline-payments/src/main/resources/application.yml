@@ -21,6 +21,7 @@ spring:
       matching-strategy: ant_path_matcher
 springdoc:
   swagger-ui:
+    path: swagger-ui
     enabled: true
     oauth2:
       enabled: true
