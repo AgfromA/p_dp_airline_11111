@@ -12,7 +12,17 @@
         <module>common</module>
         <module>airline-payments</module>
         <module>airline-project</module>
+        <module>airline-frontend</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+        </dependency>
+
+    </dependencies>
 
     <build>
         <plugins>

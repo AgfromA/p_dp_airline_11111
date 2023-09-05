@@ -9,3 +9,13 @@ paypal:
   client:
     id: ATOLWJkYu4yYYvOcYjTqjblIESKbbUMWnkwtc1T_5JgMIxXgYm3kOMc0jB4Cb3hscdAaNbAqr1awxQ9E
     secret: EOkg1jdtlyT1bANvDZCaJdfdstBBvOljyNap1nYanCYcH6FVMCH-EQ-JkKsmvjG6-GwGRUQ961PmHZvV
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+springdoc:
+  swagger-ui:
+    path: swagger-ui
+    enabled: true
+    oauth2:
+      enabled: true

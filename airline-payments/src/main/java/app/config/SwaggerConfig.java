@@ -1,5 +1,7 @@
 package app.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -12,6 +14,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.HashSet;
 import java.util.List;
 
+@OpenAPIDefinition(info = @Info(title = "S7 Airlines API (Payment)", version = "1.0.6",
+        description = "UI для работы с API проекта S7 Airlines. (Payment)"))
 @Configuration
 public class SwaggerConfig {
 

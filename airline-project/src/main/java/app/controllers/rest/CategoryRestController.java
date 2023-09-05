@@ -4,12 +4,13 @@ import app.controllers.api.rest.CategoryRestApi;
 import app.entities.Category;
 import app.enums.CategoryType;
 import app.services.interfaces.CategoryService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
+
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class CategoryRestController implements CategoryRestApi {
         }
     }
 
-    @ApiIgnore
+    @Hidden
     @Override
     @Deprecated
     public ResponseEntity<Category> getCategoryByType(CategoryType categoryType) {
