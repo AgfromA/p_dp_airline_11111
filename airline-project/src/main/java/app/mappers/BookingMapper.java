@@ -17,10 +17,10 @@ public interface BookingMapper {
     BookingMapper INSTANCE = Mappers.getMapper(BookingMapper.class);
 
     @Mapping(target = "passengerId", expression = "java((passengerService.getPassengerById(booking.getPassenger().getId())" +
-                                                  ".get()).getId())")
+            ".get()).getId())")
     @Mapping(target = "flightId", expression = "java(flightService.getFlightById(booking.getFlight().getId()).get().getId())")
     @Mapping(target = "categoryType", expression = "java(categoryService.getCategoryByType(booking.getCategory()" +
-                                                   ".getCategoryType()).getCategoryType())")
+            ".getCategoryType()).getCategoryType())")
     BookingDTO convertToBookingDTOEntity(Booking booking, @Context PassengerService passengerService,
                                          @Context FlightService flightService, @Context CategoryService categoryService);
 
