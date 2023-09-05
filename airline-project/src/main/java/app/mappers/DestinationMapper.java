@@ -8,13 +8,7 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring")
 @Component
 public interface DestinationMapper {
-
-
-
     DestinationDTO convertToDestinationDTOEntity(Destination destination);//
-    //перенос данных из Destination в DestinationDTO
+
     Destination convertToDestinationEntity(DestinationDTO dto);
-    //перенос данных из DestinationDTO в Destination
-
-
 }
