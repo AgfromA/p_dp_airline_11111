@@ -24,32 +24,19 @@ import java.util.Optional;
 @Transactional
 public class FlightServiceImpl implements FlightService {
     private final FlightRepository flightRepository;
-    private final AircraftRepository aircraftRepository;
-    private final DestinationRepository destinationRepository;
-    private final TicketRepository ticketRepository;
-    private final BookingRepository bookingRepository;
-    private final FlightSeatRepository flightSeatRepository;
     private final AircraftService aircraftService;
     private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
     private final TicketService ticketService;
-    private final BookingService bookingService;
 
-    public FlightServiceImpl(FlightRepository flightRepository, AircraftRepository aircraftRepository, DestinationRepository destinationRepository,
-                             TicketRepository ticketRepository, BookingRepository bookingRepository, FlightSeatRepository flightSeatRepository,
-                             AircraftService aircraftService, DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
-                             @Lazy TicketService ticketService, @Lazy BookingService bookingService) {
+    public FlightServiceImpl(FlightRepository flightRepository, AircraftService aircraftService,
+                             DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
+                             @Lazy TicketService ticketService) {
         this.flightRepository = flightRepository;
-        this.aircraftRepository = aircraftRepository;
-        this.destinationRepository = destinationRepository;
-        this.ticketRepository = ticketRepository;
-        this.bookingRepository = bookingRepository;
-        this.flightSeatRepository = flightSeatRepository;
         this.aircraftService = aircraftService;
         this.destinationService = destinationService;
         this.flightSeatService = flightSeatService;
         this.ticketService = ticketService;
-        this.bookingService = bookingService;
     }
 
     @Override
@@ -131,14 +118,14 @@ public class FlightServiceImpl implements FlightService {
     @Loggable
     public Flight saveFlight(FlightDTO flightDTO) {
         return flightRepository.save(FlightMapper.INSTANCE.flightDTOtoFlight(flightDTO, aircraftService,
-                destinationService, ticketService, bookingService, flightSeatService));
+                destinationService, ticketService, flightSeatService));
     }
 
     @Override
     @Loggable
     public Flight updateFlight(Long id, FlightDTO flightDTO) {
         var updatedFlight = FlightMapper.INSTANCE.flightDTOtoFlight(flightDTO, aircraftService,
-                destinationService, ticketService, bookingService, flightSeatService);
+                destinationService, ticketService, flightSeatService);
         return flightRepository.saveAndFlush(updatedFlight);
     }
 

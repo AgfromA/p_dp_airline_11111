@@ -38,11 +38,6 @@ public class Flight {
     @JsonManagedReference
     private List<Ticket> ticket;
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @JsonManagedReference
-    private List<Booking> booking;
-
     @Column(name = "code")
     private String code;
 

@@ -96,4 +96,12 @@ public class ValidationExceptionHandler {
         return new ResponseEntity<>(emptyResultDataAccessException, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler({FlightSeatIsBookedException.class})
+    public ResponseEntity<ResponseExceptionDTO> handleFlightSeatIsBookedException(FlightSeatIsBookedException ex) {
+        List<String> errors = new ArrayList<>();
+        errors.add(ex.getMessage());
+        var flightSeatIsBookedException = new ResponseExceptionDTO(errors.toString(), LocalDateTime.now());
+        return new ResponseEntity<>(flightSeatIsBookedException, HttpStatus.BAD_REQUEST);
+    }
+
 }

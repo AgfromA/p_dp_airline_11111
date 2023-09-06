@@ -35,15 +35,13 @@ values (5001, 'BUSINESS'),
        (5002, 'ECONOMY');
 
 
-INSERT INTO booking (id, booking_number, booking_data_time, passenger_id, flight_id, category_id)
+INSERT INTO booking (id, booking_number, booking_data_time, passenger_id)
 VALUES (6001, '000000001', NOW(),
-        (SELECT passengers.id FROM passengers WHERE passengers.id = 1001),
-        (SELECT flights.id FROM flights WHERE flights.id = 4001),
-        (SELECT category.id FROM category WHERE category.id = 5001)),
+        (SELECT passengers.id FROM passengers WHERE passengers.id = 1001)),
+
        (6002, '000000002', NOW(),
-        (SELECT passengers.id FROM passengers WHERE passengers.id = 1002),
-        (SELECT flights.id FROM flights WHERE flights.id = 4002),
-        (SELECT category.id FROM category WHERE category.id = 5002));
+        (SELECT passengers.id FROM passengers WHERE passengers.id = 1002));
+
 
 
 INSERT INTO payments (id, payment_state) VALUES (3001, 'CREATED');

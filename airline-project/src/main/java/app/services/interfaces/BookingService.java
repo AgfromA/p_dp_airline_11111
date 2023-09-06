@@ -23,5 +23,5 @@ public interface BookingService {
 
     void deleteBookingByPassengerId(long passengerId);
 
-    List<Booking> findByFlightId (Long flightId);
+    void updateBookingAndFlightSeatStatusIfExpired();
 }

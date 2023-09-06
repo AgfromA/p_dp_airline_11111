@@ -215,8 +215,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                     .andExpect(jsonPath("$.flightStatus").exists())
                     .andExpect(jsonPath("$.flightStatus").value(flightStatus.toString()))
                     .andExpect(jsonPath("$.seats").exists())
-                    .andExpect(jsonPath("$.ticket").exists())
-                    .andExpect(jsonPath("$.booking").exists());
+                    .andExpect(jsonPath("$.ticket").exists());
         }
 
         @Test

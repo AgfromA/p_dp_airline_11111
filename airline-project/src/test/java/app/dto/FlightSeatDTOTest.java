@@ -10,7 +10,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.IOException;
 
-public class FlightSeatDTOTest extends EntityTest {
+class FlightSeatDTOTest extends EntityTest {
 
     private Validator validator;
     private ObjectMapper mapper;
@@ -28,7 +28,7 @@ public class FlightSeatDTOTest extends EntityTest {
         flightSeatJson.put("fare", 1500);
         flightSeatJson.put("isRegistered", true);
         flightSeatJson.put("isSold", true);
-        flightSeatJson.put("isBooking", true);
+        flightSeatJson.put("isBooked", true);
         flightSeatJson.put("flightId", 1);
         flightSeatJson.put("seatNumber", 1);
 
@@ -37,7 +37,7 @@ public class FlightSeatDTOTest extends EntityTest {
 
 
     @Test
-    public void validFlightSeatShouldValidate() {
+    void validFlightSeatShouldValidate() {
         FlightSeatDTO testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
 
@@ -50,7 +50,7 @@ public class FlightSeatDTOTest extends EntityTest {
     }
 
     @Test
-    public void negativeFareShouldNotValidate() {
+    void negativeFareShouldNotValidate() {
         FlightSeatDTO testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("fare", -100);
@@ -63,7 +63,7 @@ public class FlightSeatDTOTest extends EntityTest {
     }
 
     @Test
-    public void nullIsRegisteredShouldNotValidate() {
+    void nullIsRegisteredShouldNotValidate() {
         FlightSeatDTO testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("isRegistered", null);
@@ -75,7 +75,7 @@ public class FlightSeatDTOTest extends EntityTest {
         Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testFlightSeat));
     }
     @Test
-    public void nullIsSoldShouldNotValidate() {
+    void nullIsSoldShouldNotValidate() {
         FlightSeatDTO testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("isSold", null);
@@ -88,7 +88,7 @@ public class FlightSeatDTOTest extends EntityTest {
     }
 
     @Test
-    public void nullFlightShouldNotValidate() {
+    void nullFlightShouldNotValidate() {
         FlightSeatDTO testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("flightId", null);
@@ -101,7 +101,7 @@ public class FlightSeatDTOTest extends EntityTest {
     }
 
     @Test
-    public void nullSeatShouldNotValidate() {
+    void nullSeatShouldNotValidate() {
         FlightSeatDTO testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("seatNumber", null);

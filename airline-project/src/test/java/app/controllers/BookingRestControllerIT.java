@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.dto.BookingDTO;
 import app.enums.CategoryType;
+import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import app.services.interfaces.BookingService;
 import app.services.interfaces.FlightService;
@@ -28,6 +29,7 @@ import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
+@Sql({"/sqlQuery/create-flightSeat-before.sql"})
 @Sql({"/sqlQuery/create-passengerAircraftDestinationFlightsCategoryBooking-before.sql"})
 @Transactional
 class BookingRestControllerIT extends IntegrationTestBase {
@@ -36,8 +38,6 @@ class BookingRestControllerIT extends IntegrationTestBase {
     private BookingService bookingService;
     @Autowired
     private PassengerService passengerService;
-    @Autowired
-    private FlightService flightService;
     @Autowired
     private BookingRepository bookingRepository;
 
@@ -48,8 +48,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         booking.setBookingNumber("BK-111111");
         booking.setBookingDate(LocalDateTime.now());
         booking.setPassengerId(passengerService.getPassengerById(1001L).get().getId());
-        booking.setFlightId(flightService.getFlightById(4001L).get().getId());
-        booking.setCategoryType(CategoryType.ECONOMY);
+        booking.setFlightSeatId(1L);
 
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(booking))
@@ -79,7 +78,8 @@ class BookingRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/bookings/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(new BookingDTO(bookingService.getBookingById(id)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(
+                        BookingMapper.INSTANCE.convertToBookingDTOEntity(bookingService.getBookingById(id)))));
     }
 
 
@@ -91,7 +91,8 @@ class BookingRestControllerIT extends IntegrationTestBase {
                         .param("bookingNumber", bookingNumber))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(new BookingDTO(bookingService
+                .andExpect(content().json(objectMapper.writeValueAsString(
+                        BookingMapper.INSTANCE.convertToBookingDTOEntity(bookingService
                         .getBookingByNumber(bookingNumber)))));
     }
 
@@ -100,11 +101,9 @@ class BookingRestControllerIT extends IntegrationTestBase {
     @DisplayName("Edit Booking by ID")
     void shouldEditBookingById() throws Exception {
         long id = 6002;
-        var booking = new BookingDTO(bookingService.getBookingById(id));
+        var booking = BookingMapper.INSTANCE.convertToBookingDTOEntity(bookingService.getBookingById(id));
         booking.setBookingDate(LocalDateTime.now());
         booking.setPassengerId(passengerService.getPassengerById(1002L).get().getId());
-        booking.setFlightId(4002L);
-        booking.setCategoryType(CategoryType.BUSINESS);
         long numberOfBooking = bookingRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", id)

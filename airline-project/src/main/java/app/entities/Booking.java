@@ -1,8 +1,6 @@
 package app.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -35,12 +33,14 @@ public class Booking {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    @ManyToOne
-    @JoinColumn(name = "flight_id")
-    @JsonBackReference
-    private Flight flight;
-
     @OneToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "flight_seat_id")
+    private FlightSeat flightSeat;
+
+    @Column (name = "create_time")
+    private LocalDateTime createTime;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private BookingStatus status;
 }

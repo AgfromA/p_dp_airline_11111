@@ -47,9 +47,8 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Transactional(readOnly = true)
     @Loggable
     public Page<FlightSeatDTO> getFreeSeatsById(Pageable pageable, Long id) {
-        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalse(id, pageable).map(entity -> {
-            return flightSeatMapper.convertToFlightSeatDTOEntity(entity);
-        });
+        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id, pageable)
+                .map(flightSeatMapper::convertToFlightSeatDTOEntity);
     }
 
     @Override
@@ -71,10 +70,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     @Override
     public Page<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
-        return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable).map(entity -> {
-            FlightSeatDTO dto = flightSeatMapper.convertToFlightSeatDTOEntity(entity);
-            return dto;
-        });
+        return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable).map(flightSeatMapper::convertToFlightSeatDTOEntity);
     }
 
     @Override
@@ -96,7 +92,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
             var flightSeat = new FlightSeat();
             flightSeat.setSeat(s);
             flightSeat.setFlight(flight);
-            flightSeat.setIsBooking(false);
+            flightSeat.setIsBooked(false);
             flightSeat.setIsSold(false);
             flightSeat.setIsRegistered(false);
             flightSeat.setFare(generateFareForFlightseat(s));
@@ -157,8 +153,8 @@ public class FlightSeatServiceImpl implements FlightSeatService {
         if (flightSeat.getIsSold() == null) {
             flightSeat.setIsSold(targetFlightSeat.getIsSold());
         }
-        if (flightSeat.getIsBooking() == null) {
-            flightSeat.setIsBooking(targetFlightSeat.getIsBooking());
+        if (flightSeat.getIsBooked() == null) {
+            flightSeat.setIsBooked(targetFlightSeat.getIsBooked());
         }
         if (flightSeat.getFlight() == null) {
             flightSeat.setFlight(targetFlightSeat.getFlight());

@@ -1,14 +1,10 @@
 package app.mappers;
 
 import app.dto.BookingDTO;
-import app.entities.Booking;
-import app.entities.Category;
-import app.entities.Flight;
-import app.entities.Passenger;
+import app.entities.*;
+import app.enums.BookingStatusType;
 import app.enums.CategoryType;
-import app.services.interfaces.CategoryService;
-import app.services.interfaces.FlightService;
-import app.services.interfaces.PassengerService;
+import app.services.interfaces.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -26,77 +22,90 @@ class BookingMapperTest {
     BookingMapper bookingMapper = Mappers.getMapper(BookingMapper.class);
     @Mock
     private PassengerService passengerServiceMock = Mockito.mock(PassengerService.class);
+
     @Mock
-    private FlightService flightServiceMock = Mockito.mock(FlightService.class);
+    private BookingStatusService bookingStatusServiceMock = Mockito.mock(BookingStatusService.class);
+
     @Mock
-    private CategoryService categoryServiceMock = Mockito.mock(CategoryService.class);
+    private FlightSeatService flightSeatServiceMock = Mockito.mock(FlightSeatService.class);
 
     @Test
-    public void shouldConvertBookingToBookingDTOEntity() throws Exception {
+    void shouldConvertBookingToBookingDTOEntity() throws Exception {
         Passenger passenger = new Passenger();
         passenger.setId(1001L);
         when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
 
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(2L);
 
-        Flight flight = new Flight();
-        flight.setId(4001L);
-        when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
+        LocalDateTime createTime = LocalDateTime.MIN;
 
-        Category category = new Category();
-        category.setCategoryType(CategoryType.ECONOMY);
-        when(categoryServiceMock.getCategoryByType(CategoryType.ECONOMY)).thenReturn(category);
+        BookingStatus bookingStatus = new BookingStatus();
 
         Booking booking = new Booking();
         booking.setId(1L);
         booking.setBookingNumber("BK-111111");
         booking.setBookingDate(LocalDateTime.now());
         booking.setPassenger(passengerServiceMock.getPassengerById(1001L).get());
-        booking.setFlight(flightServiceMock.getFlightById(4001L).get());
-        booking.setCategory(categoryServiceMock.getCategoryByType(CategoryType.ECONOMY));
+        booking.setFlightSeat(flightSeat);
+        booking.setCreateTime(createTime);
+        booking.setStatus(bookingStatus);
 
-        BookingDTO bookingDTO = bookingMapper.convertToBookingDTOEntity(booking, passengerServiceMock, flightServiceMock,
-                categoryServiceMock);
+        BookingDTO bookingDTO = bookingMapper.convertToBookingDTOEntity(booking);
 
+        Assertions.assertNotNull(bookingDTO);
         Assertions.assertEquals(booking.getId(), bookingDTO.getId());
         Assertions.assertEquals(booking.getBookingNumber(), bookingDTO.getBookingNumber());
         Assertions.assertEquals(booking.getBookingDate(), bookingDTO.getBookingDate());
         Assertions.assertEquals(booking.getPassenger().getId(), bookingDTO.getPassengerId());
-        Assertions.assertEquals(booking.getFlight().getId(), bookingDTO.getFlightId());
-        Assertions.assertEquals(booking.getCategory().getCategoryType(), bookingDTO.getCategoryType());
+        Assertions.assertEquals(booking.getFlightSeat().getId(), bookingDTO.getFlightSeatId());
+        Assertions.assertEquals(booking.getCreateTime(), bookingDTO.getCreateTime());
+        Assertions.assertEquals(booking.getStatus().getBookingStatusType(), bookingDTO.getBookingStatusType());
 
     }
 
     @Test
-    public void shouldConvertBookingDTOToBookingEntity() throws Exception {
+    void shouldConvertBookingDTOToBookingEntity() throws Exception {
 
         Passenger passenger = new Passenger();
         passenger.setId(1001L);
         when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
 
-        Flight flight = new Flight();
-        flight.setId(4001L);
-        when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
+        LocalDateTime createTime = LocalDateTime.MIN;
 
-        Category category = new Category();
-        category.setCategoryType(CategoryType.ECONOMY);
-        when(categoryServiceMock.getCategoryByType(CategoryType.ECONOMY)).thenReturn(category);
+        FlightSeat flightSeat = new FlightSeat();
+        Long flightSeatId = 2L;
+        flightSeat.setId(flightSeatId);
+
+        BookingStatus bookingStatus = new BookingStatus();
+        bookingStatus.setBookingStatusType(BookingStatusType.NOT_PAID);
+
 
         BookingDTO bookingDTO = new BookingDTO();
         bookingDTO.setId(1L);
         bookingDTO.setBookingNumber("BK-111111");
         bookingDTO.setBookingDate(LocalDateTime.now());
         bookingDTO.setPassengerId(passengerServiceMock.getPassengerById(1001L).get().getId());
-        bookingDTO.setFlightId(flightServiceMock.getFlightById(4001L).get().getId());
-        bookingDTO.setCategoryType(CategoryType.ECONOMY);
+        bookingDTO.setCreateTime(createTime);
+        bookingDTO.setFlightSeatId(flightSeatId);
+        bookingDTO.setBookingStatusType(BookingStatusType.NOT_PAID);
 
-        Booking booking = bookingMapper.convertToBookingEntity(bookingDTO, passengerServiceMock, flightServiceMock, categoryServiceMock);
 
+        when(bookingStatusServiceMock.getBookingStatusByType(BookingStatusType.NOT_PAID)).thenReturn(bookingStatus);
+        when(flightSeatServiceMock.getFlightSeatById(flightSeatId)).thenReturn(Optional.of(flightSeat));
+
+        Booking booking = bookingMapper.convertToBookingEntity(bookingDTO, passengerServiceMock, flightSeatServiceMock,
+                bookingStatusServiceMock);
+
+        Assertions.assertNotNull(booking);
         Assertions.assertEquals(bookingDTO.getId(), booking.getId());
         Assertions.assertEquals(bookingDTO.getBookingNumber(), booking.getBookingNumber());
         Assertions.assertEquals(bookingDTO.getBookingDate(), booking.getBookingDate());
         Assertions.assertEquals(bookingDTO.getPassengerId(), booking.getPassenger().getId());
-        Assertions.assertEquals(bookingDTO.getFlightId(), booking.getFlight().getId());
-        Assertions.assertEquals(bookingDTO.getCategoryType(), booking.getCategory().getCategoryType());
+        Assertions.assertEquals(bookingDTO.getCreateTime(), booking.getCreateTime());
+        Assertions.assertEquals(bookingDTO.getBookingStatusType(), booking.getStatus().getBookingStatusType());
+        Assertions.assertEquals(bookingDTO.getFlightSeatId(), booking.getFlightSeat().getId());
+
 
     }
 }

@@ -25,7 +25,7 @@ public class FlightSeatDTO {
     @NotNull(message = "isSold shouldn't be null")
     private Boolean isSold;
 
-    private Boolean isBooking;
+    private Boolean isBooked;
 
     @NotNull(message = "flightId shouldn't be null")
     private Long flightId;
@@ -38,7 +38,7 @@ public class FlightSeatDTO {
         this.fare = entity.getFare();
         this.isRegistered = entity.getIsRegistered();
         this.isSold = entity.getIsSold();
-        this.isBooking = entity.getIsBooking();
+        this.isBooked = entity.getIsBooked();
         this.flightId = entity.getFlight().getId();
         this.seatNumber = entity.getSeat().getId();
     }
