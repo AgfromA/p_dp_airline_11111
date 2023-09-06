@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+- #231 Добавлены поля CreateTime, BookingStatus, FlightSeat, удалены поля Flight и Category, исправлена соответствующая логика и тесты. Добавлен щедуллер для booking.
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.
 - #237 Исправлен баг с редактированием Ticket. Убраны аннотации @Data из проекта.
 - #257 Переход AccountMapper, BookingMapper на Mapstruct , а также junit тесты к ним.
