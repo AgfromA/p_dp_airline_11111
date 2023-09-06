@@ -1,11 +1,9 @@
 package app.controllers;
 
 import app.dto.BookingDTO;
-import app.enums.CategoryType;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import app.services.interfaces.BookingService;
-import app.services.interfaces.FlightService;
 import app.services.interfaces.PassengerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

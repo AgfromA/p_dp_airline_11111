@@ -3,7 +3,6 @@ package app.mappers;
 import app.dto.BookingDTO;
 import app.entities.*;
 import app.enums.BookingStatusType;
-import app.enums.CategoryType;
 import app.services.interfaces.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
