@@ -14,7 +14,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.HashSet;
 import java.util.List;
 
-@OpenAPIDefinition(info = @Info(title = "S7 Airlines API (Payment)", version = "1.0.6",
+@OpenAPIDefinition(info = @Info(title = "S7 Airlines API (Payment)", version = "1.0.7",
         description = "UI для работы с API проекта S7 Airlines. (Payment)"))
 @Configuration
 public class SwaggerConfig {
@@ -33,7 +33,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("S7 Airlines API (Payment)")
-                .version("1.0.6")
+                .version("1.0.7")
                 .description("UI для работы с API проекта S7 Airlines. (Payment)")
                 .build();
     }
