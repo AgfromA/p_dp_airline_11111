@@ -9,6 +9,12 @@ paypal:
   client:
     id: ATOLWJkYu4yYYvOcYjTqjblIESKbbUMWnkwtc1T_5JgMIxXgYm3kOMc0jB4Cb3hscdAaNbAqr1awxQ9E
     secret: EOkg1jdtlyT1bANvDZCaJdfdstBBvOljyNap1nYanCYcH6FVMCH-EQ-JkKsmvjG6-GwGRUQ961PmHZvV
+
+jwt:
+  secret:
+    access: QZnCUVCnP3aukiTOa8XxPkfHODqpXB9xkg/o72yhIh4GE3BPiZszU4fYjJZTbcUcyGM/Bb5N81rv9Csq7blwCA==
+
+
 spring:
   mvc:
     pathmatch:

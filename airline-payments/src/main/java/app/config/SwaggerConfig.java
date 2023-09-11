@@ -2,39 +2,28 @@ package app.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-
-import java.util.HashSet;
-import java.util.List;
-
 @OpenAPIDefinition(info = @Info(title = "S7 Airlines API (Payment)", version = "1.0.7",
         description = "UI для работы с API проекта S7 Airlines. (Payment)"))
 @Configuration
 public class SwaggerConfig {
 
     @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("app.controllers"))
-                .paths(PathSelectors.any())
-                .build()
-                .protocols(new HashSet<>(List.of("http")))
-                .apiInfo(apiInfo());
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("S7 Airlines API (Payment)")
-                .version("1.0.7")
-                .description("UI для работы с API проекта S7 Airlines. (Payment)")
-                .build();
+    public OpenAPI customizeOpenAPI() {
+        final String securitySchemeName = "bearerAuth";
+        return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement()
+                        .addList(securitySchemeName))
+                .components(new Components()
+                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+                                .name(securitySchemeName)
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")));
     }
 }
