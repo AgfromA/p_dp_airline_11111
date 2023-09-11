@@ -4,7 +4,7 @@ import app.config.security.jwt.domain.JwtRequest;
 import app.config.security.jwt.domain.JwtResponse;
 import app.config.security.jwt.domain.RefreshJwtRequest;
 import app.config.security.jwt.service.AuthService;
-import app.controllers.api.rest.JwtControllerApi;
+import app.controllers.api.JwtControllerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

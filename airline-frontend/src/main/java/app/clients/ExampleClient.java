@@ -1,6 +1,5 @@
 package app.clients;
 
-
 import app.controllers.api.rest.ExampleRestApi;
 import org.springframework.cloud.openfeign.FeignClient;
 

@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.controllers.api.rest.EmailControllerApi;
+import app.controllers.api.EmailControllerApi;
 import app.services.MailSender;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;

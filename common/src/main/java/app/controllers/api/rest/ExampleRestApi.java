@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
-
-
-
 @Api(tags = "Example REST")
 @Tag(name = "Example REST", description = "API example description")
 public interface ExampleRestApi {

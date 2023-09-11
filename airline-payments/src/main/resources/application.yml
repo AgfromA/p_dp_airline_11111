@@ -16,16 +16,6 @@ jwt:
 
 
 spring:
-  jpa:
-    database: POSTGRESQL
-    show-sql: false
-    hibernate:
-      ddl-auto: validate
-  datasource:
-    url: jdbc:postgresql://localhost:5432/airline_db?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Europe/Moscow
-    username: root
-    password: root
-    driverClassName: org.postgresql.Driver
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
