@@ -8,7 +8,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-@OpenAPIDefinition(info = @Info(title = "S7 Airlines API", version = "1.0.6",
+@OpenAPIDefinition(info = @Info(title = "S7 Airlines API", version = "1.0.7",
         description = "UI для работы с API проекта S7 Airlines."))
 @Configuration
 public class SwaggerConfig {
