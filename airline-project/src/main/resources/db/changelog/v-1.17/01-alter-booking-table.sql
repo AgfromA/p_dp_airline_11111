@@ -5,19 +5,12 @@ ALTER TABLE booking
 ALTER TABLE booking
     ADD COLUMN IF NOT EXISTS create_time TIMESTAMP WITHOUT TIME ZONE,
     ADD COLUMN IF NOT EXISTS status_id BIGINT,
-    ADD COLUMN IF NOT EXISTS flight_seat_id BIGINT;
+    ADD COLUMN IF NOT EXISTS flight_seat_id BIGINT,
+    ADD COLUMN IF NOT EXISTS booking_status VARCHAR(255);
 
 
 DO $$
     BEGIN
-        IF NOT EXISTS(SELECT 1
-                      FROM information_schema.table_constraints
-                      WHERE table_name = 'booking'
-                        AND constraint_name = 'fk_booking_status') THEN
-            ALTER TABLE booking
-                ADD CONSTRAINT fk_booking_status FOREIGN KEY (status_id) REFERENCES booking_status;
-        END IF;
-
         IF NOT EXISTS(SELECT 1
                       FROM information_schema.table_constraints
                       WHERE table_name = 'booking'
