@@ -3,7 +3,7 @@ package app.controllers.rest;
 import app.controllers.api.rest.BookingRestApi;
 import app.dto.BookingDTO;
 import app.entities.Booking;
-import app.enums.BookingStatusType;
+import app.enums.BookingStatus;
 import app.mappers.BookingMapper;
 import app.services.interfaces.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +58,7 @@ public class BookingRestController implements BookingRestApi {
     @Override
     public ResponseEntity<BookingDTO> createBookingDTO(BookingDTO bookingDTO) {
         log.info("create: creating a new Booking");
-        bookingDTO.setBookingStatusType(BookingStatusType.NOT_PAID);
+        bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
         return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(
                 bookingService.saveBooking(bookingDTO)),
                 HttpStatus.CREATED);
@@ -72,7 +72,7 @@ public class BookingRestController implements BookingRestApi {
             log.info("update: not found Booking with id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        bookingDTO.setBookingStatusType(booking.getStatus().getBookingStatusType());
+        bookingDTO.setBookingStatus(booking.getBookingStatus());
         bookingDTO.setId(id);
         return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(
                 bookingService.saveBooking(bookingDTO)),

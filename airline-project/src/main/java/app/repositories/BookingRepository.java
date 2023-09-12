@@ -1,7 +1,7 @@
 package app.repositories;
 
 import app.entities.Booking;
-import app.entities.BookingStatus;
+import app.enums.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,6 +26,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "DELETE FROM Booking b WHERE b.passenger.id = :passengerId")
     void deleteBookingByPassengerId(@Param("passengerId") long passengerId);
 
-    List<Booking> findByStatusAndCreateTime(BookingStatus status, LocalDateTime createTime);
+    List<Booking> findByBookingStatusAndCreateTime(BookingStatus status, LocalDateTime createTime);
 
 }

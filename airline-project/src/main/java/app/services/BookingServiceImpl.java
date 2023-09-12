@@ -2,11 +2,10 @@ package app.services;
 
 import app.dto.BookingDTO;
 import app.entities.Booking;
-import app.enums.BookingStatusType;
+import app.enums.BookingStatus;
 import app.exceptions.FlightSeatIsBookedException;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
-import app.repositories.BookingStatusRepository;
 import app.services.interfaces.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,8 +24,6 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final PassengerService passengerService;
     private final FlightSeatService flightSeatService;
-    private final BookingStatusRepository bookingStatusRepository;
-    private final BookingStatusService bookingStatusService;
     private final BookingMapper bookingMapper;
 
 
@@ -34,7 +31,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking saveBooking(BookingDTO bookingDTO) {
         var booking = bookingMapper
-                .convertToBookingEntity(bookingDTO,passengerService,flightSeatService, bookingStatusService);
+                .convertToBookingEntity(bookingDTO,passengerService,flightSeatService);
         if (booking.getFlightSeat().getIsBooked()){
             throw new FlightSeatIsBookedException("FlightSeat is already booked.");
         } else {
@@ -93,11 +90,11 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void updateBookingAndFlightSeatStatusIfExpired() {
-        List<Booking> bookingList = bookingRepository.findByStatusAndCreateTime(bookingStatusRepository.findBookingStatusByBookingStatusType(BookingStatusType.NOT_PAID).get(),
+        List<Booking> bookingList = bookingRepository.findByBookingStatusAndCreateTime(BookingStatus.NOT_PAID,
                 LocalDateTime.now().minusMinutes(10));
 
         for (Booking booking : bookingList) {
-            booking.getStatus().setBookingStatusType(BookingStatusType.OVERDUE);
+            booking.setBookingStatus(BookingStatus.OVERDUE);
             booking.getFlightSeat().setIsBooked(false);
             booking.setCreateTime(null);
             bookingRepository.save(booking);

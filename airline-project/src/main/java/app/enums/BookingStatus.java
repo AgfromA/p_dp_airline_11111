@@ -1,8 +1,9 @@
 package app.enums;
 
-public enum BookingStatusType {
+public enum BookingStatus {
     NOT_PAID,
     PAID,
     OVERDUE,
     CANCELED
 }
+

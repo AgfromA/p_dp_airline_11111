@@ -1,5 +1,6 @@
 package app.entities;
 
+import app.enums.BookingStatus;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ public class Booking {
     @Column (name = "create_time")
     private LocalDateTime createTime;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id")
-    private BookingStatus status;
+    @Column(name = "booking_status")
+    @Enumerated(EnumType.STRING)
+    private BookingStatus bookingStatus;
 }

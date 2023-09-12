@@ -1,6 +1,6 @@
 package app.dto;
 
-import app.enums.BookingStatusType;
+import app.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
@@ -33,7 +33,7 @@ public class BookingDTO {
     private LocalDateTime createTime;
 
     @JsonIgnore
-    private BookingStatusType bookingStatusType;
+    private BookingStatus bookingStatus;
 
     @NotNull
     private Long flightSeatId;
