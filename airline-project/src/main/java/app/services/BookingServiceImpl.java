@@ -27,12 +27,13 @@ public class BookingServiceImpl implements BookingService {
     private final FlightSeatService flightSeatService;
     private final BookingStatusRepository bookingStatusRepository;
     private final BookingStatusService bookingStatusService;
+    private final BookingMapper bookingMapper;
 
 
     @Transactional
     @Override
     public Booking saveBooking(BookingDTO bookingDTO) {
-        var booking = BookingMapper.INSTANCE
+        var booking = bookingMapper
                 .convertToBookingEntity(bookingDTO,passengerService,flightSeatService, bookingStatusService);
         if (booking.getFlightSeat().getIsBooked()){
             throw new FlightSeatIsBookedException("FlightSeat is already booked.");
@@ -55,7 +56,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<BookingDTO> getAllBookings(Integer page, Integer size) {
-        return bookingRepository.findAll(PageRequest.of(page, size)).map(BookingMapper.INSTANCE::convertToBookingDTOEntity);
+        return bookingRepository.findAll(PageRequest.of(page, size)).map(bookingMapper::convertToBookingDTOEntity);
     }
 
     @Override

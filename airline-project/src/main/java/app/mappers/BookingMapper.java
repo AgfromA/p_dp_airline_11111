@@ -7,13 +7,11 @@ import app.services.interfaces.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Context;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookingMapper {
-
-    BookingMapper INSTANCE = Mappers.getMapper(BookingMapper.class);
-
     @Mapping(target = "passengerId", expression = "java(booking.getPassenger().getId())")
     @Mapping(target = "flightSeatId", expression = "java(booking.getFlightSeat().getId())")
     @Mapping(target = "bookingStatusType", expression = "java(booking.getStatus().getBookingStatusType())")

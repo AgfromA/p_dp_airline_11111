@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingRestController implements BookingRestApi {
 
     private final BookingService bookingService;
+    private final BookingMapper bookingMapper;
 
     @Override
     public ResponseEntity<Page<BookingDTO>> getAllPagesBookingsDTO(Integer page, Integer size) {
@@ -40,7 +41,7 @@ public class BookingRestController implements BookingRestApi {
             log.info("getById: not found Booking with id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(BookingMapper.INSTANCE.convertToBookingDTOEntity(booking), HttpStatus.OK);
+        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(booking), HttpStatus.OK);
     }
 
     @Override
@@ -51,14 +52,14 @@ public class BookingRestController implements BookingRestApi {
             log.info("getByNumber: not found Booking with number = {}", bookingNumber);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(BookingMapper.INSTANCE.convertToBookingDTOEntity(booking), HttpStatus.OK);
+        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(booking), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<BookingDTO> createBookingDTO(BookingDTO bookingDTO) {
         log.info("create: creating a new Booking");
         bookingDTO.setBookingStatusType(BookingStatusType.NOT_PAID);
-        return new ResponseEntity<>(BookingMapper.INSTANCE.convertToBookingDTOEntity(
+        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(
                 bookingService.saveBooking(bookingDTO)),
                 HttpStatus.CREATED);
     }
@@ -73,7 +74,7 @@ public class BookingRestController implements BookingRestApi {
         }
         bookingDTO.setBookingStatusType(booking.getStatus().getBookingStatusType());
         bookingDTO.setId(id);
-        return new ResponseEntity<>(BookingMapper.INSTANCE.convertToBookingDTOEntity(
+        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(
                 bookingService.saveBooking(bookingDTO)),
                 HttpStatus.OK);
     }

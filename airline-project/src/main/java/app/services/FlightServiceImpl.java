@@ -28,15 +28,17 @@ public class FlightServiceImpl implements FlightService {
     private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
     private final TicketService ticketService;
+    private final FlightMapper flightMapper;
 
     public FlightServiceImpl(FlightRepository flightRepository, AircraftService aircraftService,
                              DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
-                             @Lazy TicketService ticketService) {
+                             @Lazy TicketService ticketService, FlightMapper flightMapper) {
         this.flightRepository = flightRepository;
         this.aircraftService = aircraftService;
         this.destinationService = destinationService;
         this.flightSeatService = flightSeatService;
         this.ticketService = ticketService;
+        this.flightMapper = flightMapper;
     }
 
     @Override
@@ -67,7 +69,7 @@ public class FlightServiceImpl implements FlightService {
                                                                String dateStart, String dateFinish,
                                                                Pageable pageable) {
         return flightRepository.getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
-                .map(FlightMapper.INSTANCE::flightToFlightDTO);
+                .map(flightMapper::flightToFlightDTO);
     }
 
     @Override
@@ -117,14 +119,14 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Loggable
     public Flight saveFlight(FlightDTO flightDTO) {
-        return flightRepository.save(FlightMapper.INSTANCE.flightDTOtoFlight(flightDTO, aircraftService,
+        return flightRepository.save(flightMapper.flightDTOtoFlight(flightDTO, aircraftService,
                 destinationService, ticketService, flightSeatService));
     }
 
     @Override
     @Loggable
     public Flight updateFlight(Long id, FlightDTO flightDTO) {
-        var updatedFlight = FlightMapper.INSTANCE.flightDTOtoFlight(flightDTO, aircraftService,
+        var updatedFlight = flightMapper.flightDTOtoFlight(flightDTO, aircraftService,
                 destinationService, ticketService, flightSeatService);
         return flightRepository.saveAndFlush(updatedFlight);
     }

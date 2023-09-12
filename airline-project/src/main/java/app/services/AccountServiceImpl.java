@@ -22,10 +22,11 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder encoder;
     private final RoleServiceImpl roleService;
+    private final AccountMapper accountMapper;
 
     @Override
     public Account saveAccount(AccountDTO accountDTO) {
-        var account = AccountMapper.INSTANCE.convertToAccount(accountDTO);
+        var account = accountMapper.convertToAccount(accountDTO);
         account.setPassword(encoder.encode(account.getPassword()));
         account.setRoles(roleService.saveRolesToUser(account));
         if (account.getAnswerQuestion() != null) {
@@ -37,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account updateAccount(Long id, AccountDTO accountDTO) {
         var editAccount = accountRepository.getAccountById(id);
-        var account = AccountMapper.INSTANCE.convertToAccount(accountDTO);
+        var account = accountMapper.convertToAccount(accountDTO);
         if (!account.getPassword().equals(editAccount.getPassword())) {
             editAccount.setPassword(encoder.encode(account.getPassword()));
         }

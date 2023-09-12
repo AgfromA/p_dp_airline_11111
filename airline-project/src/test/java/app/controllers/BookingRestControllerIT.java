@@ -38,6 +38,8 @@ class BookingRestControllerIT extends IntegrationTestBase {
     private PassengerService passengerService;
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private BookingMapper bookingMapper;
 
     @Test
     @DisplayName("Save Booking")
@@ -77,7 +79,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        BookingMapper.INSTANCE.convertToBookingDTOEntity(bookingService.getBookingById(id)))));
+                        bookingMapper.convertToBookingDTOEntity(bookingService.getBookingById(id)))));
     }
 
 
@@ -90,7 +92,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        BookingMapper.INSTANCE.convertToBookingDTOEntity(bookingService
+                        bookingMapper.convertToBookingDTOEntity(bookingService
                         .getBookingByNumber(bookingNumber)))));
     }
 
@@ -99,7 +101,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     @DisplayName("Edit Booking by ID")
     void shouldEditBookingById() throws Exception {
         long id = 6002;
-        var booking = BookingMapper.INSTANCE.convertToBookingDTOEntity(bookingService.getBookingById(id));
+        var booking = bookingMapper.convertToBookingDTOEntity(bookingService.getBookingById(id));
         booking.setBookingDate(LocalDateTime.now());
         booking.setPassengerId(passengerService.getPassengerById(1002L).get().getId());
         long numberOfBooking = bookingRepository.count();
