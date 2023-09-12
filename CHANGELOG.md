@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+- #268 добавлен API Gateway
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.
 - #237 Исправлен баг с редактированием Ticket. Убраны аннотации @Data из проекта.
 - #257 Переход AccountMapper, BookingMapper на Mapstruct , а также junit тесты к ним.
