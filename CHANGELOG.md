@@ -1,7 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+- #223 Настроена и синхронизированна секьюрность в payments с помощью JWT токена, создана сущность Test для проверки.
 - #268 добавлен API Gateway
+
+## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.
 - #237 Исправлен баг с редактированием Ticket. Убраны аннотации @Data из проекта.
 - #257 Переход AccountMapper, BookingMapper на Mapstruct , а также junit тесты к ним.
@@ -13,9 +16,10 @@
 - #no_task - added vaadin
 - #278 Перенос мапперов из контроллера в сервис.
 - #285 Фронт для destination
-- #306 Добавлен новый микросервис с фронтом(Vaadin), ExampleDTO и ExampleApi перенесен в common. Весь фронт был перенесен на отдельный сервис в airline-frontend. 
+- #306 Добавлен новый микросервис с фронтом(Vaadin), ExampleDTO и ExampleApi перенесен в common. Весь фронт был перенесен на отдельный сервис в airline-frontend.
 - #236 Исправлен баг UpdateFlightById, справлен FlightMapper (удален прежний, добавлен FlightMapper интерфейс с использованием MapStruct), написаны unit есты для FlightMapper, интеграционные тесты для FlightController (updateFlightById)
 - #294 Добавлен Mapper для Destination через Mapstruct
+
 ## [1.0.6] - 30.07.2023
 - #226 Рефакторинг passenger и account - убрано наследование
 
