@@ -13,6 +13,7 @@
         <module>airline-payments</module>
         <module>airline-project</module>
         <module>airline-frontend</module>
+        <module>airline-gateway</module>
     </modules>
 
     <dependencies>
