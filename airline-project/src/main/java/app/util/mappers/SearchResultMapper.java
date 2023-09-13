@@ -19,19 +19,19 @@ public class SearchResultMapper {
     private final AircraftService aircraftService;
     private final DestinationService destinationService;
     private final TicketService ticketService;
-    private final BookingService bookingService;
     private final FlightSeatService flightSeatService;
+    private final FlightMapper flightMapper;
 
     public SearchResult convertToSearchResultEntity(SearchResultDTO searchResultDTO) {
         var searchResult = new SearchResult();
         searchResult.setId(searchResultDTO.getId());
         searchResult.setSearch(searchService.getSearchById(searchResultDTO.getSearchId()));
-        List<Flight> departFlights = searchResultDTO.getDepartFlight().stream().map(f -> FlightMapper.INSTANCE.flightDTOtoFlight(f, aircraftService,
-                destinationService, ticketService, bookingService, flightSeatService)).collect(Collectors.toList());
+        List<Flight> departFlights = searchResultDTO.getDepartFlight().stream().map(f -> flightMapper.flightDTOtoFlight(f, aircraftService,
+                destinationService, ticketService, flightSeatService)).collect(Collectors.toList());
         searchResult.setDepartFlight(departFlights);
         if (searchResultDTO.getReturnFlight() != null) {
-            List<Flight> returnFlights = searchResultDTO.getReturnFlight().stream().map(f -> FlightMapper.INSTANCE.flightDTOtoFlight(f, aircraftService,
-                    destinationService, ticketService, bookingService, flightSeatService)).collect(Collectors.toList());
+            List<Flight> returnFlights = searchResultDTO.getReturnFlight().stream().map(f -> flightMapper.flightDTOtoFlight(f, aircraftService,
+                    destinationService, ticketService, flightSeatService)).collect(Collectors.toList());
             searchResult.setReturnFlight(returnFlights);
         }
         return searchResult;

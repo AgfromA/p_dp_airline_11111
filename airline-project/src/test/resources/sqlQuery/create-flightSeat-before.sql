@@ -79,23 +79,25 @@ VALUES (14, '21F', false, false,
         (SELECT category.id FROM category WHERE category.id = 1),
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 3));
 
-INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id, is_booked)
 VALUES (1, 500, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 1),
-        (SELECT seats.id FROM seats WHERE seats.id = 1));
-INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
+        (SELECT seats.id FROM seats WHERE seats.id = 1), false);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id, is_booked)
 VALUES (2, 600, true, true,
         (SELECT flights.id FROM flights WHERE flights.id = 1),
-        (SELECT seats.id FROM seats WHERE seats.id = 2));
-INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
+        (SELECT seats.id FROM seats WHERE seats.id = 2), false);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id, is_booked)
 VALUES (3, 650, true, true, (SELECT flights.id FROM flights WHERE flights.id = 1),
-        (SELECT seats.id FROM seats WHERE seats.id = 3));
-INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
+        (SELECT seats.id FROM seats WHERE seats.id = 3), false);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id, is_booked)
 VALUES (4, 500, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 1),
-        (SELECT seats.id FROM seats WHERE seats.id = 4));
-INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
+        (SELECT seats.id FROM seats WHERE seats.id = 4), false);
+
+--booked flight_seat
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id, is_booked)
 VALUES (5, 500, true, false,
         (SELECT flights.id FROM flights WHERE flights.id = 1),
-        (SELECT seats.id FROM seats WHERE seats.id = 5));
+        (SELECT seats.id FROM seats WHERE seats.id = 5), true);
 

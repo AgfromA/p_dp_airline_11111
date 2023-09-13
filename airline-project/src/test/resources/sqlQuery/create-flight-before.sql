@@ -134,9 +134,3 @@ INSERT INTO tickets (id, ticket_number, flight_id, passenger_id, flight_seat_id)
 VALUES (2, 'ZX-3333', (SELECT flights.id FROM flights WHERE flights.id = 1),
         (SELECT passengers.id FROM passengers WHERE passengers.id = 5),
         (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 3));
-
-INSERT INTO booking (id, booking_data_time, booking_number, flight_id, passenger_id, category_id)
-VALUES (1, '2023-10-20 10:50:00', 'SV-221122',
-        (SELECT flights.id FROM flights WHERE flights.id = 1),
-        6,
-        (SELECT category.id FROM category WHERE category.id = 3));

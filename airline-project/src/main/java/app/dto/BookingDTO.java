@@ -1,7 +1,7 @@
 package app.dto;
 
-import app.entities.Booking;
-import app.enums.CategoryType;
+import app.enums.BookingStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,18 +29,12 @@ public class BookingDTO {
     @NotNull
     private Long passengerId;
 
-    @NotNull
-    private Long flightId;
+    @JsonIgnore
+    private LocalDateTime createTime;
+
+    @JsonIgnore
+    private BookingStatus bookingStatus;
 
     @NotNull
-    private CategoryType categoryType;
-
-    public BookingDTO(Booking booking) {
-        this.id = booking.getId();
-        this.bookingNumber = booking.getBookingNumber();
-        this.bookingDate = booking.getBookingDate();
-        this.passengerId = booking.getPassenger().getId();
-        this.flightId = booking.getFlight().getId();
-        this.categoryType = booking.getCategory().getCategoryType();
-    }
+    private Long flightSeatId;
 }

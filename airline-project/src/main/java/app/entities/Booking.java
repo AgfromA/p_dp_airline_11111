@@ -1,8 +1,7 @@
 package app.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import app.enums.BookingStatus;
 import lombok.*;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -35,12 +34,14 @@ public class Booking {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    @ManyToOne
-    @JoinColumn(name = "flight_id")
-    @JsonBackReference
-    private Flight flight;
-
     @OneToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "flight_seat_id")
+    private FlightSeat flightSeat;
+
+    @Column (name = "create_time")
+    private LocalDateTime createTime;
+
+    @Column(name = "booking_status")
+    @Enumerated(EnumType.STRING)
+    private BookingStatus bookingStatus;
 }

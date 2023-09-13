@@ -2,12 +2,11 @@ package app.services;
 
 import app.dto.BookingDTO;
 import app.entities.Booking;
+import app.enums.BookingStatus;
+import app.exceptions.FlightSeatIsBookedException;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
-import app.services.interfaces.BookingService;
-import app.services.interfaces.CategoryService;
-import app.services.interfaces.FlightService;
-import app.services.interfaces.PassengerService;
+import app.services.interfaces.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,19 +22,26 @@ import java.util.UUID;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
-    private final CategoryService categoryService;
     private final PassengerService passengerService;
-    private final FlightService flightService;
+    private final FlightSeatService flightSeatService;
+    private final BookingMapper bookingMapper;
 
 
     @Transactional
     @Override
     public Booking saveBooking(BookingDTO bookingDTO) {
-        var booking = BookingMapper.INSTANCE
-                .convertToBookingEntity(bookingDTO,passengerService,flightService,categoryService);
-        booking.setPassenger((passengerService.getPassengerById(booking.getPassenger().getId())).get());
-        booking.setFlight(flightService.getFlightByCode(booking.getFlight().getCode()));
-        booking.setCategory(categoryService.getCategoryByType(booking.getCategory().getCategoryType()));
+        var booking = bookingMapper
+                .convertToBookingEntity(bookingDTO,passengerService,flightSeatService);
+        if (booking.getFlightSeat().getIsBooked()){
+            throw new FlightSeatIsBookedException("FlightSeat is already booked.");
+        } else {
+            booking.getFlightSeat().setIsBooked(true);
+        }
+
+        if (booking.getCreateTime() == null) {
+            booking.setCreateTime(LocalDateTime.now());
+        }
+
         if (booking.getId() == 0) {
             booking.setBookingNumber(generateBookingNumber());
         } else {
@@ -47,9 +53,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<BookingDTO> getAllBookings(Integer page, Integer size) {
-        return bookingRepository.findAll(PageRequest.of(page, size)).map(entity -> {
-            return BookingMapper.INSTANCE.convertToBookingDTOEntity(entity,passengerService,flightService,categoryService);
-        });
+        return bookingRepository.findAll(PageRequest.of(page, size)).map(bookingMapper::convertToBookingDTOEntity);
     }
 
     @Override
@@ -84,7 +88,16 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> findByFlightId(Long flightId) {
-        return bookingRepository.findByFlightId(flightId);
+    @Transactional
+    public void updateBookingAndFlightSeatStatusIfExpired() {
+        List<Booking> bookingList = bookingRepository.findByBookingStatusAndCreateTime(BookingStatus.NOT_PAID,
+                LocalDateTime.now().minusMinutes(10));
+
+        for (Booking booking : bookingList) {
+            booking.setBookingStatus(BookingStatus.OVERDUE);
+            booking.getFlightSeat().setIsBooked(false);
+            booking.setCreateTime(null);
+            bookingRepository.save(booking);
+        }
     }
 }

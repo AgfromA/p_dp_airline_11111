@@ -3,13 +3,10 @@ package app.mappers;
 import app.dto.AccountDTO;
 import app.entities.account.Account;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants;
 
-@Mapper
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AccountMapper {
-
-    AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);
-
     AccountDTO convertToAccountDTO(Account account);
 
     Account convertToAccount(AccountDTO accountDTO);

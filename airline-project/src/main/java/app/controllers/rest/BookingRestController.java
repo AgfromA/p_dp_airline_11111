@@ -2,6 +2,9 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.BookingRestApi;
 import app.dto.BookingDTO;
+import app.entities.Booking;
+import app.enums.BookingStatus;
+import app.mappers.BookingMapper;
 import app.services.interfaces.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingRestController implements BookingRestApi {
 
     private final BookingService bookingService;
+    private final BookingMapper bookingMapper;
 
     @Override
     public ResponseEntity<Page<BookingDTO>> getAllPagesBookingsDTO(Integer page, Integer size) {
@@ -37,7 +41,7 @@ public class BookingRestController implements BookingRestApi {
             log.info("getById: not found Booking with id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(new BookingDTO(booking), HttpStatus.OK);
+        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(booking), HttpStatus.OK);
     }
 
     @Override
@@ -48,24 +52,30 @@ public class BookingRestController implements BookingRestApi {
             log.info("getByNumber: not found Booking with number = {}", bookingNumber);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(new BookingDTO(booking), HttpStatus.OK);
+        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(booking), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<BookingDTO> createBookingDTO(BookingDTO bookingDTO) {
         log.info("create: creating a new Booking");
-        return new ResponseEntity<>(new BookingDTO(bookingService.saveBooking(bookingDTO)),HttpStatus.CREATED);
+        bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
+        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(
+                bookingService.saveBooking(bookingDTO)),
+                HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<BookingDTO> updateBookingDTOById(Long id, BookingDTO bookingDTO) {
         log.info("update: edit Booking with id = {}", id);
-        if (bookingService.getBookingById(id) == null) {
+        Booking booking = bookingService.getBookingById(id);
+        if (booking == null) {
             log.info("update: not found Booking with id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        bookingDTO.setBookingStatus(booking.getBookingStatus());
         bookingDTO.setId(id);
-        return new ResponseEntity<>(new BookingDTO(bookingService.saveBooking(bookingDTO)),
+        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(
+                bookingService.saveBooking(bookingDTO)),
                 HttpStatus.OK);
     }
 

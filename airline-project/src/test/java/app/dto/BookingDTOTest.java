@@ -31,15 +31,14 @@ class BookingDTOTest extends EntityTest {
         bookingDtoJSON.put("id", 10000L);
         bookingDtoJSON.put("bookingDate", "2023-01-20T17:02:05.003992");
         bookingDtoJSON.put("passengerId", 1000L);
-        bookingDtoJSON.put("flightId", 1L);
-        bookingDtoJSON.put("categoryType", "BUSINESS");
+        bookingDtoJSON.put("flightSeatId", 1L);
 
         return bookingDtoJSON;
     }
 
 
     @Test
-    public void validBookingShouldValidate() {
+    void validBookingShouldValidate() {
         BookingDTO testBooking;
         var bookingJson = initJSONObject();
 
@@ -52,36 +51,23 @@ class BookingDTOTest extends EntityTest {
     }
 
     @Test
-    public void nullIdPassengerShouldNotValidate() {
+    void nullFlightSeatIdShouldNotValidate() {
+        BookingDTO testBooking;
+        var bookingJson = initJSONObject();
+        bookingJson.replace("flightSeatId", null);
+        try {
+            testBooking = mapper.readValue(bookingJson.toString(), BookingDTO.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testBooking));
+    }
+
+    @Test
+    void nullIdPassengerShouldNotValidate() {
         BookingDTO testBooking;
         var bookingJson = initJSONObject();
         bookingJson.replace("passengerId", null);
-        try {
-            testBooking = mapper.readValue(bookingJson.toString(), BookingDTO.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testBooking));
-    }
-
-    @Test
-    public void nullFlightShouldNotValidate() {
-        BookingDTO testBooking;
-        var bookingJson = initJSONObject();
-        bookingJson.replace("flightId", null);
-        try {
-            testBooking = mapper.readValue(bookingJson.toString(), BookingDTO.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testBooking));
-    }
-
-    @Test
-    public void nullCategoryShouldNotValidate() {
-        BookingDTO testBooking;
-        var bookingJson = initJSONObject();
-        bookingJson.replace("categoryType", null);
         try {
             testBooking = mapper.readValue(bookingJson.toString(), BookingDTO.class);
         } catch (IOException e) {
