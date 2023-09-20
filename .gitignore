@@ -35,3 +35,6 @@
 *.json
 /airline-frontend/frontend/
 /airline-frontend/node_modules/
+/airline-project/node_modules/
+/airline-project/frontend/generated/
+/airline-project/frontend/index.html

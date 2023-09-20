@@ -4,6 +4,7 @@
 - #223 Настроена и синхронизированна секьюрность в payments с помощью JWT токена, создана сущность Test для проверки.
 - #268 добавлен API Gateway
 - #231 Добавлены поля CreateTime, BookingStatus, FlightSeat, удалены поля Flight и Category, исправлена соответствующая логика и тесты. Добавлен щедуллер для booking.
+- #296 mapstruct for FlightSeat 
 - #302 Добавлен Mapper для Timezone через Mapstruct
 
 ## [1.0.7] - 8.09.2023
