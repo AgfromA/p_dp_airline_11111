@@ -33,7 +33,7 @@ public class FlightSeatDTO {
     @NotNull(message = "seatNumber shouldn't be null")
     private Long seatNumber;
 
-    public FlightSeatDTO(FlightSeat entity){
+    public FlightSeatDTO(FlightSeat entity) {
         this.id = entity.getId();
         this.fare = entity.getFare();
         this.isRegistered = entity.getIsRegistered();
