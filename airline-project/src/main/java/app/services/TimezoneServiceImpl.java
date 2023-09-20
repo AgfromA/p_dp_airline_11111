@@ -4,7 +4,7 @@ import app.dto.TimezoneDTO;
 import app.entities.Timezone;
 import app.repositories.TimezoneRepository;
 import app.services.interfaces.TimezoneService;
-import app.util.mappers.TimezoneMapper;
+import app.mappers.TimezoneMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,14 +23,14 @@ public class TimezoneServiceImpl implements TimezoneService {
     @Transactional
     @Override
     public Timezone saveTimezone(TimezoneDTO timezoneDTO) {
-        var timezone = timezoneMapper.convertToTimezoneEntity(timezoneDTO);
+        var timezone = timezoneMapper.convertToTimezone(timezoneDTO);
         return timezoneRepository.save(timezone);
     }
 
     @Override
     @Transactional
     public Timezone updateTimezone(TimezoneDTO timezoneDTO) {
-        var timezone = timezoneMapper.convertToTimezoneEntity(timezoneDTO);
+        var timezone = timezoneMapper.convertToTimezone(timezoneDTO);
         return timezoneRepository.save(timezone);
     }
 
