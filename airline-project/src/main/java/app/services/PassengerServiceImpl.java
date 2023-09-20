@@ -2,12 +2,12 @@ package app.services;
 
 import app.dto.PassengerDTO;
 import app.entities.Passenger;
+import app.mappers.PassengerMapper;
 import app.repositories.PassengerRepository;
 import app.services.interfaces.BookingService;
 import app.services.interfaces.FlightSeatService;
 import app.services.interfaces.PassengerService;
 import app.services.interfaces.TicketService;
-import app.util.mappers.PassengerMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +41,7 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     @Transactional
     public Passenger savePassenger(PassengerDTO passengerDTO) {
-        var passenger = passengerMapper.convertToPassengerEntity(passengerDTO);
+        var passenger = passengerMapper.convertToPassenger(passengerDTO);
         return passengerRepository.save(passenger);
     }
 
@@ -54,7 +54,7 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     @Transactional
     public Passenger updatePassengerById(Long id, PassengerDTO passengerDTO) {
-        var passenger = passengerMapper.convertToPassengerEntity(passengerDTO);
+        var passenger = passengerMapper.convertToPassenger(passengerDTO);
         var editPassenger = new Passenger();
         editPassenger.setFirstName(passenger.getFirstName());
         editPassenger.setLastName(passenger.getLastName());
