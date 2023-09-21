@@ -101,3 +101,7 @@ VALUES (5, 500, true, false,
         (SELECT flights.id FROM flights WHERE flights.id = 1),
         (SELECT seats.id FROM seats WHERE seats.id = 5), true);
 
+INSERT INTO destination (id, airport_code, airport_name, city_name, country_name, timezone)
+VALUES (1, 'VKO', 'Внуково', 'Москва', 'Россия', 'GMT +3');
+INSERT INTO destination (id, airport_code, airport_name, city_name, country_name, timezone)
+VALUES (4, 'OMS', 'Омск', 'Омск', 'Россия', 'GMT +6');
