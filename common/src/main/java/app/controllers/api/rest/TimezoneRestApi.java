@@ -16,10 +16,9 @@ import javax.validation.constraints.Min;
 
 @Api(tags = "Timezone REST")
 @Tag(name = "Timezone REST", description = "API для операций с временными зонами")
-@RequestMapping("/api/timezones")
 public interface TimezoneRestApi {
 
-    @GetMapping
+    @RequestMapping(value = "/api/timezones/", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of all Timezone")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Timezones found"),
@@ -35,7 +34,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 200, message = "Timezone found"),
             @ApiResponse(code = 404, message = "Timezone not found")
     })
-    @GetMapping("/{id}")
+    @RequestMapping(value = "/api/timezones/{id}", method = RequestMethod.GET)
     ResponseEntity<TimezoneDTO> getTimezoneDTOById(
             @ApiParam(
                     name = "id",
@@ -49,7 +48,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 201, message = "Timezone created"),
             @ApiResponse(code = 405, message = "Bad request")
     })
-    @PostMapping
+    @RequestMapping(value = "/api/timezones/", method = RequestMethod.POST)
     ResponseEntity<TimezoneDTO> createTimezoneDTO(
             @ApiParam(
                     name = "timezone",
@@ -62,7 +61,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 200, message = "Timezone has been updated"),
             @ApiResponse(code = 404, message = "Timezone not found")
     })
-    @PatchMapping("/{id}")
+    @RequestMapping(value = "/api/timezones/{id}", method = RequestMethod.PATCH)
     ResponseEntity<TimezoneDTO> updateTimezoneDTOById(
             @ApiParam(
                     name = "id",
@@ -80,12 +79,12 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 200, message = "Timezone has been removed"),
             @ApiResponse(code = 404, message = "Timezone not found")
     })
-    @DeleteMapping(value = "/{id}")
+    @RequestMapping(value = "/api/timezones/{id}", method = RequestMethod.DELETE)
     ResponseEntity<HttpStatus> deleteTimezoneById(
             @ApiParam(
                     name = "id",
                     value = "Timezone.id",
                     required = true
             )
-            @PathVariable Long id);
+            @PathVariable ("id") Long id);
 }

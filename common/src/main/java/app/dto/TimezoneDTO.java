@@ -1,6 +1,6 @@
 package app.dto;
 
-import app.entities.Timezone;
+//import app.entities.Timezone;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import javax.validation.constraints.NotBlank;
@@ -31,12 +31,12 @@ public class TimezoneDTO {
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 9, message = "GMT winter name must be between 2 and 7 characters")
     private String gmtWinter;
-
-    public TimezoneDTO(Timezone timezone) {
-        this.id = timezone.getId();
-        this.countryName = timezone.getCountryName();
-        this.cityName = timezone.getCityName();
-        this.gmt = timezone.getGmt();
-        this.gmtWinter = timezone.getGmtWinter();
-    }
+//
+//    public TimezoneDTO(Timezone timezone) {
+//        this.id = timezone.getId();
+//        this.countryName = timezone.getCountryName();
+//        this.cityName = timezone.getCityName();
+//        this.gmt = timezone.getGmt();
+//        this.gmtWinter = timezone.getGmtWinter();
+//    }
 }
