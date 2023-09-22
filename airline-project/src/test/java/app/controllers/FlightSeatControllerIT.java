@@ -138,4 +138,17 @@ class FlightSeatControllerIT extends IntegrationTestBase {
                 .andExpect(content().json(objectMapper.writeValueAsString(flightSeatDTOS)));
     }
 
+    @Test
+    void shouldGenerateFlightSeatsForFlightIdempotent() throws Exception {
+        String flightId = "1";
+        mockMvc.perform(post("http://localhost:8080/api/flight-seats/all-flight-seats/{flightId}", flightId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(post("http://localhost:8080/api/flight-seats/all-flight-seats/{flightId}", flightId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
 }
