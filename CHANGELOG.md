@@ -1,7 +1,7 @@
 # Changelog
 
 ## [Unreleased]
-- #297 Добавлен Mapper через MupStruck, Изменены зависимости в классе PassengerServiceImpl (логика в методах класса не менялась), Удален класс PassengerMapper, Добавлен unit тест для PassengerMapper (тест проходит успешно)
+- #296 Добавлен Mapper через MupStruck, Изменены зависимости в классе PassengerServiceImpl (логика в методах класса не менялась), Удален класс PassengerMapper, Добавлен unit тест для PassengerMapper (тест проходит успешно)
 - #223 Настроена и синхронизированна секьюрность в payments с помощью JWT токена, создана сущность Test для проверки.
 - #268 добавлен API Gateway
 - #231 Добавлены поля CreateTime, BookingStatus, FlightSeat, удалены поля Flight и Category, исправлена соответствующая логика и тесты. Добавлен щедуллер для booking.
