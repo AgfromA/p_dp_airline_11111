@@ -18,7 +18,7 @@ import javax.validation.constraints.Min;
 @Tag(name = "Timezone REST", description = "API для операций с временными зонами")
 public interface TimezoneRestApi {
 
-    @RequestMapping(value = "/api/timezones/", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/timezones", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of all Timezone")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Timezones found"),
@@ -48,7 +48,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 201, message = "Timezone created"),
             @ApiResponse(code = 405, message = "Bad request")
     })
-    @RequestMapping(value = "/api/timezones/", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/timezones", method = RequestMethod.POST)
     ResponseEntity<TimezoneDTO> createTimezoneDTO(
             @ApiParam(
                     name = "timezone",
