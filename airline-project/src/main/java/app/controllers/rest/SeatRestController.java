@@ -6,7 +6,6 @@ import app.dto.SeatDTO;
 import app.exceptions.ViolationOfForeignKeyConstraintException;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.SeatService;
-import app.util.mappers.SeatMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,7 +24,6 @@ public class SeatRestController implements SeatRestApi {
 
     private final SeatService seatService;
     private final AircraftService aircraftService;
-    private final SeatMapper seatMapper;
 
     @Override
     public ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTO(Integer page, Integer size) {

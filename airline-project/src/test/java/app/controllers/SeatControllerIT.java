@@ -2,14 +2,11 @@ package app.controllers;
 
 import app.dto.AircraftDTO;
 import app.dto.SeatDTO;
-import app.entities.Aircraft;
 import app.enums.CategoryType;
 import app.repositories.SeatRepository;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.CategoryService;
 import app.services.interfaces.SeatService;
-import app.util.mappers.SeatMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

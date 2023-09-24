@@ -7,6 +7,7 @@
 - #231 Добавлены поля CreateTime, BookingStatus, FlightSeat, удалены поля Flight и Category, исправлена соответствующая логика и тесты. Добавлен щедуллер для booking.
 - #296 mapstruct for FlightSeat 
 - #302 Добавлен Mapper для Timezone через Mapstruct
+- #300 mapper через mapstruct для Seat
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.
