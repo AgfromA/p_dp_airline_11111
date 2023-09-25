@@ -2,6 +2,7 @@ package app.dto;
 
 import app.entities.Category;
 import app.entities.Seat;
+import app.enums.CategoryType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import javax.validation.constraints.NotBlank;
@@ -28,7 +29,7 @@ public class SeatDTO {
     @NotNull(message = "Field isLockedBack cannot be null")
     private Boolean isLockedBack;
 
-    private Category category;
+    private CategoryType category;
 
 //    @NotNull(message = "Field aircraft cannot be null")         // эта проверка осталась в сущности, т.к. при сохранении многих Seat по aircraftID это поле сеттится отдельно.
     private long aircraftId;
@@ -38,7 +39,7 @@ public class SeatDTO {
         this.seatNumber = seat.getSeatNumber();
         this.isNearEmergencyExit = seat.getIsNearEmergencyExit();
         this.isLockedBack = seat.getIsLockedBack();
-        this.category = seat.getCategory();
+        this.category = seat.getCategory().getCategoryType();
         this.aircraftId=seat.getAircraft().getId();
     }
 }

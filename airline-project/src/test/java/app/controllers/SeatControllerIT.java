@@ -41,7 +41,7 @@ class SeatControllerIT extends IntegrationTestBase {
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(true);
         seatDTO.setIsNearEmergencyExit(false);
-        seatDTO.setCategory(categoryService.getCategoryByType(CategoryType.ECONOMY));
+        seatDTO.setCategory(CategoryType.ECONOMY);
         seatDTO.setAircraftId(1);
 
         mockMvc.perform(post("http://localhost:8080/api/seats")
