@@ -109,7 +109,8 @@ public class SeatServiceImpl implements SeatService {
             enumSeatsCounter += 1;
 
             var savedSeat = saveSeat(seatDTO);
-            savedSeatsDTO.add(new SeatDTO(savedSeat));
+
+            savedSeatsDTO.add(SeatMapper.INSTANCE.convertToSeatDTOEntity(savedSeat));
         }
         return savedSeatsDTO;
     }
