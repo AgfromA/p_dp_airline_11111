@@ -10,7 +10,7 @@ import app.repositories.SeatRepository;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.CategoryService;
 import app.services.interfaces.SeatService;
-import app.util.mappers.SeatMapper;
+import app.mappers.SeatMapper;
 import org.junit.Test;
 import org.springframework.data.domain.PageImpl;
 
@@ -38,7 +38,6 @@ public class SeatServiceImplTest {
             seatRepository,
             categoryService,
             aircraftService,
-            seatMapper,
             flightSeatRepository
     );
 
@@ -63,7 +62,7 @@ public class SeatServiceImplTest {
                 .thenReturn(aircraft);
         when(seatRepository.findByAircraftId(eq(AIRCRAFT_TEST_ID), any()))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
-        when(seatMapper.convertToSeatEntity(any()))
+        when(seatMapper.convertToSeatEntity(any(), categoryService, aircraftService))
                 .thenAnswer( ans -> {
                     SeatDTO seatDTO = ans.getArgument(0);
                     var seat = new Seat();

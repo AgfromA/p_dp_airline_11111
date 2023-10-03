@@ -11,7 +11,7 @@ import app.repositories.SeatRepository;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.CategoryService;
 import app.services.interfaces.SeatService;
-import app.util.mappers.SeatMapper;
+import app.mappers.SeatMapper;
 import org.springframework.data.domain.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,13 +31,12 @@ public class SeatServiceImpl implements SeatService {
     private final SeatRepository seatRepository;
     private final CategoryService categoryService;
     private final AircraftService aircraftService;
-    private final SeatMapper seatMapper;
     private final FlightSeatRepository flightSeatRepository;
 
     @Transactional
     @Override
     public Seat saveSeat(SeatDTO seatDTO) {
-        var seat = seatMapper.convertToSeatEntity(seatDTO);
+        var seat = SeatMapper.INSTANCE.convertToSeatEntity(seatDTO, categoryService, aircraftService);
         if (seat.getId() != 0) {
             Seat aldSeat = getSeatById(seat.getId());
             if (aldSeat != null && aldSeat.getAircraft() != null) {
@@ -56,7 +55,7 @@ public class SeatServiceImpl implements SeatService {
     @Override
     @Transactional
     public Seat editSeatById(Long id, SeatDTO seatDTO) {
-        var seat = seatMapper.convertToSeatEntity(seatDTO);
+        var seat = SeatMapper.INSTANCE.convertToSeatEntity(seatDTO, categoryService, aircraftService);
         var targetSeat = seatRepository.findById(id).orElse(null);
         if (seat.getCategory() != null && seat.getCategory().getCategoryType() != targetSeat.getCategory().getCategoryType()) {
             targetSeat.setCategory(categoryService.getCategoryByType(seat.getCategory().getCategoryType()));
@@ -83,7 +82,7 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public Page<SeatDTO> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
         return seatRepository.findByAircraftId(id, pageable).map(entity -> {
-            return seatMapper.convertToSeatDTOEntity(entity);
+            return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity, categoryService);
 
         });
     }
@@ -136,7 +135,7 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public Page<SeatDTO> getAllPagesSeats(Integer page, Integer size) {
         return seatRepository.findAll(PageRequest.of(page, size)).map(entity -> {
-            return seatMapper.convertToSeatDTOEntity(entity);
+            return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity, categoryService);
         });
     }
 }
