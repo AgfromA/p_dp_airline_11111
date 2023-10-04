@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+- #308 Добавлен сервис аутентификации через Google ("airline-oauth"), добавлена кнопка "Вход с google" во view. Работа сервиса описана в README oauth
 - #296 Добавлен Mapper через MupStruck, Изменены зависимости в классе PassengerServiceImpl (логика в методах класса не менялась), Удален класс PassengerMapper, Добавлен unit тест для PassengerMapper (тест проходит успешно)
 - #223 Настроена и синхронизированна секьюрность в payments с помощью JWT токена, создана сущность Test для проверки.
 - #268 добавлен API Gateway
