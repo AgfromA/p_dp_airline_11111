@@ -9,6 +9,7 @@
 - #296 mapstruct for FlightSeat 
 - #302 Добавлен Mapper для Timezone через Mapstruct
 - #300 mapper через mapstruct для Seat
+- #290 Фронт CRUD для SeatDTO, класс SeatDTO исправлен (удален Seat из конструктора), SeatDTO-SeatRestApi-CategoryType перенесены в common
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.

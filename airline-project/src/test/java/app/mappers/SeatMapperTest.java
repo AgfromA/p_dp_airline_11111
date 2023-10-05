@@ -45,12 +45,12 @@ public class SeatMapperTest {
         seat.setCategory(category);
         seat.setAircraft(aircraft);
 
-        SeatDTO result = seatMapper.convertToSeatDTOEntity(seat,categoryService);
+        SeatDTO result = seatMapper.convertToSeatDTOEntity(seat);
         Assertions.assertEquals(seat.getId(), result.getId());
         Assertions.assertEquals(seat.getSeatNumber(), result.getSeatNumber());
         Assertions.assertEquals(seat.getIsNearEmergencyExit(), result.getIsNearEmergencyExit());
         Assertions.assertEquals(seat.getIsLockedBack(), result.getIsLockedBack());
-        Assertions.assertEquals(seat.getCategory(), result.getCategory());
+        Assertions.assertEquals(seat.getCategory().getCategoryType(), result.getCategory());
         Assertions.assertEquals(seat.getAircraft().getId(), result.getAircraftId());
 
     }
@@ -68,21 +68,21 @@ public class SeatMapperTest {
         aircraft.setAircraftNumber("77777");
         when(aircraftService.getAircraftById(1002L)).thenReturn(aircraft);
 
-        Seat seat = new Seat();
-        seat.setId(1003L);
-        seat.setSeatNumber("400A");
-        seat.setIsNearEmergencyExit(true);
-        seat.setIsLockedBack(true);
-        seat.setCategory(category);
-        seat.setAircraft(aircraft);
+        SeatDTO seatDTO = new SeatDTO();
+        seatDTO.setId(1003L);
+        seatDTO.setSeatNumber("400A");
+        seatDTO.setIsNearEmergencyExit(true);
+        seatDTO.setIsLockedBack(true);
+        seatDTO.setCategory(category.getCategoryType());
+        seatDTO.setAircraftId(aircraft.getId());
 
-        SeatDTO result = seatMapper.convertToSeatDTOEntity(seat,categoryService);
-        Assertions.assertEquals(seat.getId(), result.getId());
-        Assertions.assertEquals(seat.getSeatNumber(), result.getSeatNumber());
-        Assertions.assertEquals(seat.getIsNearEmergencyExit(), result.getIsNearEmergencyExit());
-        Assertions.assertEquals(seat.getIsLockedBack(), result.getIsLockedBack());
-        Assertions.assertEquals(seat.getCategory(), result.getCategory());
-        Assertions.assertEquals(seat.getAircraft().getId(), result.getAircraftId());
+        Seat result = seatMapper.convertToSeatEntity(seatDTO, categoryService, aircraftService);
+        Assertions.assertEquals(seatDTO.getId(), result.getId());
+        Assertions.assertEquals(seatDTO.getSeatNumber(), result.getSeatNumber());
+        Assertions.assertEquals(seatDTO.getIsNearEmergencyExit(), result.getIsNearEmergencyExit());
+        Assertions.assertEquals(seatDTO.getIsLockedBack(), result.getIsLockedBack());
+        Assertions.assertEquals(seatDTO.getCategory(), result.getCategory().getCategoryType());
+        Assertions.assertEquals(seatDTO.getAircraftId(), result.getAircraft().getId());
 
     }
 }
