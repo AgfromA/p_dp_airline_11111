@@ -31,12 +31,7 @@ public class SeatDTOTest extends EntityTest {
         jsonObject.put("seatNumber", "4");
         jsonObject.put("isNearEmergencyExit", false);
         jsonObject.put("isLockedBack", true);
-
-        var jsonCategory = new JSONObject();
-        jsonCategory.put("id", 1);
-        jsonCategory.put("categoryType", "FIRST");
-        jsonObject.put("category", jsonCategory);
-
+        jsonObject.put("category", "FIRST");
         jsonObject.put("aircraftId", 1);
         String testJSON = jsonObject.toString();
 
@@ -58,12 +53,7 @@ public class SeatDTOTest extends EntityTest {
         jsonObject.put("seatNumber", "4A");
         jsonObject.put("isNearEmergencyExit", null);
         jsonObject.put("isLockedBack", true);
-
-        var jsonCategory = new JSONObject();
-        jsonCategory.put("id", 1);
-        jsonCategory.put("categoryType", "FIRST");
-
-        jsonObject.put("category", jsonCategory);
+        jsonObject.put("category", "FIRST");
         jsonObject.put("aircraftId", 1);
         String testJSON = jsonObject.toString();
 
@@ -84,13 +74,7 @@ public class SeatDTOTest extends EntityTest {
         jsonObject.put("seatNumber", "4A");
         jsonObject.put("isNearEmergencyExit", false);
         jsonObject.put("isLockedBack", null);
-
-        var jsonCategory = new JSONObject();
-        jsonCategory.put("id", 1);
-        jsonCategory.put("categoryType", "FIRST");
-
-        jsonObject.put("category", jsonCategory);
-
+        jsonObject.put("category", "FIRST");
         jsonObject.put("aircraftId", 1);
         var testJSON = jsonObject.toString();
 

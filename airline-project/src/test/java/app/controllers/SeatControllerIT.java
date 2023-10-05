@@ -3,6 +3,7 @@ package app.controllers;
 import app.dto.AircraftDTO;
 import app.dto.SeatDTO;
 import app.enums.CategoryType;
+import app.mappers.SeatMapper;
 import app.repositories.SeatRepository;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.CategoryService;
@@ -41,8 +42,8 @@ class SeatControllerIT extends IntegrationTestBase {
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(true);
         seatDTO.setIsNearEmergencyExit(false);
-        seatDTO.setCategory(categoryService.getCategoryByType(CategoryType.ECONOMY));
-        seatDTO.setAircraftId(1);
+        seatDTO.setCategory(CategoryType.ECONOMY);
+        seatDTO.setAircraftId(1L);
 
         mockMvc.perform(post("http://localhost:8080/api/seats")
                         .content(objectMapper.writeValueAsString(seatDTO))
@@ -59,7 +60,8 @@ class SeatControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/seats/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(new SeatDTO(seatService.getSeatById(id)))));
+
+                .andExpect(content().json(objectMapper.writeValueAsString(SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.getSeatById(id)))));
     }
 
     @Test
@@ -72,7 +74,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldEditSeat() throws Exception {
-        var seatDTO = new SeatDTO(seatService.getSeatById(1));
+        var seatDTO = SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.getSeatById(1));
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(false);
         seatDTO.setIsNearEmergencyExit(true);
@@ -112,7 +114,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        seatDTO.setId(1);
+        seatDTO.setId(1L);
         long id = seatDTO.getId();
         mockMvc.perform(patch("http://localhost:8080/api/seats/{id}", id)
                         .content(objectMapper.writeValueAsString(seatDTO))

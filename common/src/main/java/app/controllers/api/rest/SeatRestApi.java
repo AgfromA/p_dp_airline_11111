@@ -11,14 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -27,10 +20,9 @@ import java.util.List;
 
 @Api(tags = "Seat REST")
 @Tag(name = "Seat REST", description = "API для операций с физическими местами в самолете")
-@RequestMapping("/api/seats")
 public interface SeatRestApi {
 
-    @GetMapping
+    @RequestMapping(value = "/api/seats", method = RequestMethod.GET)
     @ApiOperation(value = "Get all Seats")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Seats found"),
@@ -40,7 +32,7 @@ public interface SeatRestApi {
                                          @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
                                          @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size);
 
-    @GetMapping("/aircraft/{aircraftId}")
+    @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Seats by \"aircraftId\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Seats found"),
@@ -54,7 +46,7 @@ public interface SeatRestApi {
             )
             @PathVariable("aircraftId") Long aircraftId);
 
-    @GetMapping("/{id}")
+    @RequestMapping(value = "/api/seats/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Seat by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "seat found"),
@@ -67,7 +59,7 @@ public interface SeatRestApi {
             )
             @PathVariable("id") Long id);
 
-    @PostMapping
+    @RequestMapping(value = "/api/seats", method = RequestMethod.POST)
     @ApiOperation(value = "Create new Seat")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "seat created"),
@@ -80,7 +72,7 @@ public interface SeatRestApi {
             )
             @RequestBody @Valid SeatDTO seatDTO);
 
-    @PostMapping("/aircraft/{aircraftId}")
+    @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.POST)
     @ApiOperation(value = "Generate Seats for provided Aircraft based on Aircraft's model")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Seats existed"),
@@ -90,7 +82,7 @@ public interface SeatRestApi {
     })
     ResponseEntity<List<SeatDTO>> generateSeatsDTOByAircraftId(@PathVariable("aircraftId") Long aircraftId);
 
-    @PatchMapping("/{id}")
+    @RequestMapping(value = "/api/seats/{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Edit Seat by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "seat edited"),
@@ -109,7 +101,7 @@ public interface SeatRestApi {
             )
             @RequestBody @Valid SeatDTO seatDTO);
 
-    @DeleteMapping("/{id}")
+    @RequestMapping(value = "/api/seats/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete Seat by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "seat deleted"),

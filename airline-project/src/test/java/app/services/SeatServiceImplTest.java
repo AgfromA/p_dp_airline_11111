@@ -66,7 +66,7 @@ public class SeatServiceImplTest {
                 .thenAnswer( ans -> {
                     SeatDTO seatDTO = ans.getArgument(0);
                     var seat = new Seat();
-                    seat.setCategory(seatDTO.getCategory());
+                    seat.setCategory(categoryService.getCategoryByType(seatDTO.getCategory()));
                     seat.setAircraft(aircraft);
                     return seat;
                 });
@@ -82,7 +82,6 @@ public class SeatServiceImplTest {
 
         long businessSeatsCount = seatDTOs.stream()
                 .map(SeatDTO::getCategory)
-                .map(Category::getCategoryType)
                 .filter(categoryType -> CategoryType.BUSINESS == categoryType)
                 .count();
 

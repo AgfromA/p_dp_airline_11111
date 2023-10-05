@@ -82,7 +82,7 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public Page<SeatDTO> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
         return seatRepository.findByAircraftId(id, pageable).map(entity -> {
-            return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity, categoryService);
+            return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity);
 
         });
     }
@@ -90,8 +90,6 @@ public class SeatServiceImpl implements SeatService {
     @Override
     @Transactional
     public List<SeatDTO> generateSeatsDTOByAircraftId(long aircraftId) {
-        var economyCategory = categoryService.getCategoryByType(CategoryType.ECONOMY);
-        var businessCategory = categoryService.getCategoryByType(CategoryType.BUSINESS);
 
         List<SeatDTO> savedSeatsDTO = new ArrayList<>(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats());
         if (getPagesSeatsByAircraftId(aircraftId, Pageable.unpaged()).getTotalElements() > 0) {
@@ -102,16 +100,17 @@ public class SeatServiceImpl implements SeatService {
             seatDTO.setSeatNumber(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].getNumber());
             seatDTO.setAircraftId(aircraftId);
             if (enumSeatsCounter < getNumbersOfSeatsByAircraftId(aircraftId).getNumberOfBusinessClassSeats()) { //Назначаем категории
-                seatDTO.setCategory(businessCategory);
+                seatDTO.setCategory(CategoryType.BUSINESS);
             } else {
-                seatDTO.setCategory(economyCategory);
+                seatDTO.setCategory(CategoryType.ECONOMY);
             }
             seatDTO.setIsNearEmergencyExit(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isNearEmergencyExit());
             seatDTO.setIsLockedBack(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isLockedBack());
             enumSeatsCounter += 1;
 
             var savedSeat = saveSeat(seatDTO);
-            savedSeatsDTO.add(new SeatDTO(savedSeat));
+
+            savedSeatsDTO.add(SeatMapper.INSTANCE.convertToSeatDTOEntity(savedSeat));
         }
         return savedSeatsDTO;
     }
@@ -135,7 +134,7 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public Page<SeatDTO> getAllPagesSeats(Integer page, Integer size) {
         return seatRepository.findAll(PageRequest.of(page, size)).map(entity -> {
-            return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity, categoryService);
+            return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity);
         });
     }
 }
