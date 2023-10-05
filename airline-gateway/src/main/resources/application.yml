@@ -1,3 +1,4 @@
+
 server:
   port: 8083
   servlet:
@@ -6,8 +7,11 @@ server:
 
 airline-project-base-url: http://localhost:8080
 airline-payments-base-url: http://localhost:8081
-
+logging:
+  level:
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
 spring:
+  application.name: gateway
   cloud:
     gateway:
       routes:

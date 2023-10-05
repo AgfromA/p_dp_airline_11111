@@ -4,6 +4,10 @@ server:
     session:
       timeout: -1
 
+
+spring:
+  application.name: frontend
+
 app:
   feign:
     config:
