@@ -51,11 +51,18 @@ public class MainLayout extends AppLayout {
 
     }
 
+    /**
+     * Не копируй эту же иконку, возьми другую подходяющую сущности по смыслу
+     *
+     * @link <a href="https://vaadin.com/docs/v23/components/icons">Icons</a>
+     */
     private Tabs getTabs() {
         Tabs tabs = new Tabs();
         tabs.add(createTab(VaadinIcon.HANDS_UP, "Hello", AdminView.class));
         tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
         tabs.add(createTab(VaadinIcon.TABLE, "Seats", SeatView.class));
+        tabs.add(createTab(VaadinIcon.CLOCK, "Timezones", TimezoneView.class));
+//        tabs.add(createTab(VaadinIcon.ARROWS, "Destination", DestinationView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }

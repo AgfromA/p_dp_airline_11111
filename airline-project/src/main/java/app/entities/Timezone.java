@@ -18,7 +18,7 @@ import javax.persistence.*;
 public class Timezone {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE, generator = "seq_timezones")
+    @GeneratedValue (strategy = GenerationType.IDENTITY, generator = "seq_timezones")
     @SequenceGenerator(name = "seq_timezones", initialValue = 1000, allocationSize = 1)
     private Long id;
 
