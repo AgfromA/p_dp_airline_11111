@@ -1,8 +1,10 @@
 package app.controllers.view;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
@@ -13,7 +15,10 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import com.vaadin.flow.router.Route;
 
+@Route
+@PageTitle("Home")
 public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
@@ -31,11 +36,19 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
+        Button googleLoginButton = new Button("Вход с Google");
+        googleLoginButton.addClickListener(e -> {
+            UI.getCurrent().getPage().setLocation("http://localhost:8084/login");
+        });
+
+        addToDrawer(googleLoginButton);
         DrawerToggle toggle = new DrawerToggle();
         addToDrawer(new Footer());
         Tabs tabs = getTabs();
         addToDrawer(tabs);
         addToNavbar(toggle);
+
+
     }
 
     /**

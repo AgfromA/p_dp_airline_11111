@@ -1,0 +1,19 @@
+server:
+  port: 8084
+  servlet:
+    session:
+      timeout: -1
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1084468260596-pb2iu727hjr1v9q8smi3vjv54kcfgi1n.apps.googleusercontent.com
+            client-secret: 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
+
+  application:
+    name: airlinegoogleOauth
+
+
