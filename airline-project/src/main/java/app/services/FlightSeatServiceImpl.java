@@ -49,7 +49,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Loggable
     public Page<FlightSeatDTO> getFreeSeatsById(Pageable pageable, Long id) {
         return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id, pageable)
-                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity,flightService,seatService));
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService, seatService));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Override
     public Page<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
-                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity,flightService,seatService));
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService, seatService));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
             flightSeat.setIsBooked(false);
             flightSeat.setIsSold(false);
             flightSeat.setIsRegistered(false);
-            flightSeat.setFare(generateFareForFlightseat(s));
+            flightSeat.setFare(generateFareForFlightSeat(s, flight));
             newFlightSeats.add(flightSeat);
         }
         for (FlightSeat f : newFlightSeats) {
@@ -112,7 +112,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
         var allFlightSeats = getAllFlightSeats();
         var flight = flightRepository.getByCode(flightNumber);
         if (flight != null) {
-           var seatsAircraft = flight.getAircraft().getSeatSet();
+            var seatsAircraft = flight.getAircraft().getSeatSet();
 
             for (Seat s : seatsAircraft) {
                 var flightSeat = new FlightSeat();
@@ -144,7 +144,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     @Loggable
     public FlightSeat editFlightSeat(Long id, FlightSeatDTO flightSeatDTO) {
-        var flightSeat = FlightSeatMapper.INSTANCE.convertToFlightSeatEntity(flightSeatDTO,flightService,seatService);
+        var flightSeat = FlightSeatMapper.INSTANCE.convertToFlightSeatEntity(flightSeatDTO, flightService, seatService);
         var targetFlightSeat = flightSeatRepository.findById(id).orElse(null);
         flightSeat.setId(id);
 
@@ -208,7 +208,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Loggable
     public Page<FlightSeatDTO> findNotRegisteredFlightSeatsById(Long id, Pageable pageable) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(id, pageable)
-                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity,flightService,seatService));
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService, seatService));
     }
 
     @Override
@@ -219,7 +219,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     public Page<FlightSeatDTO> getNotSoldFlightSeatsById(Long id, Pageable pageable) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(id, pageable)
-                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity,flightService,seatService));
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService, seatService));
     }
 
     @Override
@@ -233,26 +233,36 @@ public class FlightSeatServiceImpl implements FlightSeatService {
         return flightSeatRepository.findByFlightId(id);
     }
 
-    public int generateFareForFlightseat(Seat seat) {
-        int baseFare = 5000;
-        float emergencyExitRatio;
-        float categoryRatio;
-        float lockedBackRatio;
-        if (seat.getIsNearEmergencyExit()) {
-            emergencyExitRatio = 1.3f;
-        } else emergencyExitRatio = 1f;
-        if (seat.getIsLockedBack()) {
-            lockedBackRatio = 0.8f;
-        } else lockedBackRatio = 1f;
-        switch (seat.getCategory().getCategoryType()) {
-            case PREMIUM_ECONOMY : categoryRatio = 1.2f;
-                break;
-            case BUSINESS : categoryRatio = 2f;
-                break;
-            case FIRST : categoryRatio = 2.5f;
-                break;
-            default : categoryRatio = 1f;
-        }
-        return Math.round(baseFare * emergencyExitRatio * categoryRatio * lockedBackRatio);
+    public int generateFareForFlightSeat(Seat seat, Flight flight) {
+
+            int baseFare = 5000;
+            float emergencyExitRatio;
+            float categoryRatio;
+            float lockedBackRatio;
+            if (seat.getIsNearEmergencyExit()) {
+                emergencyExitRatio = 1.3f;
+            } else emergencyExitRatio = 1f;
+            if (seat.getIsLockedBack()) {
+                lockedBackRatio = 0.8f;
+            } else lockedBackRatio = 1f;
+            switch (seat.getCategory().getCategoryType()) {
+                case PREMIUM_ECONOMY:
+                    categoryRatio = 1.2f;
+                    break;
+                case BUSINESS:
+                    categoryRatio = 2f;
+                    break;
+                case FIRST:
+                    categoryRatio = 2.5f;
+                    break;
+                default:
+                    categoryRatio = 1f;
+            }
+            int fare = Math.round(baseFare * emergencyExitRatio * categoryRatio * lockedBackRatio);
+                long distance = flightService.getDistance(flight);
+                if (distance > 1000) {
+                    fare += fare * (distance / 10000);
+                }
+            return fare;
     }
 }
