@@ -1,8 +1,13 @@
 package app.dto;
 
-//import app.entities.Timezone;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.ReadOnlyProperty;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -13,7 +18,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class TimezoneDTO {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotBlank(message = "Field should not be empty")
@@ -31,12 +36,5 @@ public class TimezoneDTO {
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 9, message = "GMT winter name must be between 2 and 7 characters")
     private String gmtWinter;
-//
-//    public TimezoneDTO(Timezone timezone) {
-//        this.id = timezone.getId();
-//        this.countryName = timezone.getCountryName();
-//        this.cityName = timezone.getCityName();
-//        this.gmt = timezone.getGmt();
-//        this.gmtWinter = timezone.getGmtWinter();
-//    }
+
 }

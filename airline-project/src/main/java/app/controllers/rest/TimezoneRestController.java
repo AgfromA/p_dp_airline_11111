@@ -63,6 +63,7 @@ public class TimezoneRestController implements TimezoneRestApi {
 
     @Override
     public ResponseEntity<TimezoneDTO> createTimezoneDTO(TimezoneDTO timezoneDTO) {
+        timezoneService.saveTimezone(timezoneDTO);
         log.info("create: new Timezone");
         return new ResponseEntity<>(new TimezoneDTO(),
                 HttpStatus.CREATED);
