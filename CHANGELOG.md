@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+- #308 Добавлен сервис аутентификации через Google ("airline-oauth"), добавлена кнопка "Вход с google" во view. Работа сервиса описана в README oauth
+- #292 Добавлен view для timezone(в т.ч. клиент feign), исправлен вызов delete метода в интерфейсе рест контроллера (в common). Переписан контроллер для Timezone, перенесены example и exampleMapper в project
 - #296 Добавлен Mapper через MupStruck, Изменены зависимости в классе PassengerServiceImpl (логика в методах класса не менялась), Удален класс PassengerMapper, Добавлен unit тест для PassengerMapper (тест проходит успешно)
 - #223 Настроена и синхронизированна секьюрность в payments с помощью JWT токена, создана сущность Test для проверки.
 - #268 добавлен API Gateway
@@ -8,6 +10,7 @@
 - #296 mapstruct for FlightSeat 
 - #302 Добавлен Mapper для Timezone через Mapstruct
 - #300 mapper через mapstruct для Seat
+- #290 Фронт CRUD для SeatDTO, класс SeatDTO исправлен (удален Seat из конструктора), SeatDTO-SeatRestApi-CategoryType перенесены в common
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.

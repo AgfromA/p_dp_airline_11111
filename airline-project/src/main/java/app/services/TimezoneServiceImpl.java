@@ -6,6 +6,7 @@ import app.repositories.TimezoneRepository;
 import app.services.interfaces.TimezoneService;
 import app.mappers.TimezoneMapper;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class TimezoneServiceImpl implements TimezoneService {
 
     private final TimezoneRepository timezoneRepository;
-    private final TimezoneMapper timezoneMapper;
+    private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
 
     @Transactional
     @Override

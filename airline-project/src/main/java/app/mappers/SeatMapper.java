@@ -13,11 +13,11 @@ public interface SeatMapper {
 
     SeatMapper INSTANCE = Mappers.getMapper(SeatMapper.class);
 
-    @Mapping(target = "category", expression = "java(categoryService.getCategoryByType(seat.getCategory().getCategoryType()))")
+    @Mapping(target = "category", expression = "java(seat.getCategory().getCategoryType())")
     @Mapping(target = "aircraftId", expression = "java(seat.getAircraft().getId())")
-    SeatDTO convertToSeatDTOEntity(Seat seat, CategoryService categoryService);
+    SeatDTO convertToSeatDTOEntity(Seat seat);
 
-    @Mapping(target = "category", expression = "java(categoryService.getCategoryByType(dto.getCategory().getCategoryType()))")
+    @Mapping(target = "category", expression = "java(categoryService.getCategoryByType(dto.getCategory()))")
     @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraftById(dto.getAircraftId()))")
     Seat convertToSeatEntity(SeatDTO dto, CategoryService categoryService, AircraftService aircraftService);
 

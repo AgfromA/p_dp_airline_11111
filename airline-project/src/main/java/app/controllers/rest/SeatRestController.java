@@ -4,6 +4,7 @@ import app.controllers.api.rest.SeatRestApi;
 import app.dto.SeatDTO;
 
 import app.exceptions.ViolationOfForeignKeyConstraintException;
+import app.mappers.SeatMapper;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.SeatService;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,7 @@ public class SeatRestController implements SeatRestApi {
         var seat = seatService.getSeatById(id);
         if (seat != null) {
             log.info("getById: Seat with id = {}", id);
-            return new ResponseEntity<>(new SeatDTO(seat), HttpStatus.OK);
+            return new ResponseEntity<>(SeatMapper.INSTANCE.convertToSeatDTOEntity(seat), HttpStatus.OK);
         } else {
             log.info("getById: Seat not found. id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,7 +65,8 @@ public class SeatRestController implements SeatRestApi {
     @Override
     public ResponseEntity<SeatDTO> createSeatDTO(SeatDTO seatDTO) {
         log.info("create: Seat saved with id= {}", seatDTO.getId());
-        return ResponseEntity.ok(new SeatDTO(seatService.saveSeat(seatDTO)));
+
+        return ResponseEntity.ok(SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.saveSeat(seatDTO)));
     }
 
     @Override
@@ -91,7 +93,8 @@ public class SeatRestController implements SeatRestApi {
         }
         seatService.editSeatById(id, seatDTO);
         log.info("update: Seat with id = {} has been edited.", id);
-        return new ResponseEntity<>(new SeatDTO(seatService.getSeatById(id)), HttpStatus.OK);
+
+        return new ResponseEntity<>(SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.getSeatById(id)), HttpStatus.OK);
     }
 
     @Override

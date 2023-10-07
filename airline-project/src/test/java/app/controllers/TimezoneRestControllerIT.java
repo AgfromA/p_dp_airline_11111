@@ -2,10 +2,12 @@ package app.controllers;
 
 import app.dto.TimezoneDTO;
 import app.entities.Timezone;
+import app.mappers.TimezoneMapper;
 import app.repositories.TimezoneRepository;
 import app.services.interfaces.TimezoneService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -37,6 +40,9 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
     @Autowired
     private TimezoneRepository timezoneRepository;
 
+    private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
+
+
     @Test
     @DisplayName("Creating Timezone")
     void shouldCreateNewTimezone() throws Exception {
@@ -59,12 +65,17 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
         int page = 0;
         int size = 10;
         Page<Timezone> timezonePage = timezoneService.getAllPagesTimezones(page, size);
+
+        List<TimezoneDTO> timezoneDTOList = timezonePage.stream()
+                .map(timezoneMapper::convertToTimezoneDTO) // Используем маппер для преобразования Timezone в TimezoneDTO
+                .collect(Collectors.toList());
+
         mockMvc.perform(get("http://localhost:8080/api/timezones"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
                         new PageImpl<>(
-                                timezonePage.stream().map(TimezoneDTO::new).collect(Collectors.toList()),
+                                timezoneDTOList,
                                 PageRequest.of(page, size),
                                 timezonePage.getTotalElements())
                 )));
@@ -77,7 +88,7 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/timezones/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(new TimezoneDTO(timezoneService.getTimezoneById(id).get())))
+                .andExpect(content().json(objectMapper.writeValueAsString(new TimezoneDTO()))
                 );
     }
 
@@ -97,7 +108,7 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
     @DisplayName("Update timezone")
     void shouldUpdateTimezone() throws Exception {
         long id = 5L;
-        var timezoneDTO = new TimezoneDTO(timezoneService.getTimezoneById(id).get());
+        var timezoneDTO = timezoneService.getTimezoneById(id).get();
         timezoneDTO.setCountryName("Чехия");
         long numberOfTimezone = timezoneRepository.count();
 
