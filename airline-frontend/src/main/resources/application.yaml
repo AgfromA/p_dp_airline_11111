@@ -11,6 +11,11 @@ logging:
     org.springframework.web.servlet.DispatcherServlet: DEBUG
 
 spring:
+  sleuth:
+    propagation:
+      keys:
+        - X-B3-TraceId
+        - X-B3-SpanId
   application.name: frontend
 
 app:
