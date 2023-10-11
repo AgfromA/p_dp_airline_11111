@@ -54,7 +54,7 @@ public class FlightServiceImplTest {
 
     @Test
     public void testParseLongitude() {
-        assertEquals(54.957875, flightService.parseLatitude(Airport.OMS), 0.000001);
+        assertEquals(73.316683, flightService.parseLongitude(Airport.OMS), 0.000001);
     }
 
 }
