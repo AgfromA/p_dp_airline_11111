@@ -11,6 +11,8 @@ import org.mapstruct.factory.Mappers;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class PaymentMapperTest {
 
     private final PaymentMapper paymentMapper = Mappers.getMapper(PaymentMapper.class);
@@ -25,11 +27,11 @@ public class PaymentMapperTest {
 
         Payment payment = paymentMapper.convertToPaymentEntity(paymentResponse);
 
-        Assert.assertEquals(payment.getId(), paymentResponse.getId());
-        Assert.assertEquals(payment.getBookingsId(), paymentResponse.getBookingsId());
-        Assert.assertEquals(payment.getPaymentState(), paymentResponse.getPaymentState());
-        Assert.assertEquals(payment.getPrice(), paymentResponse.getPrice());
-        Assert.assertEquals(payment.getCurrency(), paymentResponse.getCurrency());
+        assertEquals(payment.getId(), paymentResponse.getId());
+        assertEquals(payment.getBookingsId(), paymentResponse.getBookingsId());
+        assertEquals(payment.getPaymentState(), paymentResponse.getPaymentState());
+        assertEquals(payment.getPrice(), paymentResponse.getPrice());
+        assertEquals(payment.getCurrency(), paymentResponse.getCurrency());
     }
 
     @Test
@@ -43,11 +45,11 @@ public class PaymentMapperTest {
 
         Payment payment = paymentMapper.convertToPaymentEntity(paymentRequest);
 
-        Assert.assertEquals(payment.getId(), paymentRequest.getId());
-        Assert.assertEquals(payment.getBookingsId(), paymentRequest.getBookingsId());
-        Assert.assertEquals(payment.getPaymentState(), paymentRequest.getPaymentState());
-        Assert.assertEquals(payment.getPrice(), paymentRequest.getPrice());
-        Assert.assertEquals(payment.getCurrency(), paymentRequest.getCurrency());
+        assertEquals(payment.getId(), paymentRequest.getId());
+        assertEquals(payment.getBookingsId(), paymentRequest.getBookingsId());
+        assertEquals(payment.getPaymentState(), paymentRequest.getPaymentState());
+        assertEquals(payment.getPrice(), paymentRequest.getPrice());
+        assertEquals(payment.getCurrency(), paymentRequest.getCurrency());
     }
 
     @Test
