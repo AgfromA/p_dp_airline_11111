@@ -1,12 +1,11 @@
 package app.services;
 
-import app.entities.Aircraft;
-import app.entities.Flight;
-import app.entities.FlightSeat;
-import app.entities.Seat;
+import app.entities.*;
+import app.enums.Airport;
+import app.enums.CategoryType;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
-import org.junit.Assert;
+import app.services.interfaces.FlightService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class FlightSeatServiceImplTest {
 
@@ -26,11 +29,16 @@ class FlightSeatServiceImplTest {
     @Mock
     FlightRepository flightRepository;
 
+    @Mock
+    FlightService flightService;
+
     @InjectMocks
     FlightSeatServiceImpl flightSeatService;
 
     @Test
     void addFlightSeatsByFlightNumber() {
+        when(flightService.getDistance(any(Flight.class))).thenReturn(807L);
+
         var flightNumber = "Code:Fl-1";
 
         var aircraft = new Aircraft();
@@ -40,11 +48,17 @@ class FlightSeatServiceImplTest {
         aircraft.setFlightRange(500);
         aircraft.setModelYear(2008);
 
+        var category = new Category();
+        category.setCategoryType(CategoryType.BUSINESS);
+
         //Список мест самолёта с номерами от 8 до 17
         Set<Seat> seatSet = new HashSet<>();
         for (int i = 0; i < 10; i++) {
             var seat = new Seat();
             seat.setSeatNumber(Integer.valueOf(i + 8).toString());
+            seat.setIsNearEmergencyExit(true);
+            seat.setIsLockedBack(true);
+            seat.setCategory(category);
             seat.setAircraft(aircraft);
             seatSet.add(seat);
         }
@@ -82,18 +96,41 @@ class FlightSeatServiceImplTest {
 
         var result = flightSeatService.addFlightSeatsByFlightNumber(flightNumber);
 
-        Mockito.verify(flightSeatRepository, Mockito.times(8)).save(Mockito.any(FlightSeat.class));
+        Mockito.verify(flightSeatRepository, Mockito.times(8)).save(any(FlightSeat.class));
 
-        Assert.assertEquals(8, result.size());
+        assertEquals(8, result.size());
 
-        result.forEach(flightSeat -> Assert.assertEquals(flight, flightSeat.getFlight()));
+        result.forEach(flightSeat -> assertEquals(flight, flightSeat.getFlight()));
 
         Set<Seat> seatsInResult = new HashSet<>();
         result.forEach(flightSeat -> seatsInResult.add(flightSeat.getSeat()));
         seatSet.removeIf(seat -> seat.getSeatNumber().equals(Integer.valueOf(9).toString())
                 || seat.getSeatNumber().equals(Integer.valueOf(10).toString()));
         seatSet.addAll(seatsInResult);
-        Assert.assertEquals(8, seatSet.size());
+        assertEquals(8, seatSet.size());
 
+    }
+
+    @Test
+    public void testGenerateFareForFlightSeat() {
+
+        var from = new Destination();
+        from.setAirportCode(Airport.OMS);
+        var to = new Destination();
+        to.setAirportCode(Airport.SVX);
+
+        var flight = new Flight();
+        flight.setFrom(from);
+        flight.setTo(to);
+
+        var category = new Category();
+        category.setCategoryType(CategoryType.BUSINESS);
+
+        var seat = new Seat();
+        seat.setIsNearEmergencyExit(true);
+        seat.setIsLockedBack(true);
+        seat.setCategory(category);
+
+        assertEquals(10400,  flightSeatService.generateFareForFlightSeat(seat, flight));
     }
 }

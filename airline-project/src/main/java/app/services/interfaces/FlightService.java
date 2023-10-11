@@ -42,4 +42,9 @@ public interface FlightService {
     void deleteFlightById(Long id);
 
     Long getDistance(Flight flight);
+
+    public double parseLatitude(Airport airport);
+
+    public double parseLongitude(Airport airport);
+
 }

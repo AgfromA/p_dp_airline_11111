@@ -121,7 +121,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
                 if (allFlightSeats.contains(flightSeat)) {
                     continue;
                 }
-                flightSeat.setFare(0);
+                flightSeat.setFare(generateFareForFlightSeat(s, flight));
                 flightSeat.setIsSold(false);
                 flightSeat.setIsRegistered(false);
                 seatsForAdd.add(flightSeat);

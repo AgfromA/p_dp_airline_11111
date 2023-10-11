@@ -1,0 +1,60 @@
+package app.services;
+
+import app.entities.Destination;
+import app.entities.Flight;
+import app.enums.Airport;
+import app.mappers.FlightMapper;
+import app.repositories.FlightRepository;
+import app.services.interfaces.*;
+import org.junit.Test;
+
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+@ExtendWith(MockitoExtension.class)
+public class FlightServiceImplTest {
+
+    private FlightRepository flightRepository;
+    private AircraftService aircraftService;
+    private DestinationService destinationService;
+    private FlightSeatService flightSeatService;
+    private TicketService ticketService;
+    private FlightMapper flightMapper;
+
+    private final FlightService flightService = new FlightServiceImpl(flightRepository
+            , aircraftService
+            , destinationService
+            , flightSeatService
+            , ticketService
+            , flightMapper);
+
+    @Test
+    public void testGetDistance() {
+
+        var from = new Destination();
+        from.setAirportCode(Airport.OMS);
+        var to = new Destination();
+        to.setAirportCode(Airport.SVX);
+
+        var flight = new Flight();
+        flight.setFrom(from);
+        flight.setTo(to);
+
+        assertEquals(807L, flightService.getDistance(flight));
+    }
+
+    @Test
+    public void testParseLatitude() {
+        assertEquals(54.957875, flightService.parseLatitude(Airport.OMS), 0.000001);
+    }
+
+    @Test
+    public void testParseLongitude() {
+        assertEquals(54.957875, flightService.parseLatitude(Airport.OMS), 0.000001);
+    }
+
+}
