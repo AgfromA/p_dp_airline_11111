@@ -235,34 +235,37 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     public int generateFareForFlightSeat(Seat seat, Flight flight) {
 
-            int baseFare = 5000;
-            float emergencyExitRatio;
-            float categoryRatio;
-            float lockedBackRatio;
-            if (seat.getIsNearEmergencyExit()) {
-                emergencyExitRatio = 1.3f;
-            } else emergencyExitRatio = 1f;
-            if (seat.getIsLockedBack()) {
-                lockedBackRatio = 0.8f;
-            } else lockedBackRatio = 1f;
-            switch (seat.getCategory().getCategoryType()) {
-                case PREMIUM_ECONOMY:
-                    categoryRatio = 1.2f;
-                    break;
-                case BUSINESS:
-                    categoryRatio = 2f;
-                    break;
-                case FIRST:
-                    categoryRatio = 2.5f;
-                    break;
-                default:
-                    categoryRatio = 1f;
-            }
-            int fare = Math.round(baseFare * emergencyExitRatio * categoryRatio * lockedBackRatio);
-                long distance = flightService.getDistance(flight);
-                if (distance > 1000) {
-                    fare += fare * (distance / 10000);
-                }
-            return fare;
+        int baseFare = 5000;
+        float emergencyExitRatio;
+        float categoryRatio;
+        float lockedBackRatio;
+        if (seat.getIsNearEmergencyExit()) {
+            emergencyExitRatio = 1.3f;
+        } else emergencyExitRatio = 1f;
+        if (seat.getIsLockedBack()) {
+            lockedBackRatio = 0.8f;
+        } else lockedBackRatio = 1f;
+        switch (seat.getCategory().getCategoryType()) {
+            case PREMIUM_ECONOMY:
+                categoryRatio = 1.2f;
+                break;
+            case BUSINESS:
+                categoryRatio = 2f;
+                break;
+            case FIRST:
+                categoryRatio = 2.5f;
+                break;
+            default:
+                categoryRatio = 1f;
+        }
+
+        float fare = baseFare * emergencyExitRatio * categoryRatio * lockedBackRatio;
+        float distance = flightService.getDistance(flight);
+
+        if (distance > 1000) {
+            fare += fare * (distance / 10000);
+        }
+
+        return Math.round(fare / 10) * 10;
     }
 }

@@ -115,9 +115,9 @@ class FlightSeatServiceImplTest {
     public void testGenerateFareForFlightSeat() {
 
         var from = new Destination();
-        from.setAirportCode(Airport.OMS);
+        from.setAirportCode(Airport.SVX);
         var to = new Destination();
-        to.setAirportCode(Airport.SVX);
+        to.setAirportCode(Airport.VKO);
 
         var flight = new Flight();
         flight.setFrom(from);
@@ -131,6 +131,8 @@ class FlightSeatServiceImplTest {
         seat.setIsLockedBack(true);
         seat.setCategory(category);
 
-        assertEquals(10400,  flightSeatService.generateFareForFlightSeat(seat, flight));
+        when(flightService.getDistance(any(Flight.class))).thenReturn(1459L);
+
+        assertEquals(11920,  flightSeatService.generateFareForFlightSeat(seat, flight));
     }
 }
