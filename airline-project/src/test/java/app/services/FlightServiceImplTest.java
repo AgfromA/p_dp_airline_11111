@@ -3,8 +3,6 @@ package app.services;
 import app.entities.Destination;
 import app.entities.Flight;
 import app.enums.Airport;
-import app.mappers.FlightMapper;
-import app.repositories.FlightRepository;
 import app.services.interfaces.*;
 import org.junit.Test;
 
@@ -18,19 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class FlightServiceImplTest {
 
-    private FlightRepository flightRepository;
-    private AircraftService aircraftService;
-    private DestinationService destinationService;
-    private FlightSeatService flightSeatService;
-    private TicketService ticketService;
-    private FlightMapper flightMapper;
-
-    private final FlightService flightService = new FlightServiceImpl(flightRepository
-            , aircraftService
-            , destinationService
-            , flightSeatService
-            , ticketService
-            , flightMapper);
+    private final FlightService flightService = new FlightServiceImpl(null
+            , null
+            , null
+            , null
+            , null
+            , null);
 
     @Test
     public void testGetDistance() {
