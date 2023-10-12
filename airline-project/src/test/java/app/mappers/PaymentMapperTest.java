@@ -63,11 +63,11 @@ public class PaymentMapperTest {
 
         PaymentRequest paymentRequest = paymentMapper.convertToPaymentRequest(payment);
 
-        Assert.assertEquals(paymentRequest.getId(), payment.getId());
-        Assert.assertEquals(paymentRequest.getBookingsId(), payment.getBookingsId());
-        Assert.assertEquals(paymentRequest.getPaymentState(), payment.getPaymentState());
-        Assert.assertEquals(paymentRequest.getPrice(), payment.getPrice());
-        Assert.assertEquals(paymentRequest.getCurrency(), payment.getCurrency());
+        assertEquals(paymentRequest.getId(), payment.getId());
+        assertEquals(paymentRequest.getBookingsId(), payment.getBookingsId());
+        assertEquals(paymentRequest.getPaymentState(), payment.getPaymentState());
+        assertEquals(paymentRequest.getPrice(), payment.getPrice());
+        assertEquals(paymentRequest.getCurrency(), payment.getCurrency());
     }
 
     @Test
@@ -81,10 +81,10 @@ public class PaymentMapperTest {
 
         PaymentResponse paymentResponse = paymentMapper.convertToPaymentResponse(payment);
 
-        Assert.assertEquals(paymentResponse.getId(), payment.getId());
-        Assert.assertEquals(paymentResponse.getBookingsId(), payment.getBookingsId());
-        Assert.assertEquals(paymentResponse.getPaymentState(), payment.getPaymentState());
-        Assert.assertEquals(paymentResponse.getPrice(), payment.getPrice());
-        Assert.assertEquals(paymentResponse.getCurrency(), payment.getCurrency());
+        assertEquals(paymentResponse.getId(), payment.getId());
+        assertEquals(paymentResponse.getBookingsId(), payment.getBookingsId());
+        assertEquals(paymentResponse.getPaymentState(), payment.getPaymentState());
+        assertEquals(paymentResponse.getPrice(), payment.getPrice());
+        assertEquals(paymentResponse.getCurrency(), payment.getCurrency());
     }
 }
