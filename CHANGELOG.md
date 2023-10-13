@@ -27,6 +27,7 @@
 - #306 Добавлен новый микросервис с фронтом(Vaadin), ExampleDTO и ExampleApi перенесен в common. Весь фронт был перенесен на отдельный сервис в airline-frontend.
 - #236 Исправлен баг UpdateFlightById, справлен FlightMapper (удален прежний, добавлен FlightMapper интерфейс с использованием MapStruct), написаны unit есты для FlightMapper, интеграционные тесты для FlightController (updateFlightById)
 - #294 Добавлен Mapper для Destination через Mapstruct
+- #298 Добавлен Mapper для Payment через Mapstruct, а также junit тесты к ним.
 
 ## [1.0.6] - 30.07.2023
 - #226 Рефакторинг passenger и account - убрано наследование
