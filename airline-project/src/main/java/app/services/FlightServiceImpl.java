@@ -8,6 +8,8 @@ import app.repositories.*;
 import app.enums.Airport;
 import app.services.interfaces.*;
 import app.util.aop.Loggable;
+import net.sf.geographiclib.Geodesic;
+import net.sf.geographiclib.GeodesicData;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -29,6 +33,7 @@ public class FlightServiceImpl implements FlightService {
     private final FlightSeatService flightSeatService;
     private final TicketService ticketService;
     private final FlightMapper flightMapper;
+    private final Pattern LAT_LONG_PATTERN = Pattern.compile("([-+]?\\d{1,2}\\.\\d+),\\s+([-+]?\\d{1,3}\\.\\d+)");
 
     public FlightServiceImpl(FlightRepository flightRepository, AircraftService aircraftService,
                              DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
@@ -136,4 +141,30 @@ public class FlightServiceImpl implements FlightService {
     public void deleteFlightById(Long id) {
         flightRepository.deleteById(id);
     }
+
+    @Override
+    @Loggable
+    public Long getDistance(Flight flight) {
+        Geodesic geodesic = Geodesic.WGS84;
+        GeodesicData calculate = geodesic.Inverse(
+                parseLatitude(flight.getFrom().getAirportCode())
+                , parseLongitude(flight.getFrom().getAirportCode())
+                , parseLatitude(flight.getTo().getAirportCode())
+                , parseLongitude(flight.getTo().getAirportCode())
+        );
+        return (long) (calculate.s12 / 1000);
+    }
+
+    public double parseLatitude(Airport airport) {
+        Matcher matcher = LAT_LONG_PATTERN.matcher(airport.getCoordinates());
+            matcher.find();
+            return Double.parseDouble(matcher.group(1));
+    }
+
+    public double parseLongitude(Airport airport) {
+        Matcher matcher = LAT_LONG_PATTERN.matcher(airport.getCoordinates());
+            matcher.find();
+            return Double.parseDouble(matcher.group(2));
+    }
+
 }

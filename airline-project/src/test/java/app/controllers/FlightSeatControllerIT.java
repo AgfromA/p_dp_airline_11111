@@ -1,11 +1,20 @@
 package app.controllers;
 
+import app.dto.FlightDTO;
 import app.dto.FlightSeatDTO;
+import app.entities.Destination;
+import app.entities.Flight;
 import app.entities.FlightSeat;
+import app.enums.Airport;
 import app.enums.CategoryType;
+import app.mappers.FlightMapper;
+import app.repositories.DestinationRepository;
+import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.services.interfaces.FlightSeatService;
+import app.services.interfaces.FlightService;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -34,6 +43,12 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     private FlightSeatService flightSeatService;
     @Autowired
     private FlightSeatRepository flightSeatRepository;
+    @Autowired
+    private FlightRepository flightRepository;
+    @Autowired
+    private DestinationRepository destinationRepository;
+    @Autowired
+    private FlightService flightService;
 
     @Test
     void shouldGetFlightSeats() throws Exception {
@@ -92,6 +107,13 @@ class FlightSeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldAddFlightSeatsByFlightId() throws Exception {
+        Flight flight = flightRepository.findById(1L).get();
+        Destination from = destinationRepository.getDestinationByAirportCode(Airport.VKO);
+        Destination to = destinationRepository.getDestinationByAirportCode(Airport.OMS);
+        flight.setFrom(from);
+        flight.setTo(to);
+        FlightDTO flightDTO = Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight);
+        flightService.updateFlight(1L, flightDTO);
         var flightId = "1";
         Set<FlightSeat> flightSeatSet = flightSeatService.getFlightSeatsByFlightId(1L);
         List<Long> idList = flightSeatSet.stream().map(FlightSeat::getId).collect(Collectors.toList());
