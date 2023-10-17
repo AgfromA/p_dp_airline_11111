@@ -8,25 +8,21 @@ import app.services.interfaces.PassengerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
-
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-passenger-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -134,6 +130,23 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    @DisplayName("Filter passenger by FirstName and LastName")
+    void shouldShowPassengerByFirstNameAndLastName() throws Exception {
+        var pageable = PageRequest.of(0, 10, Sort.by("id"));
+        var firstName = "John20";
+        var lastName = "Simons20";
+        var email = "";
+        var passportSerialNumber = "";
+        mockMvc.perform(get("http://localhost:8080/api/passengers")
+                        .param("firstName", firstName)
+                        .param("lastName", lastName))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(passengerService
+                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber))));
+    }
+
+    @Test
     @DisplayName("Filter passenger by FirstName")
     void shouldShowPassengerByFirstName() throws Exception {
         var pageable = PageRequest.of(0, 10, Sort.by("id"));
@@ -182,19 +195,19 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @DisplayName("Filter passenger by PassportSerialNumber")
+    @DisplayName("Filter passenger by serialNumberPassport")
     void shouldShowPassengerByPassportSerialNumber() throws Exception {
         var pageable = PageRequest.of(0, 10, Sort.by("id"));
         var firstName = "";
         var lastName = "";
         var email = "";
-        var passportSerialNumber = "2222 222222";
+        var serialNumberPassport = "0011 001800";
         mockMvc.perform(get("http://localhost:8080/api/passengers")
-                        .param("passportSerialNumber", passportSerialNumber))
+                        .param("serialNumberPassport", serialNumberPassport))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber))));
+                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, serialNumberPassport))));
     }
 
     @Test
@@ -292,7 +305,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @DisplayName("Filter passenger by FirstName not found in database")
+    @DisplayName("Filter passenger by serialNumberPassport not found in database")
     void shouldShowPassengerByPassportSerialNumberNotFoundInDatabase() throws Exception {
         var serialNumberPassport = "7777 777777";
         mockMvc.perform(get("http://localhost:8080/api/passengers")
