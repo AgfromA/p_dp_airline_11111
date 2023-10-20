@@ -20,5 +20,4 @@ public interface PassengerService {
 
     Page<PassengerDTO> getAllPagesPassengers(Pageable pageable);
 
-    Page<PassengerDTO> getAllPagesPassengers(int page, int size);
 }
