@@ -16,6 +16,9 @@ public interface PassengerRepository extends JpaRepository<Passenger, Long> {
     @Query(value = "SELECT p from Passenger p WHERE p.passport.serialNumberPassport = ?1")
     Page<Passenger> findByPassportSerialNumber(Pageable pageable, String passportSerialNumber);
 
+    @Query(value = "SELECT passengers FROM Passenger passengers WHERE passengers.firstName LIKE %?1% and passengers.lastName LIKE %?2%")
+    Page<Passenger> findByFirstNameAndLastName(Pageable pageable, String firstName, String lastName);
+
     @Query(value = "SELECT passengers FROM Passenger passengers WHERE passengers.lastName LIKE %?1%")
     Page<Passenger> findByLastName(Pageable pageable, String lastName);
 
