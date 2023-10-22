@@ -48,7 +48,7 @@ public interface FlightRestApi {
                     name = "id",
                     value = "Flight.id"
             )
-            @PathVariable Long id);
+            @PathVariable("id") Long id);
 
     @RequestMapping(value = "/api/flights/filter/dates", method = RequestMethod.GET)
     @ApiOperation(value = "Get Flight by \"id\" and dates given as params")
@@ -99,7 +99,7 @@ public interface FlightRestApi {
                     name = "id",
                     value = "Flight.id"
             )
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @ApiParam(
                     name = "flight",
                     value = "Flight model"
