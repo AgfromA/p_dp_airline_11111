@@ -1,7 +1,6 @@
 package app.controllers.api.rest;
 
 import app.dto.FlightDTO;
-import app.entities.Flight;
 import app.enums.FlightStatus;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -89,7 +88,7 @@ public interface FlightRestApi {
     @PostMapping
     @ApiOperation(value = "Create Flight")
     @ApiResponse(code = 201, message = "Flight created")
-    ResponseEntity<Flight> createFlight(
+    ResponseEntity<Long> createFlight(
             @ApiParam(
                     name = "flight",
                     value = "Flight model"
@@ -102,7 +101,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flight updated"),
             @ApiResponse(code = 404, message = "Flight not found")
     })
-    ResponseEntity<Flight> updateFlightById(
+    ResponseEntity<Void> updateFlightById(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
