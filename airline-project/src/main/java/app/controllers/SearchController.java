@@ -2,8 +2,7 @@ package app.controllers;
 
 import app.controllers.api.SearchControllerApi;
 import app.entities.search.Search;
-import app.entities.search.SearchResult;
-import app.enums.Airport;
+import app.dto.SearchResult;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;

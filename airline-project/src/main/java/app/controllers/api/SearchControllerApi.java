@@ -1,7 +1,7 @@
 package app.controllers.api;
 
 import app.entities.search.Search;
-import app.entities.search.SearchResult;
+import app.dto.SearchResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 
 @Api(tags = "Search")
 @Tag(name = "Search", description = "API поиска рейсов по заданными параметрам")

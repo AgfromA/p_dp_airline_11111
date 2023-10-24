@@ -1,7 +1,7 @@
 package app.services.interfaces;
 
 import app.entities.search.Search;
-import app.entities.search.SearchResult;
+import app.dto.SearchResult;
 
 public interface SearchService {
 

@@ -1,10 +1,8 @@
 package app.services;
 
-import app.dto.FlightDTO;
-import app.entities.Destination;
 import app.entities.Flight;
 import app.entities.search.Search;
-import app.entities.search.SearchResult;
+import app.dto.SearchResult;
 import app.mappers.FlightMapper;
 import app.services.interfaces.DestinationService;
 import app.services.interfaces.FlightSeatService;
