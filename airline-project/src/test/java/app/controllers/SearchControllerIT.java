@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.entities.search.Search;
+import app.dto.search.Search;
 import app.mappers.DestinationMapper;
 import app.services.interfaces.DestinationService;
 import org.junit.jupiter.api.Test;

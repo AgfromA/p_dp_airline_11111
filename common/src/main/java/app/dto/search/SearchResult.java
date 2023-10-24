@@ -1,6 +1,7 @@
-package app.dto;
+package app.dto.search;
 
-import app.entities.search.Search;
+
+import app.dto.FlightDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+
 
 /**
  * Найденные рейсы.
@@ -24,11 +26,11 @@ public class SearchResult {
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @ToString.Exclude
-    private List<FlightDTO> departFlight;
+    private List<FlightDTO> departFlights;
 
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @ToString.Exclude
-    private List<FlightDTO> returnFlight;
+    private List<FlightDTO> returnFlights;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Search search;

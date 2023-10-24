@@ -1,7 +1,7 @@
 package app.controllers.api;
 
-import app.entities.search.Search;
-import app.dto.SearchResult;
+import app.dto.search.Search;
+import app.dto.search.SearchResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

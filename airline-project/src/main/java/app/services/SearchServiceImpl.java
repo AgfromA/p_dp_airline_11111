@@ -1,8 +1,8 @@
 package app.services;
 
 import app.entities.Flight;
-import app.entities.search.Search;
-import app.dto.SearchResult;
+import app.dto.search.Search;
+import app.dto.search.SearchResult;
 import app.mappers.FlightMapper;
 import app.services.interfaces.DestinationService;
 import app.services.interfaces.FlightSeatService;
@@ -54,10 +54,10 @@ public class SearchServiceImpl implements SearchService {
                         .flightToFlightDTO(departFlight))
                 .collect(Collectors.toList());
 
-        searchResult.setDepartFlight(searchDepartFlightDTO);
+        searchResult.setDepartFlights(searchDepartFlightDTO);
 
         if (search.getReturnDate() == null) {
-            searchResult.setReturnFlight(new ArrayList<>());
+            searchResult.setReturnFlights(new ArrayList<>());
         } else {
             addDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
             addNonDirectDepartFlightsToSearchReturnFlight(search, searchReturnFlight);
@@ -67,7 +67,7 @@ public class SearchServiceImpl implements SearchService {
                             .flightToFlightDTO(returnFlight))
                     .collect(Collectors.toList());
 
-            searchResult.setReturnFlight(searchReturnFlightDTO);
+            searchResult.setReturnFlights(searchReturnFlightDTO);
         }
         log.debug("searchDirectAndNonDirectFlights: output data, searchResult = {}", searchResult);
         return searchResult;

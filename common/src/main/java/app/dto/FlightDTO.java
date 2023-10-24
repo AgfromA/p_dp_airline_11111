@@ -1,6 +1,5 @@
 package app.dto;
 
-import app.entities.Flight;
 import app.enums.Airport;
 import app.enums.FlightStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,15 +28,4 @@ public class FlightDTO {
     private LocalDateTime arrivalDateTime;
     private Long aircraftId;
     private FlightStatus flightStatus;
-
-    public FlightDTO(Flight flight) {
-        this.id = flight.getId();
-        this.code = flight.getCode();
-        this.airportFrom = flight.getFrom().getAirportCode();
-        this.airportTo = flight.getTo().getAirportCode();
-        this.departureDateTime = flight.getDepartureDateTime();
-        this.arrivalDateTime = flight.getArrivalDateTime();
-        this.aircraftId = flight.getAircraft().getId();
-        this.flightStatus = flight.getFlightStatus();
-    }
 }

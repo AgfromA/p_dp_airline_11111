@@ -1,4 +1,4 @@
-package app.entities.search;
+package app.dto.search;
 
 
 import app.enums.Airport;
