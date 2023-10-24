@@ -1,8 +1,9 @@
 package app.controllers;
 
 import app.controllers.api.SearchControllerApi;
-import app.dto.SearchResultDTO;
 import app.entities.search.Search;
+import app.entities.search.SearchResult;
+import app.enums.Airport;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,38 +21,32 @@ public class SearchController implements SearchControllerApi {
     private final SearchService searchService;
 
     @Override
-    public ResponseEntity<SearchResultDTO> saveSearch(Search search) {
-        log.debug("saveSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
-        if (search.getFrom() == null) {
-            log.info("saveSearch: Destination.from is null");
+    public ResponseEntity<SearchResult> get(Search search) {
+        log.debug("findSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
+        if (search.getFrom() == null || search.getTo() == null) {
+            log.info("findSearch: Destination.from is null or Destination.to is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            if (search.getReturnDate() != null && !search.getReturnDate().isAfter(search.getDepartureDate())) {
-                log.info("saveSearch: DepartureDate must be earlier then ReturnDate");
+            if (search.getNumberOfPassengers() == null || search.getNumberOfPassengers() < 1) {
+                log.info("findSearch: NumberOfPassengers not found");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                if (search.getReturnDate() != null && !search.getReturnDate().isAfter(search.getDepartureDate())) {
+                    log.info("findSearch: DepartureDate must be earlier then ReturnDate");
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                var searchResult = searchService.getSearch(search);
+                if (searchResult.getDepartFlight().isEmpty() && searchResult.getReturnFlight().isEmpty()) {
+                    log.info("findSearch: Destination not found");
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
+                log.info("findSearch: search result found = {}", searchResult);
+                log.debug("findSearch: outgoing data = {}", LogsUtils.objectToJson(searchResult));
+                return new ResponseEntity<>(searchResult, HttpStatus.OK);
             }
-            var searchResult = searchService.saveSearch(search);
-            if (searchResult.getDepartFlight().isEmpty()) {
-                log.info("saveSearch: Destinations not found");
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            log.info("saveSearch: new search result saved with id= {}", searchResult.getId());
-            var result = new SearchResultDTO(searchResult);
-            log.debug("saveSearch: outgoing data, searchResultDTO = {}", LogsUtils.objectToJson(result));
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
-        }
-    }
-
-    @Override
-    public ResponseEntity<SearchResultDTO> getSearchResultDTOById(Long id) {
-
-        var searchResult = searchService.getSearchResultProjectionByID(id);
-        if (searchResult != null) {
-            log.info("getSearchResultById: find search result with id = {}", id);
-            return new ResponseEntity<>(new SearchResultDTO(searchResult), HttpStatus.OK);
-        } else {
-            log.info("getSearchResultById: not find search result with id = {}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
+
+
+

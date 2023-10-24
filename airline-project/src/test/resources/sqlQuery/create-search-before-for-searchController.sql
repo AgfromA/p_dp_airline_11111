@@ -5,6 +5,14 @@ INSERT INTO destination (id, airport_code, airport_name, city_name, country_name
 VALUES (2, 'OMS', 'Омск', 'Омск', 'Россия', 'GMT +6');
 
 
+INSERT INTO destination (id, airport_code, airport_name, city_name, country_name, timezone)
+VALUES (3, 'AAQ', 'Витязево', 'Анапа', 'Россия', 'GMT +3');
+
+INSERT INTO destination (id, airport_code, airport_name, city_name, country_name, timezone)
+VALUES (4, 'ABA', 'Абакан', 'Абакан', 'Россия', 'GMT +7');
+
+
+
 INSERT INTO category (id, category_type)
 VALUES (1, 'FIRST');
 INSERT INTO category (id, category_type)
@@ -71,7 +79,10 @@ VALUES (11, '2E', true, true,
 
 INSERT INTO flights (id, code, arrival_date, departure_date, flight_status, aircraft_id, from_id, to_id)
 VALUES (1, 'MSKOMSK', '2023-04-01 13:40:00', '2023-04-01 12:40:00', 'ON_TIME',
-        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1), 1, 2);
+        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1),
+        (SELECT destination.id FROM destination WHERE destination.id = 1),
+        (SELECT destination.id FROM destination WHERE destination.id = 2));
+
 
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
 VALUES (1, 500, true, false,
@@ -87,20 +98,29 @@ VALUES (3, 650, true, true, (SELECT flights.id FROM flights WHERE flights.id = 1
 
 
 INSERT INTO flights (id, code, arrival_date, departure_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (2, 'OMSKMSK', '2023-04-01 13:40:00', '2023-04-01 12:40:00', 'ON_TIME',
-        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 2, 1);
+VALUES (2, 'AAQABA', '2023-06-01 10:00:00', '2023-06-01 09:00:00', 'ON_TIME',
+        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2),
+        (SELECT destination.id FROM destination WHERE destination.id = 3),
+        (SELECT destination.id FROM destination WHERE destination.id = 4));
+
+
+
+
+
 
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
 VALUES (4, 500, true, false,
         (SELECT flights.id FROM flights WHERE flights.id = 2),
         (SELECT seats.id FROM seats WHERE seats.id = 4));
-
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
 VALUES (5, 600, true, true,
         (SELECT flights.id FROM flights WHERE flights.id = 2),
         (SELECT seats.id FROM seats WHERE seats.id = 5));
-
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
-VALUES (6, 650, true, true,
-        (SELECT flights.id FROM flights WHERE flights.id = 2),
+VALUES (6, 650, true, true, (SELECT flights.id FROM flights WHERE flights.id = 2),
         (SELECT seats.id FROM seats WHERE seats.id = 6));
+
+
+
+
+
