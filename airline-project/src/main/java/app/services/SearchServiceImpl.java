@@ -1,12 +1,9 @@
 package app.services;
 
 import app.entities.Flight;
-import app.entities.search.Search;
-import app.entities.search.SearchResult;
-import app.mappers.DestinationMapper;
-import app.repositories.SearchRepository;
-import app.repositories.SearchResultProjection;
-import app.repositories.SearchResultRepository;
+import app.entities.account.search.Search;
+import app.entities.account.search.SearchResult;
+import app.mappers.FlightMapper;
 import app.services.interfaces.DestinationService;
 import app.services.interfaces.FlightSeatService;
 import app.services.interfaces.FlightService;
@@ -15,45 +12,32 @@ import app.util.LogsUtils;
 import app.util.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class SearchServiceImpl implements SearchService {
-    private final SearchRepository searchRepository;
     private final FlightService flightService;
     private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
-    private final SearchResultRepository searchResultRepository;
-    private final DestinationMapper destinationMapper;
-
 
     @Override
-    @Transactional
+//    @Transactional
     @Loggable
     public SearchResult saveSearch(Search search) {
         log.debug("saveSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
-        search.setFrom(destinationService.getDestinationByAirportCode(search.getFrom().getAirportCode()));
-        search.setTo(destinationService.getDestinationByAirportCode(search.getTo().getAirportCode()));
-        searchRepository.save(search);
+        search.setFrom(search.getFrom());
+        search.setTo(search.getTo());
         var searchResult = searchDirectAndNonDirectFlights(search);
         log.debug("saveSearch: output data, searchResult = {}", LogsUtils.objectToJson(searchResult));
         return searchResult;
-    }
-
-    @Override
-    @Loggable
-    public Search getSearchById(long id) {
-        log.debug("findSearchById: incoming data, search \"id\" = {}", id);
-        var search = searchRepository.findById(id).orElse(null);
-        log.debug("findSearchById: output data, search = {}", LogsUtils.objectToJson(search));
-        return search;
     }
 
     @Loggable
@@ -65,19 +49,31 @@ public class SearchServiceImpl implements SearchService {
         List<Flight> searchDepartFlight = new ArrayList<>();
         List<Flight> searchReturnFlight = new ArrayList<>();
 
+
         addDirectDepartFlightsToSearchDepartFlight(search, searchDepartFlight);
         addNonDirectDepartFlightsToSearchDepartFlight(search, searchDepartFlight);
-        searchResult.setDepartFlight(searchDepartFlight);
+
+        var searchDepartFlightDTO = searchDepartFlight.stream()
+                .map(departFlight -> Mappers.getMapper(FlightMapper.class)
+                        .flightToFlightDTO(departFlight))
+                .collect(Collectors.toList());
+        log.debug("searchDirectAndNonDirectFlights: output data, searchReturnFlightDTO = {}", LogsUtils.objectToJson(searchDepartFlight));
+        searchResult.setDepartFlights(searchDepartFlightDTO);
 
         if (search.getReturnDate() == null) {
-            searchResult.setReturnFlight(null);
+            searchResult.setReturnFlights(new ArrayList<>());
         } else {
             addDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
             addNonDirectDepartFlightsToSearchReturnFlight(search, searchReturnFlight);
-            searchResult.setReturnFlight(searchReturnFlight);
+
+            var searchReturnFlightDTO = searchReturnFlight.stream()
+                    .map(returnFlight -> Mappers.getMapper(FlightMapper.class)
+                            .flightToFlightDTO(returnFlight))
+                    .collect(Collectors.toList());
+            log.debug("searchDirectAndNonDirectFlights: output data, searchReturnFlightDTO = {}", LogsUtils.objectToJson(searchReturnFlightDTO));
+            searchResult.setReturnFlights(searchReturnFlightDTO);
         }
-        saveSearchResult(searchResult);
-        log.debug("searchDirectAndNonDirectFlights: output data, searchResult \"id\" = {}", searchResult.getId());
+        log.debug("searchDirectAndNonDirectFlights: output data, searchResult = {}", LogsUtils.objectToJson(searchResult));
         return searchResult;
     }
 
@@ -138,8 +134,8 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     private List<Flight> getDirectDepartFlights(Search search) {
         return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
-                search.getFrom().getAirportCode(),
-                search.getTo().getAirportCode(),
+                search.getFrom(),
+                search.getTo(),
                 Date.valueOf(search.getDepartureDate())
         );
     }
@@ -147,8 +143,8 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     private List<Flight> getDirectReturnFlights(Search search) {
         return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
-                search.getTo().getAirportCode(),
-                search.getFrom().getAirportCode(),
+                search.getTo(),
+                search.getFrom(),
                 Date.valueOf(search.getReturnDate())
         );
     }
@@ -156,8 +152,8 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     private List<Flight> getNonDirectDepartFlights(Search search) {
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
-                search.getFrom().getId().intValue(),
-                search.getTo().getId().intValue(),
+                destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
+                destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue(),
                 Date.valueOf(search.getDepartureDate())
         );
     }
@@ -165,8 +161,8 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     private List<Flight> getNonDirectReturnFlights(Search search) {
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
-                search.getTo().getId().intValue(),
-                search.getFrom().getId().intValue(),
+                destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
+                destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
     }
@@ -174,22 +170,5 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     private boolean checkFlightForNumberSeats(Flight f, Search search) {
         return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
-    }
-
-    @Override
-    @Loggable
-    public void saveSearchResult(SearchResult searchResult) {
-        log.debug("saveSearchResult: incoming data, searchResult = {}", LogsUtils.objectToJson(searchResult));
-        searchResultRepository.save(searchResult);
-        log.debug("saveSearchResult: output data is void");
-    }
-
-    @Override
-    @Loggable
-    public SearchResultProjection getSearchResultProjectionByID(Long id) {
-        log.debug("findSearchResultByID: incoming data, searchResult \"id\" = {}", id);
-        var searchResult = searchResultRepository.findAllProjectedBy(id);
-        log.debug("findSearchResultByID: output data, searchResult = {}", LogsUtils.objectToJson(searchResult));
-        return searchResult;
     }
 }

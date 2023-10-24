@@ -1,13 +1,12 @@
 package app.services.interfaces;
 
-import app.entities.search.Search;
-import app.entities.search.SearchResult;
-import app.repositories.SearchResultProjection;
+import app.entities.account.search.Search;
+import app.entities.account.search.SearchResult;
 
 public interface SearchService {
 
     SearchResult saveSearch(Search search);
-    Search getSearchById(long id);
-    void saveSearchResult(SearchResult searchResult);
-    SearchResultProjection getSearchResultProjectionByID(Long id);
+//    Search getSearchById(long id);
+//    void saveSearchResult(SearchResult searchResult);
+//    SearchResultProjection getSearchResultProjectionByID(Long id);
 }
