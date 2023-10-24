@@ -169,7 +169,8 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Override
     @Loggable
     public int getNumberOfFreeSeatOnFlight(Flight flight) {
-        return flight.getAircraft().getSeatSet().size() - flightSeatRepository.findFlightSeatByFlight(flight).size();
+        return flightSeatRepository
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flight.getId()).size();
     }
 
     @Override
