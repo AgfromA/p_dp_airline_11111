@@ -32,18 +32,20 @@ public class FlightServiceImpl implements FlightService {
     private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
     private final TicketService ticketService;
+    private final SeatService seatService;
     private final FlightMapper flightMapper;
     private final Pattern LAT_LONG_PATTERN = Pattern.compile("([-+]?\\d{1,2}\\.\\d+),\\s+([-+]?\\d{1,3}\\.\\d+)");
 
     public FlightServiceImpl(FlightRepository flightRepository, AircraftService aircraftService,
                              DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
-                             @Lazy TicketService ticketService, FlightMapper flightMapper) {
+                             @Lazy TicketService ticketService, FlightMapper flightMapper, SeatService seatService) {
         this.flightRepository = flightRepository;
         this.aircraftService = aircraftService;
         this.destinationService = destinationService;
         this.flightSeatService = flightSeatService;
         this.ticketService = ticketService;
         this.flightMapper = flightMapper;
+        this.seatService = seatService;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class FlightServiceImpl implements FlightService {
                                                                String dateStart, String dateFinish,
                                                                Pageable pageable) {
         return flightRepository.getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
-                .map(flightMapper::flightToFlightDTO);
+                .map(flight -> flightMapper.flightToFlightDTO(flight, this, seatService));
     }
 
     @Override

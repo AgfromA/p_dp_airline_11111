@@ -8,11 +8,14 @@ import app.entities.FlightSeat;
 import app.enums.Airport;
 import app.enums.CategoryType;
 import app.mappers.FlightMapper;
+import app.mappers.FlightSeatMapper;
 import app.repositories.DestinationRepository;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.services.interfaces.FlightSeatService;
 import app.services.interfaces.FlightService;
+import app.services.interfaces.SeatService;
+
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,8 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     private DestinationRepository destinationRepository;
     @Autowired
     private FlightService flightService;
+    @Autowired
+    SeatService seatService;
 
     @Test
     void shouldGetFlightSeats() throws Exception {
@@ -112,13 +117,14 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         Destination to = destinationRepository.getDestinationByAirportCode(Airport.OMS);
         flight.setFrom(from);
         flight.setTo(to);
-        FlightDTO flightDTO = Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight);
+        flight.setSeats(flightSeatService.findByFlightId(1L));
+        FlightDTO flightDTO = Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService, seatService);
         flightService.updateFlight(1L, flightDTO);
         var flightId = "1";
         Set<FlightSeat> flightSeatSet = flightSeatService.getFlightSeatsByFlightId(1L);
-        List<Long> idList = flightSeatSet.stream().map(FlightSeat::getId).collect(Collectors.toList());
-        for (Long id : idList) {
-            flightSeatService.deleteFlightSeatById(id);
+        for (FlightSeat flightSeat : flightSeatSet) {
+            System.out.println(flightSeat.getId());
+            flightSeatService.deleteFlightSeatById(flightSeat.getId());
         }
         mockMvc.perform(
                         post("http://localhost:8080/api/flight-seats/all-flight-seats/{flightId}", flightId)
@@ -138,7 +144,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         long numberOfFlightSeat = flightSeatRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/flight-seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(new FlightSeatDTO(flightSeat)))
+                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(flightSeat, flightService, seatService)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -150,7 +156,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         var category = CategoryType.FIRST;
         Long flightID = 1L;
         List<FlightSeat> flightSeats = flightSeatService.getCheapestFlightSeatsByFlightIdAndSeatCategory(flightID, category);
-        List<FlightSeatDTO> flightSeatDTOS = flightSeats.stream().map(FlightSeatDTO::new).collect(Collectors.toList());
+        List<FlightSeatDTO> flightSeatDTOS = flightSeats.stream().map(f -> Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(f,flightService, seatService)).collect(Collectors.toList());
 
         mockMvc.perform(get("http://localhost:8080/api/flight-seats/cheapest")
                         .param("category", category.toString())

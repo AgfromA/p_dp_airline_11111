@@ -1,6 +1,5 @@
 package app.dto;
 
-import app.entities.FlightSeat;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,15 +31,5 @@ public class FlightSeatDTO {
 
     @NotNull(message = "seatNumber shouldn't be null")
     private Long seatNumber;
-
-    public FlightSeatDTO(FlightSeat entity) {
-        this.id = entity.getId();
-        this.fare = entity.getFare();
-        this.isRegistered = entity.getIsRegistered();
-        this.isSold = entity.getIsSold();
-        this.isBooked = entity.getIsBooked();
-        this.flightId = entity.getFlight().getId();
-        this.seatNumber = entity.getSeat().getId();
-    }
 
 }

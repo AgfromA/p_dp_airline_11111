@@ -14,8 +14,9 @@ import org.mockito.Mockito;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class FlightMapperTest {
 
@@ -28,14 +29,25 @@ class FlightMapperTest {
     private TicketService ticketServiceMock = Mockito.mock(TicketService.class);
     @Mock
     private FlightSeatService flightSeatServiceMock = Mockito.mock(FlightSeatService.class);
+    @Mock
+    private FlightService flightServiceMock = Mockito.mock(FlightService.class);
+    @Mock
+    private SeatService seatServiceMock= Mockito.mock(SeatService.class);
 
     @Test
     void shouldConvertFlightToFlightDTOEntity() throws Exception {
+        Seat seat1 = new Seat();
+        seat1.setId(1);
+        Seat seat2 = new Seat();
+        seat2.setId(2);
+
         FlightSeat flightSeat1 = new FlightSeat();
         flightSeat1.setId(1001L);
+        flightSeat1.setSeat(seat1);
 
         FlightSeat flightSeat2 = new FlightSeat();
         flightSeat2.setId(1002L);
+        flightSeat2.setSeat(seat2);
 
         List<FlightSeat> flightSeatList = new ArrayList<>();
         flightSeatList.add(flightSeat1);
@@ -83,8 +95,12 @@ class FlightMapperTest {
         flight.setArrivalDateTime(arrivalDateTime);
         flight.setAircraft(aircraft);
         flight.setFlightStatus(FlightStatus.ON_TIME);
+        flightSeat1.setFlight(flight);
+        flightSeat2.setFlight(flight);
 
-        FlightDTO flightDTO = flightMapper.flightToFlightDTO(flight);
+        when(flightServiceMock.getFlightById(1L)).thenReturn(Optional.of(flight));
+        when(seatServiceMock.getSeatById(anyLong())).thenReturn(flightSeat1.getSeat());
+        FlightDTO flightDTO = flightMapper.flightToFlightDTO(flight, flightServiceMock, seatServiceMock);
 
         Assertions.assertNotNull(flightDTO);
         Assertions.assertEquals(flightDTO.getId(), flight.getId());
