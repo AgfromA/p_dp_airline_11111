@@ -10,6 +10,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.IOException;
 
+import static app.enums.CategoryType.ECONOMY;
+
 class FlightSeatDTOTest extends EntityTest {
 
     private Validator validator;
@@ -31,6 +33,7 @@ class FlightSeatDTOTest extends EntityTest {
         flightSeatJson.put("isBooked", true);
         flightSeatJson.put("flightId", 1);
         flightSeatJson.put("seatNumber", 1);
+        flightSeatJson.put("category", ECONOMY);
 
         return flightSeatJson;
     }

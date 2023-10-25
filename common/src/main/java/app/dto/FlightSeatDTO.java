@@ -1,5 +1,6 @@
 package app.dto;
 
+import app.enums.CategoryType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,8 @@ public class FlightSeatDTO {
     private Long flightId;
 
     @NotNull(message = "seatNumber shouldn't be null")
-    private Long seatNumber;
+    private String seatNumber;
 
+    @NotNull(message = "category cannot be null")
+    private CategoryType category;
 }

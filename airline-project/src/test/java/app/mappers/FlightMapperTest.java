@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static app.enums.CategoryType.BUSINESS;
 import static org.mockito.Mockito.*;
 
 class FlightMapperTest {
@@ -36,10 +37,15 @@ class FlightMapperTest {
 
     @Test
     void shouldConvertFlightToFlightDTOEntity() throws Exception {
+        Category category = new Category();
+        category.setCategoryType(BUSINESS);
+
         Seat seat1 = new Seat();
         seat1.setId(1);
+        seat1.setCategory(category);
         Seat seat2 = new Seat();
         seat2.setId(2);
+        seat2.setCategory(category);
 
         FlightSeat flightSeat1 = new FlightSeat();
         flightSeat1.setId(1001L);

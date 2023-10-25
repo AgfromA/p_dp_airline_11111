@@ -137,4 +137,9 @@ public class SeatServiceImpl implements SeatService {
             return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity);
         });
     }
+
+    @Override
+    public Seat getSeatBySeatNumber(String seatNumber) {
+        return seatRepository.findSeatBySeatNumber(seatNumber);
+    }
 }
