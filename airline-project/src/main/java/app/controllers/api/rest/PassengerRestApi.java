@@ -21,24 +21,13 @@ import javax.validation.Valid;
 @RequestMapping("/api/passengers")
 public interface PassengerRestApi {
 
-    @ApiOperation(value = "Get list of all Passengers")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Passengers found"),
-            @ApiResponse(code = 404, message = "Passengers not found")
-    })
-    @GetMapping
-    ResponseEntity<Page<PassengerDTO>> getAllPagesPassengersDTO(
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size
-    );
-
     @ApiOperation(value = "Get list of all Passengers filtered")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Passenger found"),
             @ApiResponse(code = 400, message = "Passenger not found")
     })
-    @GetMapping("/filter")
-    ResponseEntity<Page<PassengerDTO>> getAllPagesPassengersDTOFiltered(
+    @GetMapping
+    ResponseEntity<Page<PassengerDTO>> getAll(
             @PageableDefault(sort = {"id"}) Pageable pageable,
             @RequestParam(value = "firstName", required = false) String firstName,
             @RequestParam(value = "lastName", required = false) String lastName,
@@ -52,7 +41,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @GetMapping("/{id}")
-    ResponseEntity<PassengerDTO> getPassengerDTOById(
+    ResponseEntity<PassengerDTO> getById(
             @ApiParam(
                     name = "id",
                     value = "User.id",
@@ -66,7 +55,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping
-    ResponseEntity<PassengerDTO> createPassengerDTO(
+    ResponseEntity<PassengerDTO> create(
             @ApiParam(
                     name = "Passenger",
                     value = "Passenger model",
@@ -80,7 +69,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @PatchMapping(value = "/{id}")
-    ResponseEntity<PassengerDTO> updatePassengerDTOById(
+    ResponseEntity<PassengerDTO> updateById(
             @ApiParam(
                     name = "id",
                     value = "User.id",
@@ -100,7 +89,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @DeleteMapping(value = "/{id}")
-    ResponseEntity<HttpStatus> deletePassengerById(
+    ResponseEntity<HttpStatus> deleteById(
             @ApiParam(
                     name = "id",
                     value = "User.id",

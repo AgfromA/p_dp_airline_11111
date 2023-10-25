@@ -5,10 +5,10 @@ import app.dto.PaymentRequest;
 import app.dto.PaymentResponse;
 import app.entities.Payment;
 import app.enums.State;
+import app.mappers.PaymentMapper;
 import app.repositories.PaymentRepository;
 import app.services.interfaces.BookingService;
 import app.services.interfaces.PaymentService;
-import app.util.mappers.PaymentMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,7 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
         var savedPayment = paymentRepository.save(paymentMapper.convertToPaymentEntity(paymentRequest));
         log.info("create: new payment saved with id = {}", savedPayment.getId());
         var response = paymentFeignClient.makePayment(paymentRequest);
-        var paymentResponse = paymentMapper.convertToDto(savedPayment);
+        var paymentResponse = paymentMapper.convertToPaymentResponse(savedPayment);
         var url = response.getHeaders().getFirst("url");
         return ResponseEntity.status(response.getStatusCode())
                 .header("url",url)

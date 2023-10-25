@@ -11,7 +11,8 @@
 - #302 Добавлен Mapper для Timezone через Mapstruct
 - #300 mapper через mapstruct для Seat
 - #290 Фронт CRUD для SeatDTO, класс SeatDTO исправлен (удален Seat из конструктора), SeatDTO-SeatRestApi-CategoryType перенесены в common
-- #264 Паспорт сделан обязательным (not null) для PassengerDTO
+- #189 Добавлена библиотека GeographicLib-Java, добавлен метод для изменения цены FlightSeat в зависимости от расстояния полета
+- #229 Произведен рефакторинг PassengerRestController, добавлена логика фильтрации по firstName + lastName, оптимизированы тесты
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.
@@ -28,6 +29,7 @@
 - #306 Добавлен новый микросервис с фронтом(Vaadin), ExampleDTO и ExampleApi перенесен в common. Весь фронт был перенесен на отдельный сервис в airline-frontend.
 - #236 Исправлен баг UpdateFlightById, справлен FlightMapper (удален прежний, добавлен FlightMapper интерфейс с использованием MapStruct), написаны unit есты для FlightMapper, интеграционные тесты для FlightController (updateFlightById)
 - #294 Добавлен Mapper для Destination через Mapstruct
+- #298 Добавлен Mapper для Payment через Mapstruct, а также junit тесты к ним.
 
 ## [1.0.6] - 30.07.2023
 - #226 Рефакторинг passenger и account - убрано наследование

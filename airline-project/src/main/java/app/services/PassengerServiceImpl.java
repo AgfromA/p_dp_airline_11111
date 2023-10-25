@@ -68,25 +68,31 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public Page<PassengerDTO> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
-        if (firstName != null) {
+        if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
+            return passengerRepository.findByFirstNameAndLastName(pageable, firstName, lastName).map(entity -> {
+                var dto = passengerMapper.convertToPassengerDTO(entity);
+                return dto;
+            });
+        }
+        if (firstName != null && !firstName.isEmpty()) {
             return passengerRepository.findAllByFirstName(pageable, firstName).map(entity -> {
                 var dto = passengerMapper.convertToPassengerDTO(entity);
                 return dto;
             });
         }
-        if (lastName != null) {
+        if (lastName != null && !lastName.isEmpty()) {
             return passengerRepository.findByLastName(pageable, lastName).map(entity -> {
                 var dto = passengerMapper.convertToPassengerDTO(entity);
                 return dto;
             });
         }
-        if (email != null) {
+        if (email != null && !email.isEmpty()) {
             return passengerRepository.findByEmail(pageable, email).map(entity -> {
                 var dto = passengerMapper.convertToPassengerDTO(entity);
                 return dto;
             });
         }
-        if (serialNumberPassport != null) {
+        if (serialNumberPassport != null && !serialNumberPassport.isEmpty()) {
             return passengerRepository.findByPassportSerialNumber(pageable, serialNumberPassport).map(entity -> {
                 var dto = passengerMapper.convertToPassengerDTO(entity);
                 return dto;
@@ -110,14 +116,6 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public Page<PassengerDTO> getAllPagesPassengers(Pageable pageable) {
         return passengerRepository.findAll(pageable).map(entity -> {
-            var dto = passengerMapper.convertToPassengerDTO(entity);
-            return dto;
-        });
-    }
-
-    @Override
-    public Page<PassengerDTO> getAllPagesPassengers(int page, int size) {
-        return passengerRepository.findAll(PageRequest.of(page, size)).map(entity -> {
             var dto = passengerMapper.convertToPassengerDTO(entity);
             return dto;
         });

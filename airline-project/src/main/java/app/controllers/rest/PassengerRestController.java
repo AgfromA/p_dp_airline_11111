@@ -6,14 +6,11 @@ import app.services.interfaces.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -23,19 +20,7 @@ public class PassengerRestController implements PassengerRestApi {
     private final PassengerService passengerService;
 
     @Override
-    public ResponseEntity<Page<PassengerDTO>> getAllPagesPassengersDTO(Integer page, Integer size) {
-        var passengerPage = passengerService.getAllPagesPassengers(page, size);
-        if (passengerPage == null) {
-            log.error("getAll: Passengers not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        log.info("getAll: find all passengers");
-        var passengerDTOS = passengerPage.stream().collect(Collectors.toList());
-        return new ResponseEntity<>(new PageImpl<>(passengerDTOS, PageRequest.of(page, size), passengerPage.getTotalElements()), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Page<PassengerDTO>> getAllPagesPassengersDTOFiltered(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
+    public ResponseEntity<Page<PassengerDTO>> getAll(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
         Page<PassengerDTO> passengers;
         if (firstName == null && lastName == null && email == null && serialNumberPassport == null) {
             passengers = passengerService.getAllPagesPassengers(pageable);
@@ -54,7 +39,7 @@ public class PassengerRestController implements PassengerRestApi {
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> getPassengerDTOById(Long id) {
+    public ResponseEntity<PassengerDTO> getById(Long id) {
         log.info("getById: get passenger by ID = {}", id);
         var passenger = passengerService.getPassengerById(id);
 
@@ -67,7 +52,7 @@ public class PassengerRestController implements PassengerRestApi {
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> createPassengerDTO(PassengerDTO passengerDTO) {
+    public ResponseEntity<PassengerDTO> create(PassengerDTO passengerDTO) {
         if (passengerDTO.getId() != null) {
             log.error("create: passenger already exist in database");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -78,14 +63,14 @@ public class PassengerRestController implements PassengerRestApi {
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> updatePassengerDTOById(Long id, PassengerDTO passengerDTO) {
+    public ResponseEntity<PassengerDTO> updateById(Long id, PassengerDTO passengerDTO) {
         passengerDTO.setId(id);
         log.info("update: update Passenger with id = {}", id);
         return new ResponseEntity<>(new PassengerDTO(passengerService.updatePassengerById(id, passengerDTO)), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<HttpStatus> deletePassengerById(Long id) {
+    public ResponseEntity<HttpStatus> deleteById(Long id) {
         log.info("delete: passenger with id={} deleted", id);
         passengerService.deletePassengerById(id);
         return new ResponseEntity<>(HttpStatus.OK);
