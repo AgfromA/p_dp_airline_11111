@@ -15,9 +15,9 @@ import javax.validation.Valid;
 
 @Api(tags = "Search")
 @Tag(name = "Search", description = "API поиска рейсов по заданными параметрам")
-public interface SearchControllerApi {
+    public interface SearchControllerApi {
 
-    @RequestMapping(value = "/api/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/search", method = RequestMethod.POST)
     @ApiOperation(value = "Create new search",
             notes = "Минимально необходимые поля для корректной работы контроллера:\n" +
                     " \"from\": {\"airportCode\": \"value\"},\n" +
