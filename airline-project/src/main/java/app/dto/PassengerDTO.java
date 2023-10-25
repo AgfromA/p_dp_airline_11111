@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
@@ -44,6 +45,7 @@ public class PassengerDTO {
     private String phoneNumber;
 
     @NotNull(message = "Passport should not be empty")
+    @Valid
     private Passport passport;
 
     @Email
