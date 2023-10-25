@@ -1,8 +1,7 @@
 package app.controllers.view;
 
-import app.entities.account.search.Search;
+import app.dto.search.Search;
 import app.enums.Airport;
-import app.enums.CategoryType;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -17,7 +16,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class SearchView extends HorizontalLayout {
+public class SearchForm extends HorizontalLayout {
 
     private final Search search = new Search();
     private final Binder<Search> binder = new Binder<>(Search.class);
@@ -26,18 +25,16 @@ public class SearchView extends HorizontalLayout {
     private final DatePicker departureDateField = new DatePicker("Departure");
     private final DatePicker returnDateField = new DatePicker("Return");
     private final IntegerField numberOfPassengersField = new IntegerField("Number of passengers");
-    private final ComboBox<CategoryType> categoryField = new ComboBox<>("Category");
     private final Button searchButton = new Button(VaadinIcon.SEARCH.create());
     private final Button reverseButton = new Button(VaadinIcon.EXCHANGE.create());
 
-    public SearchView() {
+    public SearchForm() {
 
         setFromField();
         setToField();
         setDepartureDateField();
         setReturnDateField();
         setNumberOfPassengersField();
-        setCategoryField();
 
         reverseButton.addClickListener(e -> {
             Airport swap = fromField.getValue();
@@ -48,15 +45,15 @@ public class SearchView extends HorizontalLayout {
         searchButton.addClickListener(e -> {
             if (createSearch()) {
                 VaadinSession.getCurrent().setAttribute("searchView", search);
-                UI.getCurrent().navigate("search-flights");
+                UI.getCurrent().navigate("search");
             }
         });
 
         add(fromField, reverseButton, toField, departureDateField
-                , returnDateField, numberOfPassengersField, categoryField, searchButton);
+                , returnDateField, numberOfPassengersField, searchButton);
 
         expand(fromField, toField, departureDateField
-                , returnDateField, numberOfPassengersField, categoryField);
+                , returnDateField, numberOfPassengersField);
 
         setWidthFull();
         setAlignItems(Alignment.BASELINE);
@@ -64,7 +61,7 @@ public class SearchView extends HorizontalLayout {
     }
 
     private void setFromField() {
-        fromField.setWidth("15%");
+        fromField.setWidth("20%");
         fromField.setItems(Airport.values());
         fromField.setItemLabelGenerator(airport ->
                 airport.getCity() + " (" + airport.getAirportName() + ") " + airport.getAirportInternalCode());
@@ -75,7 +72,7 @@ public class SearchView extends HorizontalLayout {
     }
 
     private void setToField() {
-        toField.setWidth("15%");
+        toField.setWidth("20%");
         toField.setItems(Airport.values());
         toField.setItemLabelGenerator(airport ->
                 airport.getCity() + " (" + airport.getAirportName() + ") " + airport.getAirportInternalCode());
@@ -86,7 +83,7 @@ public class SearchView extends HorizontalLayout {
     }
 
     private void setDepartureDateField() {
-        departureDateField.setWidth("10%");
+        departureDateField.setWidth("15%");
         departureDateField.setValue(LocalDate.of(2024, 1, 1));
         binder.forField(departureDateField)
                 .asRequired("Departure date cannot be empty")
@@ -94,7 +91,7 @@ public class SearchView extends HorizontalLayout {
     }
 
     private void setReturnDateField() {
-        returnDateField.setWidth("10%");
+        returnDateField.setWidth("15%");
         returnDateField.setValue(departureDateField.getValue().plusDays(13));
         binder.forField(returnDateField)
                 .withValidator(date -> date == null || !date.isBefore(departureDateField.getValue())
@@ -103,7 +100,7 @@ public class SearchView extends HorizontalLayout {
     }
 
     private void setNumberOfPassengersField() {
-        numberOfPassengersField.setWidth("5%");
+        numberOfPassengersField.setWidth("10%");
         numberOfPassengersField.setValue(1);
         numberOfPassengersField.setStepButtonsVisible(true);
         numberOfPassengersField.setMin(1);
@@ -112,12 +109,6 @@ public class SearchView extends HorizontalLayout {
                 .asRequired("Number of passengers must be between 1 and 9")
                 .withValidator(value -> value >= 1 && value <= 9, "Number of passengers must be between 1 and 9")
                 .bind(Search::getNumberOfPassengers, Search::setNumberOfPassengers);
-    }
-
-    private void setCategoryField() {
-        categoryField.setWidth("10%");
-        categoryField.setItems(CategoryType.values());
-        categoryField.setValue(CategoryType.ECONOMY);
     }
 
     boolean createSearch() {

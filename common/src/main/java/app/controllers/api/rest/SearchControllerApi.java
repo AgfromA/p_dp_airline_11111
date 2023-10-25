@@ -1,8 +1,7 @@
 package app.controllers.api.rest;
 
-import app.entities.account.search.Search;
-import app.entities.account.search.SearchResult;
-
+import app.dto.search.Search;
+import app.dto.search.SearchResult;
 
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +27,7 @@ public interface SearchControllerApi {
             @ApiResponse(code = 400, message = "search return error. check validField "),
             @ApiResponse(code = 404, message = "flights not found")
     })
-    ResponseEntity<SearchResult> save(
+    ResponseEntity<SearchResult> get(
             @ApiParam(
                     name = "search",
                     value = "Search model"
