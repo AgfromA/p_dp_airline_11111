@@ -29,10 +29,10 @@ public interface FlightMapper {
     @Mapping(target = "airportFrom", expression = "java(flight.getFrom().getAirportCode())")
     @Mapping(target = "airportTo", expression = "java(flight.getTo().getAirportCode())")
     @Mapping(target = "aircraftId", expression = "java(flight.getAircraft().getId())")
-    @Mapping(target = "seats", expression = "java(toFlightSeatsListDTO(flight.getSeats(), flightService, seatService))")
+    @Mapping(target = "seats", expression = "java(toFlightSeatsDTOList(flight.getSeats(), flightService, seatService))")
     FlightDTO flightToFlightDTO(Flight flight, @Context FlightService flightService, @Context SeatService seatService);
 
-    default List<FlightSeatDTO> toFlightSeatsListDTO(List<FlightSeat> flightSeats, FlightService flightService, SeatService seatService) {
+    default List<FlightSeatDTO> toFlightSeatsDTOList(List<FlightSeat> flightSeats, FlightService flightService, SeatService seatService) {
         return flightSeats.stream().map(flightSeat -> Mappers.getMapper(FlightSeatMapper.class)
                 .convertToFlightSeatDTOEntity(flightSeat, flightService, seatService)).collect(Collectors.toList());
     }
