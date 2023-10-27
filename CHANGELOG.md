@@ -13,6 +13,8 @@
 - #290 Фронт CRUD для SeatDTO, класс SeatDTO исправлен (удален Seat из конструктора), SeatDTO-SeatRestApi-CategoryType перенесены в common
 - #189 Добавлена библиотека GeographicLib-Java, добавлен метод для изменения цены FlightSeat в зависимости от расстояния полета
 - #229 Произведен рефакторинг PassengerRestController, добавлена логика фильтрации по firstName + lastName, оптимизированы тесты
+- #264 Паспорт сделан обязательным (not null) для PassengerDTO
+- #321 Фронт для поиска свободных мест и отображения результатов, рефакторинг FlightDTO, FlightSeat, Search, SearchResult
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.
