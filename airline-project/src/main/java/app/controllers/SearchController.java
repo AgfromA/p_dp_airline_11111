@@ -47,7 +47,7 @@ public class SearchController implements SearchControllerApi {
         }
         SearchResult searchResult = searchService.getSearch(from, to, departureDate, returnDate, numberOfPassengers);
         if (searchResult.getDepartFlights().isEmpty() && searchResult.getReturnFlights().isEmpty()) {
-            log.info("Destination not found");
+            log.info("Flights not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         log.info("Search result found = {}", searchResult);
