@@ -80,7 +80,7 @@ public class SearchResultView extends VerticalLayout {
     }
 
     private void setSearchViewFromOutside() {
-        Search searchOutside = (Search) VaadinSession.getCurrent().getAttribute("searchView");
+        Search searchOutside = (Search) VaadinSession.getCurrent().getAttribute("search");
         if (searchOutside != null) {
             searchForm.getFromField().setValue(searchOutside.getFrom());
             searchForm.getToField().setValue(searchOutside.getTo());
@@ -97,7 +97,9 @@ public class SearchResultView extends VerticalLayout {
             noDepartFlightsMessage.setVisible(true);
             noReturnFlightsMessage.setVisible(true);
             if (searchForm.createSearch()) {
-                ResponseEntity<SearchResult> response = searchClient.get(searchForm.getSearch());
+                ResponseEntity<SearchResult> response = searchClient.get(searchForm.getSearch().getFrom()
+                        , searchForm.getSearch().getTo(), searchForm.getSearch().getDepartureDate()
+                        , searchForm.getSearch().getReturnDate(), searchForm.getSearch().getNumberOfPassengers());
                 if (!(response.getStatusCode() == HttpStatus.NO_CONTENT)) {
                     searchResult = response.getBody();
                     if (!searchResult.getDepartFlights().isEmpty()) {
@@ -117,9 +119,12 @@ public class SearchResultView extends VerticalLayout {
     private void setFlightsGrids() {
         departFlightsGrid.setAllRowsVisible(true);
         departFlightsGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        departFlightsGrid.setSelectionMode(Grid.SelectionMode.NONE);
         returnFlightsGrid.setAllRowsVisible(true);
         returnFlightsGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        returnFlightsGrid.setSelectionMode(Grid.SelectionMode.NONE);
         flightSeatGrid.setAllRowsVisible(true);
+        flightSeatGrid.setSelectionMode(Grid.SelectionMode.NONE);
     }
 
     private void setNoFlightsMessage() {
@@ -143,10 +148,18 @@ public class SearchResultView extends VerticalLayout {
         return grid.addColumn(FlightDTO::getArrivalDateTime);
     }
 
+    //теперь будут отображаться только свободные flightSeats
     private Grid.Column<FlightDTO> createFlightSeatsColumn(Grid<FlightDTO> grid) {
         return grid.addComponentColumn(flight -> {
+            List<FlightSeatDTO> list = new ArrayList<>();
+            for (FlightSeatDTO flightSeat : flight.getSeats()) {
+                if (flightSeat.getIsSold() || flightSeat.getIsBooked() || flightSeat.getIsRegistered()) {
+                    continue;
+                }
+                list.add(flightSeat);
+            }
             Button button = new Button("View flight seats");
-            button.addClickListener(e -> openFlightSeatsTable(flight.getSeats()));
+            button.addClickListener(e -> openFlightSeatsTable(list));
             return button;
         });
     }
@@ -181,7 +194,7 @@ public class SearchResultView extends VerticalLayout {
         }).setHeader("details");
     }
 
-    //Здесь нужно реализуем действия при нажатии на кнопку, можно прыгнуть например на страницу
+    //Здесь реализуем действия при нажатии на кнопку details, как вариант перебросить на страницу бронирования
     private void  openViewDetails(String seatNumber) {
         Div message = new Div();
         message.setText("Дальше думаем что можно сделать :)");

@@ -44,7 +44,7 @@ public class SearchForm extends HorizontalLayout {
 
         searchButton.addClickListener(e -> {
             if (createSearch()) {
-                VaadinSession.getCurrent().setAttribute("searchView", search);
+                VaadinSession.getCurrent().setAttribute("search", search);
                 UI.getCurrent().navigate("search");
             }
         });
