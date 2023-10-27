@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -14,6 +15,7 @@ import javax.validation.constraints.PositiveOrZero;
 @EqualsAndHashCode
 @NoArgsConstructor
 public class FlightSeatDTO {
+    @ReadOnlyProperty
     private Long id;
 
     @PositiveOrZero(message = "Fare must be positive")
