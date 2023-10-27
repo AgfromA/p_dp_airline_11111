@@ -1,4 +1,4 @@
--- changeset yuri_solom:1.18.1
+-- changeset maria_kovaleva:1.18.1
 
 DROP TABLE IF EXISTS search_results CASCADE;
 DROP TABLE IF EXISTS searches CASCADE;

@@ -117,7 +117,7 @@
     </changeSet>
 
     <include file="v-1.18/db.changelog-v-1.18.xml" relativeToChangelogFile="true"/>
-    <changeSet id="1.18" author="yuri_solom">
+    <changeSet id="1.18" author="maria_kovaleva">
         <tagDatabase tag="v-1.18"/>
     </changeSet>
 
