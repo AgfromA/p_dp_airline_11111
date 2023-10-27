@@ -16,5 +16,4 @@ public interface SeatService {
     Page<SeatDTO> getPagesSeatsByAircraftId(Long id, Pageable pageable);
     List<SeatDTO> generateSeatsDTOByAircraftId(long aircraftId);
     Page<SeatDTO> getAllPagesSeats(Integer page, Integer size);
-    Seat getSeatBySeatNumber(String seatNumber);
 }

@@ -138,8 +138,4 @@ public class SeatServiceImpl implements SeatService {
         });
     }
 
-    @Override
-    public Seat getSeatBySeatNumber(String seatNumber) {
-        return seatRepository.findSeatBySeatNumber(seatNumber);
-    }
 }
