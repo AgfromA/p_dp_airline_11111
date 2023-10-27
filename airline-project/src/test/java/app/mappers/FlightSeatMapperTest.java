@@ -75,7 +75,7 @@ class FlightSeatMapperTest {
         Seat seat = new Seat();
         seat.setId(42);
         seat.setSeatNumber("42L");
-        when(seatService.getSeatById(42)).thenReturn(seat);
+        when(seatService.getSeatById(42L)).thenReturn(seat);
 
         FlightSeatDTO flightSeatDTO = new FlightSeatDTO();
         flightSeatDTO.setId(1L);
@@ -84,9 +84,10 @@ class FlightSeatMapperTest {
         flightSeatDTO.setIsRegistered(true);
         flightSeatDTO.setIsSold(true);
         flightSeatDTO.setFlightId(4001L);
+        flightSeatDTO.setSeatId(42L);
         flightSeatDTO.setSeatNumber("42L");
 
-        when(seatService.getSeatBySeatNumber("42L")).thenReturn(seat);
+        when(seatService.getSeatById(42L)).thenReturn(seat);
         FlightSeat result = SUT.convertToFlightSeatEntity(flightSeatDTO, flightServiceMock, seatService);
 
         Assertions.assertEquals(flightSeatDTO.getId(), result.getId());

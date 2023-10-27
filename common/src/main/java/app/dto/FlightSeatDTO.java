@@ -35,6 +35,9 @@ public class FlightSeatDTO {
     @NotNull(message = "seatNumber shouldn't be null")
     private String seatNumber;
 
+    @NotNull(message = "seatId cannot be null")
+    private Long seatId;
+
     @NotNull(message = "category cannot be null")
     private CategoryType category;
 }
