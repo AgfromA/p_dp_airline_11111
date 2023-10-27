@@ -1,8 +1,8 @@
 package app.controllers;
 
 import app.controllers.api.SearchControllerApi;
-import app.dto.search.Search;
 import app.dto.search.SearchResult;
+import app.enums.Airport;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 
 @Slf4j
 @RestController
@@ -20,28 +21,37 @@ public class SearchController implements SearchControllerApi {
     private final SearchService searchService;
 
     @Override
-    public ResponseEntity<SearchResult> get(Search search) {
+    public ResponseEntity<SearchResult> get(
+            Airport from,
+            Airport to,
+            LocalDate departureDate,
+            LocalDate returnDate,
+            Integer numberOfPassengers) {
 
-        log.debug("findSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
-        if (search.getFrom() == null || search.getTo() == null) {
-            log.info("findSearch: Destination.from is null or Destination.to is null");
+        log.debug("incoming Airport from = {}", LogsUtils.objectToJson(from));
+        log.debug("incoming Airport to = {}", LogsUtils.objectToJson(to));
+        if (from == null || to == null) {
+            log.info("Destination.from is null or Destination.to is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (search.getNumberOfPassengers() == null || search.getNumberOfPassengers() < 1) {
-            log.info("findSearch: NumberOfPassengers is incorrect");
+        log.debug("incoming numberOfPassengers = {}", LogsUtils.objectToJson(numberOfPassengers));
+        if (numberOfPassengers == null || numberOfPassengers < 1) {
+            log.info("NumberOfPassengers is incorrect");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (search.getReturnDate() != null && !search.getReturnDate().isAfter(search.getDepartureDate())) {
-            log.info("findSearch: DepartureDate must be earlier then ReturnDate");
+        log.debug("incoming departureDate = {}", LogsUtils.objectToJson(departureDate));
+        log.debug("incoming returnDate = {}", LogsUtils.objectToJson(returnDate));
+        if (returnDate != null && !(returnDate.isAfter(departureDate))) {
+            log.info("DepartureDate must be earlier then ReturnDate");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        var searchResult = searchService.getSearch(search);
+        SearchResult searchResult = searchService.getSearch(from, to, departureDate, returnDate, numberOfPassengers);
         if (searchResult.getDepartFlights().isEmpty() && searchResult.getReturnFlights().isEmpty()) {
-            log.info("findSearch: Destination not found");
+            log.info("Destination not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        log.info("findSearch: search result found = {}", searchResult);
-        log.debug("findSearch: outgoing data = {}", LogsUtils.objectToJson(searchResult));
+        log.info("Search result found = {}", searchResult);
+        log.debug("Outgoing data = {}", LogsUtils.objectToJson(searchResult));
         return new ResponseEntity<>(searchResult, HttpStatus.OK);
     }
 }

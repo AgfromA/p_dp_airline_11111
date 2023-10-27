@@ -1,23 +1,20 @@
 package app.controllers.api;
 
-import app.dto.search.Search;
 import app.dto.search.SearchResult;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import app.enums.Airport;
+import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import java.time.LocalDate;
 
 @Api(tags = "Search")
 @Tag(name = "Search", description = "API поиска рейсов по заданными параметрам")
-    public interface SearchControllerApi {
+public interface SearchControllerApi {
 
-    @RequestMapping(value = "/api/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/search", method = RequestMethod.GET)
     @ApiOperation(value = "Create new search",
             notes = "Минимально необходимые поля для корректной работы контроллера:\n" +
                     " \"from\": {\"airportCode\": \"value\"},\n" +
@@ -30,11 +27,23 @@ import javax.validation.Valid;
             @ApiResponse(code = 404, message = "Destinations not found")
     })
     ResponseEntity<SearchResult> get(
-            @ApiParam(
-                    name = "search",
-                    value = "Search model"
-            )
-            @RequestBody @Valid Search search);
+
+            @ApiParam(name = "airportFrom", value = "airportFrom")
+            @RequestParam(value = "airportFrom") Airport airportFrom,
+
+            @ApiParam(name = "airportTo", value = "airportTo")
+            @RequestParam(value = "airportTo") Airport airportTo,
+
+            @ApiParam(name = "departureDate", value = "departureDate")
+            @RequestParam(value = "departureDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+
+            @ApiParam(name = "returnDate", value = "returnDate")
+            @RequestParam(value = "returnDate", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate,
+
+            @ApiParam(name = "numberOfPassengers", value = "numberOfPassengers")
+            @RequestParam(value = "numberOfPassengers") Integer numberOfPassengers);
 }
 
 
