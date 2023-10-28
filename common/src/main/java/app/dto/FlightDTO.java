@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 //@NoArgsConstructor
 public class FlightDTO {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     @NotBlank(message = "Code cannot be empty")
     @Size(min = 2, max = 15, message = "Length of Flight code should be between 2 and 15 characters")

@@ -67,13 +67,14 @@ public class FlightRestController implements FlightRestApi {
     }
 
     @Override
-    public ResponseEntity<Long> createFlight(FlightDTO flightDTO) {
+    public ResponseEntity<FlightDTO> createFlight(FlightDTO flightDTO) {
         log.info("create: create new Flight");
-        return new ResponseEntity<>(flightService.saveFlight(flightDTO).getId(), HttpStatus.CREATED);
+        return new ResponseEntity<>(flightMapper.flightToFlightDTO(flightService.saveFlight(flightDTO)),
+                HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Void> updateFlightById(Long id, FlightDTO flightDTO) {
+    public ResponseEntity<FlightDTO> updateFlightById(Long id, FlightDTO flightDTO) {
         var flight = flightService.getFlightById(id);
         if (flight.isEmpty()) {
             log.error("update: Flight with id={} doesn't exist.", id);
@@ -81,8 +82,8 @@ public class FlightRestController implements FlightRestApi {
         }
         flightDTO.setId(id);
         log.info("update: Flight with id = {} updated", id);
-        flightService.updateFlight(id, flightDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(flightMapper.flightToFlightDTO(flightService.updateFlight(id, flightDTO)),
+                HttpStatus.OK);
     }
 
     @Override

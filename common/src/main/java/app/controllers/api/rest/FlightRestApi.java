@@ -81,7 +81,7 @@ public interface FlightRestApi {
     @RequestMapping(value = "/api/flights", method = RequestMethod.POST)
     @ApiOperation(value = "Create Flight")
     @ApiResponse(code = 201, message = "Flight created")
-    ResponseEntity<Long> createFlight(
+    ResponseEntity<FlightDTO> createFlight(
             @ApiParam(
                     name = "flight",
                     value = "Flight model"
@@ -94,7 +94,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flight updated"),
             @ApiResponse(code = 404, message = "Flight not found")
     })
-    ResponseEntity<Void> updateFlightById(
+    ResponseEntity<FlightDTO> updateFlightById(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
