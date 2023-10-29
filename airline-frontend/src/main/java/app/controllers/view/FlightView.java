@@ -15,6 +15,7 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -28,6 +29,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,9 +52,16 @@ public class FlightView extends VerticalLayout {
     private final Button nextButton;
     private final Button previousButton;
     private final Button refreshButton;
-    private final Button searchButtonById;
+    private final Button searchByIdButton;
+    private final Button searchByDestinationsAndDatesButton;
     private final IntegerField idSearchField;
+    private final TextField cityFromSearchByDestinationsAndDatesField;
+    private final TextField cityToSearchByDestinationsAndDatesField;
+    private final DateTimePicker dateStartSearchByDestinationsAndDatesField;
+    private final DateTimePicker dateFinishSearchByDestinationsAndDatesField;
+
     private boolean isSearchById;
+    private boolean isSearchByDestinationsAndDates;
 
     public FlightView(FlightClient flightClient) {
         this.flightClient = flightClient;
@@ -58,21 +69,11 @@ public class FlightView extends VerticalLayout {
 
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         isSearchById = false;
-        maxPages = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null, null, null, null, pageable).getBody().getTotalPages() - 1;
-        dataSource = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null,
-                null,
-                null,
-                null,
-                pageable).getBody().stream().collect(Collectors.toList());
-
-        System.out.println(flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null,
-                null,
-                null,
-                null,
-                pageable).getBody().stream().map(e -> e.getId()).collect(Collectors.toList()));
+        isSearchByDestinationsAndDates = false;
+        var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+                null, null, null, null, pageable);
+        maxPages = response.getBody().getTotalPages() - 1;
+        dataSource = response.getBody().stream().collect(Collectors.toList());
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage codeValidationMessage = new ValidationMessage();
@@ -82,7 +83,6 @@ public class FlightView extends VerticalLayout {
         ValidationMessage arrivalDateTimeValidationMessage = new ValidationMessage();
         ValidationMessage aircraftIdValidationMessage = new ValidationMessage();
         ValidationMessage flightStatusValidationMessage = new ValidationMessage();
-
 
         Grid.Column<FlightDTO> idColumn = createIdColumn();
         Grid.Column<FlightDTO> codeColumn = createCodeColumn();
@@ -106,22 +106,25 @@ public class FlightView extends VerticalLayout {
         createAircraftIdField(binder, aircraftIdValidationMessage, aircraftIdColumn);
         createFlightStatusField(binder, flightStatusValidationMessage, flightStatusColumn);
 
-
         updateButton = new Button("Update", e -> editor.save());
         cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
         previousButton = new Button(VaadinIcon.ARROW_LEFT.create(), e -> previousPage());
         nextButton = new Button(VaadinIcon.ARROW_RIGHT.create(), e -> nextPage());
         refreshButton = createRefreshButton();
-        searchButtonById = createSearchButtonById();
+        searchByIdButton = createSearchByIdButton();
         idSearchField = createSearchByIdField();
+        searchByDestinationsAndDatesButton = createSearchByDestinationsAndDatesButton();
+        cityFromSearchByDestinationsAndDatesField = createCityFromSearchByDestinationsAndDatesField();
+        cityToSearchByDestinationsAndDatesField = createCityToSearchByDestinationsAndDatesField();
+        dateStartSearchByDestinationsAndDatesField = createDateStartSearchByDestinationsAndDatesField();
+        dateFinishSearchByDestinationsAndDatesField = createDateFinishSearchByDestinationsAndDatesField();
 
         addEditorListeners();
 
         grid.setItems(dataSource);
 
         addTheme();
-
 
         Div contentContainer = new Div();
         contentContainer.setSizeFull();
@@ -131,12 +134,19 @@ public class FlightView extends VerticalLayout {
         actions.setPadding(false);
         updateColumn.setEditorComponent(actions);
         HorizontalLayout changedPages = new HorizontalLayout(refreshButton, previousButton, nextButton);
-        HorizontalLayout searchLayoutById = new HorizontalLayout(idSearchField, searchButtonById);
-
+        HorizontalLayout searchByIdLayout = new HorizontalLayout(idSearchField, searchByIdButton);
+        searchByIdLayout.setAlignItems(FlexComponent.Alignment.END);
+        HorizontalLayout searchByDestinationsAndDatesLayout = new HorizontalLayout(
+                cityFromSearchByDestinationsAndDatesField,
+                cityToSearchByDestinationsAndDatesField,
+                dateStartSearchByDestinationsAndDatesField,
+                dateFinishSearchByDestinationsAndDatesField,
+                searchByDestinationsAndDatesButton
+        );
+        searchByDestinationsAndDatesLayout.setAlignItems(FlexComponent.Alignment.END);
 
         add(tabs
                 , contentContainer
-                , idValidationMessage
                 , idValidationMessage
                 , codeValidationMessage
                 , airportFromValidationMessage
@@ -146,31 +156,113 @@ public class FlightView extends VerticalLayout {
                 , aircraftIdValidationMessage
                 , flightStatusValidationMessage
                 , changedPages
-                , searchLayoutById
+                , searchByIdLayout,
+                searchByDestinationsAndDatesLayout
         );
+    }
+
+    private Button createSearchByDestinationsAndDatesButton() {
+        return new Button("Search By Destinations And Dates", e -> {
+            isSearchById = false;
+            isSearchByDestinationsAndDates = true;
+            currentPage = 0;
+            searchByDestinationsAndDates();
+        });
+    }
+
+    private void searchByDestinationsAndDates() {
+        String cityFrom = getNullIfEmpty(cityFromSearchByDestinationsAndDatesField.getValue());
+        String cityTo = getNullIfEmpty(cityToSearchByDestinationsAndDatesField.getValue());
+        String dateStartString = dateTimeConverterToString(dateStartSearchByDestinationsAndDatesField.getValue());
+        String dateFinishString = dateTimeConverterToString(dateFinishSearchByDestinationsAndDatesField.getValue());
+        dataSource.clear();
+        grid.getDataProvider().refreshAll();
+        PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
+        var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+                cityFrom,
+                cityTo,
+                dateStartString,
+                dateFinishString,
+                pageable
+        );
+        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+            maxPages = 0;
+            List<FlightDTO> emptyList = Collections.emptyList();
+            grid.setItems(emptyList);
+        } else {
+            maxPages = response.getBody().getTotalPages() - 1;
+            dataSource = response.getBody().stream().collect(Collectors.toList());
+            grid.setItems(dataSource);
+        }
+    }
+
+    private String getNullIfEmpty(String value) {
+        if (value.trim().isEmpty()) {
+            return null;
+        } else return value;
+    }
+
+    private String dateTimeConverterToString(LocalDateTime dateTime){
+        if (dateTime == null) {
+            return null;
+        } else {
+            return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        }
+    }
+
+    private DateTimePicker createDateStartSearchByDestinationsAndDatesField() {
+        DateTimePicker dateStar = new DateTimePicker();
+        dateStar.setLabel("Date start (not required)");
+        dateStar.setStep(Duration.ofSeconds(1));
+        return dateStar;
+    }
+
+    private DateTimePicker createDateFinishSearchByDestinationsAndDatesField() {
+        DateTimePicker dateFinish = new DateTimePicker();
+        dateFinish.setLabel("Date finish (not required)");
+        dateFinish.setStep(Duration.ofSeconds(1));
+        return dateFinish;
+    }
+
+    private TextField createCityFromSearchByDestinationsAndDatesField() {
+        TextField cityFromField = new TextField();
+        cityFromField.setLabel("City from (not required)");
+        return cityFromField;
+    }
+
+    private TextField createCityToSearchByDestinationsAndDatesField() {
+        TextField cityToField = new TextField();
+        cityToField.setLabel("City to (not required)");
+        cityToField.addKeyPressListener(Key.ENTER, e -> searchByDestinationsAndDatesButton.click());
+        return cityToField;
     }
 
     private IntegerField createSearchByIdField() {
         IntegerField searchField = new IntegerField();
-        searchField.setPlaceholder("Flight Id");
-        searchField.addKeyPressListener(Key.ENTER, e -> searchButtonById.click());
+        searchField.setLabel("Flight Id (required)");
+        searchField.setWidth("200px");
+        searchField.addKeyPressListener(Key.ENTER, e -> searchByIdButton.click());
         return searchField;
     }
 
-    private Button createSearchButtonById() {
+    private Button createSearchByIdButton() {
         return new Button("Search", e -> {
             if (idSearchField.isEmpty() || idSearchField.getValue() <= 0) {
                 Notification.show("Id must be a valid number", 3000, Notification.Position.TOP_CENTER);
                 return;
             }
             isSearchById = true;
+            isSearchByDestinationsAndDates = false;
             currentPage = 0;
             maxPages = 1;
             searchById();
             idSearchField.clear();
+            cityFromSearchByDestinationsAndDatesField.clear();
+            cityToSearchByDestinationsAndDatesField.clear();
+            dateStartSearchByDestinationsAndDatesField.clear();
+            dateFinishSearchByDestinationsAndDatesField.clear();
         });
     }
-
 
     private void addTheme() {
         getThemeList().clear();
@@ -179,32 +271,54 @@ public class FlightView extends VerticalLayout {
 
     private Button createRefreshButton() {
         isSearchById = false;
+        isSearchByDestinationsAndDates = false;
         return new Button("Refresh", e -> {
             currentPage = 0;
             refreshGridData();
+            cityFromSearchByDestinationsAndDatesField.clear();
+            cityToSearchByDestinationsAndDatesField.clear();
+            dateStartSearchByDestinationsAndDatesField.clear();
+            dateFinishSearchByDestinationsAndDatesField.clear();
         });
     }
-
 
     private void nextPage() {
         if (isSearchById) {
             return;
         }
-        if (currentPage < maxPages) {
-            currentPage++;
-            defaultCurrentPageOfFlights();
+        if (!isSearchByDestinationsAndDates) {
+            if (currentPage < maxPages) {
+                currentPage++;
+                defaultCurrentPageOfFlights();
+            }
+        } else {
+            if (currentPage < maxPages) {
+                currentPage++;
+                searchByDestinationsAndDates();
+            }
         }
     }
 
     private void previousPage() {
-        if (currentPage > 0) {
-            currentPage--;
-            defaultCurrentPageOfFlights();
+        if (isSearchById) {
+            return;
+        }
+        if (!isSearchByDestinationsAndDates) {
+            if (currentPage > 0) {
+                currentPage--;
+                defaultCurrentPageOfFlights();
+            }
+        } else {
+            if (currentPage > 0) {
+                currentPage--;
+                searchByDestinationsAndDates();
+            }
         }
     }
 
     private void refreshGridData() {
         isSearchById = false;
+        isSearchByDestinationsAndDates = false;
         currentPage = 0;
         defaultCurrentPageOfFlights();
     }
@@ -219,28 +333,23 @@ public class FlightView extends VerticalLayout {
             grid.setItems(emptyList);
         }
         dataSource.add(a.getBody());
-
         grid.setItems(dataSource);
     }
 
     private void defaultCurrentPageOfFlights() {
         dataSource.clear();
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-        maxPages = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null, null, null, null, pageable).getBody().getTotalPages() - 1;
-        dataSource = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null,
-                null,
-                null,
-                null,
-                pageable).getBody().stream().collect(Collectors.toList());
+        var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+                null, null, null, null, pageable);
+        maxPages = response.getBody().getTotalPages() - 1;
+        dataSource = response.getBody().stream().collect(Collectors.toList());
         grid.getDataProvider().refreshAll();
         grid.setItems(dataSource);
     }
 
     private Grid.Column<FlightDTO> createIdColumn() {
         return grid.addColumn(FlightDTO -> FlightDTO.getId()
-                .intValue()).setHeader("Id").setWidth("50px").setFlexGrow(0);
+                .intValue()).setHeader("Id").setWidth("60px").setFlexGrow(0);
     }
 
     private Grid.Column<FlightDTO> createCodeColumn() {
@@ -313,6 +422,7 @@ public class FlightView extends VerticalLayout {
                                Grid.Column<FlightDTO> idColumn) {
         IntegerField idField = new IntegerField();
         idField.setWidthFull();
+        idField.setReadOnly(true);
         binder.forField(idField)
                 .asRequired("Id must not be empty")
                 .withStatusLabel(idValidationMessage)
@@ -409,6 +519,9 @@ public class FlightView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
+            FlightDTO flightDTOforUpdate = e.getItem();
+            System.out.println(flightDTOforUpdate.getDepartureDateTime());
+
             flightClient.updateFlightById(e.getItem().getId(), e.getItem());
             grid.getDataProvider().refreshAll();
         });
@@ -436,7 +549,7 @@ public class FlightView extends VerticalLayout {
                 nextButton.setVisible(true);
                 previousButton.setVisible(true);
                 refreshButton.setVisible(true);
-                searchButtonById.setVisible(true);
+                searchByIdButton.setVisible(true);
                 idSearchField.setVisible(true);
 
             } else if (selectedTab == createTab) {
