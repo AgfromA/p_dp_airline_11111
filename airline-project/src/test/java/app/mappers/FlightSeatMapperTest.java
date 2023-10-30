@@ -1,10 +1,8 @@
 package app.mappers;
 
 import app.dto.FlightSeatDTO;
-import app.entities.Category;
-import app.entities.Flight;
-import app.entities.FlightSeat;
-import app.entities.Seat;
+import app.dto.SeatDTO;
+import app.entities.*;
 import app.services.interfaces.FlightService;
 import app.services.interfaces.SeatService;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +29,8 @@ class FlightSeatMapperTest {
     @Test
     @DisplayName("Должен корректно конвертировать сущность в ДТО")
     public void shouldConvertFlightSeatToFlightSeatDTO() {
-
+        Aircraft aircraft = new Aircraft();
+        aircraft.setId(55L);
         Flight flight = new Flight();
         flight.setId(4001L);
         when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
@@ -42,6 +41,7 @@ class FlightSeatMapperTest {
         seat.setId(42);
         seat.setSeatNumber("42A");
         seat.setCategory(category);
+        seat.setAircraft(aircraft);
         when(seatService.getSeatById(42)).thenReturn(seat);
 
         FlightSeat flightSeat = new FlightSeat();
@@ -53,7 +53,7 @@ class FlightSeatMapperTest {
         flightSeat.setFlight(flight);
         flightSeat.setSeat(seat);
 
-        FlightSeatDTO result = SUT.convertToFlightSeatDTOEntity(flightSeat, flightServiceMock, seatService);
+        FlightSeatDTO result = SUT.convertToFlightSeatDTOEntity(flightSeat, flightServiceMock);
 
         Assertions.assertEquals(flightSeat.getId(), result.getId());
         Assertions.assertEquals(flightSeat.getFare(), result.getFare());
@@ -61,13 +61,12 @@ class FlightSeatMapperTest {
         Assertions.assertEquals(flightSeat.getIsRegistered(), result.getIsRegistered());
         Assertions.assertEquals(flightSeat.getIsSold(), result.getIsSold());
         Assertions.assertEquals(flightSeat.getFlight().getId(), result.getFlightId());
-        Assertions.assertEquals(flightSeat.getSeat().getSeatNumber(), result.getSeatNumber());
+        Assertions.assertEquals(flightSeat.getSeat().getSeatNumber(), result.getSeat().getSeatNumber());
     }
 
     @Test
     @DisplayName("Должен корректно конвертировать ДТО в сущность")
     public void shouldConvertFlightSeatDTOToFlightSeat() {
-
         Flight flight = new Flight();
         flight.setId(4001L);
         when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
@@ -75,7 +74,11 @@ class FlightSeatMapperTest {
         Seat seat = new Seat();
         seat.setId(42);
         seat.setSeatNumber("42L");
+
         when(seatService.getSeatById(42L)).thenReturn(seat);
+        SeatDTO seatDTO = new SeatDTO();
+        seatDTO.setId(42L);
+        seatDTO.setSeatNumber("42L");
 
         FlightSeatDTO flightSeatDTO = new FlightSeatDTO();
         flightSeatDTO.setId(1L);
@@ -84,8 +87,7 @@ class FlightSeatMapperTest {
         flightSeatDTO.setIsRegistered(true);
         flightSeatDTO.setIsSold(true);
         flightSeatDTO.setFlightId(4001L);
-        flightSeatDTO.setSeatId(42L);
-        flightSeatDTO.setSeatNumber("42L");
+        flightSeatDTO.setSeat(seatDTO);
 
         when(seatService.getSeatById(42L)).thenReturn(seat);
         FlightSeat result = SUT.convertToFlightSeatEntity(flightSeatDTO, flightServiceMock, seatService);
@@ -96,6 +98,6 @@ class FlightSeatMapperTest {
         Assertions.assertEquals(flightSeatDTO.getIsRegistered(), result.getIsRegistered());
         Assertions.assertEquals(flightSeatDTO.getIsSold(), result.getIsSold());
         Assertions.assertEquals(flightSeatDTO.getFlightId(), result.getFlight().getId());
-        Assertions.assertEquals(flightSeatDTO.getSeatNumber(), result.getSeat().getSeatNumber());
+        Assertions.assertEquals(flightSeatDTO.getSeat().getSeatNumber(), result.getSeat().getSeatNumber());
     }
 }

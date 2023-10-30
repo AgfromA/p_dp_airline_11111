@@ -49,7 +49,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Loggable
     public Page<FlightSeatDTO> getFreeSeatsById(Pageable pageable, Long id) {
         return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id, pageable)
-                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService, seatService));
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Override
     public Page<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
-                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService, seatService));
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService));
     }
 
     @Override
@@ -209,7 +209,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Loggable
     public Page<FlightSeatDTO> findNotRegisteredFlightSeatsById(Long id, Pageable pageable) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(id, pageable)
-                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService, seatService));
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService));
     }
 
     @Override
@@ -220,7 +220,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     public Page<FlightSeatDTO> getNotSoldFlightSeatsById(Long id, Pageable pageable) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(id, pageable)
-                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService, seatService));
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService));
     }
 
     @Override

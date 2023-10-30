@@ -21,7 +21,7 @@ public class FlightSeatDTO {
     @PositiveOrZero(message = "Fare must be positive")
     private Integer fare;
 
-    @NotNull
+    @NotNull(message = "isRegistered shouldn't be null")
     private Boolean isRegistered;
 
     @NotNull(message = "isSold shouldn't be null")
@@ -33,10 +33,7 @@ public class FlightSeatDTO {
     private Long flightId;
 
     @NotNull(message = "seatNumber shouldn't be null")
-    private String seatNumber;
-
-    @NotNull(message = "seatId cannot be null")
-    private Long seatId;
+    private SeatDTO seat;
 
     @NotNull(message = "category cannot be null")
     private CategoryType category;

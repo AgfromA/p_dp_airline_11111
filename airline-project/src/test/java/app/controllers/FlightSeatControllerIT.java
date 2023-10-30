@@ -118,7 +118,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         flight.setFrom(from);
         flight.setTo(to);
         flight.setSeats(flightSeatService.findByFlightId(1L));
-        FlightDTO flightDTO = Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService, seatService);
+        FlightDTO flightDTO = Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService);
         flightService.updateFlight(1L, flightDTO);
         var flightId = "1";
         Set<FlightSeat> flightSeatSet = flightSeatService.getFlightSeatsByFlightId(1L);
@@ -144,7 +144,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         long numberOfFlightSeat = flightSeatRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/flight-seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(flightSeat, flightService, seatService)))
+                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(flightSeat, flightService)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -156,7 +156,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         var category = CategoryType.FIRST;
         Long flightID = 1L;
         List<FlightSeat> flightSeats = flightSeatService.getCheapestFlightSeatsByFlightIdAndSeatCategory(flightID, category);
-        List<FlightSeatDTO> flightSeatDTOS = flightSeats.stream().map(f -> Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(f,flightService, seatService)).collect(Collectors.toList());
+        List<FlightSeatDTO> flightSeatDTOS = flightSeats.stream().map(f -> Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(f,flightService)).collect(Collectors.toList());
 
         mockMvc.perform(get("http://localhost:8080/api/flight-seats/cheapest")
                         .param("category", category.toString())

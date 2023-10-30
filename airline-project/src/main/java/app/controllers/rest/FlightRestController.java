@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class FlightRestController implements FlightRestApi {
 
     private final FlightService flightService;
-    private final SeatService seatService;
 
     @Override
     public ResponseEntity<Page<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
@@ -35,12 +34,12 @@ public class FlightRestController implements FlightRestApi {
             @RequestParam(required = false) String dateFinish,
             Pageable pageable) {
 
-            var flightsByParams = flightService
-                    .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable);
-            log.info("getAllFlightsByDestinationsAndDates: get all Flights or Flights by params");
-            return flightsByParams.isEmpty()
-                    ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                    : new ResponseEntity<>(flightsByParams, HttpStatus.OK);
+        var flightsByParams = flightService
+                .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable);
+        log.info("getAllFlightsByDestinationsAndDates: get all Flights or Flights by params");
+        return flightsByParams.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(flightsByParams, HttpStatus.OK);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class FlightRestController implements FlightRestApi {
         log.info("getById: get Flight by id. id = {}", id);
         var flight = flightService.getFlightById(id);
         return flight.isPresent()
-                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight.get(), flightService, seatService), HttpStatus.OK)
+                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight.get(), flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -57,7 +56,7 @@ public class FlightRestController implements FlightRestApi {
         log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
         var flight = flightService.getFlightByIdAndDates(id, start, finish);
         return flight != null
-                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService, seatService), HttpStatus.OK)
+                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -65,7 +64,7 @@ public class FlightRestController implements FlightRestApi {
     public ResponseEntity<FlightStatus[]> getAllFlightStatus() {
         log.info("getAllFlightStatus: get all Flight Statuses");
         return new ResponseEntity<>(flightService.getAllFlights().stream().map(flight ->
-                        Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService, seatService))
+                        Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService))
                 .map(FlightDTO::getFlightStatus)
                 .distinct().collect(Collectors.toList()).toArray(FlightStatus[]::new), HttpStatus.OK);
     }

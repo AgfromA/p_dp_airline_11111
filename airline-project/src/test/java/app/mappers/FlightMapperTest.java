@@ -39,13 +39,17 @@ class FlightMapperTest {
     void shouldConvertFlightToFlightDTOEntity() throws Exception {
         Category category = new Category();
         category.setCategoryType(BUSINESS);
+        Aircraft aircraft = new Aircraft();
+        aircraft.setId(6001L);
 
         Seat seat1 = new Seat();
         seat1.setId(1);
         seat1.setCategory(category);
+        seat1.setAircraft(aircraft);
         Seat seat2 = new Seat();
         seat2.setId(2);
         seat2.setCategory(category);
+        seat2.setAircraft(aircraft);
 
         FlightSeat flightSeat1 = new FlightSeat();
         flightSeat1.setId(1001L);
@@ -87,9 +91,6 @@ class FlightMapperTest {
 
         LocalDateTime arrivalDateTime = LocalDateTime.MAX;
 
-        Aircraft aircraft = new Aircraft();
-        aircraft.setId(6001L);
-
         Flight flight = new Flight();
         flight.setId(1L);
         flight.setSeats(flightSeatList);
@@ -106,7 +107,7 @@ class FlightMapperTest {
 
         when(flightServiceMock.getFlightById(1L)).thenReturn(Optional.of(flight));
         when(seatServiceMock.getSeatById(anyLong())).thenReturn(flightSeat1.getSeat());
-        FlightDTO flightDTO = flightMapper.flightToFlightDTO(flight, flightServiceMock, seatServiceMock);
+        FlightDTO flightDTO = flightMapper.flightToFlightDTO(flight, flightServiceMock);
 
         Assertions.assertNotNull(flightDTO);
         Assertions.assertEquals(flightDTO.getId(), flight.getId());

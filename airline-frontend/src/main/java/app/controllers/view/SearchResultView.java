@@ -179,7 +179,7 @@ public class SearchResultView extends VerticalLayout {
     }
 
     private Grid.Column<FlightSeatDTO> createNumberSeatColumn(Grid<FlightSeatDTO> grid) {
-        return grid.addColumn(FlightSeatDTO::getSeatNumber).setHeader("seat number");
+        return grid.addColumn(e -> e.getSeat().getSeatNumber()).setHeader("seat number");
     }
 
     private Grid.Column<FlightSeatDTO> createCategorySeatColumn(Grid<FlightSeatDTO> grid) {
@@ -189,7 +189,7 @@ public class SearchResultView extends VerticalLayout {
     private Grid.Column<FlightSeatDTO> createSeatsButton(Grid<FlightSeatDTO> grid) {
         return grid.addComponentColumn(seat -> {
             Button button = new Button("View details");
-            button.addClickListener(e -> openViewDetails(seat.getSeatNumber()));
+            button.addClickListener(e -> openViewDetails(seat.getSeat().getSeatNumber()));
             return button;
         }).setHeader("details");
     }

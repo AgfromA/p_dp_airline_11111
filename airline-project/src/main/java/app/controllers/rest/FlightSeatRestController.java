@@ -28,7 +28,6 @@ public class FlightSeatRestController implements FlightSeatRestApi {
 
     private final FlightSeatServiceImpl flightSeatService;
     private final FlightService flightService;
-    private final SeatService seatService;
 
     @Override
     public ResponseEntity<Page<FlightSeatDTO>> getAllPagesFlightSeatsDTO(
@@ -61,14 +60,14 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         log.info("get: FlightSeat by id={}", id);
         return (flightSeatService.getFlightSeatById(id).isEmpty()) ?
                 ResponseEntity.notFound().build() :
-                ResponseEntity.ok(Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(flightSeatService.getFlightSeatById(id).get(), flightService, seatService));
+                ResponseEntity.ok(FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(flightSeatService.getFlightSeatById(id).get(), flightService));
     }
 
     @Override
     public ResponseEntity<List<FlightSeatDTO>> getCheapestByFlightIdAndSeatCategory(Long flightID, CategoryType category) {
         log.info("getCheapestByFlightIdAndSeatCategory: get FlightSeats by flight ID = {} and seat category = {}", flightID, category);
         var flightSeats = flightSeatService.getCheapestFlightSeatsByFlightIdAndSeatCategory(flightID, category);
-        var flightSeatDTOS = flightSeats.stream().map(f -> Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(f, flightService, seatService)).collect(Collectors.toList());
+        var flightSeatDTOS = flightSeats.stream().map(f -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(f, flightService)).collect(Collectors.toList());
         if (flightSeats.isEmpty()) {
             log.error("getCheapestByFlightIdAndSeatCategory: FlightSeats with flightID = {} or seat category = {} not found", flightID, category);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -89,12 +88,12 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         log.info("generate: FlightSeats by flightId. flightId={}", flightId);
         var flightSeats = flightSeatService.getFlightSeatsByFlightId(flightId);
         if (!flightSeats.isEmpty()) {
-            return new ResponseEntity<>(flightSeats.stream().map(f -> Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(f, flightService, seatService))
+            return new ResponseEntity<>(flightSeats.stream().map(f -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(f, flightService))
                     .collect(Collectors.toSet()), HttpStatus.OK);
         }
         return new ResponseEntity<>(flightSeatService.addFlightSeatsByFlightId(flightId)
                 .stream()
-                .map(f -> Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(f, flightService, seatService))
+                .map(f -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(f, flightService))
                 .collect(Collectors.toSet()),
                 HttpStatus.CREATED);
     }
@@ -105,17 +104,17 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         if (flightSeatService.getFlightSeatById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(flightSeatService.editFlightSeat(id, flightSeatDTO), flightService, seatService));
+        return ResponseEntity.ok(FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(flightSeatService.editFlightSeat(id, flightSeatDTO), flightService));
     }
 
     @Override
     public ResponseEntity<String> deleteFlightSeatById(Long id) {
         try {
             flightSeatService.deleteFlightSeatById(id);
-            log.info("deleteAircraftById: FlightSeat with id={} deleted", id);
+            log.info("deleteFlightSeatById: FlightSeat with id={} deleted", id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            log.error("deleteAircraftById: error while deleting - FlightSeat with id={} not found.", id);
+            log.error("deleteFlightSeatById: error while deleting - FlightSeat with id={} not found.", id);
             return ResponseEntity.notFound().build();
         }
     }

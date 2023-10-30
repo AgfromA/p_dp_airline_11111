@@ -26,7 +26,6 @@ public class SearchServiceImpl implements SearchService {
     private final FlightService flightService;
     private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
-    private final SeatService seatService;
 
     @Override
     @Transactional
@@ -53,7 +52,7 @@ public class SearchServiceImpl implements SearchService {
 
         var searchDepartFlightDTO = searchDepartFlight.stream()
                 .map(departFlight -> Mappers.getMapper(FlightMapper.class)
-                        .flightToFlightDTO(departFlight, flightService, seatService))
+                        .flightToFlightDTO(departFlight, flightService))
                 .collect(Collectors.toList());
 
         searchResult.setDepartFlights(searchDepartFlightDTO);
@@ -67,7 +66,7 @@ public class SearchServiceImpl implements SearchService {
 
             var searchReturnFlightDTO = searchReturnFlight.stream()
                     .map(returnFlight -> Mappers.getMapper(FlightMapper.class)
-                            .flightToFlightDTO(returnFlight, flightService, seatService))
+                            .flightToFlightDTO(returnFlight, flightService))
                     .collect(Collectors.toList());
 
             searchResult.setReturnFlights(searchReturnFlightDTO);
