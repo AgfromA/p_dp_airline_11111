@@ -2,6 +2,7 @@ package app.controllers.view;
 
 import app.clients.FlightClient;
 import app.dto.FlightDTO;
+import app.dto.SeatDTO;
 import app.enums.Airport;
 import app.enums.FlightStatus;
 import com.vaadin.flow.component.Key;
@@ -136,14 +137,17 @@ public class FlightView extends VerticalLayout {
         HorizontalLayout changedPages = new HorizontalLayout(refreshButton, previousButton, nextButton);
         HorizontalLayout searchByIdLayout = new HorizontalLayout(idSearchField, searchByIdButton);
         searchByIdLayout.setAlignItems(FlexComponent.Alignment.END);
-        HorizontalLayout searchByDestinationsAndDatesLayout = new HorizontalLayout(
+        HorizontalLayout searchByDestinationsAndDatesLayout1 = new HorizontalLayout(
                 cityFromSearchByDestinationsAndDatesField,
-                cityToSearchByDestinationsAndDatesField,
+                cityToSearchByDestinationsAndDatesField
+        );
+        searchByDestinationsAndDatesLayout1.setAlignItems(FlexComponent.Alignment.END);
+        HorizontalLayout searchByDestinationsAndDatesLayout2 = new HorizontalLayout(
                 dateStartSearchByDestinationsAndDatesField,
                 dateFinishSearchByDestinationsAndDatesField,
                 searchByDestinationsAndDatesButton
         );
-        searchByDestinationsAndDatesLayout.setAlignItems(FlexComponent.Alignment.END);
+        searchByDestinationsAndDatesLayout2.setAlignItems(FlexComponent.Alignment.END);
 
         add(tabs
                 , contentContainer
@@ -157,7 +161,8 @@ public class FlightView extends VerticalLayout {
                 , flightStatusValidationMessage
                 , changedPages
                 , searchByIdLayout,
-                searchByDestinationsAndDatesLayout
+                searchByDestinationsAndDatesLayout1,
+                searchByDestinationsAndDatesLayout2
         );
     }
 
@@ -202,7 +207,7 @@ public class FlightView extends VerticalLayout {
         } else return value;
     }
 
-    private String dateTimeConverterToString(LocalDateTime dateTime){
+    private String dateTimeConverterToString(LocalDateTime dateTime) {
         if (dateTime == null) {
             return null;
         } else {
@@ -519,9 +524,6 @@ public class FlightView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            FlightDTO flightDTOforUpdate = e.getItem();
-            System.out.println(flightDTOforUpdate.getDepartureDateTime());
-
             flightClient.updateFlightById(e.getItem().getId(), e.getItem());
             grid.getDataProvider().refreshAll();
         });
@@ -551,6 +553,11 @@ public class FlightView extends VerticalLayout {
                 refreshButton.setVisible(true);
                 searchByIdButton.setVisible(true);
                 idSearchField.setVisible(true);
+                searchByDestinationsAndDatesButton.setVisible(true);
+                cityFromSearchByDestinationsAndDatesField.setVisible(true);
+                cityToSearchByDestinationsAndDatesField.setVisible(true);
+                dateStartSearchByDestinationsAndDatesField.setVisible(true);
+                dateFinishSearchByDestinationsAndDatesField.setVisible(true);
 
             } else if (selectedTab == createTab) {
                 contentContainer.removeAll();
@@ -560,6 +567,13 @@ public class FlightView extends VerticalLayout {
                 nextButton.setVisible(false);
                 previousButton.setVisible(false);
                 refreshButton.setVisible(false);
+                searchByIdButton.setVisible(false);
+                idSearchField.setVisible(false);
+                searchByDestinationsAndDatesButton.setVisible(false);
+                cityFromSearchByDestinationsAndDatesField.setVisible(false);
+                cityToSearchByDestinationsAndDatesField.setVisible(false);
+                dateStartSearchByDestinationsAndDatesField.setVisible(false);
+                dateFinishSearchByDestinationsAndDatesField.setVisible(false);
                 grid.getDataProvider().refreshAll();
             }
         });
@@ -567,7 +581,55 @@ public class FlightView extends VerticalLayout {
     }
 
     private Tab createCreateTab(FormLayout formLayout) {
-        return new Tab("Create flight");
+        Tab createTab = new Tab("Create flight");
+
+        TextField code = new TextField("Flight code");
+        ComboBox<Airport> airportFrom = new ComboBox<>("Airport from");
+        ComboBox<Airport> airportTo = new ComboBox<>("Airport to");
+        DateTimePicker departureDateTime = new DateTimePicker("Departure date and time");
+        DateTimePicker arrivalDateTime = new DateTimePicker("Arrival date and time");
+        IntegerField aircraftId = new IntegerField("Aircraft id");
+        ComboBox<FlightStatus> flightStatus = new ComboBox<>("Flight status");
+        airportFrom.setItems(Airport.values());
+        airportTo.setItems(Airport.values());
+        flightStatus.setItems(FlightStatus.values());
+
+        Button createButton = new Button("Create");
+        formLayout.add(code, airportFrom, airportTo, departureDateTime, arrivalDateTime, aircraftId, flightStatus, createButton);
+        createButton.addClickListener(event -> {
+//            if (seatNumber.getValue().length() < 2 || seatNumber.getValue().length() > 5) {
+//                Notification.show("Seat number must be between 2 and 5 characters.", 3000, Notification.Position.TOP_CENTER);
+//                return;
+//            }
+//            if (seatNumber.isEmpty() || category.isEmpty() || aircraftIdField.isEmpty() || aircraftIdField.getValue() <= 0
+//                    || isNearEmergencyExit.isEmpty() || isLockedBack.isEmpty()) {
+//                Notification.show("Please fill in all required fields correctly.", 3000, Notification.Position.TOP_CENTER);
+//                return;
+//
+//            }
+            FlightDTO flightDTO = new FlightDTO();
+            flightDTO.setId(0L);
+            flightDTO.setCode(code.getValue());
+            flightDTO.setAirportFrom(airportFrom.getValue());
+            flightDTO.setAirportTo(airportTo.getValue());
+            flightDTO.setDepartureDateTime(departureDateTime.getValue());
+            flightDTO.setArrivalDateTime(arrivalDateTime.getValue());
+            flightDTO.setAircraftId(aircraftId.getValue().longValue());
+            flightDTO.setFlightStatus(flightStatus.getValue());
+
+            FlightDTO savedFlight = flightClient.createFlight(flightDTO).getBody();
+            dataSource.add(savedFlight);
+            code.clear();
+            airportFrom.clear();
+            airportTo.clear();
+            departureDateTime.clear();
+            arrivalDateTime.clear();
+            aircraftId.clear();
+            flightStatus.clear();
+            grid.getDataProvider().refreshAll();
+            Notification.show("Flight created successfully.", 3000, Notification.Position.TOP_CENTER);
+        });
+        return createTab;
     }
 
 
