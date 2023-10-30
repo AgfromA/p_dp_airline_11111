@@ -2,7 +2,6 @@ package app.dto;
 
 import app.enums.Airport;
 import app.enums.FlightStatus;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EqualsAndHashCode
-//@NoArgsConstructor
+@NoArgsConstructor
 public class FlightDTO {
 
     private Long id;
@@ -28,7 +27,4 @@ public class FlightDTO {
     private LocalDateTime arrivalDateTime;
     private Long aircraftId;
     private FlightStatus flightStatus;
-
-    public FlightDTO() {
-    }
 }

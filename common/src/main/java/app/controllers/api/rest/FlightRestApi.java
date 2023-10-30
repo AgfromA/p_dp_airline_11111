@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "Flight REST")
 @Tag(name = "Flight REST", description = "API для операций с рейсами")
-//@RequestMapping("/api/flights")
 public interface FlightRestApi {
 
     @RequestMapping(value = "/api/flights/all", method = RequestMethod.GET)

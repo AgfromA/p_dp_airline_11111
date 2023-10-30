@@ -2,7 +2,6 @@ package app.controllers.view;
 
 import app.clients.FlightClient;
 import app.dto.FlightDTO;
-import app.dto.SeatDTO;
 import app.enums.Airport;
 import app.enums.FlightStatus;
 import com.vaadin.flow.component.Key;
@@ -41,13 +40,9 @@ import java.util.stream.Collectors;
 public class FlightView extends VerticalLayout {
 
     private final FlightClient flightClient;
-    private Integer currentPage;
-    private Integer maxPages;
     private List<FlightDTO> dataSource;
-
     private final Grid<FlightDTO> grid = new Grid<>(FlightDTO.class, false);
     private final Editor<FlightDTO> editor = grid.getEditor();
-
     private final Button updateButton;
     private final Button cancelButton;
     private final Button nextButton;
@@ -60,14 +55,14 @@ public class FlightView extends VerticalLayout {
     private final TextField cityToSearchByDestinationsAndDatesField;
     private final DateTimePicker dateStartSearchByDestinationsAndDatesField;
     private final DateTimePicker dateFinishSearchByDestinationsAndDatesField;
-
+    private Integer currentPage;
+    private Integer maxPages;
     private boolean isSearchById;
     private boolean isSearchByDestinationsAndDates;
 
     public FlightView(FlightClient flightClient) {
         this.flightClient = flightClient;
         currentPage = 0;
-
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         isSearchById = false;
         isSearchByDestinationsAndDates = false;
@@ -122,15 +117,12 @@ public class FlightView extends VerticalLayout {
         dateFinishSearchByDestinationsAndDatesField = createDateFinishSearchByDestinationsAndDatesField();
 
         addEditorListeners();
-
         grid.setItems(dataSource);
-
         addTheme();
 
         Div contentContainer = new Div();
         contentContainer.setSizeFull();
         Tabs tabs = createTabs(contentContainer);
-
         HorizontalLayout actions = new HorizontalLayout(updateButton, cancelButton);
         actions.setPadding(false);
         updateColumn.setEditorComponent(actions);
@@ -327,7 +319,6 @@ public class FlightView extends VerticalLayout {
         currentPage = 0;
         defaultCurrentPageOfFlights();
     }
-
 
     private void searchById() {
         dataSource.clear();
@@ -529,18 +520,14 @@ public class FlightView extends VerticalLayout {
         });
     }
 
-
     private Tabs createTabs(Div contentContainer) {
         Tabs tabs = new Tabs();
-
         Tab tableTab = new Tab("Flight table");
         FormLayout formLayout = new FormLayout();
         Tab createTab = createCreateTab(formLayout);
-
         contentContainer.add(grid);
         tabs.add(tableTab, createTab);
         tabs.setSelectedTab(tableTab);
-
         tabs.addSelectedChangeListener(event -> {
             Tab selectedTab = tabs.getSelectedTab();
             if (selectedTab == tableTab) {
@@ -558,7 +545,6 @@ public class FlightView extends VerticalLayout {
                 cityToSearchByDestinationsAndDatesField.setVisible(true);
                 dateStartSearchByDestinationsAndDatesField.setVisible(true);
                 dateFinishSearchByDestinationsAndDatesField.setVisible(true);
-
             } else if (selectedTab == createTab) {
                 contentContainer.removeAll();
                 contentContainer.add(formLayout);
@@ -582,7 +568,6 @@ public class FlightView extends VerticalLayout {
 
     private Tab createCreateTab(FormLayout formLayout) {
         Tab createTab = new Tab("Create flight");
-
         TextField code = new TextField("Flight code");
         ComboBox<Airport> airportFrom = new ComboBox<>("Airport from");
         ComboBox<Airport> airportTo = new ComboBox<>("Airport to");
@@ -593,20 +578,9 @@ public class FlightView extends VerticalLayout {
         airportFrom.setItems(Airport.values());
         airportTo.setItems(Airport.values());
         flightStatus.setItems(FlightStatus.values());
-
         Button createButton = new Button("Create");
         formLayout.add(code, airportFrom, airportTo, departureDateTime, arrivalDateTime, aircraftId, flightStatus, createButton);
         createButton.addClickListener(event -> {
-//            if (seatNumber.getValue().length() < 2 || seatNumber.getValue().length() > 5) {
-//                Notification.show("Seat number must be between 2 and 5 characters.", 3000, Notification.Position.TOP_CENTER);
-//                return;
-//            }
-//            if (seatNumber.isEmpty() || category.isEmpty() || aircraftIdField.isEmpty() || aircraftIdField.getValue() <= 0
-//                    || isNearEmergencyExit.isEmpty() || isLockedBack.isEmpty()) {
-//                Notification.show("Please fill in all required fields correctly.", 3000, Notification.Position.TOP_CENTER);
-//                return;
-//
-//            }
             FlightDTO flightDTO = new FlightDTO();
             flightDTO.setId(0L);
             flightDTO.setCode(code.getValue());
@@ -616,7 +590,6 @@ public class FlightView extends VerticalLayout {
             flightDTO.setArrivalDateTime(arrivalDateTime.getValue());
             flightDTO.setAircraftId(aircraftId.getValue().longValue());
             flightDTO.setFlightStatus(flightStatus.getValue());
-
             FlightDTO savedFlight = flightClient.createFlight(flightDTO).getBody();
             dataSource.add(savedFlight);
             code.clear();
@@ -631,6 +604,4 @@ public class FlightView extends VerticalLayout {
         });
         return createTab;
     }
-
-
 }
