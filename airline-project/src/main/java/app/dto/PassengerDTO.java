@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
@@ -43,6 +44,8 @@ public class PassengerDTO {
     @Size(min = 6, max = 64, message = "Size phone cannot be less than 6 and more than 64 characters")
     private String phoneNumber;
 
+    @NotNull(message = "Passport should not be empty")
+    @Valid
     private Passport passport;
 
     @Email
