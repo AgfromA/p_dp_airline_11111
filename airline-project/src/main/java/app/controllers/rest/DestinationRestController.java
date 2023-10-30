@@ -2,9 +2,13 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDTO;
+import app.entities.Destination;
+import app.mappers.DestinationMapper;
 import app.services.interfaces.DestinationService;
+import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +27,10 @@ public class DestinationRestController implements DestinationRestApi {
         Page<DestinationDTO> destination = null;
         if (cityName == null && countryName == null && timezone == null) {
             destination = destinationService.getAllDestinations(page, size);
-            log.info("getAll: get all Destinations");
+            log.info("getAll: get all Destinations: found {} Destination", destination.getSize());
         } else {
-            log.info("getAll: get Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}", countryName, cityName, timezone);
             destination = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
+            log.info("getAll: get Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}: found {} Destination", countryName, cityName, timezone, destination.getSize());
         }
         return (!destination.isEmpty())
                 ? new ResponseEntity<>(destination, HttpStatus.OK)
@@ -35,9 +39,10 @@ public class DestinationRestController implements DestinationRestApi {
 
     @Override
     public ResponseEntity<DestinationDTO> createDestinationDTO(DestinationDTO destinationDTO) {
-        log.info("create: create new Destination");
-        destinationService.saveDestination(destinationDTO);
-        return new ResponseEntity<>(destinationDTO, HttpStatus.CREATED);
+        Destination existingDestination = destinationService.getDestinationByAirportCode(destinationDTO.getAirportCode());
+        log.info("create: create new Destination - {}", LogsUtils.objectToJson(destinationDTO));
+        return new ResponseEntity<>(Mappers.getMapper(DestinationMapper.class)
+                .convertToDestinationDTOEntity(destinationService.saveDestination(destinationDTO)), HttpStatus.CREATED);
     }
 
     @Override
