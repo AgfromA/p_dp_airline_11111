@@ -22,17 +22,22 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Route(value = "seats", layout = MainLayout.class)
 public class SeatView extends VerticalLayout {
 
     private final Grid<SeatDTO> grid = new Grid<>(SeatDTO.class, false);
     private final Editor<SeatDTO> editor = grid.getEditor();
+    private ResponseEntity<Page<SeatDTO>> response;
     private final SeatClient seatClient;
     private final List<SeatDTO> dataSource;
     private final Button updateButton;
@@ -52,12 +57,12 @@ public class SeatView extends VerticalLayout {
 
     public SeatView(SeatClient seatClient) {
         this.seatClient = seatClient;
+        response = seatClient.getAllPagesSeatsDTO(currentPage, 10);
         currentPage = 0;
-        maxPages = seatClient.getAllPagesSeatsDTO(currentPage, 10).getBody().getTotalPages() - 1;
+        maxPages = response.getBody().getTotalPages() - 1;
         isSearchById = false;
         isSearchByAircraftId = false;
-        dataSource = seatClient.getAllPagesSeatsDTO(currentPage, 10)
-                .getBody().stream().collect(Collectors.toList());
+        dataSource = response.getBody().stream().collect(Collectors.toList());
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage seatNumberValidationMessage = new ValidationMessage();
@@ -98,7 +103,8 @@ public class SeatView extends VerticalLayout {
         addEditorListeners();
 
         grid.setItems(dataSource);
-        grid.setHeight("590px");
+        grid.setAllRowsVisible(true);
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
         addTheme();
 
         Div contentContainer = new Div();
@@ -168,10 +174,6 @@ public class SeatView extends VerticalLayout {
                 Notification.show("Id must be a valid number", 3000, Notification.Position.TOP_CENTER);
                 return;
             }
-            isSearchById = true;
-            isSearchByAircraftId = false;
-            currentPage = 0;
-            maxPages = 1;
             searchById();
             idSearchField.clear();
         });
@@ -208,26 +210,30 @@ public class SeatView extends VerticalLayout {
     private void updateGridData() {
         isSearchById = false;
         dataSource.clear();
-        dataSource.addAll(seatClient.getAllPagesSeatsDTO(currentPage, 10)
-                .getBody().stream().collect(Collectors.toList()));
-        maxPages = seatClient.getAllPagesSeatsDTO(0, 10).getBody().getTotalPages() - 1;
+        response = seatClient.getAllPagesSeatsDTO(currentPage, 10);
+        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
+        maxPages = response.getBody().getTotalPages() - 1;
         grid.getDataProvider().refreshAll();
     }
 
     private void searchById() {
-            dataSource.clear();
-            dataSource.add(seatClient.getSeatDTOById(idSearchField.getValue().longValue()).getBody());
-            grid.getDataProvider().refreshAll();
+        dataSource.clear();
+        isSearchById = true;
+        isSearchByAircraftId = false;
+        currentPage = 0;
+        maxPages = 1;
+        dataSource.add(seatClient.getSeatDTOById(idSearchField.getValue().longValue()).getBody());
+        grid.getDataProvider().refreshAll();
     }
 
     private void searchByAircraftId() {
         isSearchById = false;
-            PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-            dataSource.clear();
-            dataSource.addAll(seatClient.getAllPagesSeatsDTOByAircraftId(pageable, searchByAircraftId)
-                    .getBody().stream().collect(Collectors.toList()));
-            grid.getDataProvider().refreshAll();
-            maxPages = seatClient.getAllPagesSeatsDTOByAircraftId(pageable, searchByAircraftId).getBody().getTotalPages() - 1;
+        PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
+        dataSource.clear();
+        response = seatClient.getAllPagesSeatsDTOByAircraftId(pageable, searchByAircraftId);
+        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
+        grid.getDataProvider().refreshAll();
+        maxPages = response.getBody().getTotalPages() - 1;
     }
 
     private Grid.Column<SeatDTO> createIdColumn() {
@@ -275,13 +281,26 @@ public class SeatView extends VerticalLayout {
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
                     ListDataProvider<SeatDTO> dataProvider = (ListDataProvider<SeatDTO>) grid.getDataProvider();
-                    seatClient.deleteSeatById(seat.getId());
-                    dataProvider.getItems().remove(seat);
+                    if (seatDeleted(seat)) {
+                        Notification.show("Seat deleted successfully.", 3000, Notification.Position.TOP_CENTER);
+                        dataProvider.getItems().remove(seat);
+                    }
                 }
                 grid.getDataProvider().refreshAll();
             });
             return deleteButton;
         }).setWidth("150px").setFlexGrow(0);
+    }
+
+    private boolean seatDeleted(SeatDTO seat) {
+        try {
+            seatClient.deleteSeatById(seat.getId());
+            return true;
+        } catch (FeignException.MethodNotAllowed feignException) {
+            log.error(feignException.getMessage());
+            Notification.show("Seat is locked by FlightSeat", 3000, Notification.Position.TOP_CENTER);
+            return false;
+        }
     }
 
     private Binder<SeatDTO> createBinder() {
@@ -365,9 +384,25 @@ public class SeatView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            seatClient.updateSeatDTOById(e.getItem().getId(), e.getItem());
+            if (seatEdited(e.getItem().getId(), e.getItem())) {
+                Notification.show("Seat edited successfully.", 3000, Notification.Position.TOP_CENTER);
+            }
             grid.getDataProvider().refreshAll();
         });
+    }
+
+    private boolean seatEdited(Long id, SeatDTO seatDTO) {
+        try {
+            seatClient.updateSeatDTOById(id, seatDTO);
+            return true;
+        } catch (FeignException.BadRequest ex) {
+            log.error(ex.getMessage());
+            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.",3000, Notification.Position.TOP_CENTER);
+        } catch (FeignException.NotFound ex) {
+            log.error(ex.getMessage());
+            Notification.show("Seat with id = " + seatDTO.getId() + " not found.",3000, Notification.Position.TOP_CENTER);
+        }
+        return false;
     }
 
     private void addTheme() {
@@ -433,12 +468,12 @@ public class SeatView extends VerticalLayout {
         createButton.addClickListener(event -> {
             if (seatNumber.getValue().length() < 2 || seatNumber.getValue().length() > 5) {
                 Notification.show("Seat number must be between 2 and 5 characters.", 3000, Notification.Position.TOP_CENTER);
-            return;
+                return;
             }
-                if (seatNumber.isEmpty() || category.isEmpty() || aircraftIdField.isEmpty() || aircraftIdField.getValue() <= 0
-                        || isNearEmergencyExit.isEmpty() || isLockedBack.isEmpty()) {
-                    Notification.show("Please fill in all required fields correctly.", 3000, Notification.Position.TOP_CENTER);
-                    return;
+            if (seatNumber.isEmpty() || category.isEmpty() || aircraftIdField.isEmpty() || aircraftIdField.getValue() <= 0
+                    || isNearEmergencyExit.isEmpty() || isLockedBack.isEmpty()) {
+                Notification.show("Please fill in all required fields correctly.", 3000, Notification.Position.TOP_CENTER);
+                return;
 
             }
             SeatDTO seatDTO = new SeatDTO();
@@ -447,8 +482,9 @@ public class SeatView extends VerticalLayout {
             seatDTO.setIsLockedBack(isLockedBack.getValue());
             seatDTO.setCategory(category.getValue());
             seatDTO.setAircraftId(aircraftIdField.getValue().longValue());
-            SeatDTO savedSeat = seatClient.createSeatDTO(seatDTO).getBody();
-            dataSource.add(savedSeat);
+            if(!seatCreated(seatDTO)){
+                return;
+            }
             seatNumber.clear();
             isNearEmergencyExit.clear();
             isLockedBack.clear();
@@ -458,5 +494,17 @@ public class SeatView extends VerticalLayout {
             Notification.show("Seat created successfully.", 3000, Notification.Position.TOP_CENTER);
         });
         return createTab;
+    }
+
+    private boolean seatCreated(SeatDTO seatDTO) {
+        try {
+            SeatDTO savedSeat = seatClient.createSeatDTO(seatDTO).getBody();
+            dataSource.add(savedSeat);
+                return true;
+        } catch (FeignException.BadRequest ex) {
+            log.error(ex.getMessage());
+            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.",3000, Notification.Position.TOP_CENTER);
+        }
+        return false;
     }
 }
