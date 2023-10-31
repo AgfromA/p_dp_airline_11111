@@ -33,7 +33,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     @Transactional
     @Loggable
-    public SearchResult getSearch(Airport from, Airport to, LocalDate departureDate,
+    public SearchResult search(Airport from, Airport to, LocalDate departureDate,
                                   LocalDate returnDate, Integer numberOfPassengers) {
         return searchDirectAndNonDirectFlights(from, to, departureDate, returnDate, numberOfPassengers);
     }

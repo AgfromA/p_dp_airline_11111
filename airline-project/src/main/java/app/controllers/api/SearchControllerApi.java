@@ -26,7 +26,7 @@ public interface SearchControllerApi {
             @ApiResponse(code = 400, message = "search return error. Check validField "),
             @ApiResponse(code = 404, message = "Destinations not found")
     })
-    ResponseEntity<SearchResult> get(
+    ResponseEntity<SearchResult> search(
 
             @ApiParam(name = "airportFrom", value = "airportFrom")
             @RequestParam(value = "airportFrom") Airport airportFrom,

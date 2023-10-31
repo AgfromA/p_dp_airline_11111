@@ -21,7 +21,7 @@ public class SearchController implements SearchControllerApi {
     private final SearchService searchService;
 
     @Override
-    public ResponseEntity<SearchResult> get(
+    public ResponseEntity<SearchResult> search(
             Airport from,
             Airport to,
             LocalDate departureDate,
@@ -45,7 +45,7 @@ public class SearchController implements SearchControllerApi {
             log.info("DepartureDate must be earlier then ReturnDate");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        SearchResult searchResult = searchService.getSearch(from, to, departureDate, returnDate, numberOfPassengers);
+        SearchResult searchResult = searchService.search(from, to, departureDate, returnDate, numberOfPassengers);
         if (searchResult.getDepartFlights().isEmpty() && searchResult.getReturnFlights().isEmpty()) {
             log.info("Flights not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

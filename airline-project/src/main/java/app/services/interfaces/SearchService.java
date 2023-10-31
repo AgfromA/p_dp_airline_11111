@@ -7,5 +7,5 @@ import java.time.LocalDate;
 
 public interface SearchService {
 
-    SearchResult getSearch(Airport from, Airport to, LocalDate departureDate, LocalDate returnDate, Integer numberOfPassengers);
+    SearchResult search(Airport from, Airport to, LocalDate departureDate, LocalDate returnDate, Integer numberOfPassengers);
 }
