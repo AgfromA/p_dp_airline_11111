@@ -53,6 +53,26 @@ class PassportTest extends EntityTest {
                 LocalDate.of(2006, 3, 30), "Russia");
         Set<ConstraintViolation<Passport>> violations2 = validator.validate(passport2);
         Assertions.assertFalse(violations2.isEmpty());
+
+        var passport3 = new Passport("", Gender.MALE, "333L333333",
+                LocalDate.of(2006, 3, 30), "Russia");
+        Set<ConstraintViolation<Passport>> violations3 = validator.validate(passport3);
+        Assertions.assertFalse(violations3.isEmpty());
+
+        var passport4 = new Passport("Test", Gender.MALE, "",
+                LocalDate.of(2006, 3, 30), "Russia");
+        Set<ConstraintViolation<Passport>> violations4 = validator.validate(passport4);
+        Assertions.assertFalse(violations4.isEmpty());
+
+        var passport5 = new Passport("Test", Gender.MALE, "333L333333",
+                LocalDate.of(2006, 3, 30), "");
+        Set<ConstraintViolation<Passport>> violations5 = validator.validate(passport5);
+        Assertions.assertFalse(violations5.isEmpty());
+
+        var passport6 = new Passport("Test", Gender.MALE, "333L333333",
+                LocalDate.of(2006, 3, 30), "Ru");
+        Set<ConstraintViolation<Passport>> violations6 = validator.validate(passport6);
+        Assertions.assertFalse(violations6.isEmpty());
     }
 
     @Test
@@ -102,6 +122,42 @@ class PassportTest extends EntityTest {
                         "\"serialNumberPassport\": \"333L 333333\"," +
                         "\"passportIssuingDate\": \"2006-15-30\"," +
                         "\"passportIssuingCountry\": \"Russia\"" +
+                        "}");
+
+        passportJsons.add(
+                "{" +
+                        "\"middleName\": \"\"," +
+                        "\"gender\": \"male\"," +
+                        "\"serialNumberPassport\": \"333L 333333\"," +
+                        "\"passportIssuingDate\": \"2006-15-30\"," +
+                        "\"passportIssuingCountry\": \"Russia\"" +
+                        "}");
+
+        passportJsons.add(
+                "{" +
+                        "\"middleName\": \"Test\"," +
+                        "\"gender\": \"male\"," +
+                        "\"serialNumberPassport\": \"\"," +
+                        "\"passportIssuingDate\": \"2006-15-30\"," +
+                        "\"passportIssuingCountry\": \"Russia\"" +
+                        "}");
+
+        passportJsons.add(
+                "{" +
+                        "\"middleName\": \"Test\"," +
+                        "\"gender\": \"male\"," +
+                        "\"serialNumberPassport\": \"333L 333333\"," +
+                        "\"passportIssuingDate\": \"2006-15-30\"," +
+                        "\"passportIssuingCountry\": \"\"" +
+                        "}");
+
+        passportJsons.add(
+                "{" +
+                        "\"middleName\": \"Test\"," +
+                        "\"gender\": \"male\"," +
+                        "\"serialNumberPassport\": \"333L 333333\"," +
+                        "\"passportIssuingDate\": \"2006-15-30\"," +
+                        "\"passportIssuingCountry\": \"Ru\"" +
                         "}");
 
 

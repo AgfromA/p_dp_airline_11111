@@ -32,13 +32,19 @@ public class PassengerDTOTest extends EntityTest {
 
     private JSONObject initJSONObject() {
         var jsonObject = new JSONObject();
+        JSONObject jsonObjectPassport = new JSONObject();
+        jsonObjectPassport.put("middleName", "Bagin");
+        jsonObjectPassport.put("gender", "male");
+        jsonObjectPassport.put("serialNumberPassport", "9241 444977");
+        jsonObjectPassport.put("passportIssuingDate", "2012-02-01");
+        jsonObjectPassport.put("passportIssuingCountry", "Russia");
         jsonObject.put("id", 1004L);
         jsonObject.put("firstName", "Alexandr");
         jsonObject.put("lastName", "Bagin");
         jsonObject.put("birthDate", "1998-01-08");
         jsonObject.put("phoneNumber", "89995252503");
         jsonObject.put("email", "passenger@mail.ru");
-        jsonObject.put("passport", null);
+        jsonObject.put("passport", jsonObjectPassport);
         return jsonObject;
     }
 
@@ -191,6 +197,18 @@ public class PassengerDTOTest extends EntityTest {
     public void blankEmailShouldNotValidate() {
         var jsonObject = initJSONObject();
         jsonObject.replace("email", "");
+        try {
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, passenger));
+    }
+
+    @Test
+    public void nullPassportShouldNotValidate() {
+        var jsonObject = initJSONObject();
+        jsonObject.replace("passport", null);
         try {
             passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
         } catch (JsonProcessingException e) {
