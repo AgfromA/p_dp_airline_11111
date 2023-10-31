@@ -27,10 +27,9 @@ import javax.validation.constraints.Min;
 
 @Api(tags = "Aircraft REST")
 @Tag(name = "Aircraft REST", description = "API для операций с самолётом")
-@RequestMapping("/api/aircrafts")
 public interface AircraftRestApi {
 
-    @GetMapping
+    @GetMapping("/api/aircrafts")
     @ApiOperation(value = "Get list of all Aircrafts")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircrafts found"),
@@ -39,7 +38,7 @@ public interface AircraftRestApi {
             @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
             @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size);
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Get Aircraft by it's \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft found"),
@@ -48,17 +47,17 @@ public interface AircraftRestApi {
             @ApiParam(name = "id", value = "Aircraft.id")
             @PathVariable("id") Long id);
 
-    @PostMapping
+    @PostMapping("/api/aircrafts")
     @ApiOperation(value = "Create new Aircraft")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Aircraft created")})
-    ResponseEntity<Aircraft> createAircraft(
+    ResponseEntity<AircraftDTO> createAircraft(
             @ApiParam(
                     name = "Aircraft",
                     value = "Aircraft model"
             )
             @RequestBody @Valid AircraftDTO aircraftDTO);
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Update Aircraft by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft updated"),
@@ -75,7 +74,7 @@ public interface AircraftRestApi {
             )
             @RequestBody @Valid AircraftDTO aircraftDTO);
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Delete Aircraft by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft deleted"),

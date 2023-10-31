@@ -3,9 +3,11 @@ package app.controllers.rest;
 import app.controllers.api.rest.AircraftRestApi;
 import app.dto.AircraftDTO;
 import app.entities.Aircraft;
+import app.mappers.AircraftMapper;
 import app.services.interfaces.AircraftService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AircraftRestController implements AircraftRestApi {
 
     private final AircraftService aircraftService;
+    private final AircraftMapper aircraftMapper = Mappers.getMapper(AircraftMapper.class);
 
     @Override
     public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
@@ -35,13 +38,13 @@ public class AircraftRestController implements AircraftRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("getById: Aircraft with id={} returned.", id);
-        return new ResponseEntity<>(new AircraftDTO(aircraft), HttpStatus.OK);
+        return new ResponseEntity<>(aircraftMapper.convertToAircarftDTOEntity(aircraft), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Aircraft> createAircraft(AircraftDTO aircraftDTO) {
+    public ResponseEntity<AircraftDTO> createAircraft(AircraftDTO aircraftDTO) {
         log.info("create: new Aircraft saved.");
-        return new ResponseEntity<>(aircraftService.saveAircraft(aircraftDTO),
+        return new ResponseEntity<>(aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)),
                 HttpStatus.CREATED);
     }
 
