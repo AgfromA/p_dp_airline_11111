@@ -26,6 +26,7 @@ public interface FlightSeatRepository extends CrudRepository<FlightSeat, Long> {
     Page<FlightSeat> findAllFlightsSeatByFlightIdAndIsSoldFalse(Long flightId, Pageable pageable);
     Page<FlightSeat> findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(Long flightId, Pageable pageable);
 
+    Set<FlightSeat> findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(Long flightId);
     Set<FlightSeat> findFlightSeatByFlight(Flight flight);
 
     @Query(value = "select fs2 \n" +
