@@ -1,7 +1,6 @@
 package app.controllers;
 
-import app.controllers.api.rest.SearchControllerApi;
-import app.dto.search.Search;
+import app.controllers.api.SearchControllerApi;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.services.interfaces.SearchService;
@@ -22,7 +21,7 @@ public class SearchController implements SearchControllerApi {
     private final SearchService searchService;
 
     @Override
-    public ResponseEntity<SearchResult> get(
+    public ResponseEntity<SearchResult> search(
             Airport from,
             Airport to,
             LocalDate departureDate,
@@ -46,7 +45,7 @@ public class SearchController implements SearchControllerApi {
             log.info("DepartureDate must be earlier then ReturnDate");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        SearchResult searchResult = searchService.getSearch(from, to, departureDate, returnDate, numberOfPassengers);
+        SearchResult searchResult = searchService.search(from, to, departureDate, returnDate, numberOfPassengers);
         if (searchResult.getDepartFlights().isEmpty() && searchResult.getReturnFlights().isEmpty()) {
             log.info("Flights not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -56,3 +55,7 @@ public class SearchController implements SearchControllerApi {
         return new ResponseEntity<>(searchResult, HttpStatus.OK);
     }
 }
+
+
+
+

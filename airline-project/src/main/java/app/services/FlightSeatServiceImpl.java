@@ -173,6 +173,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flight.getId()).size();
     }
 
+
     @Override
     @Loggable
     public Set<Seat> getSetOfFreeSeatsOnFlightByFlightId(Long id) {
@@ -269,4 +270,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
         return Math.round(fare / 10) * 10;
     }
+
+
+
 }

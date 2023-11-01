@@ -66,7 +66,7 @@ VALUES (11, '2E', true, true,
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 3));
 
 INSERT INTO flights (id, code, arrival_date, departure_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (1, 'MSKOMSK', '2023-04-01 13:40:00', '2023-04-01 12:40:00', 'ON_TIME',
+VALUES (1, 'MSKOMSK', '2023-04-01 12:40:00', '2023-04-01 13:40:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1), 1, 2);
 
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
@@ -82,7 +82,7 @@ VALUES (3, 650, false, false, false, (SELECT flights.id FROM flights WHERE fligh
         (SELECT seats.id FROM seats WHERE seats.id = 3));
 
 INSERT INTO flights (id, code, arrival_date, departure_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (2, 'OMSKMSK', '2023-04-01 13:40:00', '2023-04-01 12:40:00', 'ON_TIME',
+VALUES (2, 'OMSKMSK', '2023-04-05 12:40:00', '2023-04-05 13:40:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 2, 1);
 
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)

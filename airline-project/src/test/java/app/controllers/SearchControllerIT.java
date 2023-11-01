@@ -22,10 +22,10 @@ class SearchControllerIT extends IntegrationTestBase {
     private SearchService searchService;
 
     @Test
-    void CheckSearchResult() throws Exception {
+    void CheckSuccessfulSearch() throws Exception {
 
         Airport airportFrom = VKO;
-        var airportTo = OMS;
+        Airport airportTo = OMS;
         LocalDate departureDate = LocalDate.of(2023, 04, 01);
         LocalDate returnDate = LocalDate.of(2023, 04, 05);
         Integer numberOfPassengers = 2;
@@ -39,6 +39,6 @@ class SearchControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(searchService.getSearch(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers))));
+                        .writeValueAsString(searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers))));
     }
 }

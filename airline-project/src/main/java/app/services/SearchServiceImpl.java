@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,21 +23,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SearchServiceImpl implements SearchService {
+
     private final FlightService flightService;
     private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
 
-    @Override
     @Transactional
     @Loggable
-    public SearchResult getSearch(Airport from, Airport to, LocalDate departureDate,
-                                  LocalDate returnDate, Integer numberOfPassengers) {
-        return searchDirectAndNonDirectFlights(from, to, departureDate, returnDate, numberOfPassengers);
-    }
-
-    @Loggable
-    private SearchResult searchDirectAndNonDirectFlights(Airport from, Airport to, LocalDate departureDate,
-                                                         LocalDate returnDate, Integer numberOfPassengers) {
+    @Override
+    public SearchResult search(Airport from, Airport to, LocalDate departureDate,
+                               LocalDate returnDate, Integer numberOfPassengers) {
 
         var search = new Search(from, to, departureDate, returnDate, numberOfPassengers);
 
@@ -169,6 +164,3 @@ public class SearchServiceImpl implements SearchService {
         return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
     }
 }
-
-
-
