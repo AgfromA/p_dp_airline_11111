@@ -217,23 +217,47 @@ public class SeatView extends VerticalLayout {
     }
 
     private void searchById() {
-        dataSource.clear();
-        isSearchById = true;
-        isSearchByAircraftId = false;
-        currentPage = 0;
-        maxPages = 1;
-        dataSource.add(seatClient.getSeatDTOById(idSearchField.getValue().longValue()).getBody());
-        grid.getDataProvider().refreshAll();
+        if(isFoundSeatById(idSearchField.getValue().longValue())) {
+            dataSource.clear();
+            isSearchById = true;
+            isSearchByAircraftId = false;
+            currentPage = 0;
+            maxPages = 1;
+            dataSource.add(seatClient.getSeatDTOById(idSearchField.getValue().longValue()).getBody());
+            grid.getDataProvider().refreshAll();
+        }
+    }
+    private boolean isFoundSeatById(Long id) {
+        try {
+            dataSource.add(seatClient.getSeatDTOById(id).getBody());
+            return true;
+        } catch (FeignException.NotFound ex) {
+            log.error(ex.getMessage());
+            Notification.show("Seat with id = " + id + " not found.",3000, Notification.Position.TOP_CENTER);
+        }
+        return false;
     }
 
     private void searchByAircraftId() {
-        isSearchById = false;
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-        dataSource.clear();
-        response = seatClient.getAllPagesSeatsDTOByAircraftId(pageable, searchByAircraftId);
-        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
-        grid.getDataProvider().refreshAll();
-        maxPages = response.getBody().getTotalPages() - 1;
+        if(isFoundSeatsByAircraftId(pageable, searchByAircraftId)) {
+            isSearchById = false;
+            dataSource.clear();
+            dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
+            grid.getDataProvider().refreshAll();
+            maxPages = response.getBody().getTotalPages() - 1;
+        }
+    }
+
+    private boolean isFoundSeatsByAircraftId(PageRequest pageable, Long id) {
+        try {
+            response = seatClient.getAllPagesSeatsDTOByAircraftId(pageable, id);
+            return true;
+        } catch (FeignException.NotFound ex) {
+            log.error(ex.getMessage());
+            Notification.show("Seat with aircraftId = " + id + " not found.",3000, Notification.Position.TOP_CENTER);
+        }
+        return false;
     }
 
     private Grid.Column<SeatDTO> createIdColumn() {
@@ -273,6 +297,31 @@ public class SeatView extends VerticalLayout {
         });
     }
 
+    private void addEditorListeners() {
+        editor.addSaveListener(e -> {
+            if (isEditedSeat(e.getItem().getId(), e.getItem())) {
+                Notification.show("Seat edited successfully.", 3000, Notification.Position.TOP_CENTER);
+                grid.getDataProvider().refreshAll();
+            } else {
+                updateGridData();
+            }
+        });
+    }
+
+    private boolean isEditedSeat(Long id, SeatDTO seatDTO) {
+        try {
+            seatClient.updateSeatDTOById(id, seatDTO);
+            return true;
+        } catch (FeignException.BadRequest ex) {
+            log.error(ex.getMessage());
+            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.",3000, Notification.Position.TOP_CENTER);
+        } catch (FeignException.NotFound ex) {
+            log.error(ex.getMessage());
+            Notification.show("Seat with id = " + seatDTO.getId() + " not found.",3000, Notification.Position.TOP_CENTER);
+        }
+        return false;
+    }
+
     private Grid.Column<SeatDTO> createDeleteColumn() {
         return grid.addComponentColumn(seat -> {
             Button deleteButton = new Button("Delete");
@@ -281,7 +330,7 @@ public class SeatView extends VerticalLayout {
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
                     ListDataProvider<SeatDTO> dataProvider = (ListDataProvider<SeatDTO>) grid.getDataProvider();
-                    if (seatDeleted(seat)) {
+                    if (isDeletedSeat(seat)) {
                         Notification.show("Seat deleted successfully.", 3000, Notification.Position.TOP_CENTER);
                         dataProvider.getItems().remove(seat);
                     }
@@ -292,7 +341,7 @@ public class SeatView extends VerticalLayout {
         }).setWidth("150px").setFlexGrow(0);
     }
 
-    private boolean seatDeleted(SeatDTO seat) {
+    private boolean isDeletedSeat(SeatDTO seat) {
         try {
             seatClient.deleteSeatById(seat.getId());
             return true;
@@ -382,29 +431,6 @@ public class SeatView extends VerticalLayout {
         aircraftIdColumn.setEditorComponent(aircraftIdField);
     }
 
-    private void addEditorListeners() {
-        editor.addSaveListener(e -> {
-            if (seatEdited(e.getItem().getId(), e.getItem())) {
-                Notification.show("Seat edited successfully.", 3000, Notification.Position.TOP_CENTER);
-            }
-            grid.getDataProvider().refreshAll();
-        });
-    }
-
-    private boolean seatEdited(Long id, SeatDTO seatDTO) {
-        try {
-            seatClient.updateSeatDTOById(id, seatDTO);
-            return true;
-        } catch (FeignException.BadRequest ex) {
-            log.error(ex.getMessage());
-            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.",3000, Notification.Position.TOP_CENTER);
-        } catch (FeignException.NotFound ex) {
-            log.error(ex.getMessage());
-            Notification.show("Seat with id = " + seatDTO.getId() + " not found.",3000, Notification.Position.TOP_CENTER);
-        }
-        return false;
-    }
-
     private void addTheme() {
         getThemeList().clear();
         getThemeList().add("spacing-s");
@@ -482,21 +508,20 @@ public class SeatView extends VerticalLayout {
             seatDTO.setIsLockedBack(isLockedBack.getValue());
             seatDTO.setCategory(category.getValue());
             seatDTO.setAircraftId(aircraftIdField.getValue().longValue());
-            if(!seatCreated(seatDTO)){
-                return;
+            if(isCreatedSeat(seatDTO)) {
+                seatNumber.clear();
+                isNearEmergencyExit.clear();
+                isLockedBack.clear();
+                category.clear();
+                aircraftIdField.clear();
+                grid.getDataProvider().refreshAll();
+                Notification.show("Seat created successfully.", 3000, Notification.Position.TOP_CENTER);
             }
-            seatNumber.clear();
-            isNearEmergencyExit.clear();
-            isLockedBack.clear();
-            category.clear();
-            aircraftIdField.clear();
-            grid.getDataProvider().refreshAll();
-            Notification.show("Seat created successfully.", 3000, Notification.Position.TOP_CENTER);
         });
         return createTab;
     }
 
-    private boolean seatCreated(SeatDTO seatDTO) {
+    private boolean isCreatedSeat(SeatDTO seatDTO) {
         try {
             SeatDTO savedSeat = seatClient.createSeatDTO(seatDTO).getBody();
             dataSource.add(savedSeat);

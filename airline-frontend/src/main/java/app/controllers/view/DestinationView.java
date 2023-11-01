@@ -171,13 +171,13 @@ public class DestinationView extends VerticalLayout {
     private void searchByFilter() {
         dataSource.clear();
         isFilteredSearch = true;
-        if (!destinationsFound(city, country, timezone)) {
+        if (!isFoundDestinations(city, country, timezone)) {
             Notification.show("Destinations not found", 3000, Notification.Position.TOP_CENTER);
         }
         grid.getDataProvider().refreshAll();
     }
 
-    private boolean destinationsFound(String city, String country, String timezone) {
+    private boolean isFoundDestinations(String city, String country, String timezone) {
         try {
             ResponseEntity<Page<DestinationDTO>> filteredResponse = destinationClient
                     .getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
@@ -329,14 +329,16 @@ public class DestinationView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            if (destinationEdited(e.getItem().getId(), e.getItem())) {
+            if (isEditedDestination(e.getItem().getId(), e.getItem())) {
                 Notification.show("Destination edited successfully.", 3000, Notification.Position.TOP_CENTER);
+                grid.getDataProvider().refreshAll();
+            } else {
+                updateGridData();
             }
-            grid.getDataProvider().refreshAll();
         });
     }
 
-    private boolean destinationEdited(Long id, DestinationDTO destinationDTO) {
+    private boolean isEditedDestination(Long id, DestinationDTO destinationDTO) {
         try {
             destinationClient.updateDestinationDTOById(id, destinationDTO);
             return true;
@@ -422,18 +424,17 @@ public class DestinationView extends VerticalLayout {
             DestinationDTO destinationDTO = new DestinationDTO();
             destinationDTO.setAirportCode(airportCodeField.getValue());
             destinationDTO.setTimezone(timezoneField.getValue());
-            if (!destinationCreated(destinationDTO)) {
-                return;
+            if (isCreatedDestination(destinationDTO)) {
+                grid.getDataProvider().refreshAll();
+                airportCodeField.clear();
+                timezoneField.clear();
+                Notification.show("Destination created successfully.", 3000, Notification.Position.TOP_CENTER);
             }
-            grid.getDataProvider().refreshAll();
-            airportCodeField.clear();
-            timezoneField.clear();
-            Notification.show("Destination created successfully.", 3000, Notification.Position.TOP_CENTER);
         });
         return createTab;
     }
 
-    private boolean destinationCreated(DestinationDTO destinationDTO) {
+    private boolean isCreatedDestination(DestinationDTO destinationDTO) {
         try {
             ResponseEntity<DestinationDTO> responseCreated = destinationClient.createDestinationDTO(destinationDTO);
             if (responseCreated.getStatusCode() == HttpStatus.CREATED) {
