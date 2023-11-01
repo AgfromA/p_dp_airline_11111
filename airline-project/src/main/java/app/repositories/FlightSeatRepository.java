@@ -25,8 +25,6 @@ public interface FlightSeatRepository extends CrudRepository<FlightSeat, Long> {
     Set<FlightSeat> findAllFlightsSeatByFlightIdAndIsSoldFalse(Long flightId);
     Page<FlightSeat> findAllFlightsSeatByFlightIdAndIsSoldFalse(Long flightId, Pageable pageable);
     Page<FlightSeat> findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(Long flightId, Pageable pageable);
-
-    Set<FlightSeat> findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(Long flightId);
     Set<FlightSeat> findFlightSeatByFlight(Flight flight);
     Set<FlightSeat> findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(Long flightId);
 
@@ -42,7 +40,6 @@ public interface FlightSeatRepository extends CrudRepository<FlightSeat, Long> {
     @Query(value = "select fs from FlightSeat fs where fs.flight.id = ?1 AND fs.seat.category.categoryType = ?2 " +
         "and fs.fare = (select min(fss.fare) from FlightSeat fss where fss.flight.id = ?1 and fss.seat.category.categoryType =?2)")
     List<FlightSeat> findFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type);
-
 
     @Modifying
     @Query(value = "UPDATE FlightSeat fs SET fs.isSold = false WHERE fs.id in :flightSeatId")
