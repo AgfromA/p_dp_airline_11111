@@ -26,6 +26,9 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
+* Вью сделана на основе ExempleView, SeatView, TimezoneView с небольшим рефакторингом
+ */
 @Route(value = "aircrafts", layout = MainLayout.class)
 @CssImport(value = "grid.css")
 public class AircraftView extends VerticalLayout {
@@ -210,7 +213,7 @@ public class AircraftView extends VerticalLayout {
             if (editor.isOpen()) editor.cancel();
             try {
                 statusCode = aircraftClient.deleteAircraftById(aircraftDTO.getId()).getStatusCode();
-            } catch ( FeignException.NotAcceptable except) {
+            } catch ( FeignException.MethodNotAllowed except) {
                 Notification.show("You can't delete an aircraft because it has seats assigned to it",3000, Notification.Position.TOP_CENTER)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;

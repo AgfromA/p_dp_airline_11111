@@ -62,6 +62,9 @@ public class AircraftRestController implements AircraftRestApi {
         return ResponseEntity.ok(aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)));
     }
 
+    /*
+    * Не удаляет aircraft, если у него есть seat
+     */
     @Override
     public ResponseEntity<HttpStatus> deleteAircraftById(Long id) {
         try {
@@ -70,7 +73,7 @@ public class AircraftRestController implements AircraftRestApi {
             return ResponseEntity.ok().build();
         } catch (TransactionSystemException e) {
             log.error("deleteAircraftById: error of deleting - Aircraft with id={} has seats referring to it", id, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         } catch (EmptyResultDataAccessException e) {
             log.error("deleteAircraftById: error of deleting - Aircraft with id={} not found. {}", id, e.getMessage());
             return ResponseEntity.notFound().build();

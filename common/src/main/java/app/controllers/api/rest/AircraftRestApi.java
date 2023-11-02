@@ -76,7 +76,7 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft deleted"),
             @ApiResponse(code = 404, message = "Aircraft not found"),
-            @ApiResponse(code = 406, message = "Can't delete an aircraft because it has seats assigned to it")})
+            @ApiResponse(code = 405, message = "Can't delete an aircraft because it has seats assigned to it")})
     ResponseEntity<HttpStatus> deleteAircraftById(
             @ApiParam(
                     name = "id",
