@@ -2,7 +2,8 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.AircraftRestApi;
 import app.dto.AircraftDTO;
-import app.entities.Aircraft;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import app.mappers.AircraftMapper;
 import app.services.interfaces.AircraftService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.persistence.RollbackException;
 
 @Slf4j
 @RestController
@@ -65,8 +68,11 @@ public class AircraftRestController implements AircraftRestApi {
             aircraftService.deleteAircraftById(id);
             log.info("deleteAircraftById: the Aircraft with id={} has been deleted.", id);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            log.error("deleteAircraftById: error of deleting - Aircraft with id={} not found.", id);
+        } catch (TransactionSystemException e) {
+            log.error("deleteAircraftById: error of deleting - Aircraft with id={} has seats referring to it", id, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        } catch (EmptyResultDataAccessException e) {
+            log.error("deleteAircraftById: error of deleting - Aircraft with id={} not found. {}", id, e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

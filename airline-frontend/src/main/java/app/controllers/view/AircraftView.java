@@ -11,6 +11,7 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -19,6 +20,8 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.Route;
+import feign.FeignException;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,7 +92,6 @@ public class AircraftView extends VerticalLayout {
 
         editor.addSaveListener(e -> {
             aircraftClient.updateAircraftById(e.getItem().getId(), e.getItem());
-            grid.getListDataView().refreshAll();
         });
         return tableTab;
     }
@@ -190,7 +192,7 @@ public class AircraftView extends VerticalLayout {
             flightRange.setInvalid(false);
 
             grid.getListDataView().refreshAll();
-            Notification.show("Seat created successfully.", 3000, Notification.Position.TOP_CENTER);
+            Notification.show("Aircraft created successfully.", 3000, Notification.Position.TOP_CENTER);
         });
         return createTab;
     }
@@ -204,10 +206,21 @@ public class AircraftView extends VerticalLayout {
 
     private void createDeleteColumn() {
         grid.addComponentColumn(aircraftDTO -> new Button("Delete", e -> {
+            HttpStatus statusCode = null;
             if (editor.isOpen()) editor.cancel();
-            if (aircraftClient.deleteAircraftById(aircraftDTO.getId()).getStatusCode().is2xxSuccessful()) {
+            try {
+                statusCode = aircraftClient.deleteAircraftById(aircraftDTO.getId()).getStatusCode();
+            } catch ( FeignException.NotAcceptable except) {
+                Notification.show("You can't delete an aircraft because it has seats assigned to it",3000, Notification.Position.TOP_CENTER)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
+            if (statusCode != null && statusCode.is2xxSuccessful()) {
                 dataSource.remove(aircraftDTO);
                 grid.getListDataView().refreshAll();
+            } else {
+                Notification.show("ERROR.  Something went wrong", 3000, Notification.Position.TOP_CENTER)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         }));
     }
@@ -225,7 +238,8 @@ public class AircraftView extends VerticalLayout {
         // Кнопки при открытии editor (нажатие на внешнюю)
         Button updateButton = new Button("Update", e -> {
             editor.save();
-            grid.getDataCommunicator().reset();
+            grid.setItems(dataSource);
+            grid.getListDataView().refreshAll();
         });
         Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
