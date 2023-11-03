@@ -3,6 +3,7 @@ package app.controllers;
 import app.controllers.api.SearchControllerApi;
 import app.dto.SearchResultDTO;
 import app.entities.search.Search;
+import app.exceptions.SearchRequestException;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +22,25 @@ public class SearchController implements SearchControllerApi {
 
     @Override
     public ResponseEntity<SearchResultDTO> saveSearch(Search search) {
+        String errorMessage;
+
         log.debug("saveSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
         if (search.getFrom() == null) {
-            log.info("saveSearch: Destination.from is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            errorMessage = "saveSearch: Destination.from is null";
+            log.error(errorMessage);
+            throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
         } else {
             if (search.getReturnDate() != null && !search.getReturnDate().isAfter(search.getDepartureDate())) {
-                log.info("saveSearch: DepartureDate must be earlier then ReturnDate");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                errorMessage = "saveSearch: DepartureDate must be earlier then ReturnDate";
+                log.error(errorMessage);
+                throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
             }
             var searchResult = searchService.saveSearch(search);
             if (searchResult.getDepartFlight().isEmpty()) {
-                log.info("saveSearch: Destinations not found");
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                errorMessage = "saveSearch: Destinations not found";
+                log.error(errorMessage);
+                throw new SearchRequestException(errorMessage, HttpStatus.NO_CONTENT);
+
             }
             log.info("saveSearch: new search result saved with id= {}", searchResult.getId());
             var result = new SearchResultDTO(searchResult);
