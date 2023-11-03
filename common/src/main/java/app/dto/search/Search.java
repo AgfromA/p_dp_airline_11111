@@ -3,6 +3,7 @@ package app.dto.search;
 
 import app.enums.Airport;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,15 +17,17 @@ import java.time.LocalDate;
 /**
  * Поиск рейсов по заданным параметрам.
  */
-
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Search {
 
+    @NotNull(message = "destination cannot be null")
     private Airport from;
 
+    @NotNull(message = "destination cannot be null")
     private Airport to;
 
     @NotNull
@@ -37,11 +40,4 @@ public class Search {
     @Positive
     private Integer numberOfPassengers;
 
-    public Search(Airport from, Airport to, LocalDate departureDate, LocalDate returnDate, Integer numberOfPassengers) {
-        this.from = from;
-        this.to = to;
-        this.departureDate = departureDate;
-        this.returnDate = returnDate;
-        this.numberOfPassengers = numberOfPassengers;
-    }
 }

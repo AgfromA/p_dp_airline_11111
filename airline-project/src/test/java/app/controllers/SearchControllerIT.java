@@ -42,4 +42,3 @@ class SearchControllerIT extends IntegrationTestBase {
                         .writeValueAsString(searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers))));
     }
 }
-

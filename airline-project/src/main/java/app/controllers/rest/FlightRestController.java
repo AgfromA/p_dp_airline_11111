@@ -6,6 +6,7 @@ import app.entities.Flight;
 import app.enums.FlightStatus;
 import app.mappers.FlightMapper;
 import app.services.interfaces.FlightService;
+import app.services.interfaces.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
@@ -46,8 +47,7 @@ public class FlightRestController implements FlightRestApi {
         log.info("getById: get Flight by id. id = {}", id);
         var flight = flightService.getFlightById(id);
         return flight.isPresent()
-                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight.get()),
-                HttpStatus.OK)
+                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight.get(), flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -56,16 +56,15 @@ public class FlightRestController implements FlightRestApi {
         log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
         var flight = flightService.getFlightByIdAndDates(id, start, finish);
         return flight != null
-                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight),
-                HttpStatus.OK)
+                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Override
     public ResponseEntity<FlightStatus[]> getAllFlightStatus() {
         log.info("getAllFlightStatus: get all Flight Statuses");
-        return new ResponseEntity<>(flightService.getAllFlights().stream()
-                .map(f -> Mappers.getMapper(FlightMapper.class).flightToFlightDTO(f))
+        return new ResponseEntity<>(flightService.getAllFlights().stream().map(flight ->
+                        Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService))
                 .map(FlightDTO::getFlightStatus)
                 .distinct().collect(Collectors.toList()).toArray(FlightStatus[]::new), HttpStatus.OK);
     }

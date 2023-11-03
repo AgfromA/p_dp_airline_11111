@@ -5,10 +5,7 @@ import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.mappers.FlightMapper;
-import app.services.interfaces.DestinationService;
-import app.services.interfaces.FlightSeatService;
-import app.services.interfaces.FlightService;
-import app.services.interfaces.SearchService;
+import app.services.interfaces.*;
 import app.util.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +47,7 @@ public class SearchServiceImpl implements SearchService {
 
         var searchDepartFlightDTO = searchDepartFlight.stream()
                 .map(departFlight -> Mappers.getMapper(FlightMapper.class)
-                        .flightToFlightDTO(departFlight))
+                        .flightToFlightDTO(departFlight, flightService))
                 .collect(Collectors.toList());
 
         searchResult.setDepartFlights(searchDepartFlightDTO);
@@ -64,7 +61,7 @@ public class SearchServiceImpl implements SearchService {
 
             var searchReturnFlightDTO = searchReturnFlight.stream()
                     .map(returnFlight -> Mappers.getMapper(FlightMapper.class)
-                            .flightToFlightDTO(returnFlight))
+                            .flightToFlightDTO(returnFlight, flightService))
                     .collect(Collectors.toList());
 
             searchResult.setReturnFlights(searchReturnFlightDTO);

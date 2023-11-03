@@ -1,6 +1,5 @@
 package app.dto.search;
 
-
 import app.dto.FlightDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
