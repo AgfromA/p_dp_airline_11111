@@ -18,4 +18,5 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     @Query(value = "select seat from Seat seat join seat.aircraft a where a.id = :id")
     Set<Seat> findByAircraftId(Long id);
+
 }

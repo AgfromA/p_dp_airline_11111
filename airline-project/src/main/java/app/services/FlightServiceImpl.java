@@ -37,7 +37,7 @@ public class FlightServiceImpl implements FlightService {
 
     public FlightServiceImpl(FlightRepository flightRepository, AircraftService aircraftService,
                              DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
-                             @Lazy TicketService ticketService, FlightMapper flightMapper) {
+                             @Lazy TicketService ticketService, FlightMapper flightMapper, SeatService seatService) {
         this.flightRepository = flightRepository;
         this.aircraftService = aircraftService;
         this.destinationService = destinationService;
@@ -74,7 +74,7 @@ public class FlightServiceImpl implements FlightService {
                                                                String dateStart, String dateFinish,
                                                                Pageable pageable) {
         return flightRepository.getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
-                .map(flightMapper::flightToFlightDTO);
+                .map(flight -> flightMapper.flightToFlightDTO(flight, this));
     }
 
     @Override
@@ -107,8 +107,8 @@ public class FlightServiceImpl implements FlightService {
     public Flight getFlightByIdAndDates(Long id, String start, String finish) {
         var flight = flightRepository.findById(id);
         if (flight.isPresent() && (flight.get().getDepartureDateTime().isEqual(LocalDateTime.parse(start))
-                    && flight.get().getArrivalDateTime().isEqual(LocalDateTime.parse(finish)))) {
-                return flight.get();
+                && flight.get().getArrivalDateTime().isEqual(LocalDateTime.parse(finish)))) {
+            return flight.get();
         }
         return null;
     }
@@ -157,14 +157,14 @@ public class FlightServiceImpl implements FlightService {
 
     public double parseLatitude(Airport airport) {
         Matcher matcher = LAT_LONG_PATTERN.matcher(airport.getCoordinates());
-            matcher.find();
-            return Double.parseDouble(matcher.group(1));
+        matcher.find();
+        return Double.parseDouble(matcher.group(1));
     }
 
     public double parseLongitude(Airport airport) {
         Matcher matcher = LAT_LONG_PATTERN.matcher(airport.getCoordinates());
-            matcher.find();
-            return Double.parseDouble(matcher.group(2));
+        matcher.find();
+        return Double.parseDouble(matcher.group(2));
     }
 
 }

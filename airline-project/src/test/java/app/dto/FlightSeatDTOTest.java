@@ -10,6 +10,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.IOException;
 
+import static app.enums.CategoryType.ECONOMY;
+
 class FlightSeatDTOTest extends EntityTest {
 
     private Validator validator;
@@ -23,14 +25,17 @@ class FlightSeatDTOTest extends EntityTest {
 
     private JSONObject initJSONObject() {
         var flightSeatJson = new JSONObject();
-
+        SeatDTO seat = new SeatDTO();
+        seat.setSeatNumber("1");
+        seat.setId(1L);
         flightSeatJson.put("id", 1L);
         flightSeatJson.put("fare", 1500);
         flightSeatJson.put("isRegistered", true);
         flightSeatJson.put("isSold", true);
         flightSeatJson.put("isBooked", true);
-        flightSeatJson.put("flightId", 1);
-        flightSeatJson.put("seatNumber", 1);
+        flightSeatJson.put("flightId", 1L);
+        flightSeatJson.put("seat", seat);
+        flightSeatJson.put("category", ECONOMY);
 
         return flightSeatJson;
     }
@@ -104,7 +109,7 @@ class FlightSeatDTOTest extends EntityTest {
     void nullSeatShouldNotValidate() {
         FlightSeatDTO testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
-        flightSeatJson.replace("seatNumber", null);
+        flightSeatJson.replace("seat", null);
         try {
             testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDTO.class);
         } catch (IOException e) {

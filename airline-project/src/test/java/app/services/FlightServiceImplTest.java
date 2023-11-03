@@ -21,7 +21,8 @@ public class FlightServiceImplTest {
             , null
             , null
             , null
-            , null);
+            , null
+            ,null);
 
     @Test
     public void testGetDistance() {
