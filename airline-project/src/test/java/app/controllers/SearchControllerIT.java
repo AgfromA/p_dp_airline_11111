@@ -1,44 +1,44 @@
 package app.controllers;
 
-import app.entities.search.Search;
-import app.mappers.DestinationMapper;
-import app.services.interfaces.DestinationService;
-import org.json.JSONObject;
+import app.enums.Airport;
+import app.services.interfaces.SearchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 
+import static app.enums.Airport.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-search-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class SearchControllerIT extends IntegrationTestBase {
-    @Autowired
-    DestinationService destinationService;
 
     @Autowired
-    DestinationMapper destinationMapper;
+    private SearchService searchService;
 
     @Test
-    void CheckSearchResultNotFound() throws Exception {
-        Long id = 200L;
-        mockMvc.perform(get("http://localhost:8080/api/search/{id}", id))
-                .andExpect(status().isNotFound());
-    }
+    void CheckSuccessfulSearch() throws Exception {
 
-    @Test
-    void CheckSearchNotFound() throws Exception {
-        var from = destinationMapper.convertToDestinationEntity(destinationService.getDestinationById(1L));
-        var to = destinationMapper.convertToDestinationEntity(destinationService.getDestinationById(2L));
-        var search = new Search(from, to, LocalDate.of(1999, 12, 01), null, 1);
-        mockMvc.perform(post("http://localhost:8080/api/search")
-                        .content(objectMapper.writeValueAsString(search))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+        Airport airportFrom = VKO;
+        Airport airportTo = OMS;
+        LocalDate departureDate = LocalDate.of(2023, 04, 01);
+        LocalDate returnDate = LocalDate.of(2023, 04, 05);
+        Integer numberOfPassengers = 2;
+
+        mockMvc.perform(get("http://localhost:8080/api/search")
+                        .param("airportFrom", String.valueOf(airportFrom))
+                        .param("airportTo", String.valueOf(airportTo))
+                        .param("departureDate", String.valueOf(departureDate))
+                        .param("returnDate", String.valueOf(returnDate))
+                        .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper
+                        .writeValueAsString(searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers))));
     }
 }

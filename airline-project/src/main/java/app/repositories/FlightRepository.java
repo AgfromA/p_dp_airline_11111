@@ -2,7 +2,6 @@ package app.repositories;
 
 import app.entities.Destination;
 import app.entities.Flight;
-import app.entities.Ticket;
 import app.enums.Airport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +28,12 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
     Flight findByCodeWithLinkedEntities(String code);
 
     @Query("SELECT f FROM Flight f " +
-            "WHERE (:cityFrom IS NULL OR f.from.cityName = :cityFrom) " +
-            "AND (:cityTo IS NULL OR f.to.cityName = :cityTo) " +
+            "WHERE (:cityFrom IS NULL OR f.from.cityName = :cityFrom OR :cityFrom = '') " +
+            "AND (:cityTo IS NULL OR f.to.cityName = :cityTo OR :cityTo = '') " +
             "AND (:dateStart IS NULL OR concat(substring(cast(f.departureDateTime as string), 1, 10), 'T'," +
-                                              "substring(cast(f.departureDateTime as string), 12)) = :dateStart) " +
+            "substring(cast(f.departureDateTime as string), 12)) = :dateStart OR :dateStart = '') " +
             "AND (:dateFinish IS NULL OR concat(substring(cast(f.arrivalDateTime as string), 1, 10), 'T', " +
-                                               "substring(cast(f.arrivalDateTime as string), 12))  = :dateFinish) " +
+            "substring(cast(f.arrivalDateTime as string), 12))  = :dateFinish OR :dateFinish = '') " +
             "ORDER BY f.id")
     Page<Flight> getAllFlightsByDestinationsAndDates(String cityFrom,
                                                      String cityTo,

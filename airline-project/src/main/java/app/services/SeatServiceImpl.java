@@ -137,4 +137,5 @@ public class SeatServiceImpl implements SeatService {
             return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity);
         });
     }
+
 }
