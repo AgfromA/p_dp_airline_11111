@@ -2,7 +2,7 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.AircraftRestApi;
 import app.dto.AircraftDTO;
-import app.entities.Aircraft;
+import app.mappers.AircraftMapper;
 import app.services.interfaces.AircraftService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AircraftRestController implements AircraftRestApi {
 
     private final AircraftService aircraftService;
+    private final AircraftMapper aircraftMapper;
 
     @Override
     public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
@@ -35,25 +36,27 @@ public class AircraftRestController implements AircraftRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("getById: Aircraft with id={} returned.", id);
-        return new ResponseEntity<>(new AircraftDTO(aircraft), HttpStatus.OK);
+        return new ResponseEntity<>(aircraftMapper.convertToAircarftDTOEntity(aircraft), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Aircraft> createAircraft(AircraftDTO aircraftDTO) {
+    public ResponseEntity<AircraftDTO> createAircraft(AircraftDTO aircraftDTO) {
         log.info("create: new Aircraft saved.");
-        return new ResponseEntity<>(aircraftService.saveAircraft(aircraftDTO),
+        return new ResponseEntity<>(
+                aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)),
                 HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Aircraft> updateAircraftById(Long id, AircraftDTO aircraftDTO) {
+    public ResponseEntity<AircraftDTO> updateAircraftById(Long id, AircraftDTO aircraftDTO) {
         if (aircraftService.getAircraftById(id) == null) {
             log.error("update: Aircraft with id={} doesn't exist.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         aircraftDTO.setId(id);
         log.info("update: the Aircraft with id={} has been edited.", id);
-        return ResponseEntity.ok(aircraftService.saveAircraft(aircraftDTO));
+        return ResponseEntity.ok(
+                aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)));
     }
 
     @Override

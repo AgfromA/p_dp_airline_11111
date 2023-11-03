@@ -1,6 +1,5 @@
 package app.dto;
 
-import app.entities.Aircraft;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -30,12 +29,4 @@ public class AircraftDTO {
 
     @NotNull(message = "field \"flightRange\" should not be empty!")
     private int flightRange;
-
-    public AircraftDTO(Aircraft aircraft) {
-        this.id = aircraft.getId();
-        this.aircraftNumber = aircraft.getAircraftNumber();
-        this.model = aircraft.getModel();
-        this.modelYear = aircraft.getModelYear();
-        this.flightRange = aircraft.getFlightRange();
-    }
 }

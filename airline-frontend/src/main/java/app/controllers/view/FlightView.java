@@ -1,5 +1,6 @@
 package app.controllers.view;
 
+import app.clients.AircraftClient;
 import app.clients.FlightClient;
 import app.dto.FlightDTO;
 import app.enums.Airport;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 public class FlightView extends VerticalLayout {
 
     private final FlightClient flightClient;
+    private final AircraftClient aircraftClient;
     private List<FlightDTO> dataSource;
     private final Grid<FlightDTO> grid = new Grid<>(FlightDTO.class, false);
     private final Editor<FlightDTO> editor = grid.getEditor();
@@ -62,8 +64,9 @@ public class FlightView extends VerticalLayout {
     private boolean isSearchById;
     private boolean isSearchByDestinationsAndDates;
 
-    public FlightView(FlightClient flightClient) {
+    public FlightView(FlightClient flightClient, AircraftClient aircraftClient) {
         this.flightClient = flightClient;
+        this.aircraftClient = aircraftClient;
         currentPage = 0;
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         isSearchById = false;
@@ -415,7 +418,6 @@ public class FlightView extends VerticalLayout {
         }).setWidth("80px").setFlexGrow(0);
     }
 
-
     private Binder<FlightDTO> createBinder() {
         Binder<FlightDTO> binder = new Binder<>(FlightDTO.class);
         editor.setBinder(binder);
@@ -621,6 +623,13 @@ public class FlightView extends VerticalLayout {
 
         formLayout.add(verticalLayout);
         createButton.addClickListener(event -> {
+            try {
+                var a = aircraftClient.getAircraftDTOById(aircraftId.getValue().longValue());
+            } catch (FeignException.NotFound ex) {
+                Notification.show("Aircraft with id = " + aircraftId.getValue().toString() + " not exists, ",
+                        3000, Notification.Position.TOP_CENTER);
+                return;
+            }
             FlightDTO flightDTO = new FlightDTO();
             flightDTO.setId(0L);
             flightDTO.setCode(code.getValue());
