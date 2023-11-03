@@ -9,3 +9,8 @@
 
 Что делать, если в feign клиенте ошибка java.lang.IllegalStateException: PathVariable annotation was empty on param 0?
 - Проверьте методы в Controllers. В аннотациях должно стоять имя параметра. Вот так: (@PathVariable("id") Long id);
+
+Что делать если не запускается FrontendApplication (airline-frontend)?
+- Проверить путь до проекта. В нем не должно быть кирилицы.
+  Например: C:\Users\pro10\Desktop\Проект\p_dp_airline_1   (Не верно)
+            C:\Users\pro10\Desktop\Project\p_dp_airline_1  (Верно)
