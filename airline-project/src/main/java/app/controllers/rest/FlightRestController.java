@@ -45,7 +45,7 @@ public class FlightRestController implements FlightRestApi {
         log.info("getById: get Flight by id. id = {}", id);
         var flight = flightService.getFlightById(id);
         return flight.isPresent()
-                ? new ResponseEntity<>(flightMapper.flightToFlightDTO(flight.get()), HttpStatus.OK)
+                ? new ResponseEntity<>(flightMapper.flightToFlightDTO(flight.get(), flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -54,14 +54,14 @@ public class FlightRestController implements FlightRestApi {
         log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
         var flight = flightService.getFlightByIdAndDates(id, start, finish);
         return flight != null
-                ? new ResponseEntity<>(flightMapper.flightToFlightDTO(flight), HttpStatus.OK)
+                ? new ResponseEntity<>(flightMapper.flightToFlightDTO(flight, flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Override
     public ResponseEntity<FlightStatus[]> getAllFlightStatus() {
         log.info("getAllFlightStatus: get all Flight Statuses");
-        return new ResponseEntity<>(flightService.getAllFlights().stream().map(flightMapper::flightToFlightDTO)
+        return new ResponseEntity<>(flightService.getAllFlights().stream().map(e -> flightMapper.flightToFlightDTO(e, flightService))
                 .map(FlightDTO::getFlightStatus)
                 .distinct().collect(Collectors.toList()).toArray(FlightStatus[]::new), HttpStatus.OK);
     }
@@ -69,7 +69,7 @@ public class FlightRestController implements FlightRestApi {
     @Override
     public ResponseEntity<FlightDTO> createFlight(FlightDTO flightDTO) {
         log.info("create: create new Flight");
-        return new ResponseEntity<>(flightMapper.flightToFlightDTO(flightService.saveFlight(flightDTO)),
+        return new ResponseEntity<>(flightMapper.flightToFlightDTO(flightService.saveFlight(flightDTO), flightService),
                 HttpStatus.CREATED);
     }
 
@@ -82,7 +82,7 @@ public class FlightRestController implements FlightRestApi {
         }
         flightDTO.setId(id);
         log.info("update: Flight with id = {} updated", id);
-        return new ResponseEntity<>(flightMapper.flightToFlightDTO(flightService.updateFlight(id, flightDTO)),
+        return new ResponseEntity<>(flightMapper.flightToFlightDTO(flightService.updateFlight(id, flightDTO), flightService),
                 HttpStatus.OK);
     }
 

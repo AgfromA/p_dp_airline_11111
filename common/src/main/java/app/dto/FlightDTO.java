@@ -1,9 +1,7 @@
 package app.dto;
 
-import app.dto.FlightSeatDTO;
 import app.enums.Airport;
 import app.enums.FlightStatus;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

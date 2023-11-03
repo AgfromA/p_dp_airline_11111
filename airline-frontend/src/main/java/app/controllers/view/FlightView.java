@@ -3,6 +3,7 @@ package app.controllers.view;
 import app.clients.AircraftClient;
 import app.clients.FlightClient;
 import app.dto.FlightDTO;
+import app.dto.FlightSeatDTO;
 import app.enums.Airport;
 import app.enums.FlightStatus;
 import com.vaadin.flow.component.Key;
@@ -10,10 +11,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -35,6 +38,7 @@ import org.springframework.http.HttpStatus;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +50,7 @@ public class FlightView extends VerticalLayout {
     private final AircraftClient aircraftClient;
     private List<FlightDTO> dataSource;
     private final Grid<FlightDTO> grid = new Grid<>(FlightDTO.class, false);
+    private final Grid<FlightSeatDTO> flightSeatGrid = new Grid<>(FlightSeatDTO.class, false);
     private final Editor<FlightDTO> editor = grid.getEditor();
     private final Button updateButton;
     private final Button cancelButton;
@@ -93,8 +98,13 @@ public class FlightView extends VerticalLayout {
         Grid.Column<FlightDTO> arrivalDateTimeColumn = createArrivalDateTimeColumn();
         Grid.Column<FlightDTO> aircraftIdColumn = createAircraftIdColumn();
         Grid.Column<FlightDTO> flightStatusColumn = createFlightStatusColumn();
+        createViewSeatsColumn();
         Grid.Column<FlightDTO> updateColumn = createEditColumn();
         createDeleteColumn();
+
+        createCategorySeatColumn();
+        createNumberSeatColumn();
+        createFareColumn();
 
         Binder<FlightDTO> binder = createBinder();
 
@@ -125,6 +135,8 @@ public class FlightView extends VerticalLayout {
         grid.setItems(dataSource);
         grid.setAllRowsVisible(true);
         grid.setSelectionMode(Grid.SelectionMode.NONE);
+        flightSeatGrid.setAllRowsVisible(true);
+        flightSeatGrid.setSelectionMode(Grid.SelectionMode.NONE);
         addTheme();
 
         Div contentContainer = new Div();
@@ -133,14 +145,18 @@ public class FlightView extends VerticalLayout {
         HorizontalLayout actions = new HorizontalLayout(updateButton, cancelButton);
         actions.setPadding(false);
         updateColumn.setEditorComponent(actions);
+
         HorizontalLayout changedPages = new HorizontalLayout(refreshButton, previousButton, nextButton);
+
         HorizontalLayout searchByIdLayout = new HorizontalLayout(idSearchField, searchByIdButton);
         searchByIdLayout.setAlignItems(FlexComponent.Alignment.END);
+
         HorizontalLayout searchByDestinationsAndDatesLayout1 = new HorizontalLayout(
                 cityFromSearchByDestinationsAndDatesField,
                 cityToSearchByDestinationsAndDatesField
         );
         searchByDestinationsAndDatesLayout1.setAlignItems(FlexComponent.Alignment.END);
+
         HorizontalLayout searchByDestinationsAndDatesLayout2 = new HorizontalLayout(
                 dateStartSearchByDestinationsAndDatesField,
                 dateFinishSearchByDestinationsAndDatesField,
@@ -388,6 +404,48 @@ public class FlightView extends VerticalLayout {
     private Grid.Column<FlightDTO> createFlightStatusColumn() {
         return grid.addColumn(FlightDTO::getFlightStatus).setHeader("Flight Status").setWidth("120px");
     }
+
+    private Grid.Column<FlightDTO> createViewSeatsColumn() {
+        return grid.addComponentColumn(flight -> {
+            List<FlightSeatDTO> seatList = flight.getSeats();
+            Button viewSeatsButton = new Button("View seats");
+            viewSeatsButton.addClickListener(e -> {
+                openFlightSeatsTable(seatList);
+            });
+            return viewSeatsButton;
+        });
+    }
+
+    private void openFlightSeatsTable(List<FlightSeatDTO> seatList) {
+        Dialog flightSeatsDialog = new Dialog();
+        flightSeatsDialog.setWidth("40%");
+        if (!seatList.isEmpty()) {
+            flightSeatGrid.getDataProvider().refreshAll();
+            flightSeatGrid.setItems(seatList);
+            flightSeatsDialog.add(flightSeatGrid);
+            flightSeatsDialog.open();
+        } else {
+            VerticalLayout layout = new VerticalLayout();
+            Label label = new Label("There are no seats for display");
+            layout.add(label);
+            layout.setHorizontalComponentAlignment(Alignment.CENTER, label);
+            flightSeatsDialog.add(layout);
+            flightSeatsDialog.open();
+        }
+    }
+
+    private Grid.Column<FlightSeatDTO> createFareColumn() {
+        return flightSeatGrid.addColumn(FlightSeatDTO::getFare).setHeader("fare");
+    }
+
+    private Grid.Column<FlightSeatDTO> createNumberSeatColumn() {
+        return flightSeatGrid.addColumn(e -> e.getSeat().getSeatNumber()).setHeader("seat number");
+    }
+
+    private Grid.Column<FlightSeatDTO> createCategorySeatColumn() {
+        return flightSeatGrid.addColumn(FlightSeatDTO::getCategory).setHeader("category");
+    }
+
 
     private Grid.Column<FlightDTO> createEditColumn() {
         return grid.addComponentColumn(flight -> {
