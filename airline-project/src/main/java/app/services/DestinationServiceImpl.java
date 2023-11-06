@@ -26,10 +26,10 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     public Page<DestinationDTO> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
-        if (cityName != null) {
+        if (cityName != null && !cityName.isEmpty()) {
             return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName)
                     .map(destinationMapper::convertToDestinationDTOEntity);
-        } else if(countryName != null) {
+        } else if(countryName != null && !countryName.isEmpty()) {
             return destinationRepository.findByCountryNameContainingIgnoreCase(PageRequest.of(page, size), countryName)
                     .map(destinationMapper::convertToDestinationDTOEntity);
         } else {

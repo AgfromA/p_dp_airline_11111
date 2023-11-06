@@ -1,8 +1,8 @@
 package app.controllers;
 
 import app.controllers.api.SearchControllerApi;
-import app.dto.SearchResultDTO;
-import app.entities.search.Search;
+import app.dto.search.SearchResult;
+import app.enums.Airport;
 import app.exceptions.SearchRequestException;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 
 @Slf4j
 @RestController
@@ -21,44 +22,45 @@ public class SearchController implements SearchControllerApi {
     private final SearchService searchService;
 
     @Override
-    public ResponseEntity<SearchResultDTO> saveSearch(Search search) {
+    public ResponseEntity<SearchResult> search(
+            Airport from,
+            Airport to,
+            LocalDate departureDate,
+            LocalDate returnDate,
+            Integer numberOfPassengers) {
         String errorMessage;
 
-        log.debug("saveSearch: incoming data, search = {}", LogsUtils.objectToJson(search));
-        if (search.getFrom() == null) {
-            errorMessage = "saveSearch: Destination.from is null";
-            log.error(errorMessage);
+        log.debug("incoming Airport from = {}", LogsUtils.objectToJson(from));
+        log.debug("incoming Airport to = {}", LogsUtils.objectToJson(to));
+        if (from == null || to == null) {
+            errorMessage = "Destination.from is null or Destination.to is null";
+            log.info(errorMessage);
             throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
-        } else {
-            if (search.getReturnDate() != null && !search.getReturnDate().isAfter(search.getDepartureDate())) {
-                errorMessage = "saveSearch: DepartureDate must be earlier then ReturnDate";
-                log.error(errorMessage);
-                throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
-            }
-            var searchResult = searchService.saveSearch(search);
-            if (searchResult.getDepartFlight().isEmpty()) {
-                errorMessage = "saveSearch: Destinations not found";
-                log.error(errorMessage);
-                throw new SearchRequestException(errorMessage, HttpStatus.NO_CONTENT);
-
-            }
-            log.info("saveSearch: new search result saved with id= {}", searchResult.getId());
-            var result = new SearchResultDTO(searchResult);
-            log.debug("saveSearch: outgoing data, searchResultDTO = {}", LogsUtils.objectToJson(result));
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
         }
-    }
-
-    @Override
-    public ResponseEntity<SearchResultDTO> getSearchResultDTOById(Long id) {
-
-        var searchResult = searchService.getSearchResultProjectionByID(id);
-        if (searchResult != null) {
-            log.info("getSearchResultById: find search result with id = {}", id);
-            return new ResponseEntity<>(new SearchResultDTO(searchResult), HttpStatus.OK);
-        } else {
-            log.info("getSearchResultById: not find search result with id = {}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        log.debug("incoming numberOfPassengers = {}", LogsUtils.objectToJson(numberOfPassengers));
+        if (numberOfPassengers == null || numberOfPassengers < 1) {
+            errorMessage ="NumberOfPassengers is incorrect";
+            log.info(errorMessage);
+            throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
         }
+        log.debug("incoming departureDate = {}", LogsUtils.objectToJson(departureDate));
+        log.debug("incoming returnDate = {}", LogsUtils.objectToJson(returnDate));
+        if (returnDate != null && !(returnDate.isAfter(departureDate))) {
+            errorMessage = "DepartureDate must be earlier then ReturnDate";
+            log.info(errorMessage);
+            throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        SearchResult searchResult = searchService.search(from, to, departureDate, returnDate, numberOfPassengers);
+        if (searchResult.getDepartFlights().isEmpty() && searchResult.getReturnFlights().isEmpty()) {
+            log.info("Flights not found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        log.info("Search result found = {}", searchResult);
+        log.debug("Outgoing data = {}", LogsUtils.objectToJson(searchResult));
+        return new ResponseEntity<>(searchResult, HttpStatus.OK);
     }
 }
+
+
+
+

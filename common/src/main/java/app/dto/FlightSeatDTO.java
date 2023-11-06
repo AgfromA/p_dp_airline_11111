@@ -1,10 +1,11 @@
 package app.dto;
 
-import app.entities.FlightSeat;
+import app.enums.CategoryType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -14,12 +15,13 @@ import javax.validation.constraints.PositiveOrZero;
 @EqualsAndHashCode
 @NoArgsConstructor
 public class FlightSeatDTO {
+    @ReadOnlyProperty
     private Long id;
 
     @PositiveOrZero(message = "Fare must be positive")
     private Integer fare;
 
-    @NotNull
+    @NotNull(message = "isRegistered shouldn't be null")
     private Boolean isRegistered;
 
     @NotNull(message = "isSold shouldn't be null")
@@ -31,16 +33,8 @@ public class FlightSeatDTO {
     private Long flightId;
 
     @NotNull(message = "seatNumber shouldn't be null")
-    private Long seatNumber;
+    private SeatDTO seat;
 
-    public FlightSeatDTO(FlightSeat entity) {
-        this.id = entity.getId();
-        this.fare = entity.getFare();
-        this.isRegistered = entity.getIsRegistered();
-        this.isSold = entity.getIsSold();
-        this.isBooked = entity.getIsBooked();
-        this.flightId = entity.getFlight().getId();
-        this.seatNumber = entity.getSeat().getId();
-    }
-
+    @NotNull(message = "category cannot be null")
+    private CategoryType category;
 }
