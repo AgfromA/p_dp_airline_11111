@@ -1,8 +1,8 @@
 package app.controllers;
 
 import app.controllers.api.SearchControllerApi;
-import app.dto.SearchResultDTO;
-import app.entities.search.Search;
+import app.dto.search.SearchResult;
+import app.enums.Airport;
 import app.exceptions.SearchRequestException;
 import app.services.interfaces.SearchService;
 import app.util.LogsUtils;
