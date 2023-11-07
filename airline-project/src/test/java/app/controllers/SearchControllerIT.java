@@ -1,18 +1,21 @@
 package app.controllers;
 
+import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.services.interfaces.SearchService;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
 
 import static app.enums.Airport.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-search-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -21,8 +24,10 @@ class SearchControllerIT extends IntegrationTestBase {
     @Autowired
     private SearchService searchService;
 
+    @DisplayName("Positive test - search return one direct depart flight whith 3 free seats and one direct return " +
+            "flight whith 3 free seats")
     @Test
-    void CheckSuccessfulSearch() throws Exception {
+    void shouldReturnOneDirectDepartAndOneDirectReturnFlightsWithThreeSeatsOnEarch() throws Exception {
 
         Airport airportFrom = VKO;
         Airport airportTo = OMS;
@@ -30,15 +35,55 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate returnDate = LocalDate.of(2023, 04, 05);
         Integer numberOfPassengers = 2;
 
+        SearchResult result = searchService.search(
+                airportFrom, airportTo, departureDate, returnDate, numberOfPassengers
+        );
+
         mockMvc.perform(get("http://localhost:8080/api/search")
-                        .param("airportFrom", String.valueOf(airportFrom))
-                        .param("airportTo", String.valueOf(airportTo))
-                        .param("departureDate", String.valueOf(departureDate))
-                        .param("returnDate", String.valueOf(returnDate))
-                        .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
+                .param("airportFrom", String.valueOf(airportFrom))
+                .param("airportTo", String.valueOf(airportTo))
+                .param("departureDate", String.valueOf(departureDate))
+                .param("returnDate", String.valueOf(returnDate))
+                .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper
-                        .writeValueAsString(searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers))));
+                .andExpect(content().json(objectMapper.writeValueAsString(
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers))
+                ))
+                .andExpect(jsonPath("$.search.departureDate").value(departureDate.toString()))
+                .andExpect(jsonPath("$.search.returnDate").value(returnDate.toString()))
+                .andExpect(jsonPath("$.search.numberOfPassengers").value(numberOfPassengers))
+                .andExpect(jsonPath("$.departFlights.size()", Matchers.greaterThan(0)))
+                .andExpect(jsonPath("$.departFlights.[0].airportFrom").value(airportFrom.toString()))
+                .andExpect(jsonPath("$.departFlights.[0].airportTo").value(airportTo.toString()))
+                .andExpect(jsonPath("$.departFlights.[0].seats.size()",
+                        Matchers.greaterThanOrEqualTo(numberOfPassengers)
+                ))
+                .andExpect(jsonPath("$.departFlights.[0].seats.size()").value(3))
+                .andExpect(jsonPath("$.departFlights.[0].seats[*].[?(@.isRegistered == false)].isRegistered",
+                        Matchers.contains(false, false, false)
+                ))
+                .andExpect(jsonPath("$.departFlights.[0].seats[*].[?(@.isSold == false)].isSold",
+                        Matchers.contains(false, false, false)
+                ))
+                .andExpect(jsonPath("$.departFlights.[0].seats[*].[?(@.isBooked == false)].isBooked",
+                        Matchers.contains(false, false, false)
+                ))
+                .andExpect(jsonPath("$.returnFlights.size()", Matchers.greaterThan(0)))
+                .andExpect(jsonPath("$.returnFlights.[0].airportFrom").value(airportTo.toString()))
+                .andExpect(jsonPath("$.returnFlights.[0].airportTo").value(airportFrom.toString()))
+                .andExpect(jsonPath("$.returnFlights.[0].seats.size()",
+                        Matchers.greaterThanOrEqualTo(numberOfPassengers)
+                ))
+                .andExpect(jsonPath("$.returnFlights.[0].seats.size()").value(3))
+                .andExpect(jsonPath("$.returnFlights.[0].seats[*].[?(@.isRegistered == false)].isRegistered",
+                        Matchers.contains(false, false, false)
+                ))
+                .andExpect(jsonPath("$.returnFlights.[0].seats[*].[?(@.isSold == false)].isSold",
+                        Matchers.contains(false, false, false)
+                ))
+                .andExpect(jsonPath("$.returnFlights.[0].seats[*].[?(@.isBooked == false)].isBooked",
+                        Matchers.contains(false, false, false)
+                ));
     }
 }

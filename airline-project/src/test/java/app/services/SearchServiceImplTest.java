@@ -76,8 +76,12 @@ public class SearchServiceImplTest {
         directDepartureFlight.setCode("VKOSVX");
         directDepartureFlight.setFrom(fromVnukovo);
         directDepartureFlight.setTo(toKoltcovo);
-        directDepartureFlight.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        directDepartureFlight.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        directDepartureFlight.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         directDepartureFlight.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight.setAircraft(aircraft1);
         directDepartureFlight.setSeats(new ArrayList<FlightSeat>());
@@ -112,12 +116,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listDirectDepartFlight.size(); i++) {
             assertEquals(listDirectDepartFlight.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listDirectDepartFlight.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listDirectDepartFlight.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listDirectDepartFlight.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listDirectDepartFlight.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listDirectDepartFlight.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listDirectDepartFlight.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listDirectDepartFlight.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listDirectDepartFlight.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
             assertEquals(0, result.getReturnFlights().size());
         }
@@ -157,8 +173,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft1);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -170,8 +190,12 @@ public class SearchServiceImplTest {
         directDepartureFlight2.setCode("VKOSVX");
         directDepartureFlight2.setFrom(fromVnukovo);
         directDepartureFlight2.setTo(toKoltcovo);
-        directDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 2, 20, 0));
-        directDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 3, 30, 0));
+        directDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 20, 0)
+        );
+        directDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 3, 30, 0)
+        );
         directDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight2.setAircraft(aircraft2);
         directDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -183,13 +207,19 @@ public class SearchServiceImplTest {
         directDepartureFlight3.setCode("VKOSVX");
         directDepartureFlight3.setFrom(fromVnukovo);
         directDepartureFlight3.setTo(toKoltcovo);
-        directDepartureFlight3.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 6, 55, 0));
-        directDepartureFlight3.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 8, 10, 0));
+        directDepartureFlight3.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 6, 55, 0)
+        );
+        directDepartureFlight3.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 8, 10, 0)
+        );
         directDepartureFlight3.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight3.setAircraft(aircraft3);
         directDepartureFlight3.setSeats(new ArrayList<FlightSeat>());
 
-        var listDirectDepartFlight = List.of(directDepartureFlight1, directDepartureFlight2, directDepartureFlight3);
+        var listDirectDepartFlight = List.of(
+                directDepartureFlight1, directDepartureFlight2, directDepartureFlight3
+        );
         var departureDate = Date.valueOf(search.getDepartureDate());
         doReturn(listDirectDepartFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
                 any(Airport.class), any(Airport.class), eq(departureDate)
@@ -219,12 +249,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listDirectDepartFlight.size(); i++) {
             assertEquals(listDirectDepartFlight.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listDirectDepartFlight.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listDirectDepartFlight.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listDirectDepartFlight.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listDirectDepartFlight.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listDirectDepartFlight.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listDirectDepartFlight.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listDirectDepartFlight.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listDirectDepartFlight.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
             assertEquals(0, result.getReturnFlights().size());
         }
@@ -264,8 +306,12 @@ public class SearchServiceImplTest {
         directDepartureFlight.setCode("VKOSVX");
         directDepartureFlight.setFrom(fromVnukovo);
         directDepartureFlight.setTo(toKoltcovo);
-        directDepartureFlight.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        directDepartureFlight.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        directDepartureFlight.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         directDepartureFlight.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight.setAircraft(aircraft1);
         directDepartureFlight.setSeats(new ArrayList<FlightSeat>());
@@ -277,8 +323,12 @@ public class SearchServiceImplTest {
         directReturnFlight.setCode("SVXVKO");
         directReturnFlight.setFrom(toKoltcovo);
         directReturnFlight.setTo(fromVnukovo);
-        directReturnFlight.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 5, 0, 0));
-        directReturnFlight.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 6, 0, 0));
+        directReturnFlight.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 0, 0)
+        );
+        directReturnFlight.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 6, 0, 0)
+        );
         directReturnFlight.setFlightStatus(FlightStatus.COMPLETED);
         directReturnFlight.setAircraft(aircraft2);
         directReturnFlight.setSeats(new ArrayList<FlightSeat>());
@@ -326,12 +376,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listDirectDepartFlight.size(); i++) {
             assertEquals(listDirectDepartFlight.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listDirectDepartFlight.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listDirectDepartFlight.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listDirectDepartFlight.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listDirectDepartFlight.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listDirectDepartFlight.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listDirectDepartFlight.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listDirectDepartFlight.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listDirectDepartFlight.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(1, result.getReturnFlights().size());
@@ -339,12 +401,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listDirectReturnFlight.size(); i++) {
             assertEquals(listDirectReturnFlight.get(i).getId(), result.getReturnFlights().get(i).getId());
             assertEquals(listDirectReturnFlight.get(i).getCode(), result.getReturnFlights().get(i).getCode());
-            assertEquals(listDirectReturnFlight.get(i).getDepartureDateTime(), result.getReturnFlights().get(i).getDepartureDateTime());
-            assertEquals(listDirectReturnFlight.get(i).getArrivalDateTime(), result.getReturnFlights().get(i).getArrivalDateTime());
-            assertEquals(listDirectReturnFlight.get(i).getFrom().getAirportCode(), result.getReturnFlights().get(i).getAirportFrom());
-            assertEquals(listDirectReturnFlight.get(i).getTo().getAirportCode(), result.getReturnFlights().get(i).getAirportTo());
-            assertEquals(listDirectReturnFlight.get(i).getFlightStatus(), result.getReturnFlights().get(i).getFlightStatus());
-            assertEquals(listDirectReturnFlight.get(i).getAircraft().getId(), result.getReturnFlights().get(i).getAircraftId());
+            assertEquals(listDirectReturnFlight.get(i).getDepartureDateTime(),
+                    result.getReturnFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getArrivalDateTime(),
+                    result.getReturnFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getFrom().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getTo().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportTo()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getFlightStatus(),
+                    result.getReturnFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getAircraft().getId(),
+                    result.getReturnFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getReturnFlights().get(i).getSeats());
         }
     }
@@ -383,8 +457,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft1);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -396,8 +474,12 @@ public class SearchServiceImplTest {
         directDepartureFlight2.setCode("VKOSVX");
         directDepartureFlight2.setFrom(fromVnukovo);
         directDepartureFlight2.setTo(toKoltcovo);
-        directDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 3, 0, 0));
-        directDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
+        directDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 3, 0, 0)
+        );
+        directDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
         directDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight2.setAircraft(aircraft2);
         directDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -409,8 +491,12 @@ public class SearchServiceImplTest {
         directReturnFlight1.setCode("SVXVKO");
         directReturnFlight1.setFrom(toKoltcovo);
         directReturnFlight1.setTo(fromVnukovo);
-        directReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 5, 0, 0));
-        directReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 6, 0, 0));
+        directReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 0, 0)
+        );
+        directReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 6, 0, 0)
+        );
         directReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directReturnFlight1.setAircraft(aircraft3);
         directReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -422,8 +508,12 @@ public class SearchServiceImplTest {
         directReturnFlight2.setCode("SVXVKO");
         directReturnFlight2.setFrom(toKoltcovo);
         directReturnFlight2.setTo(fromVnukovo);
-        directReturnFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 10, 0, 0));
-        directReturnFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 11, 0, 0));
+        directReturnFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 10, 0, 0)
+        );
+        directReturnFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 11, 0, 0)
+        );
         directReturnFlight2.setFlightStatus(FlightStatus.COMPLETED);
         directReturnFlight2.setAircraft(aircraft4);
         directReturnFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -471,12 +561,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listDirectDepartFlight.size(); i++) {
             assertEquals(listDirectDepartFlight.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listDirectDepartFlight.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listDirectDepartFlight.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listDirectDepartFlight.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listDirectDepartFlight.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listDirectDepartFlight.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listDirectDepartFlight.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listDirectDepartFlight.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listDirectDepartFlight.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listDirectDepartFlight.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(2, result.getReturnFlights().size());
@@ -484,12 +586,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listDirectReturnFlight.size(); i++) {
             assertEquals(listDirectReturnFlight.get(i).getId(), result.getReturnFlights().get(i).getId());
             assertEquals(listDirectReturnFlight.get(i).getCode(), result.getReturnFlights().get(i).getCode());
-            assertEquals(listDirectReturnFlight.get(i).getDepartureDateTime(), result.getReturnFlights().get(i).getDepartureDateTime());
-            assertEquals(listDirectReturnFlight.get(i).getArrivalDateTime(), result.getReturnFlights().get(i).getArrivalDateTime());
-            assertEquals(listDirectReturnFlight.get(i).getFrom().getAirportCode(), result.getReturnFlights().get(i).getAirportFrom());
-            assertEquals(listDirectReturnFlight.get(i).getTo().getAirportCode(), result.getReturnFlights().get(i).getAirportTo());
-            assertEquals(listDirectReturnFlight.get(i).getFlightStatus(), result.getReturnFlights().get(i).getFlightStatus());
-            assertEquals(listDirectReturnFlight.get(i).getAircraft().getId(), result.getReturnFlights().get(i).getAircraftId());
+            assertEquals(listDirectReturnFlight.get(i).getDepartureDateTime(),
+                    result.getReturnFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getArrivalDateTime(),
+                    result.getReturnFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getFrom().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getTo().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportTo()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getFlightStatus(),
+                    result.getReturnFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listDirectReturnFlight.get(i).getAircraft().getId(),
+                    result.getReturnFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getReturnFlights().get(i).getSeats());
         }
     }
@@ -536,8 +650,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -549,8 +667,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -586,12 +708,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listNonDirectDepartFlight.size(); i++) {
             assertEquals(listNonDirectDepartFlight.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listNonDirectDepartFlight.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listNonDirectDepartFlight.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listNonDirectDepartFlight.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listNonDirectDepartFlight.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listNonDirectDepartFlight.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listNonDirectDepartFlight.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listNonDirectDepartFlight.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listNonDirectDepartFlight.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(result.getReturnFlights().size(), 0);
@@ -647,8 +781,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -660,8 +798,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -673,8 +815,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight3.setCode("VKOGOJ");
         nonDirectDepartureFlight3.setFrom(fromVnukovo);
         nonDirectDepartureFlight3.setTo(throughNizhni);
-        nonDirectDepartureFlight3.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
-        nonDirectDepartureFlight3.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 6, 0, 0));
+        nonDirectDepartureFlight3.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
+        nonDirectDepartureFlight3.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 6, 0, 0)
+        );
         nonDirectDepartureFlight3.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight3.setAircraft(aircraft3);
         nonDirectDepartureFlight3.setSeats(new ArrayList<FlightSeat>());
@@ -686,8 +832,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight4.setCode("GOJSVX");
         nonDirectDepartureFlight4.setFrom(throughNizhni);
         nonDirectDepartureFlight4.setTo(toKoltcovo);
-        nonDirectDepartureFlight4.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 9, 0, 0));
-        nonDirectDepartureFlight4.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 10, 0, 0));
+        nonDirectDepartureFlight4.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 9, 0, 0)
+        );
+        nonDirectDepartureFlight4.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 10, 0, 0)
+        );
         nonDirectDepartureFlight4.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight4.setAircraft(aircraft4);
         nonDirectDepartureFlight4.setSeats(new ArrayList<FlightSeat>());
@@ -728,12 +878,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listNonDirectDepartFlight.size(); i++) {
             assertEquals(listNonDirectDepartFlight.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listNonDirectDepartFlight.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listNonDirectDepartFlight.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listNonDirectDepartFlight.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listNonDirectDepartFlight.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listNonDirectDepartFlight.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listNonDirectDepartFlight.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listNonDirectDepartFlight.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listNonDirectDepartFlight.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listNonDirectDepartFlight.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(result.getReturnFlights().size(), 0);
@@ -781,8 +943,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -794,8 +960,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -807,8 +977,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 9, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 10, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 9, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 10, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft3);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -849,12 +1023,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listOfAllDepartFlights.size(); i++) {
             assertEquals(listOfAllDepartFlights.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listOfAllDepartFlights.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(result.getReturnFlights().size(), 0);
@@ -910,8 +1096,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -923,8 +1113,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -936,8 +1130,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight3.setCode("VKOGOJ");
         nonDirectDepartureFlight3.setFrom(fromVnukovo);
         nonDirectDepartureFlight3.setTo(throughNizhni);
-        nonDirectDepartureFlight3.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 30, 0));
-        nonDirectDepartureFlight3.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 50, 0));
+        nonDirectDepartureFlight3.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 30, 0)
+        );
+        nonDirectDepartureFlight3.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 50, 0)
+        );
         nonDirectDepartureFlight3.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight3.setAircraft(aircraft3);
         nonDirectDepartureFlight3.setSeats(new ArrayList<FlightSeat>());
@@ -949,8 +1147,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight4.setCode("GOJSVX");
         nonDirectDepartureFlight4.setFrom(throughNizhni);
         nonDirectDepartureFlight4.setTo(toKoltcovo);
-        nonDirectDepartureFlight4.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 6, 0, 0));
-        nonDirectDepartureFlight4.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 7, 0, 0));
+        nonDirectDepartureFlight4.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 6, 0, 0)
+        );
+        nonDirectDepartureFlight4.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 7, 0, 0)
+        );
         nonDirectDepartureFlight4.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight4.setAircraft(aircraft4);
         nonDirectDepartureFlight4.setSeats(new ArrayList<FlightSeat>());
@@ -962,8 +1164,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 9, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 10, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 9, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 10, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft5);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -975,8 +1181,12 @@ public class SearchServiceImplTest {
         directDepartureFlight2.setCode("VKOSVX");
         directDepartureFlight2.setFrom(fromVnukovo);
         directDepartureFlight2.setTo(toKoltcovo);
-        directDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 14, 0, 0));
-        directDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 15, 0, 0));
+        directDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 14, 0, 0)
+        );
+        directDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 15, 0, 0)
+        );
         directDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight2.setAircraft(aircraft6);
         directDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1021,18 +1231,31 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listOfAllDepartFlights.size(); i++) {
             assertEquals(listOfAllDepartFlights.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listOfAllDepartFlights.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(result.getReturnFlights().size(), 0);
     }
 
-    @DisplayName("9 search(), Positive test search 1 nondirect and 1 direct depart flight and 1 nondirect return flights")
+    @DisplayName("9 search(), Positive test search 1 nondirect " +
+            "and 1 direct depart flight and 1 nondirect return flights")
     @Test
     public void shouldReturnSearchResultWithOneNonDirectAndOneDirectDepartFlightsAndOneNonDirectReturnFlights() {
 
@@ -1074,8 +1297,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1087,8 +1314,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1100,8 +1331,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 9, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 10, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 9, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 10, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft3);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1113,8 +1348,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight1.setCode("SVXKZN");
         nonDirectReturnFlight1.setFrom(toKoltcovo);
         nonDirectReturnFlight1.setTo(throughKazan);
-        nonDirectReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 4, 0, 0));
-        nonDirectReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 0, 0));
+        nonDirectReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 4, 0, 0)
+        );
+        nonDirectReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 0, 0)
+        );
         nonDirectReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight1.setAircraft(aircraft4);
         nonDirectReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1126,8 +1365,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight2.setCode("KZNVKO");
         nonDirectReturnFlight2.setFrom(throughKazan);
         nonDirectReturnFlight2.setTo(fromVnukovo);
-        nonDirectReturnFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 8, 0, 0));
-        nonDirectReturnFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 9, 0, 0));
+        nonDirectReturnFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 8, 0, 0)
+        );
+        nonDirectReturnFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 9, 0, 0)
+        );
         nonDirectReturnFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight2.setAircraft(aircraft5);
         nonDirectReturnFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1187,12 +1430,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listOfAllDepartFlights.size(); i++) {
             assertEquals(listOfAllDepartFlights.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listOfAllDepartFlights.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(2, result.getReturnFlights().size());
@@ -1200,19 +1455,32 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listOfAllReturnFlights.size(); i++) {
             assertEquals(listOfAllReturnFlights.get(i).getId(), result.getReturnFlights().get(i).getId());
             assertEquals(listOfAllReturnFlights.get(i).getCode(), result.getReturnFlights().get(i).getCode());
-            assertEquals(listOfAllReturnFlights.get(i).getDepartureDateTime(), result.getReturnFlights().get(i).getDepartureDateTime());
-            assertEquals(listOfAllReturnFlights.get(i).getArrivalDateTime(), result.getReturnFlights().get(i).getArrivalDateTime());
-            assertEquals(listOfAllReturnFlights.get(i).getFrom().getAirportCode(), result.getReturnFlights().get(i).getAirportFrom());
-            assertEquals(listOfAllReturnFlights.get(i).getTo().getAirportCode(), result.getReturnFlights().get(i).getAirportTo());
-            assertEquals(listOfAllReturnFlights.get(i).getFlightStatus(), result.getReturnFlights().get(i).getFlightStatus());
-            assertEquals(listOfAllReturnFlights.get(i).getAircraft().getId(), result.getReturnFlights().get(i).getAircraftId());
+            assertEquals(listOfAllReturnFlights.get(i).getDepartureDateTime(),
+                    result.getReturnFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getArrivalDateTime(),
+                    result.getReturnFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getFrom().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getTo().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportTo()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getFlightStatus(),
+                    result.getReturnFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getAircraft().getId(),
+                    result.getReturnFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getReturnFlights().get(i).getSeats());
         }
     }
 
-    @DisplayName("10 search(), Positive test search 1 nondirect and 1 direct depart flight and 1 nondirect and 1 direct return flights")
+    @DisplayName("10 search(), Positive test search 1 nondirect and 1 direct depart flight " +
+            "and 1 nondirect and 1 direct return flights")
     @Test
-    public void shouldReturnSearchResultWithOneNonDirectAndOneDirectDepartFlightsAndOneNonDirectAndOneDirectReturnFlights() {
+    public void shouldReturnSearchResultWithOneNonDirectAndDirectDepartFlightsAndOneNonDirectAndDirectReturnFlights() {
 
         Search search = new Search();
         search.setFrom(Airport.VKO);
@@ -1252,8 +1520,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1265,8 +1537,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1278,8 +1554,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 9, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 10, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 9, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 10, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft3);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1291,8 +1571,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight1.setCode("SVXKZN");
         nonDirectReturnFlight1.setFrom(toKoltcovo);
         nonDirectReturnFlight1.setTo(throughKazan);
-        nonDirectReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 4, 0, 0));
-        nonDirectReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 0, 0));
+        nonDirectReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 4, 0, 0)
+        );
+        nonDirectReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 0, 0)
+        );
         nonDirectReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight1.setAircraft(aircraft4);
         nonDirectReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1304,8 +1588,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight2.setCode("KZNVKO");
         nonDirectReturnFlight2.setFrom(throughKazan);
         nonDirectReturnFlight2.setTo(fromVnukovo);
-        nonDirectReturnFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 8, 0, 0));
-        nonDirectReturnFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 9, 0, 0));
+        nonDirectReturnFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 8, 0, 0)
+        );
+        nonDirectReturnFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 9, 0, 0)
+        );
         nonDirectReturnFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight2.setAircraft(aircraft5);
         nonDirectReturnFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1317,8 +1605,12 @@ public class SearchServiceImplTest {
         directReturnFlight1.setCode("SVXVKO");
         directReturnFlight1.setFrom(toKoltcovo);
         directReturnFlight1.setTo(fromVnukovo);
-        directReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 3, 50, 0));
-        directReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 10, 0));
+        directReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 3, 50, 0)
+        );
+        directReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 10, 0)
+        );
         directReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directReturnFlight1.setAircraft(aircraft6);
         directReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1378,12 +1670,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listOfAllDepartFlights.size(); i++) {
             assertEquals(listOfAllDepartFlights.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listOfAllDepartFlights.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(3, result.getReturnFlights().size());
@@ -1391,12 +1695,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listOfAllReturnFlights.size(); i++) {
             assertEquals(listOfAllReturnFlights.get(i).getId(), result.getReturnFlights().get(i).getId());
             assertEquals(listOfAllReturnFlights.get(i).getCode(), result.getReturnFlights().get(i).getCode());
-            assertEquals(listOfAllReturnFlights.get(i).getDepartureDateTime(), result.getReturnFlights().get(i).getDepartureDateTime());
-            assertEquals(listOfAllReturnFlights.get(i).getArrivalDateTime(), result.getReturnFlights().get(i).getArrivalDateTime());
-            assertEquals(listOfAllReturnFlights.get(i).getFrom().getAirportCode(), result.getReturnFlights().get(i).getAirportFrom());
-            assertEquals(listOfAllReturnFlights.get(i).getTo().getAirportCode(), result.getReturnFlights().get(i).getAirportTo());
-            assertEquals(listOfAllReturnFlights.get(i).getFlightStatus(), result.getReturnFlights().get(i).getFlightStatus());
-            assertEquals(listOfAllReturnFlights.get(i).getAircraft().getId(), result.getReturnFlights().get(i).getAircraftId());
+            assertEquals(listOfAllReturnFlights.get(i).getDepartureDateTime(),
+                    result.getReturnFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getArrivalDateTime(),
+                    result.getReturnFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getFrom().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getTo().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportTo()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getFlightStatus(),
+                    result.getReturnFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getAircraft().getId(),
+                    result.getReturnFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getReturnFlights().get(i).getSeats());
         }
     }
@@ -1587,8 +1903,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1600,8 +1920,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1613,8 +1937,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 9, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 10, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 9, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 10, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft3);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1626,8 +1954,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight1.setCode("SVXKZN");
         nonDirectReturnFlight1.setFrom(toKoltcovo);
         nonDirectReturnFlight1.setTo(throughKazan);
-        nonDirectReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 4, 0, 0));
-        nonDirectReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 0, 0));
+        nonDirectReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 4, 0, 0)
+        );
+        nonDirectReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 0, 0)
+        );
         nonDirectReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight1.setAircraft(aircraft4);
         nonDirectReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1639,8 +1971,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight2.setCode("KZNVKO");
         nonDirectReturnFlight2.setFrom(throughKazan);
         nonDirectReturnFlight2.setTo(fromVnukovo);
-        nonDirectReturnFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 8, 0, 0));
-        nonDirectReturnFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 9, 0, 0));
+        nonDirectReturnFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 8, 0, 0)
+        );
+        nonDirectReturnFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 9, 0, 0)
+        );
         nonDirectReturnFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight2.setAircraft(aircraft5);
         nonDirectReturnFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1652,8 +1988,12 @@ public class SearchServiceImplTest {
         directReturnFlight1.setCode("SVXVKO");
         directReturnFlight1.setFrom(toKoltcovo);
         directReturnFlight1.setTo(fromVnukovo);
-        directReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 3, 50, 0));
-        directReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 10, 0));
+        directReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 3, 50, 0)
+        );
+        directReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 10, 0)
+        );
         directReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directReturnFlight1.setAircraft(aircraft6);
         directReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1746,8 +2086,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1759,8 +2103,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1772,8 +2120,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 9, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 10, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 9, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 10, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft3);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1785,8 +2137,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight1.setCode("SVXKZN");
         nonDirectReturnFlight1.setFrom(toKoltcovo);
         nonDirectReturnFlight1.setTo(throughKazan);
-        nonDirectReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 4, 0, 0));
-        nonDirectReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 0, 0));
+        nonDirectReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 4, 0, 0)
+        );
+        nonDirectReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 0, 0)
+        );
         nonDirectReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight1.setAircraft(aircraft4);
         nonDirectReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1798,8 +2154,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight2.setCode("KZNVKO");
         nonDirectReturnFlight2.setFrom(throughKazan);
         nonDirectReturnFlight2.setTo(fromVnukovo);
-        nonDirectReturnFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 8, 0, 0));
-        nonDirectReturnFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 9, 0, 0));
+        nonDirectReturnFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 8, 0, 0)
+        );
+        nonDirectReturnFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 9, 0, 0)
+        );
         nonDirectReturnFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight2.setAircraft(aircraft5);
         nonDirectReturnFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1811,8 +2171,12 @@ public class SearchServiceImplTest {
         directReturnFlight1.setCode("SVXVKO");
         directReturnFlight1.setFrom(toKoltcovo);
         directReturnFlight1.setTo(fromVnukovo);
-        directReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 3, 50, 0));
-        directReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 10, 0));
+        directReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 3, 50, 0)
+        );
+        directReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 10, 0)
+        );
         directReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directReturnFlight1.setAircraft(aircraft6);
         directReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1872,12 +2236,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listOfAllDepartFlights.size(); i++) {
             assertEquals(listOfAllDepartFlights.get(i).getId(), result.getDepartFlights().get(i).getId());
             assertEquals(listOfAllDepartFlights.get(i).getCode(), result.getDepartFlights().get(i).getCode());
-            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(), result.getDepartFlights().get(i).getDepartureDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(), result.getDepartFlights().get(i).getArrivalDateTime());
-            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(), result.getDepartFlights().get(i).getAirportFrom());
-            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(), result.getDepartFlights().get(i).getAirportTo());
-            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(), result.getDepartFlights().get(i).getFlightStatus());
-            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(), result.getDepartFlights().get(i).getAircraftId());
+            assertEquals(listOfAllDepartFlights.get(i).getDepartureDateTime(),
+                    result.getDepartFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getArrivalDateTime(),
+                    result.getDepartFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFrom().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getTo().getAirportCode(),
+                    result.getDepartFlights().get(i).getAirportTo()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getFlightStatus(),
+                    result.getDepartFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listOfAllDepartFlights.get(i).getAircraft().getId(),
+                    result.getDepartFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getDepartFlights().get(i).getSeats());
         }
         assertEquals(0, result.getReturnFlights().size());
@@ -1927,8 +2303,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight1.setCode("VKOKZN");
         nonDirectDepartureFlight1.setFrom(fromVnukovo);
         nonDirectDepartureFlight1.setTo(throughKazan);
-        nonDirectDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 1, 0, 0));
-        nonDirectDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 2, 0, 0));
+        nonDirectDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        nonDirectDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
         nonDirectDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight1.setAircraft(aircraft1);
         nonDirectDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1940,8 +2320,12 @@ public class SearchServiceImplTest {
         nonDirectDepartureFlight2.setCode("KZNSVX");
         nonDirectDepartureFlight2.setFrom(throughKazan);
         nonDirectDepartureFlight2.setTo(toKoltcovo);
-        nonDirectDepartureFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 4, 0, 0));
-        nonDirectDepartureFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 5, 0, 0));
+        nonDirectDepartureFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 4, 0, 0)
+        );
+        nonDirectDepartureFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 5, 0, 0)
+        );
         nonDirectDepartureFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1953,8 +2337,12 @@ public class SearchServiceImplTest {
         directDepartureFlight1.setCode("VKOSVX");
         directDepartureFlight1.setFrom(fromVnukovo);
         directDepartureFlight1.setTo(toKoltcovo);
-        directDepartureFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 1, 9, 0, 0));
-        directDepartureFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 1, 10, 0, 0));
+        directDepartureFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 9, 0, 0)
+        );
+        directDepartureFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 10, 0, 0)
+        );
         directDepartureFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directDepartureFlight1.setAircraft(aircraft3);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1966,8 +2354,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight1.setCode("SVXKZN");
         nonDirectReturnFlight1.setFrom(toKoltcovo);
         nonDirectReturnFlight1.setTo(throughKazan);
-        nonDirectReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 4, 0, 0));
-        nonDirectReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 0, 0));
+        nonDirectReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 4, 0, 0)
+        );
+        nonDirectReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 0, 0)
+        );
         nonDirectReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight1.setAircraft(aircraft4);
         nonDirectReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -1979,8 +2371,12 @@ public class SearchServiceImplTest {
         nonDirectReturnFlight2.setCode("KZNVKO");
         nonDirectReturnFlight2.setFrom(throughKazan);
         nonDirectReturnFlight2.setTo(fromVnukovo);
-        nonDirectReturnFlight2.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 8, 0, 0));
-        nonDirectReturnFlight2.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 9, 0, 0));
+        nonDirectReturnFlight2.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 8, 0, 0)
+        );
+        nonDirectReturnFlight2.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 9, 0, 0)
+        );
         nonDirectReturnFlight2.setFlightStatus(FlightStatus.COMPLETED);
         nonDirectReturnFlight2.setAircraft(aircraft5);
         nonDirectReturnFlight2.setSeats(new ArrayList<FlightSeat>());
@@ -1992,8 +2388,12 @@ public class SearchServiceImplTest {
         directReturnFlight1.setCode("SVXVKO");
         directReturnFlight1.setFrom(toKoltcovo);
         directReturnFlight1.setTo(fromVnukovo);
-        directReturnFlight1.setDepartureDateTime(LocalDateTime.of(2023, 4, 2, 3, 50, 0));
-        directReturnFlight1.setArrivalDateTime(LocalDateTime.of(2023, 4, 2, 5, 10, 0));
+        directReturnFlight1.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 2, 3, 50, 0)
+        );
+        directReturnFlight1.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 2, 5, 10, 0)
+        );
         directReturnFlight1.setFlightStatus(FlightStatus.COMPLETED);
         directReturnFlight1.setAircraft(aircraft6);
         directReturnFlight1.setSeats(new ArrayList<FlightSeat>());
@@ -2054,12 +2454,24 @@ public class SearchServiceImplTest {
         for (int i = 0; i < listOfAllReturnFlights.size(); i++) {
             assertEquals(listOfAllReturnFlights.get(i).getId(), result.getReturnFlights().get(i).getId());
             assertEquals(listOfAllReturnFlights.get(i).getCode(), result.getReturnFlights().get(i).getCode());
-            assertEquals(listOfAllReturnFlights.get(i).getDepartureDateTime(), result.getReturnFlights().get(i).getDepartureDateTime());
-            assertEquals(listOfAllReturnFlights.get(i).getArrivalDateTime(), result.getReturnFlights().get(i).getArrivalDateTime());
-            assertEquals(listOfAllReturnFlights.get(i).getFrom().getAirportCode(), result.getReturnFlights().get(i).getAirportFrom());
-            assertEquals(listOfAllReturnFlights.get(i).getTo().getAirportCode(), result.getReturnFlights().get(i).getAirportTo());
-            assertEquals(listOfAllReturnFlights.get(i).getFlightStatus(), result.getReturnFlights().get(i).getFlightStatus());
-            assertEquals(listOfAllReturnFlights.get(i).getAircraft().getId(), result.getReturnFlights().get(i).getAircraftId());
+            assertEquals(listOfAllReturnFlights.get(i).getDepartureDateTime(),
+                    result.getReturnFlights().get(i).getDepartureDateTime()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getArrivalDateTime(),
+                    result.getReturnFlights().get(i).getArrivalDateTime()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getFrom().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportFrom()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getTo().getAirportCode(),
+                    result.getReturnFlights().get(i).getAirportTo()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getFlightStatus(),
+                    result.getReturnFlights().get(i).getFlightStatus()
+            );
+            assertEquals(listOfAllReturnFlights.get(i).getAircraft().getId(),
+                    result.getReturnFlights().get(i).getAircraftId()
+            );
             assertNotNull(result.getReturnFlights().get(i).getSeats());
         }
     }
