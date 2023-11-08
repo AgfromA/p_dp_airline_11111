@@ -2,14 +2,19 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.AircraftRestApi;
 import app.dto.AircraftDTO;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import app.mappers.AircraftMapper;
 import app.services.interfaces.AircraftService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.persistence.RollbackException;
 
 @Slf4j
 @RestController
@@ -17,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AircraftRestController implements AircraftRestApi {
 
     private final AircraftService aircraftService;
-    private final AircraftMapper aircraftMapper;
+    private final AircraftMapper aircraftMapper = Mappers.getMapper(AircraftMapper.class);
 
     @Override
     public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
@@ -42,8 +47,7 @@ public class AircraftRestController implements AircraftRestApi {
     @Override
     public ResponseEntity<AircraftDTO> createAircraft(AircraftDTO aircraftDTO) {
         log.info("create: new Aircraft saved.");
-        return new ResponseEntity<>(
-                aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)),
+        return new ResponseEntity<>(aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)),
                 HttpStatus.CREATED);
     }
 
@@ -55,18 +59,23 @@ public class AircraftRestController implements AircraftRestApi {
         }
         aircraftDTO.setId(id);
         log.info("update: the Aircraft with id={} has been edited.", id);
-        return ResponseEntity.ok(
-                aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)));
+        return ResponseEntity.ok(aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)));
     }
 
+    /*
+    * Не удаляет aircraft, если у него есть seat
+     */
     @Override
     public ResponseEntity<HttpStatus> deleteAircraftById(Long id) {
         try {
             aircraftService.deleteAircraftById(id);
             log.info("deleteAircraftById: the Aircraft with id={} has been deleted.", id);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            log.error("deleteAircraftById: error of deleting - Aircraft with id={} not found.", id);
+        } catch (TransactionSystemException e) {
+            log.error("deleteAircraftById: error of deleting - Aircraft with id={} has seats referring to it", id, e.getMessage());
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        } catch (EmptyResultDataAccessException e) {
+            log.error("deleteAircraftById: error of deleting - Aircraft with id={} not found. {}", id, e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

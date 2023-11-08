@@ -1,7 +1,10 @@
 package app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -13,7 +16,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode
 @NoArgsConstructor
 public class AircraftDTO {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotBlank(message = "field \"aircraftNumber\" should not be empty!")
@@ -29,4 +32,5 @@ public class AircraftDTO {
 
     @NotNull(message = "field \"flightRange\" should not be empty!")
     private int flightRange;
+
 }
