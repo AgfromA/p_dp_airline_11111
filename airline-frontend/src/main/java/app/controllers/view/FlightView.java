@@ -117,7 +117,15 @@ public class FlightView extends VerticalLayout {
         createAircraftIdField(binder, aircraftIdValidationMessage, aircraftIdColumn);
         createFlightStatusField(binder, flightStatusValidationMessage, flightStatusColumn);
 
-        updateButton = new Button("Update", e -> editor.save());
+        updateButton = new Button("Update", e ->
+        {
+            editor.save();
+            grid.setItems(dataSource);
+            grid.getListDataView().refreshAll();
+
+        }
+
+        );
         cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
         previousButton = new Button(VaadinIcon.ARROW_LEFT.create(), e -> previousPage());
@@ -191,29 +199,40 @@ public class FlightView extends VerticalLayout {
     }
 
     private void searchByDestinationsAndDates() {
-        String cityFrom = getNullIfEmpty(cityFromSearchByDestinationsAndDatesField.getValue());
-        String cityTo = getNullIfEmpty(cityToSearchByDestinationsAndDatesField.getValue());
-        String dateStartString = dateTimeConverterToString(dateStartSearchByDestinationsAndDatesField.getValue());
-        String dateFinishString = dateTimeConverterToString(dateFinishSearchByDestinationsAndDatesField.getValue());
-        dataSource.clear();
-        grid.getDataProvider().refreshAll();
-        PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-        var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                cityFrom,
-                cityTo,
-                dateStartString,
-                dateFinishString,
-                pageable
-        );
-        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
-            Notification.show("Flights with these parameters not found.", 3000, Notification.Position.TOP_CENTER);
-            maxPages = 0;
-            List<FlightDTO> emptyList = Collections.emptyList();
-            grid.setItems(emptyList);
+        if (dateStartSearchByDestinationsAndDatesField.getValue() == null
+                || dateFinishSearchByDestinationsAndDatesField.getValue() == null
+                || dateStartSearchByDestinationsAndDatesField.getValue()
+                .isBefore(dateFinishSearchByDestinationsAndDatesField.getValue())
+        ) {
+            String cityFrom = getNullIfEmpty(cityFromSearchByDestinationsAndDatesField.getValue());
+            String cityTo = getNullIfEmpty(cityToSearchByDestinationsAndDatesField.getValue());
+            String dateStartString = dateTimeConverterToString(dateStartSearchByDestinationsAndDatesField.getValue());
+            String dateFinishString = dateTimeConverterToString(dateFinishSearchByDestinationsAndDatesField.getValue());
+            dataSource.clear();
+            grid.getDataProvider().refreshAll();
+            PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
+            var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+                    cityFrom,
+                    cityTo,
+                    dateStartString,
+                    dateFinishString,
+                    pageable
+            );
+            if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+                Notification.show("Flights with these parameters not found.", 3000, Notification.Position.TOP_CENTER);
+                maxPages = 0;
+                List<FlightDTO> emptyList = Collections.emptyList();
+                grid.setItems(emptyList);
+            } else {
+                maxPages = response.getBody().getTotalPages() - 1;
+                dataSource = response.getBody().stream().collect(Collectors.toList());
+                grid.setItems(dataSource);
+            }
         } else {
-            maxPages = response.getBody().getTotalPages() - 1;
-            dataSource = response.getBody().stream().collect(Collectors.toList());
-            grid.setItems(dataSource);
+            if (dateStartSearchByDestinationsAndDatesField.getValue()
+                    .isAfter(dateFinishSearchByDestinationsAndDatesField.getValue())) {
+                Notification.show("Date start must be early then date finish", 3000, Notification.Position.TOP_CENTER);
+            }
         }
     }
 
@@ -368,6 +387,8 @@ public class FlightView extends VerticalLayout {
                 null, null, null, null, pageable);
         maxPages = response.getBody().getTotalPages() - 1;
         dataSource = response.getBody().stream().collect(Collectors.toList());
+
+
         grid.getDataProvider().refreshAll();
         grid.setItems(dataSource);
     }
@@ -451,8 +472,12 @@ public class FlightView extends VerticalLayout {
         return grid.addComponentColumn(flight -> {
             Button updateButton = new Button("Update");
             updateButton.addClickListener(e -> {
+
+
                 if (editor.isOpen())
                     editor.cancel();
+
+
                 grid.getEditor().editItem(flight);
             });
             return updateButton;
@@ -467,7 +492,13 @@ public class FlightView extends VerticalLayout {
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
                     ListDataProvider<FlightDTO> dataProvider = (ListDataProvider<FlightDTO>) grid.getDataProvider();
-                    flightClient.deleteFlightById(flight.getId());
+                    try {
+                        flightClient.deleteFlightById(flight.getId());
+                    } catch (Exception exception) {
+                        Notification.show("Error of delete flight",
+                                3000, Notification.Position.TOP_CENTER);
+                        return;
+                    }
                     dataProvider.getItems().remove(flight);
                 }
                 grid.getDataProvider().refreshAll();
@@ -584,11 +615,52 @@ public class FlightView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
+
+
+            if (e.getItem().getCode().length() != 6) {
+                Notification.show("Flight code must be 6 symbols long",
+                        3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+            if (!e.getItem().getCode().equals(e.getItem().getAirportFrom().getAirportInternalCode()
+                    .concat(e.getItem().getAirportTo().getAirportInternalCode())
+            )) {
+                Notification.show("Flight code must contain \"Airport from\" code and \"Airport to\" code",
+                        3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+            if (e.getItem().getFlightStatus() == null) {
+                Notification.show("Flight status must be filled", 3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+            if (e.getItem().getDepartureDateTime() == null || e.getItem().getArrivalDateTime() == null) {
+                Notification.show("Fields \"Departure date and time\" and \"Arrival date and time\" must be filled",
+                        3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+            if (e.getItem().getDepartureDateTime()
+                    .isAfter(e.getItem().getArrivalDateTime())) {
+                Notification.show("\"Departure date and time\" must be early then \"Arrival date and time\"", 3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+
+
+            try {
+                var a = aircraftClient.getAircraftDTOById(e.getItem().getAircraftId());
+            } catch (FeignException.NotFound ex) {
+                Notification.show("Aircraft with id = " + e.getItem().getAircraftId() + " not exists, ",
+                        3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+
+
             try {
                 flightClient.updateFlightById(e.getItem().getId(), e.getItem());
             } catch (Exception exception) {
                 Notification.show("Server error", 3000, Notification.Position.TOP_CENTER);
             }
+
+
             grid.getDataProvider().refreshAll();
         });
     }
@@ -681,6 +753,33 @@ public class FlightView extends VerticalLayout {
 
         formLayout.add(verticalLayout);
         createButton.addClickListener(event -> {
+
+            if (code.getValue().length() != 6) {
+                Notification.show("Flight code must be 6 symbols long",
+                        3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+            if (!code.getValue().equals(airportFrom.getValue().getAirportInternalCode()
+                    .concat(airportTo.getValue().getAirportInternalCode())
+            )) {
+                Notification.show("Flight code must contain \"Airport from\" code and \"Airport to\" code",
+                        3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+            if (flightStatus.getValue() == null) {
+                Notification.show("Flight status must be filled", 3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+            if (departureDateTime.getValue() == null || arrivalDateTime.getValue() == null) {
+                Notification.show("Fields \"Departure date and time\" and \"Arrival date and time\" must be filled",
+                        3000, Notification.Position.TOP_CENTER);
+                return;
+            }
+            if (departureDateTime.getValue()
+                    .isAfter(arrivalDateTime.getValue())) {
+                Notification.show("\"Departure date and time\" must be early then \"Arrival date and time\"", 3000, Notification.Position.TOP_CENTER);
+                return;
+            }
             try {
                 var a = aircraftClient.getAircraftDTOById(aircraftId.getValue().longValue());
             } catch (FeignException.NotFound ex) {
