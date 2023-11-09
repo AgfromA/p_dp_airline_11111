@@ -1,5 +1,6 @@
 package app.controllers.view;
 
+import app.controllers.view.startpage.StartPageView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;

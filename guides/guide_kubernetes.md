@@ -67,6 +67,7 @@ Minikube - это Kubernetes с одной нодой. Из-за этой осо
 2. Находясь в директории deployments/k8s, выполните команду <code>kubectl apply -f db-statefulset.yaml</code>, чтобы развернуть БД
 3. Выполните команду <code>kubectl apply -f db-service.yaml</code>, чтобы создать Service для БД 
 4. Выполните команду <code>minikube image load airline-project</code>, чтобы загрузить образ нашего основого приложения в кеш Minikube
+5. minikube image load airline-payments:latest
 5. Разверните оставшиеся объекты (ingress.yaml можно пока не трогать)
 6. Выполните команды <code>kubectl get service</code>, <code>kubectl get deployment</code>, <code>kubectl get statefulset</code>, <code>kubectl get pod</code>, чтобы увидеть созданные вами объекты
 7. Выполните команду <code>minikube dashboard</code>. У вас откроется браузер с графическим интерфейсом Kubernetes
@@ -99,6 +100,7 @@ Minikube - это Kubernetes с одной нодой. Из-за этой осо
 1. Удалим контейнер <code>docker rm airline-project</code>
 2. Удалим старый образ <code>docker image rm airline-project</code>
 3. Сделаем новый образ, находясь в корне нашего проекта <code>docker build -f Dockerfile_Project -t airline-project .</code>
+4. docker build -f Dockerfile_Payments -t airline-payments .
 4. Запустим minikube <code>minikube start</code>
 5. Остановим ранее запущенные Pod'ы проекта <code>kubectl --namespace default scale deployment airline-project-deployment --replicas 0</code>
 6. Удалим старый закешированный minikube'ом образ приложения <code>minikube image rm airline-project</code>
