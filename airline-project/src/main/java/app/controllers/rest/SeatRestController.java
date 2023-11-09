@@ -64,8 +64,11 @@ public class SeatRestController implements SeatRestApi {
 
     @Override
     public ResponseEntity<SeatDTO> createSeatDTO(SeatDTO seatDTO) {
+        if(aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
+            log.error("Aircraft with id = {} not found", seatDTO.getAircraftId());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         log.info("create: Seat saved with id= {}", seatDTO.getId());
-
         return ResponseEntity.ok(SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.saveSeat(seatDTO)));
     }
 
@@ -91,6 +94,10 @@ public class SeatRestController implements SeatRestApi {
             log.error("Seat not found id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        if(aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
+            log.error("Aircraft with id = {} not found", seatDTO.getAircraftId());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         seatService.editSeatById(id, seatDTO);
         log.info("update: Seat with id = {} has been edited.", id);
 
@@ -101,13 +108,13 @@ public class SeatRestController implements SeatRestApi {
     public ResponseEntity<String> deleteSeatById(Long id) {
         try {
             seatService.deleteSeatById(id);
-            log.info("deleteAircraftById: Seat with id={} has been deleted.", id);
+            log.info("deleteSeatById: Seat with id={} has been deleted.", id);
             return new ResponseEntity<>("Deleted", HttpStatus.OK);
         } catch (ViolationOfForeignKeyConstraintException e) {
-            log.error("deleteAircraftById: error of deleting - Seat with id={} is locked by FlightSeat.", id);
+            log.error("deleteSeatById: error of deleting - Seat with id={} is locked by FlightSeat.", id);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.METHOD_NOT_ALLOWED);
         } catch (EmptyResultDataAccessException e) {
-            log.error("deleteAircraftById: error of deleting - Seat with id={} not found.", id);
+            log.error("deleteSeatById: error of deleting - Seat with id={} not found.", id);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }

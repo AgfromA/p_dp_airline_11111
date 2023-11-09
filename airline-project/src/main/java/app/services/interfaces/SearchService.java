@@ -1,13 +1,11 @@
 package app.services.interfaces;
 
-import app.entities.search.Search;
-import app.entities.search.SearchResult;
-import app.repositories.SearchResultProjection;
+import app.dto.search.SearchResult;
+import app.enums.Airport;
+
+import java.time.LocalDate;
 
 public interface SearchService {
 
-    SearchResult saveSearch(Search search);
-    Search getSearchById(long id);
-    void saveSearchResult(SearchResult searchResult);
-    SearchResultProjection getSearchResultProjectionByID(Long id);
+    SearchResult search(Airport from, Airport to, LocalDate departureDate, LocalDate returnDate, Integer numberOfPassengers);
 }

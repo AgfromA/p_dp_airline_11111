@@ -1,12 +1,15 @@
-package app.controllers.api;
+package app.controllers.api.rest;
 
 import app.dto.search.SearchResult;
+
 import app.enums.Airport;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
@@ -26,7 +29,7 @@ public interface SearchControllerApi {
             @ApiResponse(code = 400, message = "search return error. Check validField "),
             @ApiResponse(code = 404, message = "Destinations not found")
     })
-    ResponseEntity<SearchResult> search(
+    ResponseEntity<SearchResult> get(
 
             @ApiParam(name = "airportFrom", value = "airportFrom")
             @RequestParam(value = "airportFrom") Airport airportFrom,
@@ -45,6 +48,3 @@ public interface SearchControllerApi {
             @ApiParam(name = "numberOfPassengers", value = "numberOfPassengers")
             @RequestParam(value = "numberOfPassengers") Integer numberOfPassengers);
 }
-
-
-
