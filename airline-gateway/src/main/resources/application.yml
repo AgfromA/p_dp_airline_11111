@@ -7,9 +7,14 @@ server:
 
 airline-project-base-url: http://localhost:8080
 airline-payments-base-url: http://localhost:8081
+airline-front-base-url: http://localhost:8082
 logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
   level:
     org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: Debug
+
 spring:
   application.name: gateway
   cloud:
@@ -98,3 +103,10 @@ spring:
           uri: ${airline-payments-base-url}
           predicates:
             - Path=/api/payments/**
+
+###################   airline-front route
+
+        - id: airline-front
+          uri: ${airline-front-base-url}
+          predicates:
+            - Path=/**

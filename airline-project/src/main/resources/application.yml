@@ -13,11 +13,6 @@ springdoc:
       enabled: true
 
 spring:
-  sleuth:
-    propagation:
-      keys:
-        - X-B3-TraceId
-        - X-B3-SpanId
   security:
     oauth2:
       resourceserver:
@@ -93,7 +88,7 @@ notification:
 
 logging:
   pattern:
-    level: "%5p [${spring.application.name:-},%X{traceId:-},%X{spanId:-}]"
+    level: "%5p [${spring.application.name:-},%X{traceId},%X{spanId}]"
   level:
     org.springframework.web.servlet.DispatcherServlet: DEBUG
 #  config: classpath:log4j2-dev.yaml

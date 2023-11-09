@@ -6,17 +6,9 @@ server:
 
 logging:
   pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+    level: "%5p [${spring.application.name:},%X{traceId},%X{spanId}]"
   level:
     org.springframework.web.servlet.DispatcherServlet: DEBUG
-
-spring:
-  sleuth:
-    propagation:
-      keys:
-        - X-B3-TraceId
-        - X-B3-SpanId
-  application.name: frontend
 
 app:
   feign:
@@ -27,3 +19,10 @@ app:
 feign:
   okhttp:
     enabled: true
+
+spring:
+  application.name: frontend
+  devtools:
+    restart:
+      enabled: true
+
