@@ -1,7 +1,9 @@
 package app.controllers.view;
 
 import app.clients.AircraftClient;
+import app.clients.DestinationClient;
 import app.clients.FlightClient;
+import app.dto.DestinationDTO;
 import app.dto.FlightDTO;
 import app.dto.FlightSeatDTO;
 import app.enums.Airport;
@@ -47,6 +49,7 @@ import java.util.stream.Collectors;
 public class FlightView extends VerticalLayout {
 
     private final FlightClient flightClient;
+    private final DestinationClient destinationClient;
     private final AircraftClient aircraftClient;
     private List<FlightDTO> dataSource;
     private final Grid<FlightDTO> grid = new Grid<>(FlightDTO.class, false);
@@ -69,9 +72,10 @@ public class FlightView extends VerticalLayout {
     private boolean isSearchById;
     private boolean isSearchByDestinationsAndDates;
 
-    public FlightView(FlightClient flightClient, AircraftClient aircraftClient) {
+    public FlightView(FlightClient flightClient, AircraftClient aircraftClient, DestinationClient destinationClient) {
         this.flightClient = flightClient;
         this.aircraftClient = aircraftClient;
+        this.destinationClient = destinationClient;
         currentPage = 0;
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         isSearchById = false;
@@ -717,15 +721,19 @@ public class FlightView extends VerticalLayout {
         TextField code = new TextField("Flight code");
         code.setWidth("200px");
 
+        List<Airport> airports = destinationClient.getAllDestinationDTO().getBody()
+                .stream().map(DestinationDTO::getAirportCode).collect(Collectors.toList());
+
         ComboBox<Airport> airportFrom = new ComboBox<>("Airport from");
         airportFrom.setWidth("200px");
-        airportFrom.setItems(Airport.values());
+        airportFrom.setItems(airports);
         airportFrom.setRenderer(new TextRenderer<Airport>(e -> e.getAirportName() + " (" + e.getCity() + ")"));
 
         ComboBox<Airport> airportTo = new ComboBox<>("Airport to");
         airportTo.setWidth("200px");
-        airportTo.setItems(Airport.values());
+        airportTo.setItems(airports);
         airportTo.setRenderer(new TextRenderer<Airport>(e -> e.getAirportName() + " (" + e.getCity() + ")"));
+
 
         IntegerField aircraftId = new IntegerField("Aircraft id");
         aircraftId.setWidth("200px");
