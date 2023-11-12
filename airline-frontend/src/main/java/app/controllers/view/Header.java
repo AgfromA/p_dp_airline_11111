@@ -62,11 +62,7 @@ public class Header extends HorizontalLayout {
         button5.getElement().getStyle().set("color", "black");
 
         buttonsLeft.add(logoS7);
-        buttonsLeft.add(button1);
-        buttonsLeft.add(button2);
-        buttonsLeft.add(button3);
-        buttonsLeft.add(button4);
-        buttonsLeft.add(button5);
+        buttonsLeft.add(button1, button2, button3, button4, button5);
 
         buttonsLeft.getElement().getStyle().set("position", "sticky");
         buttonsLeft.getElement().getStyle().set("top", "0");
@@ -85,10 +81,7 @@ public class Header extends HorizontalLayout {
         Button languageButton = getLanguageButton();
         Button loginButton = getLoginButton();
 
-        buttonsRight.add(buttonLoup);
-        buttonsRight.add(currencyButton);
-        buttonsRight.add(languageButton);
-        buttonsRight.add(loginButton);
+        buttonsRight.add(buttonLoup, currencyButton, languageButton, loginButton);
 
         buttonsRight.setAlignItems(Alignment.END);
         buttonsRight.getElement().getStyle().set("margin-left", "auto");
@@ -289,8 +282,6 @@ public class Header extends HorizontalLayout {
             closeLanguageButton.click();
         });
 
-
-
         return languageButton;
     }
 
@@ -307,8 +298,6 @@ public class Header extends HorizontalLayout {
 
         return loginButton;
     }
-
-
 }
 
 

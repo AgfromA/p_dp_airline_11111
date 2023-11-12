@@ -6,6 +6,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -474,9 +475,10 @@ public class CommonForm extends VerticalLayout {
         image6.getElement().getStyle().set("border-radius", "50%");
         HorizontalLayout stock6 = new HorizontalLayout(image6, verticalLayout6);
 
+        H1 header = new H1("Специальные предложения");
         HorizontalLayout row1 = new HorizontalLayout(stock1, stock2, stock3);
         HorizontalLayout row2 = new HorizontalLayout(stock4, stock5, stock6);
-        VerticalLayout stocks = new VerticalLayout(row1, row2);
+        VerticalLayout stocks = new VerticalLayout(header, row1, row2);
 
         return stocks;
     }
