@@ -41,15 +41,13 @@ public class CommonForm extends VerticalLayout {
 
     private TabSheet getFormWithTabs() {
         TabSheet externalTabs = new TabSheet(); //ВНЕШНИЙ
-        externalTabs.addThemeVariants(TabSheetVariant.LUMO_BORDERED);
-
-//        externalTabs.getElement().getStyle().set("overflow", "hidden"); //убрала скролл, который сам появился и был не нужен
 
         TabSheet innerSearchFormTabSheet = new TabSheet(); //ВНУТРЕННИЙ ДЛЯ ВКЛАДКИ "ПОКУПКА"
         innerSearchFormTabSheet.setSizeFull();
         innerSearchFormTabSheet.getElement().getStyle().set("justify-content", "center");
         innerSearchFormTabSheet.getElement().getStyle().set("display", "flex");
         innerSearchFormTabSheet.getElement().getStyle().set("align-items", "center");
+
         innerSearchFormTabSheet.addThemeVariants(TabSheetVariant.LUMO_BORDERED);
 
 
@@ -147,7 +145,6 @@ public class CommonForm extends VerticalLayout {
         externalTabs.getElement().getStyle().set("justify-content", "center");
         externalTabs.getElement().getStyle().set("display", "flex");
         externalTabs.getElement().getStyle().set("align-items", "center");
-        externalTabs.getStyle().set("border", "1px solid LightGray");
 
         return externalTabs;
     }
