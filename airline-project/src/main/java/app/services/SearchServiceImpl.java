@@ -56,7 +56,7 @@ public class SearchServiceImpl implements SearchService {
             searchResult.setReturnFlights(new ArrayList<>());
         } else {
             addDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
-            addNonDirectDepartFlightsToSearchReturnFlight(search, searchReturnFlight);
+            addNonDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
 
 
             var searchReturnFlightDTO = searchReturnFlight.stream()
@@ -108,7 +108,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Loggable
-    private void addNonDirectDepartFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
+    private void addNonDirectReturnFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
         var nonDirectReturnFlights = getNonDirectReturnFlights(search);
         //проверка непрямых обратных рейсов на наличие мест: если места есть, то соответствующая пара добавляется в список рейсов
         for (Flight f : nonDirectReturnFlights) {
@@ -143,9 +143,12 @@ public class SearchServiceImpl implements SearchService {
 
     @Loggable
     private List<Flight> getNonDirectDepartFlights(Search search) {
+        var from = destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue();
+              var to =  destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue();
+
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
-                destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
-                destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue(),
+                from,
+                to,
                 Date.valueOf(search.getDepartureDate())
         );
     }
@@ -153,8 +156,8 @@ public class SearchServiceImpl implements SearchService {
     @Loggable
     private List<Flight> getNonDirectReturnFlights(Search search) {
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
-                destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
                 destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue(),
+                destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
     }

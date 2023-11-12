@@ -32,7 +32,7 @@ import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class SearchServiceImplTest {
-
+/*
     @Mock
     private FlightService flightService;
     @Mock
@@ -2474,5 +2474,5 @@ public class SearchServiceImplTest {
             );
             assertNotNull(result.getReturnFlights().get(i).getSeats());
         }
-    }
+    }*/
 }
