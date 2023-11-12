@@ -1,19 +1,18 @@
 package app.controllers.view;
 
-import app.controllers.view.startpage.Header;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
 
 @Route(value = "/", layout = MainLayout.class)
-public class StartPageView extends VerticalLayout {
+public class StartPageView extends HorizontalLayout{
 
-    private final Header header;
-    private final SearchForm searchView;
+
+
+    private CommonForm commonForm = new CommonForm();
 
     public StartPageView() {
-        header = new Header();
-        searchView = new SearchForm();
-
+        add(commonForm);
+        setWidthFull();
     }
 }
 

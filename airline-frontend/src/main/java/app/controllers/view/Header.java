@@ -1,37 +1,35 @@
-package app.controllers.view.startpage;
-
+package app.controllers.view;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.server.VaadinSession;
+import lombok.Getter;
 
 import java.util.Locale;
 
+@Getter
 
-@JsModule("./generated/jar-resources/custom-icon.js")
+//@JsModule("./generated/jar-resources/custom-icon.js")
 public class Header extends HorizontalLayout {
-
-    private I18NProvider i18NProvider;
-
 
     public Header() {
         HorizontalLayout buttonsLeft = getButtonsLeft();
         HorizontalLayout buttonsRight = getButtonsRight();
         add(buttonsLeft, buttonsRight);
         setWidthFull();
-
+        setHeight("100px");
+        setAlignItems(Alignment.CENTER);
     }
 
     public HorizontalLayout getButtonsLeft() {
@@ -43,7 +41,7 @@ public class Header extends HorizontalLayout {
         logoS7.setWidth("150px");
         logoS7.setHeight("auto");
 
-        Button button1 = new Button("Buying and management");
+        Button button1 = new Button("Покупка и управление");
         button1.getElement().getStyle().set("background-color", "transparent");
         button1.getElement().getStyle().set("color", "black");
 
@@ -51,11 +49,11 @@ public class Header extends HorizontalLayout {
         button2.getElement().getStyle().set("background-color", "transparent");
         button2.getElement().getStyle().set("color", "black");
 
-        Button button3 = new Button("Information");
+        Button button3 = new Button("Информация");
         button3.getElement().getStyle().set("background-color", "transparent");
         button3.getElement().getStyle().set("color", "black");
 
-        Button button4 = new Button("Business");
+        Button button4 = new Button("Бизнесу");
         button4.getElement().getStyle().set("background-color", "transparent");
         button4.getElement().getStyle().set("color", "black");
 
@@ -103,7 +101,7 @@ public class Header extends HorizontalLayout {
 
     //СОЗДАЛИ ОДНУ ИЗ КНОПОК, КОТОРАЯ БУДЕТ СПРАВА - ЗНАЧОК ЛУПЫ, КОТОРУЮ НАЖИМАЕШЬ И ПОЯВЛЯЕТСЯ ПОЛЕ ДЛЯ ВВОДА
     private Button getButtonLoup() {
-        Button searchButton = new Button(VaadinIcon.SEARCH.create());
+        Button searchButton = new Button(new Icon (VaadinIcon.SEARCH));
         TextField searchField = new TextField();
         Dialog dialog = new Dialog();
         dialog.add(searchField);
@@ -121,28 +119,36 @@ public class Header extends HorizontalLayout {
         currencyButton.getElement().getStyle().set("background-color", "transparent");
         currencyButton.getElement().getStyle().set("color", "black");
 
-        ComboBox<Button> comboBox = new ComboBox<>();
-        comboBox.setLabel("Choose a currency");
-
-        Dialog dialog = new Dialog();
-
-        Button closeCurrencyButton = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
-        closeCurrencyButton.getElement().getStyle().set("background-color", "transparent");
-        closeCurrencyButton.getElement().getStyle().set("color", "black");
-
-        currencyButton.addClickListener(event -> dialog.open());
-        closeCurrencyButton.addClickListener(event -> dialog.close());
-
-        dialog.add(comboBox, closeCurrencyButton);
-
-        comboBox.setItems(
+        ComboBox<Button> currencies = new ComboBox<>();
+        currencies.setItems(
                 new Button("RUB"),
                 new Button("DOLLAR"),
                 new Button("EURO")
         );
 
-        comboBox.setRenderer(new ComponentRenderer<>(button -> {
-            Icon icon;
+        Label titleDialogCurr = new Label("Выберите валюту");
+        titleDialogCurr.getElement().getStyle().set("font-weight", "bold");
+
+        Dialog dialogCurr = new Dialog();
+
+        Button closeCurrencyButton = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
+        closeCurrencyButton.getElement().getStyle().set("background-color", "transparent");
+        closeCurrencyButton.getElement().getStyle().set("color", "black");
+
+        currencyButton.addClickListener(event -> dialogCurr.open());
+        closeCurrencyButton.addClickListener(event -> dialogCurr.close());
+
+        HorizontalLayout headerDialogCurr = new HorizontalLayout();
+        headerDialogCurr.add(titleDialogCurr, closeCurrencyButton);
+        headerDialogCurr.setAlignItems(Alignment.BASELINE);
+
+        VerticalLayout allDialogCurr = new VerticalLayout();
+        allDialogCurr.add(headerDialogCurr, currencies);
+
+        dialogCurr.add(allDialogCurr);
+
+        currencies.setRenderer(new ComponentRenderer<>(button -> {
+            Icon icon = null;
             switch (button.getText()) {
                 case "RUB":
                     icon = new Icon(VaadinIcon.COINS);
@@ -153,13 +159,11 @@ public class Header extends HorizontalLayout {
                 case "EURO":
                     icon = new Icon(VaadinIcon.EURO);
                     break;
-                default:
-                    icon = new Icon(VaadinIcon.QUESTION_CIRCLE);
             }
             return new HorizontalLayout(icon, new Text(button.getText()));
         }));
 
-        comboBox.addValueChangeListener(e -> {
+        currencies.addValueChangeListener(e -> {
             Button selectedButton = e.getValue();
             switch (selectedButton.getText()) {
                 case "RUB":
@@ -177,37 +181,6 @@ public class Header extends HorizontalLayout {
 
         return currencyButton;
     }
-//        comboBox.addValueChangeListener(e -> {
-//            VaadinSession.getCurrent().setLocale(e.getValue());
-//            comboBox.setOpened(false);
-//            closeCurrencyButton.click();
-//        });
-
-
-
-
-    //        HorizontalLayout headerDialog = new HorizontalLayout();
-//        headerDialog.setWidthFull();
-//        headerDialog.add(closeCurrencyButton);
-//        headerDialog.setAlignItems(Alignment.BASELINE);
-//
-//        VerticalLayout layout = new VerticalLayout();
-//        layout.add(headerDialog);
-//        dialog.add(layout);
-
-
-    //СОЗДАЛИ ОДНУ ИЗ КНОПОК СПРАВА - КНОПКА ВХОДА НА САЙТ
-    private Button getLoginButton() {
-        Button loginButton = new Button("Login");
-        loginButton.setIcon(new Icon(VaadinIcon.USER));
-
-        LoginOverlay loginOverlay = new LoginOverlay();
-        loginButton.addClickListener(event -> loginOverlay.setOpened(true));
-        loginButton.getElement().getStyle().set("background-color", "transparent");
-        loginButton.getElement().getStyle().set("color", "black");
-
-        return loginButton;
-    }
 
 
     private Button getLanguageButton() {
@@ -215,10 +188,29 @@ public class Header extends HorizontalLayout {
         languageButton.getElement().getStyle().set("background-color", "transparent");
         languageButton.getElement().getStyle().set("color", "black");
 
-        ComboBox<Locale> comboBox = new ComboBox<>();
-        comboBox.setLabel("Choose the language");
+        Button closeLanguageButton = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
+        closeLanguageButton.getElement().getStyle().set("background-color", "transparent");
+        closeLanguageButton.getElement().getStyle().set("color", "black");
 
-        comboBox.setItems(
+        Label titleDialogLang = new Label("Выберите язык");
+        titleDialogLang.getElement().getStyle().set("font-weight", "bold");
+
+        HorizontalLayout headerDialogLang = new HorizontalLayout();
+        headerDialogLang.add(titleDialogLang, closeLanguageButton);
+        headerDialogLang.setAlignItems(Alignment.BASELINE);
+
+        ComboBox<Locale> languages = new ComboBox<>();
+
+        VerticalLayout allDialogLang = new VerticalLayout();
+        allDialogLang.add(headerDialogLang, languages);
+
+        Dialog dialog = new Dialog();
+        dialog.add(allDialogLang);
+
+        languageButton.addClickListener(event -> dialog.open());
+        closeLanguageButton.addClickListener(event -> dialog.close());
+
+        languages.setItems(
                 new Locale("ru"),
                 new Locale("en"),
                 new Locale("fr"),
@@ -227,7 +219,7 @@ public class Header extends HorizontalLayout {
                 new Locale("it")
         );
 
-        comboBox.setItemLabelGenerator(locale -> {
+        languages.setItemLabelGenerator(locale -> {
             switch (locale.getLanguage()) {
                 case "ru":
                     return "Русский";
@@ -246,8 +238,8 @@ public class Header extends HorizontalLayout {
             }
         });
 
-        comboBox.setRenderer(new ComponentRenderer<>(locale -> {
-            Icon icon;
+        languages.setRenderer(new ComponentRenderer<>(locale -> {
+            Icon icon = null;
             switch (locale.getLanguage()) {
                 case "ru":
                     icon = new Icon(VaadinIcon.FLAG_O);
@@ -267,29 +259,53 @@ public class Header extends HorizontalLayout {
                 case "it":
                     icon = new Icon(VaadinIcon.ARROWS);
                     break;
-                default:
-                    icon = new Icon(VaadinIcon.QUESTION);
-                    break;
             }
             return new HorizontalLayout(icon, new Text(locale.getDisplayLanguage()));
         }));
 
-        Button closeLanguageButton = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
-        closeLanguageButton.getElement().getStyle().set("background-color", "transparent");
-        closeLanguageButton.getElement().getStyle().set("color", "black");
 
-        comboBox.addValueChangeListener(event -> {
-            VaadinSession.getCurrent().setLocale(event.getValue());
-            comboBox.setOpened(false);
+        languages.addValueChangeListener(e -> {
+            Locale selectedLocale = e.getValue();
+            switch (selectedLocale.toLanguageTag()) {
+                case "ru":
+                    languageButton.setIcon(new Icon(VaadinIcon.FLAG_O));
+                    break;
+                case "en":
+                    languageButton.setIcon(new Icon(VaadinIcon.ACADEMY_CAP));
+                    break;
+                case "fr":
+                    languageButton.setIcon(new Icon(VaadinIcon.ALARM));
+                    break;
+                case "de":
+                    languageButton.setIcon(new Icon(VaadinIcon.GLOBE));
+                    break;
+                case "es":
+                    languageButton.setIcon(new Icon(VaadinIcon.ARCHIVE));
+                    break;
+                case "it":
+                    languageButton.setIcon(new Icon(VaadinIcon.ARROWS));
+                    break;
+            }
             closeLanguageButton.click();
         });
 
-        Dialog dialog = new Dialog();
-        dialog.add(comboBox);
-        languageButton.addClickListener(event -> dialog.open());
-        closeLanguageButton.addClickListener(event -> dialog.close());
+
 
         return languageButton;
+    }
+
+
+    //СОЗДАЛИ ОДНУ ИЗ КНОПОК СПРАВА - КНОПКА ВХОДА НА САЙТ
+    private Button getLoginButton() {
+        Button loginButton = new Button("Войти");
+        loginButton.setIcon(new Icon(VaadinIcon.USER));
+
+        LoginOverlay loginOverlay = new LoginOverlay();
+        loginButton.addClickListener(event -> loginOverlay.setOpened(true));
+        loginButton.getElement().getStyle().set("background-color", "transparent");
+        loginButton.getElement().getStyle().set("color", "black");
+
+        return loginButton;
     }
 
 

@@ -7,6 +7,10 @@
 //
 //import java.util.List;
 //
+//
+//import lombok.Getter;
+//
+//@Getter
 //@Tag("b7-carousel")
 //@JsModule("./src/B7Carousel.js")
 //public class B7Carousel extends Component {

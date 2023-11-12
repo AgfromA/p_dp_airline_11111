@@ -1,7 +1,6 @@
 package app.controllers.view;
 
 import app.clients.SearchClient;
-import app.controllers.view.startpage.Header;
 import app.dto.FlightDTO;
 import app.dto.FlightSeatDTO;
 import app.dto.search.Search;

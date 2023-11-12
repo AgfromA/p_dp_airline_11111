@@ -1,6 +1,5 @@
 package app.controllers.view;
 
-import app.controllers.view.startpage.StartPageView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -24,6 +23,8 @@ public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
 
+    private Header header = new Header();
+
     public MainLayout() {
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -33,7 +34,8 @@ public class MainLayout extends AppLayout {
     private void addHeaderContent() {
         viewTitle = new H2();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
-        addToNavbar(true, viewTitle);
+        addToNavbar(true, viewTitle, header);
+
     }
 
     private void addDrawerContent() {
