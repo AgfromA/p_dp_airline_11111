@@ -5,9 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -30,6 +28,8 @@ public class CommonForm extends VerticalLayout {
         VerticalLayout stocks = getStocks();
         add(stocks);
 
+        VerticalLayout promos = getPromos();
+        add(promos);
 
         setAlignItems(Alignment.CENTER);
         setSizeFull();
@@ -37,22 +37,20 @@ public class CommonForm extends VerticalLayout {
     }
 
 
-//СОЗДАЕМ ФОРМУ СО ВКЛАДКАМИ, КУДА ПОМЕСТИМ SEARCH FORM (покупка), Регистрация на рейс, Мои бронирования, Статус рейса
+//СОЗДАЕМ ФОРМУ СО ВКЛАДКАМИ, КУДА ПОМЕСТИМ Покупка, Регистрация на рейс, Мои бронирования, Статус рейса
 
     private TabSheet getFormWithTabs() {
         TabSheet externalTabs = new TabSheet(); //ВНЕШНИЙ
-
-        TabSheet innerSearchFormTabSheet = new TabSheet(); //ВНУТРЕННИЙ ДЛЯ ВКЛАДКИ "ПОКУПКА"
-        innerSearchFormTabSheet.setSizeFull();
-        innerSearchFormTabSheet.getElement().getStyle().set("justify-content", "center");
-        innerSearchFormTabSheet.getElement().getStyle().set("display", "flex");
-        innerSearchFormTabSheet.getElement().getStyle().set("align-items", "center");
-
-        innerSearchFormTabSheet.addThemeVariants(TabSheetVariant.LUMO_BORDERED);
-
+        externalTabs.setHeight("auto");
 
         Tab searchFormTab = new Tab("Покупка");
 
+        TabSheet innerSearchFormTabSheet = new TabSheet(); //ВНУТРЕННИЙ ДЛЯ ВКЛАДКИ "ПОКУПКА", куда кладем Авиабилеты, Отели, Авиа + Отель, Экскурсии, Апартаменты, Аренда авто, Трансфер
+        innerSearchFormTabSheet.setHeight("auto");
+        innerSearchFormTabSheet.getElement().getStyle().set("justify-content", "center");
+        innerSearchFormTabSheet.getElement().getStyle().set("display", "flex");
+        innerSearchFormTabSheet.getElement().getStyle().set("align-items", "center");
+        innerSearchFormTabSheet.addThemeVariants(TabSheetVariant.LUMO_BORDERED);
 
         //Авиабилеты 1
         SearchForm searchForm = new SearchForm();
@@ -93,13 +91,13 @@ public class CommonForm extends VerticalLayout {
         innerSearchFormTabSheet.add(flightsAndHotelsTab, flightsAndHotels);
 
         //Экскурсии 4
-        Tab excursionsTab = new Tab(new Anchor("https://excursionsTab.ru/", "Экскурсии"));
+        Tab excursionsTab = new Tab(new Anchor("ссылка", "Экскурсии"));
         HorizontalLayout layout = new HorizontalLayout();
         innerSearchFormTabSheet.add(excursionsTab, layout);
 
         //Апартаменты 5
 
-        Tab apartmentsTab = new Tab(new Anchor("https://apartmentsTab.ru/", "Апартаменты"));
+        Tab apartmentsTab = new Tab(new Anchor("ссылка", "Апартаменты"));
         HorizontalLayout layout2 = new HorizontalLayout();
         innerSearchFormTabSheet.add(apartmentsTab, layout2);
 
@@ -109,7 +107,7 @@ public class CommonForm extends VerticalLayout {
         innerSearchFormTabSheet.add(rentCarTab, rentCar);
 
         //Трансфер 7
-        Tab transferTab = new Tab(new Anchor("https://transferTab.ru/", "Трансфер"));
+        Tab transferTab = new Tab(new Anchor("ссылка", "Трансфер"));
         HorizontalLayout layout3 = new HorizontalLayout();
         innerSearchFormTabSheet.add(transferTab, layout3);
 
@@ -407,7 +405,7 @@ public class CommonForm extends VerticalLayout {
         Anchor stockPrice1 = new Anchor("https://transferTab.ru/", "от 1000р.");
         VerticalLayout verticalLayout1 = new VerticalLayout(stockText1, stockPrice1);
         StreamResource imageResource1 = new StreamResource("city1.jpg",
-                () -> getClass().getResourceAsStream("/images/city1.jpg"));
+                () -> getClass().getResourceAsStream("/images/cities/city1.jpg"));
         Image image1 = new Image(imageResource1, "Картинка 1");
         image1.setWidth("100px");
         image1.setHeight("100px");
@@ -419,7 +417,7 @@ public class CommonForm extends VerticalLayout {
         Anchor stockPrice2 = new Anchor("https://transferTab.ru/", "от 1000р.");
         VerticalLayout verticalLayout2 = new VerticalLayout(stockText2, stockPrice2);
         StreamResource imageResource2 = new StreamResource("city2.jpg",
-                () -> getClass().getResourceAsStream("/images/city2.jpg"));
+                () -> getClass().getResourceAsStream("/images/cities/city2.jpg"));
         Image image2 = new Image(imageResource2, "Картинка 2");
         image2.setWidth("100px");
         image2.setHeight("100px");
@@ -430,7 +428,7 @@ public class CommonForm extends VerticalLayout {
         Anchor stockPrice3 = new Anchor("https://transferTab.ru/", "от 1000р.");
         VerticalLayout verticalLayout3 = new VerticalLayout(stockText3, stockPrice3);
         StreamResource imageResource3 = new StreamResource("city3.jpg",
-                () -> getClass().getResourceAsStream("/images/city3.jpg"));
+                () -> getClass().getResourceAsStream("/images/cities/city3.jpg"));
         Image image3 = new Image(imageResource3, "Картинка 3");
         image3.setWidth("100px");
         image3.setHeight("100px");
@@ -442,7 +440,7 @@ public class CommonForm extends VerticalLayout {
         Anchor stockPrice4 = new Anchor("https://transferTab.ru/", "от 1000р.");
         VerticalLayout verticalLayout4 = new VerticalLayout(stockText4, stockPrice4);
         StreamResource imageResource4 = new StreamResource("city4.jpg",
-                () -> getClass().getResourceAsStream("/images/city4.jpg"));
+                () -> getClass().getResourceAsStream("/images/cities/city4.jpg"));
         Image image4 = new Image(imageResource4, "Картинка 4");
         image4.setWidth("100px");
         image4.setHeight("100px");
@@ -454,7 +452,7 @@ public class CommonForm extends VerticalLayout {
         Anchor stockPrice5 = new Anchor("https://transferTab.ru/", "от 1000р.");
         VerticalLayout verticalLayout5 = new VerticalLayout(stockText5, stockPrice5);
         StreamResource imageResource5 = new StreamResource("city5.jpg",
-                () -> getClass().getResourceAsStream("/images/city5.jpg"));
+                () -> getClass().getResourceAsStream("/images/cities/city5.jpg"));
         Image image5 = new Image(imageResource5, "Картинка 5");
         image5.setWidth("100px");
         image5.setHeight("100px");
@@ -465,7 +463,7 @@ public class CommonForm extends VerticalLayout {
         Anchor stockPrice6 = new Anchor("https://transferTab.ru/", "от 1000р.");
         VerticalLayout verticalLayout6 = new VerticalLayout(stockText6, stockPrice6);
         StreamResource imageResource6 = new StreamResource("city6.jpg",
-                () -> getClass().getResourceAsStream("/images/city6.jpg"));
+                () -> getClass().getResourceAsStream("/images/cities/city6.jpg"));
         Image image6 = new Image(imageResource6, "Картинка 6");
         image6.setWidth("100px");
         image6.setHeight("100px");
@@ -479,4 +477,90 @@ public class CommonForm extends VerticalLayout {
 
         return stocks;
     }
+
+    //СОЗДАНИЕ БЛОКА "АКЦИИ"
+    private VerticalLayout getPromos() {
+
+        H1 headerPromo = new H1("Акции");
+        Button allPromosButton = new Button("Все акции", new Icon(VaadinIcon.ANGLE_RIGHT));
+        allPromosButton.getElement().getStyle().set("background-color", "transparent");
+        allPromosButton.getElement().getStyle().set("color", "grey");
+
+        HorizontalLayout headerAndButton = new HorizontalLayout(headerPromo, allPromosButton);
+        headerAndButton.setAlignItems(Alignment.BASELINE);
+
+        VerticalLayout promo1 = new VerticalLayout();
+        StreamResource imageResourcePromo1 = new StreamResource("promo1.jpg",
+                () -> getClass().getResourceAsStream("/images/promos/promo1.jpg"));
+        Image imagePromo1 = new Image(imageResourcePromo1, "Промо 1");
+        imagePromo1.setWidthFull();
+        imagePromo1.setHeight("40%");
+        imagePromo1.getElement().getStyle().set("align-self", "flex-start");
+        imagePromo1.getElement().getStyle().set("border-radius", "30px 30px 0px 0px");
+        imagePromo1.getElement().getStyle().set("margin", "0");
+        Label titlePromo1 = new Label("Акция №1");
+        Text textPromo1 = new Text("Описание акции №1");
+        Button buttonPromo1 = new Button("Подробнее");
+        buttonPromo1.getElement().getStyle().set("background-color", "#C8C8C8");
+        buttonPromo1.getElement().getStyle().set("color", "black");
+        promo1.add(imagePromo1, titlePromo1, textPromo1, buttonPromo1);
+        promo1.setWidth("300px");
+        promo1.setHeight("400px");
+        promo1.getElement().getStyle().set("border-radius", "30px");
+        promo1.getElement().getStyle().set("border", "1px solid #C8C8C8");
+        promo1.getElement().getStyle().set("padding-top", "0");
+        promo1.getElement().getStyle().set("padding-left", "0");
+        promo1.getElement().getStyle().set("padding-right", "0");
+
+        VerticalLayout promo2 = new VerticalLayout();
+        StreamResource imageResourcePromo2 = new StreamResource("promo2.jpg",
+                () -> getClass().getResourceAsStream("/images/promos/promo2.jpg"));
+        Image imagePromo2 = new Image(imageResourcePromo2, "Промо 2");
+        imagePromo2.setWidthFull();
+        imagePromo2.setHeight("40%");
+        imagePromo2.getElement().getStyle().set("align-self", "flex-start");
+        imagePromo2.getElement().getStyle().set("border-radius", "30px 30px 0px 0px");
+        imagePromo2.getElement().getStyle().set("margin", "0");
+        Label titlePromo2 = new Label("Акция №2");
+        Text textPromo2 = new Text("Описание акции №2");
+        Button buttonPromo2 = new Button("Подробнее");
+        buttonPromo2.getElement().getStyle().set("background-color", "#C8C8C8");
+        buttonPromo2.getElement().getStyle().set("color", "black");
+        promo2.add(imagePromo2, titlePromo2, textPromo2, buttonPromo2);
+        promo2.setWidth("300px");
+        promo2.setHeight("400px");
+        promo2.getElement().getStyle().set("border-radius", "30px");
+        promo2.getElement().getStyle().set("border", "1px solid #C8C8C8");
+        promo2.getElement().getStyle().set("padding-top", "0");
+        promo2.getElement().getStyle().set("padding-left", "0");
+        promo2.getElement().getStyle().set("padding-right", "0");
+
+        VerticalLayout promo3 = new VerticalLayout();
+        Label titlePromo3 = new Label("Подписка на акции");
+        Text textPromo3 = new Text("Скидки на авиабилеты и предложения придут на вашу почту:");
+        TextField textFieldPromo3 = new TextField();
+        textFieldPromo3.setPlaceholder("Email");
+        Checkbox checkboxPromo3 = new Checkbox("Я подтверждаю согласие с условиями обработки персональных данных");
+        Button buttonPromo3 = new Button("Подписаться");
+        buttonPromo3.getElement().getStyle().set("background-color", "#9ACD32");
+        buttonPromo3.getElement().getStyle().set("color", "white");
+        promo3.add(titlePromo3, textPromo3, textFieldPromo3, checkboxPromo3, buttonPromo3);
+        promo3.setWidth("300px");
+        promo3.setHeight("400px");
+        promo3.getElement().getStyle().set("border-radius", "30px");
+        promo3.getElement().getStyle().set("border", "1px solid #C8C8C8");
+
+        HorizontalLayout promos = new HorizontalLayout(promo1, promo2, promo3);
+        promos.getElement().getStyle().set("justify-content", "space-around");
+//        promos.setWidthFull();
+//        promos.setAlignItems(Alignment.BASELINE);
+
+
+        VerticalLayout promosAndHeader = new VerticalLayout(headerAndButton, promos);
+        promosAndHeader.setWidthFull();
+
+        return promosAndHeader;
+    }
+
+
 }
