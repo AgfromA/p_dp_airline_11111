@@ -20,8 +20,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
+import com.vaadin.flow.component.html.Image;
+
 @Route(value = "/", layout = MainLayout.class)
 public class StartPageView extends VerticalLayout {
+
+    private Footer footer = new Footer();
 
     public StartPageView() {
         TabSheet tabSheet = getFormWithTabs();
@@ -33,7 +37,11 @@ public class StartPageView extends VerticalLayout {
         VerticalLayout promos = getPromos();
         add(promos);
 
-        setAlignItems(Alignment.CENTER);
+        VerticalLayout chat = getChat();
+        add(chat);
+
+        add(footer);
+
         setSizeFull();
 
     }
@@ -53,7 +61,7 @@ public class StartPageView extends VerticalLayout {
         innerSearchFormTabSheet.getElement().getStyle().set("justify-content", "center");
         innerSearchFormTabSheet.getElement().getStyle().set("display", "flex");
         innerSearchFormTabSheet.getElement().getStyle().set("align-items", "center");
-        innerSearchFormTabSheet.addThemeVariants(TabSheetVariant.LUMO_BORDERED);
+//        innerSearchFormTabSheet.addThemeVariants(TabSheetVariant.LUMO_BORDERED);
 
         //Авиабилеты 1
         SearchForm searchForm = new SearchForm();
@@ -339,7 +347,7 @@ public class StartPageView extends VerticalLayout {
         Label text = new Label("Поиск рейсов, отслеживание статуса, времени вылета и посадки самолёта.");
 
         VerticalLayout byRouteLayout = new VerticalLayout();
-        byRouteLayout.add(byRouteBody,text);
+        byRouteLayout.add(byRouteBody, text);
         byRouteLayout.setWidthFull();
 
         return byRouteLayout;
@@ -369,7 +377,7 @@ public class StartPageView extends VerticalLayout {
         Label text = new Label("Поиск рейсов, отслеживание статуса, времени вылета и посадки самолёта.");
 
         VerticalLayout byFlightNumberLayout = new VerticalLayout();
-        byFlightNumberLayout.add(byFlightNumberLayoutBody,text);
+        byFlightNumberLayout.add(byFlightNumberLayoutBody, text);
         byFlightNumberLayout.setSizeFull();
 
         return byFlightNumberLayout;
@@ -659,7 +667,7 @@ public class StartPageView extends VerticalLayout {
         buttonPromo1.getElement().getStyle().set("color", "black");
 
         VerticalLayout bodyPromo1 = new VerticalLayout(titlePromo1, textPromo1, buttonPromo1);
-        bodyPromo1.getElement().getStyle().set("padding-left", "20px");
+        bodyPromo1.getElement().getStyle().set("padding-left", "30px");
 
         promo1.add(imagePromo1, bodyPromo1);
         promo1.setWidth("400px");
@@ -689,7 +697,7 @@ public class StartPageView extends VerticalLayout {
         buttonPromo2.getElement().getStyle().set("color", "black");
 
         VerticalLayout bodyPromo2 = new VerticalLayout(titlePromo2, textPromo2, buttonPromo2);
-        bodyPromo2.getElement().getStyle().set("padding-left", "20px");
+        bodyPromo2.getElement().getStyle().set("padding-left", "30px");
         bodyPromo2.setHeightFull();
 
         promo2.add(imagePromo2, bodyPromo2);
@@ -703,41 +711,61 @@ public class StartPageView extends VerticalLayout {
 
 
         VerticalLayout promo3 = new VerticalLayout();
-        Label titlePromo3 = new Label("Подписка на акции");
-        titlePromo3.getElement().getStyle().set("font-size", "20px");
-        titlePromo3.getElement().getStyle().set("font-weight", "bold");
+
+        Label title = new Label("Подписка на акции");
+        title.getElement().getStyle().set("font-size", "30px");
+        title.getElement().getStyle().set("font-weight", "bold");
+
+        HorizontalLayout titlePromo3 = new HorizontalLayout(title);
+        titlePromo3.setWidthFull();
+        titlePromo3.getElement().getStyle().set("justify-content", "center");
+        titlePromo3.getElement().getStyle().set("align-items", "center");
+
         Label textPromo3 = new Label("Скидки на авиабилеты и предложения придут на вашу почту:");
         TextField textFieldPromo3 = new TextField();
+        textFieldPromo3.setSizeFull();
+        textFieldPromo3.getElement().getStyle().set("padding-top", "30px");
         textFieldPromo3.setPlaceholder("Email");
 
-
-        HorizontalLayout checkbox = new HorizontalLayout();
+        HorizontalLayout permissionRow1 = new HorizontalLayout();
 
         Checkbox checkboxPromo3 = new Checkbox();
 
         Label text1 = new Label("Я подтверждаю согласие с ");
-        Label text2 = new Label("обработки персональных данных");
+        text1.getElement().getStyle().set("padding-right", "5px");
+        text1.getElement().getStyle().set("padding-left", "5px");
 
         Anchor href = new Anchor("ссылка", "условиями");
         href.getElement().getStyle().set("color", "#9ACD32");
 
-        checkbox.add(checkboxPromo3, text1, href, text2);
+        permissionRow1.add(checkboxPromo3, text1, href);
+        permissionRow1.getElement().getStyle().set("font-size", "15px");
+        permissionRow1.setAlignItems(Alignment.END);
+        permissionRow1.setSpacing(false);
 
+        Label text2 = new Label("обработки персональных данных");
 
+        HorizontalLayout permissionRow2 = new HorizontalLayout(text2);
+        permissionRow2.getElement().getStyle().set("font-size", "15px");
+        permissionRow2.setAlignItems(Alignment.START);
 
-
+        VerticalLayout allPermission = new VerticalLayout(permissionRow1, permissionRow2);
+        allPermission.setSpacing(false);
 
         Button buttonPromo3 = new Button("Подписаться");
         buttonPromo3.getElement().getStyle().set("background-color", "#9ACD32");
         buttonPromo3.getElement().getStyle().set("color", "white");
+        buttonPromo3.setSizeFull();
 
-        promo3.add(titlePromo3, textPromo3, textFieldPromo3, checkbox, buttonPromo3);
+        promo3.add(titlePromo3, textPromo3, textFieldPromo3, allPermission, buttonPromo3);
 
         promo3.setWidth("400px");
         promo3.setHeight("450px");
-        promo3.getElement().getStyle().set("justify-content", "space-around");
         promo3.getElement().getStyle().set("border-radius", "30px");
         promo3.getElement().getStyle().set("border", "1px solid #C8C8C8");
+        promo3.getElement().getStyle().set("padding", "35px");
+        promo3.setSpacing(true);
+
 
         HorizontalLayout promos = new HorizontalLayout(promo1, promo2, promo3);
         promos.setWidthFull();
@@ -746,10 +774,72 @@ public class StartPageView extends VerticalLayout {
         VerticalLayout promosAndHeader = new VerticalLayout(headerAndButton, promos);
         promosAndHeader.setWidthFull();
         promosAndHeader.getElement().getStyle().set("justify-content", "space-around");
+        promosAndHeader.getElement().getStyle().set("padding-right", "30px");
+        promosAndHeader.getElement().getStyle().set("padding-left", "30px");
 
         return promosAndHeader;
     }
 
+    private VerticalLayout getChat() {
+        TextField chatField = new TextField();
+        chatField.setPlaceholder("Задайте Ваш вопрос");
+
+        Button chatButton = new Button(new Icon(VaadinIcon.CHAT));
+        chatButton.getElement().getStyle().set("background-color", "#9ACD32");
+        chatButton.getElement().getStyle().set("color", "white");
+
+        chatButton.setHeight("100px");
+        chatButton.setWidth("100px");
+
+        chatButton.getElement().getThemeList().add("large");
+
+        chatButton.getElement().getStyle().set("position", "fixed");
+        chatButton.getElement().getStyle().set("bottom", "30px");
+        chatButton.getElement().getStyle().set("right", "30px");
+
+        Button sendButton = new Button("Отправить вопрос");
+        sendButton.getElement().getStyle().set("background-color", "#9ACD32");
+        sendButton.getElement().getStyle().set("color", "white");
+
+        VerticalLayout chatFieldAndSendButton = new VerticalLayout(chatField, sendButton);
+        chatFieldAndSendButton.setAlignItems(Alignment.CENTER);
+        Dialog dialog = new Dialog(chatFieldAndSendButton);
+        dialog.setWidth("300px");
+        dialog.setHeight("200px");
+
+        sendButton.addClickListener(e -> dialog.close());
+
+        chatButton.addClickListener(event -> {
+            dialog.open();
+        });
+
+        VerticalLayout chat = new VerticalLayout();
+
+        chat.add(chatButton, dialog);
+        chat.getElement().getStyle().set("position", "fixed");
+        chat.getElement().getStyle().set("bottom", "30px");
+        chat.getElement().getStyle().set("right", "30px");
+
+        return chat;
+    }
+
+
+
+//    private HorizontalLayout getCarousel() {
+//
+//        Image s1 = new Image("https://example.com/image1.jpg", "Image 1");
+//        Image s2 = new Image("https://example.com/image2.jpg", "Image 2");
+//        Image s3 = new Image("https://example.com/image3.jpg", "Image 3");
+//        Image s4 = new Image("https://example.com/image4.jpg", "Image 4");
+//
+//        Carousel carousel = new Carousel(s1, s2, s3, s4)
+//                .withAutoProgress()
+//                .withSlideDuration(4)
+//                .withStartPosition(1);
+//        Slider slider = new Slider();
+//
+//        return null;
+//    }
 
 }
 

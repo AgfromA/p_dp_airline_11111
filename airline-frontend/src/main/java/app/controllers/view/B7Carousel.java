@@ -4,11 +4,11 @@
 //import com.vaadin.flow.component.Tag;
 //import com.vaadin.flow.component.dependency.JsModule;
 //import com.vaadin.flow.dom.Element;
+//import com.vaadin.flow.server.StreamResource;
+//import lombok.Getter;
 //
 //import java.util.List;
-//
-//
-//import lombok.Getter;
+//import java.util.stream.Collectors;
 //
 //@Getter
 //@Tag("b7-carousel")
@@ -20,11 +20,12 @@
 //        carousel = new Element("b7-carousel");
 //    }
 //
-//    public void setImages(List<String> images) {
-//        String imagesString = String.join(", ", images);
-//        carousel.setAttribute("images", imagesString);
+//    public void setImages(List<String> imageUrls) {
+//        List<StreamResource> imageResources = imageUrls.stream()
+//                .map(url -> new StreamResource(url, () -> getImageStream(url)))
+//                .collect(Collectors.toList());
 //
-//
+//        carousel.getElement().setAttribute("images", imageResources);
 //    }
 //
 //    @Override
