@@ -27,10 +27,10 @@ public class DestinationRestController implements DestinationRestApi {
         Page<DestinationDTO> destination = null;
         if (cityName == null && countryName == null && timezone == null) {
             destination = destinationService.getAllDestinations(page, size);
-            log.info("getAll: get all Destinations: found {} Destination", destination.getSize());
+            log.info("get all Destinations: found {} Destination", destination.getNumberOfElements());
         } else {
             destination = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
-            log.info("getAll: get Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}: found {} Destination", countryName, cityName, timezone, destination.getSize());
+            log.info("get all Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}: found {} Destination", countryName, cityName, timezone, destination.getNumberOfElements());
         }
         return (!destination.isEmpty())
                 ? new ResponseEntity<>(destination, HttpStatus.OK)
@@ -40,14 +40,14 @@ public class DestinationRestController implements DestinationRestApi {
     @Override
     public ResponseEntity<DestinationDTO> createDestinationDTO(DestinationDTO destinationDTO) {
         Destination existingDestination = destinationService.getDestinationByAirportCode(destinationDTO.getAirportCode());
-        log.info("create: create new Destination - {}", LogsUtils.objectToJson(destinationDTO));
+        log.info("create: new Destination - {}", LogsUtils.objectToJson(destinationDTO));
         return new ResponseEntity<>(Mappers.getMapper(DestinationMapper.class)
                 .convertToDestinationDTOEntity(destinationService.saveDestination(destinationDTO)), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<DestinationDTO> updateDestinationDTOById(Long id, DestinationDTO destinationDTO) {
-        log.info("update: update Destination with id={}", id);
+        log.info("update: Destination with id={}", id);
         destinationService.updateDestinationById(id, destinationDTO);
         var updatedDestinationDTO = destinationService.getDestinationById(id);
         if (updatedDestinationDTO != null) {
@@ -59,7 +59,7 @@ public class DestinationRestController implements DestinationRestApi {
 
     @Override
     public ResponseEntity<HttpStatus> deleteDestinationById(Long id) {
-        log.info("deleteAircraftById: deleteAircraftById Destination with id={}", id);
+        log.info("delete: Destination with id={}", id);
         destinationService.deleteDestinationById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
