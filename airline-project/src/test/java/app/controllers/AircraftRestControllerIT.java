@@ -1,6 +1,7 @@
 package app.controllers;
 
 import app.dto.AircraftDTO;
+import app.mappers.AircraftMapper;
 import app.repositories.AircraftRepository;
 import app.services.interfaces.AircraftService;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,8 @@ class AircraftRestControllerIT extends IntegrationTestBase {
     private AircraftService aircraftService;
     @Autowired
     private AircraftRepository aircraftRepository;
+    @Autowired
+    private AircraftMapper aircraftMapper;
 
     @Test
     void shouldSaveAircraft() throws Exception {
@@ -61,13 +64,13 @@ class AircraftRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(new AircraftDTO(aircraftService.getAircraftById(id)))));
+                        .writeValueAsString(aircraftMapper.convertToAircarftDTOEntity(aircraftService.getAircraftById(id)))));
     }
 
     @Test
     void shouldEditById() throws Exception {
         long id = 2;
-        var aircraft = new AircraftDTO(aircraftService.getAircraftById(id));
+        var aircraft = aircraftMapper.convertToAircarftDTOEntity(aircraftService.getAircraftById(id));
         aircraft.setAircraftNumber("531487");
         aircraft.setModel("Boeing 737");
         aircraft.setModelYear(2001);
