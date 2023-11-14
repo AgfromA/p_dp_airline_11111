@@ -87,7 +87,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>6.0.11</version>
+            <version>5.3.29</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -101,6 +101,17 @@
             <artifactId>spring-data-commons</artifactId>
             <version>3.1.0</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-api</artifactId>
+            <version>3.1.9</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
         </dependency>
 
     </dependencies>

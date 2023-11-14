@@ -12,7 +12,7 @@ logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
   level:
-    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.web.servlet.DispatcherServlet: Debug
     org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: Debug
 
 spring:

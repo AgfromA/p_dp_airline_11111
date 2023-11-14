@@ -1,10 +1,8 @@
 package app.config.request.filters;
 
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -13,11 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
 public class TraceFilter extends OncePerRequestFilter {
     private final Tracer tracer;
 
-    @Autowired
     public TraceFilter(Tracer tracer) {
         this.tracer = tracer;
     }
@@ -42,4 +38,5 @@ public class TraceFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }
