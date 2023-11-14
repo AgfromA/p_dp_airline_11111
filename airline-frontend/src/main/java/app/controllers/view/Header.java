@@ -19,8 +19,6 @@ import lombok.Getter;
 import java.util.Locale;
 
 @Getter
-
-//@JsModule("./generated/jar-resources/custom-icon.js")
 public class Header extends HorizontalLayout {
 
     public Header() {
@@ -32,6 +30,7 @@ public class Header extends HorizontalLayout {
         setAlignItems(Alignment.CENTER);
     }
 
+    //СОБИРАЕМ КНОПКИ СЛЕВА
     public HorizontalLayout getButtonsLeft() {
         HorizontalLayout buttonsLeft = new HorizontalLayout();
 
@@ -71,8 +70,7 @@ public class Header extends HorizontalLayout {
         return buttonsLeft;
     }
 
-
-    //СОЗДАЛИ КНОПКИ СПРАВА
+    //СОБИРАЕМ КНОПКИ СПРАВА
     private HorizontalLayout getButtonsRight() {
         HorizontalLayout buttonsRight = new HorizontalLayout();
 
@@ -92,9 +90,9 @@ public class Header extends HorizontalLayout {
     }
 
 
-    //СОЗДАЛИ ОДНУ ИЗ КНОПОК, КОТОРАЯ БУДЕТ СПРАВА - ЗНАЧОК ЛУПЫ, КОТОРУЮ НАЖИМАЕШЬ И ПОЯВЛЯЕТСЯ ПОЛЕ ДЛЯ ВВОДА
+    //КНОПКА-ЛУПА
     private Button getButtonLoup() {
-        Button searchButton = new Button(new Icon (VaadinIcon.SEARCH));
+        Button searchButton = new Button(new Icon(VaadinIcon.SEARCH));
         TextField searchField = new TextField();
         Dialog dialog = new Dialog();
         dialog.add(searchField);
@@ -105,7 +103,7 @@ public class Header extends HorizontalLayout {
     }
 
 
-    //СОЗДАЛИ ОДНУ ИЗ КНОПОК СПРАВА СО ЗНАКОМ RUB, КОТОРУЮ НАЖИМАЕШЬ И МОЖНО ПОМЕНЯТЬ ВАЛЮТУ
+    //КНОПКА ВАЛЮТЫ
     private Button getCurrencyButton() {
 
         Button currencyButton = new Button(new Icon(VaadinIcon.COIN_PILES));
@@ -176,6 +174,7 @@ public class Header extends HorizontalLayout {
     }
 
 
+    //КНОПКА-ЯЗЫКИ
     private Button getLanguageButton() {
         Button languageButton = new Button(new Icon(VaadinIcon.FLAG));
         languageButton.getElement().getStyle().set("background-color", "transparent");
@@ -286,7 +285,7 @@ public class Header extends HorizontalLayout {
     }
 
 
-    //СОЗДАЛИ ОДНУ ИЗ КНОПОК СПРАВА - КНОПКА ВХОДА НА САЙТ
+    //КНОПКА-ЛОГИН
     private Button getLoginButton() {
         Button loginButton = new Button("Войти");
         loginButton.setIcon(new Icon(VaadinIcon.USER));

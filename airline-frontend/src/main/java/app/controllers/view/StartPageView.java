@@ -26,8 +26,11 @@ import com.vaadin.flow.component.html.Image;
 public class StartPageView extends VerticalLayout {
 
     private Footer footer = new Footer();
+    private Carousel carousel = new Carousel();
 
     public StartPageView() {
+        add(carousel);
+
         TabSheet tabSheet = getFormWithTabs();
         add(tabSheet);
 
@@ -43,11 +46,10 @@ public class StartPageView extends VerticalLayout {
         add(footer);
 
         setSizeFull();
-
     }
 
 
-//СОЗДАЕМ ФОРМУ СО ВКЛАДКАМИ, КУДА ПОМЕСТИМ Покупка, Регистрация на рейс, Мои бронирования, Статус рейса
+    //ФОРМА С ВКЛАДКАМИ "ПОКУПКА", "РЕГИСТРАЦИЯ НА РЕЙС", "МОИ БРОНИРОВАНИЯ", "СТАТУС РЕЙСА"
 
     private TabSheet getFormWithTabs() {
         TabSheet externalTabs = new TabSheet(); //ВНЕШНИЙ
@@ -61,7 +63,6 @@ public class StartPageView extends VerticalLayout {
         innerSearchFormTabSheet.getElement().getStyle().set("justify-content", "center");
         innerSearchFormTabSheet.getElement().getStyle().set("display", "flex");
         innerSearchFormTabSheet.getElement().getStyle().set("align-items", "center");
-//        innerSearchFormTabSheet.addThemeVariants(TabSheetVariant.LUMO_BORDERED);
 
         //Авиабилеты 1
         SearchForm searchForm = new SearchForm();
@@ -107,7 +108,6 @@ public class StartPageView extends VerticalLayout {
         innerSearchFormTabSheet.add(excursionsTab, layout);
 
         //Апартаменты 5
-
         Tab apartmentsTab = new Tab(new Anchor("ссылка", "Апартаменты"));
         HorizontalLayout layout2 = new HorizontalLayout();
         innerSearchFormTabSheet.add(apartmentsTab, layout2);
@@ -159,7 +159,7 @@ public class StartPageView extends VerticalLayout {
     }
 
 
-    //СОЗДАЕМ КОМПОНЕНТ, КОТОРЫЙ БУДЕТ ОТОБРАЖАТЬСЯ ВО ВКЛАДКЕ "РЕГИСТРАЦИЯ НА РЕЙС"
+    //ВКЛАДКА "РЕГИСТРАЦИЯ НА РЕЙС"
     private VerticalLayout getCheckInFlight() {
 
         HorizontalLayout layout = new HorizontalLayout();
@@ -203,13 +203,11 @@ public class StartPageView extends VerticalLayout {
         dialog.setHeight("800px");
         dialog.setWidth("600px");
 
-
         closeDialog.addClickListener(e -> dialog.close());
 
         hintButton.addClickListener(event -> {
             dialog.open();
         });
-
 
         Button buttonLogin = new Button("Зарегистрироваться");
         buttonLogin.getElement().getStyle().set("background-color", "#9ACD32");
@@ -221,7 +219,6 @@ public class StartPageView extends VerticalLayout {
         layout.getElement().getStyle().set("align-items", "center");
         layout.setSizeFull();
         layout.setAlignItems(Alignment.END);
-
 
         HorizontalLayout textDown = new HorizontalLayout();
         Label text = new Label("Онлайн-регистрация на рейс открывается за 30 часов до планового времени вылета");
@@ -236,7 +233,7 @@ public class StartPageView extends VerticalLayout {
         return verticalLayout;
     }
 
-    //СОЗДАЕМ КОМПОНЕНТ, КОТОРЫЙ БУДЕТ ОТОБРАЖАТЬСЯ ВО ВКЛАДКЕ "МОИ БРОНИРОВАНИЯ"
+    //ВВКЛАДКА "МОИ БРОНИРОВАНИЯ"
     private VerticalLayout getBookings() {
 
         HorizontalLayout bookingsBody = new HorizontalLayout();
@@ -311,13 +308,12 @@ public class StartPageView extends VerticalLayout {
         return bookings;
     }
 
-    //СОЗДАЕМ КОМПОНЕНТ, КОТОРЫЙ БУДЕТ ОТОБРАЖАТЬСЯ ВО ВКЛАДКЕ "ПО МАРШРУТУ"
+    //ВВКЛАДКА "ПО МАРШРУТУ"
     private VerticalLayout getByRoute() {
 
         HorizontalLayout byRouteBody = new HorizontalLayout();
 
         TextField from = new TextField("Откуда");
-
         TextField to = new TextField("Куда");
 
         Button swapButton = new Button(new Icon(VaadinIcon.EXCHANGE));
@@ -343,7 +339,6 @@ public class StartPageView extends VerticalLayout {
         byRouteBody.setSizeFull();
         byRouteBody.setAlignItems(Alignment.END);
 
-
         Label text = new Label("Поиск рейсов, отслеживание статуса, времени вылета и посадки самолёта.");
 
         VerticalLayout byRouteLayout = new VerticalLayout();
@@ -353,7 +348,7 @@ public class StartPageView extends VerticalLayout {
         return byRouteLayout;
     }
 
-    //СОЗДАЕМ КОМПОНЕНТ, КОТОРЫЙ БУДЕТ ОТОБРАЖАТЬСЯ ВО ВКЛАДКЕ "ПО НОМЕРУ РЕЙСА"
+    //ВКЛАДКА "ПО НОМЕРУ РЕЙСА"
     private VerticalLayout getByFlightNumber() {
 
         HorizontalLayout byFlightNumberLayoutBody = new HorizontalLayout();
@@ -373,7 +368,6 @@ public class StartPageView extends VerticalLayout {
         byFlightNumberLayoutBody.setSizeFull();
         byFlightNumberLayoutBody.setAlignItems(Alignment.END);
 
-
         Label text = new Label("Поиск рейсов, отслеживание статуса, времени вылета и посадки самолёта.");
 
         VerticalLayout byFlightNumberLayout = new VerticalLayout();
@@ -383,8 +377,7 @@ public class StartPageView extends VerticalLayout {
         return byFlightNumberLayout;
     }
 
-
-    //СОЗДАЕМ ВНИЗУ ФОРМЫ ОПЦИИ ДЛЯ ВКЛАДКИ "АВИАБИЛЕТЫ"
+    //ВКЛАДКА "АВИАБИЛЕТЫ"
     private HorizontalLayout getOptions() {
 
         Checkbox flyingForWork = new Checkbox("Лечу по работе");
@@ -399,8 +392,7 @@ public class StartPageView extends VerticalLayout {
         return options;
     }
 
-
-    //СОЗДАЕМ КОМПОНЕНТ, КОТОРЫЙ БУДЕТ ОТОБРАЖАТЬСЯ ВО ВКЛАДКЕ "ОТЕЛИ"
+    //ВКЛАДКА "ОТЕЛИ"
     private HorizontalLayout getHotels() {
 
         HorizontalLayout hotels = new HorizontalLayout();
@@ -408,7 +400,6 @@ public class StartPageView extends VerticalLayout {
         TextField cityAndRegion = new TextField("Город, регион");
 
         DatePicker dateFrom = new DatePicker("Дата заселения");
-
         DatePicker dateTo = new DatePicker("Дата выселения");
 
         IntegerField adults = new IntegerField("Взрослые");
@@ -448,17 +439,15 @@ public class StartPageView extends VerticalLayout {
         return hotels;
     }
 
-    //СОЗДАЕМ КОМПОНЕНТ АВИА + ОТЕЛЬ
+    //ВКЛАДКА АВИА + ОТЕЛЬ
     private HorizontalLayout getFlightsAndHotels() {
 
         HorizontalLayout flightsAndHotels = new HorizontalLayout();
 
         TextField cityFrom = new TextField("Откуда");
-
         TextField cityTo = new TextField("Куда");
 
         DatePicker dateFrom = new DatePicker("Дата заселения");
-
         DatePicker dateTo = new DatePicker("Дата выселения");
 
         IntegerField adults = new IntegerField("Взрослые");
@@ -473,7 +462,6 @@ public class StartPageView extends VerticalLayout {
         children.setMin(1);
         children.setMax(10);
 
-
         Button searchButton = new Button(new Icon(VaadinIcon.SEARCH));
         searchButton.getElement().getStyle().set("background-color", "#9ACD32");
         searchButton.getElement().getStyle().set("color", "white");
@@ -485,7 +473,7 @@ public class StartPageView extends VerticalLayout {
         return flightsAndHotels;
     }
 
-    //СОЗДАЕМ КОМПОНЕНТ, КОТОРЫЙ БУДЕТ ВО ВКЛАДКЕ "АРЕНДА АВТО"
+    //ВКЛАДКА "АРЕНДА АВТО"
     private HorizontalLayout getRentCar() {
 
         HorizontalLayout rentCar = new HorizontalLayout();
@@ -506,8 +494,7 @@ public class StartPageView extends VerticalLayout {
         return rentCar;
     }
 
-
-    //СОЗДАНИЕ БЛОКА "СПЕЦИАЛЬНЫЕ ПРЕДЛОЖЕНИЯ"
+    //БЛОК "СПЕЦИАЛЬНЫЕ ПРЕДЛОЖЕНИЯ"
     private VerticalLayout getStocks() {
 
         Label stockText1 = new Label("Специальное предложение №1");
@@ -527,7 +514,6 @@ public class StartPageView extends VerticalLayout {
         image1.setHeight("100px");
         image1.getElement().getStyle().set("border-radius", "50%");
         HorizontalLayout stock1 = new HorizontalLayout(image1, verticalLayout1);
-
 
         Label stockText2 = new Label("Специальное предложение №2");
         stockText2.getElement().getStyle().set("font-size", "20px");
@@ -583,7 +569,6 @@ public class StartPageView extends VerticalLayout {
         image4.getElement().getStyle().set("border-radius", "50%");
         HorizontalLayout stock4 = new HorizontalLayout(image4, verticalLayout4);
 
-
         Label stockText5 = new Label("Специальное предложение №5");
         stockText5.getElement().getStyle().set("font-size", "20px");
         stockText5.getElement().getStyle().set("font-weight", "bold");
@@ -634,7 +619,7 @@ public class StartPageView extends VerticalLayout {
         return stocks;
     }
 
-    //СОЗДАНИЕ БЛОКА "АКЦИИ"
+    //БЛОК "АКЦИИ"
     private VerticalLayout getPromos() {
 
         H1 headerPromo = new H1("Акции");
@@ -709,7 +694,6 @@ public class StartPageView extends VerticalLayout {
         promo2.getElement().getStyle().set("padding-left", "0");
         promo2.getElement().getStyle().set("padding-right", "0");
 
-
         VerticalLayout promo3 = new VerticalLayout();
 
         Label title = new Label("Подписка на акции");
@@ -766,7 +750,6 @@ public class StartPageView extends VerticalLayout {
         promo3.getElement().getStyle().set("padding", "35px");
         promo3.setSpacing(true);
 
-
         HorizontalLayout promos = new HorizontalLayout(promo1, promo2, promo3);
         promos.setWidthFull();
         promos.getElement().getStyle().set("justify-content", "space-around");
@@ -780,6 +763,7 @@ public class StartPageView extends VerticalLayout {
         return promosAndHeader;
     }
 
+    //ЧАТ
     private VerticalLayout getChat() {
         TextField chatField = new TextField();
         chatField.setPlaceholder("Задайте Ваш вопрос");
@@ -790,7 +774,6 @@ public class StartPageView extends VerticalLayout {
 
         chatButton.setHeight("100px");
         chatButton.setWidth("100px");
-
         chatButton.getElement().getThemeList().add("large");
 
         chatButton.getElement().getStyle().set("position", "fixed");
@@ -822,24 +805,5 @@ public class StartPageView extends VerticalLayout {
 
         return chat;
     }
-
-
-
-//    private HorizontalLayout getCarousel() {
-//
-//        Image s1 = new Image("https://example.com/image1.jpg", "Image 1");
-//        Image s2 = new Image("https://example.com/image2.jpg", "Image 2");
-//        Image s3 = new Image("https://example.com/image3.jpg", "Image 3");
-//        Image s4 = new Image("https://example.com/image4.jpg", "Image 4");
-//
-//        Carousel carousel = new Carousel(s1, s2, s3, s4)
-//                .withAutoProgress()
-//                .withSlideDuration(4)
-//                .withStartPosition(1);
-//        Slider slider = new Slider();
-//
-//        return null;
-//    }
-
 }
 
