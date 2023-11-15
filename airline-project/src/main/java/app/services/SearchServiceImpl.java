@@ -143,12 +143,9 @@ public class SearchServiceImpl implements SearchService {
 
     @Loggable
     private List<Flight> getNonDirectDepartFlights(Search search) {
-        var from = destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue();
-              var to =  destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue();
-
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
-                from,
-                to,
+                destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
+                destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue(),
                 Date.valueOf(search.getDepartureDate())
         );
     }

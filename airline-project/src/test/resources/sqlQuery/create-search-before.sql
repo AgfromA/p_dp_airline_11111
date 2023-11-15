@@ -1470,3 +1470,90 @@ INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id
 VALUES (213, 650, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 71),
         (SELECT seats.id FROM seats WHERE seats.id = 9));
+
+
+
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+
+-- Рейсы без вторых стыковочных рейсов. Не должны находиться
+-- (Внуково-Петрозаводск и Ставрополь-Омск)
+-- На 2023-04-06 и на 2023-04-20
+
+INSERT INTO destination (id, airport_code, airport_name, city_name, country_name, timezone)
+VALUES (5, 'PES', 'Петрозаводск', 'Петрозаводск', 'Россия', 'GMT +3');
+INSERT INTO destination (id, airport_code, airport_name, city_name, country_name, timezone)
+VALUES (6, 'STW', 'Ставрополь', 'Ставрополь', 'Россия', 'GMT +6');
+
+
+INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
+VALUES (72, 'VKOPES', '2023-04-06 05:00:00', '2023-04-06 06:00:00', 'ON_TIME',
+        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 1, 5);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (214, 500, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 72),
+        (SELECT seats.id FROM seats WHERE seats.id = 4));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (215, 600, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 72),
+        (SELECT seats.id FROM seats WHERE seats.id = 5));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (216, 650, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 72),
+        (SELECT seats.id FROM seats WHERE seats.id = 6));
+
+
+INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
+VALUES (73, 'VKOPES', '2023-04-20 05:00:00', '2023-04-20 06:00:00', 'ON_TIME',
+        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 1, 5);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (217, 500, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 73),
+        (SELECT seats.id FROM seats WHERE seats.id = 4));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (218, 600, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 73),
+        (SELECT seats.id FROM seats WHERE seats.id = 5));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (219, 650, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 73),
+        (SELECT seats.id FROM seats WHERE seats.id = 6));
+
+
+INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
+VALUES (74, 'STWOMS', '2023-04-06 05:00:00', '2023-04-06 06:00:00', 'ON_TIME',
+        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 6, 2);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (220, 500, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 74),
+        (SELECT seats.id FROM seats WHERE seats.id = 4));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (221, 600, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 74),
+        (SELECT seats.id FROM seats WHERE seats.id = 5));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (222, 650, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 74),
+        (SELECT seats.id FROM seats WHERE seats.id = 6));
+
+
+INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
+VALUES (75, 'STWOMS', '2023-04-20 05:00:00', '2023-04-20 06:00:00', 'ON_TIME',
+        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 6, 2);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (223, 500, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 75),
+        (SELECT seats.id FROM seats WHERE seats.id = 4));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (224, 600, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 75),
+        (SELECT seats.id FROM seats WHERE seats.id = 5));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (225, 650, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 75),
+        (SELECT seats.id FROM seats WHERE seats.id = 6));

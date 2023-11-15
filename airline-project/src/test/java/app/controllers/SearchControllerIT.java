@@ -38,7 +38,6 @@ class SearchControllerIT extends IntegrationTestBase {
     @DisplayName("1 test. In DB 1 direct depart flight with 3 free seats")
     @Test
     void shouldReturnOneDirectDepartFlightWithThreeSeats() throws Exception {
-
         Airport airportFrom = VKO;
         Airport airportTo = OMS;
         LocalDate departureDate = LocalDate.of(2023, 4, 1);
@@ -50,8 +49,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -65,7 +62,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -214,7 +215,7 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirDepartFlights = 1;
         int expNonDirDepartFlights = 1;
         int expDirReturnFlights = 0;
-        int expNonDirReturnFlights = 0;   // один непрямой рейс не найдется без прямого
+        int expNonDirReturnFlights = 1;
 
         int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
         int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
@@ -343,7 +344,7 @@ class SearchControllerIT extends IntegrationTestBase {
         Integer numberOfPassengers = 2;
 
         int expDirDepartFlights = 0;
-        int expNonDirDepartFlights = 0;     // один непрямой рейс не найдется без прямого
+        int expNonDirDepartFlights = 1;     // один непрямой рейс не найдется без прямого
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 1;
 
@@ -1121,12 +1122,16 @@ class SearchControllerIT extends IntegrationTestBase {
         var searchResult = getSearchResult(json);
         // Посчитать количество прямых флайтов туда
         int numberOfDirectDepartFlights = 0;
-        for (int i = 0; i < searchResult.getDepartFlights().size(); i++) {
-            if (searchResult.getDepartFlights().get(i).getAirportFrom() == search.getFrom() &&
-                    searchResult.getDepartFlights().get(i).getAirportTo() == search.getTo()) {
-                numberOfDirectDepartFlights++;
+
+            for (int i = 0; i < searchResult.getDepartFlights().size(); i++) {
+                if (searchResult.getDepartFlights().get(i).getAirportFrom() == search.getFrom() &&
+                        searchResult.getDepartFlights().get(i).getAirportTo() == search.getTo()) {
+                    numberOfDirectDepartFlights++;
+                }
             }
-        }
+
+
+
         assertEquals(expectDirect, numberOfDirectDepartFlights);
         // Посчитать количество НЕпрямых флайтов туда
         int numberOfNonDirectDepartFlights = 0;

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class SearchServiceImplTest {
-/*
+
     @Mock
     private FlightService flightService;
     @Mock
@@ -354,8 +354,8 @@ public class SearchServiceImplTest {
 
         doReturn(new ArrayList<Flight>())
                 .when(flightService).getListNonDirectFlightsByFromAndToAndDepartureDate(
-                fromVnukovo.getId().intValue(),
                 toKoltcovo.getId().intValue(),
+                fromVnukovo.getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
 
@@ -539,8 +539,8 @@ public class SearchServiceImplTest {
 
         doReturn(new ArrayList<Flight>())
                 .when(flightService).getListNonDirectFlightsByFromAndToAndDepartureDate(
-                fromVnukovo.getId().intValue(),
                 toKoltcovo.getId().intValue(),
+                fromVnukovo.getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
 
@@ -1403,8 +1403,8 @@ public class SearchServiceImplTest {
         var listNonDirectReturnFlight = List.of(nonDirectReturnFlight1, nonDirectReturnFlight2);
         doReturn(listNonDirectReturnFlight)
                 .when(flightService).getListNonDirectFlightsByFromAndToAndDepartureDate(
-                fromVnukovo.getId().intValue(),
                 toKoltcovo.getId().intValue(),
+                fromVnukovo.getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
 
@@ -1643,8 +1643,8 @@ public class SearchServiceImplTest {
         var listNonDirectReturnFlight = List.of(nonDirectReturnFlight1, nonDirectReturnFlight2);
         doReturn(listNonDirectReturnFlight)
                 .when(flightService).getListNonDirectFlightsByFromAndToAndDepartureDate(
-                fromVnukovo.getId().intValue(),
                 toKoltcovo.getId().intValue(),
+                fromVnukovo.getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
 
@@ -1828,8 +1828,8 @@ public class SearchServiceImplTest {
         var listNonDirectReturnFlight = new ArrayList<Flight>();
         doReturn(listNonDirectReturnFlight).when(flightService)
                 .getListNonDirectFlightsByFromAndToAndDepartureDate(
-                        fromVnukovo.getId().intValue(),
                         toKoltcovo.getId().intValue(),
+                        fromVnukovo.getId().intValue(),
                         Date.valueOf(search.getReturnDate())
                 );
 
@@ -2021,8 +2021,8 @@ public class SearchServiceImplTest {
         var listNonDirectReturnFlight = List.of(nonDirectReturnFlight1, nonDirectReturnFlight2);
         doReturn(listNonDirectReturnFlight)
                 .when(flightService).getListNonDirectFlightsByFromAndToAndDepartureDate(
-                fromVnukovo.getId().intValue(),
                 toKoltcovo.getId().intValue(),
+                fromVnukovo.getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
 
@@ -2209,8 +2209,8 @@ public class SearchServiceImplTest {
         var listNonDirectReturnFlight = List.of(nonDirectReturnFlight1, nonDirectReturnFlight2);
         doReturn(listNonDirectReturnFlight)
                 .when(flightService).getListNonDirectFlightsByFromAndToAndDepartureDate(
-                fromVnukovo.getId().intValue(),
                 toKoltcovo.getId().intValue(),
+                fromVnukovo.getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
 
@@ -2421,8 +2421,8 @@ public class SearchServiceImplTest {
         var listNonDirectReturnFlight = List.of(nonDirectReturnFlight1, nonDirectReturnFlight2);
         doReturn(listNonDirectReturnFlight)
                 .when(flightService).getListNonDirectFlightsByFromAndToAndDepartureDate(
-                fromVnukovo.getId().intValue(),
                 toKoltcovo.getId().intValue(),
+                fromVnukovo.getId().intValue(),
                 Date.valueOf(search.getReturnDate())
         );
 
@@ -2474,5 +2474,5 @@ public class SearchServiceImplTest {
             );
             assertNotNull(result.getReturnFlights().get(i).getSeats());
         }
-    }*/
+    }
 }
