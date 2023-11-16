@@ -91,8 +91,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -108,7 +106,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -132,8 +134,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -148,7 +148,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -174,8 +178,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -191,7 +193,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -217,8 +223,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 1;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -234,7 +238,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -262,8 +270,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 1;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -279,7 +285,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -305,8 +315,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 1;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -322,7 +330,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -344,12 +356,10 @@ class SearchControllerIT extends IntegrationTestBase {
         Integer numberOfPassengers = 2;
 
         int expDirDepartFlights = 0;
-        int expNonDirDepartFlights = 1;     // один непрямой рейс не найдется без прямого
+        int expNonDirDepartFlights = 1;
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 1;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -365,7 +375,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -393,8 +407,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 2;
         int expNonDirReturnFlights = 2;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -410,7 +422,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -438,8 +454,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -455,7 +469,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -482,8 +500,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -499,7 +515,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -525,8 +545,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -542,7 +560,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -568,8 +590,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -585,7 +605,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -611,8 +635,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -628,7 +650,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -650,16 +676,35 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate returnDate = LocalDate.of(2023, 5, 8);
         Integer numberOfPassengers = 2;
 
+        int expDirDepartFlights = 0;
+        int expNonDirDepartFlights = 1;
+        int expDirReturnFlights = 0;
+        int expNonDirReturnFlights = 0;
+
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
-        mockMvc.perform(get("http://localhost:8080/api/search")
+        var json = mockMvc.perform(get("http://localhost:8080/api/search")
                 .param("airportFrom", String.valueOf(airportFrom))
                 .param("airportTo", String.valueOf(airportTo))
                 .param("departureDate", String.valueOf(departureDate))
                 .param("returnDate", String.valueOf(returnDate))
                 .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers))
+                ))
+                .andReturn().getResponse().getContentAsString();
+
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
+        assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
+        assertDepartFlightsNumberOfFreeSeats(search, json);
+        assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
+        assertReturnFlightsNumberOfFreeSeats(search, json);
     }
 
 
@@ -681,8 +726,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 0;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -698,7 +741,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -726,8 +773,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -743,7 +788,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -793,8 +842,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -810,7 +857,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -831,16 +882,35 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate returnDate = LocalDate.of(2023, 4, 7);
         Integer numberOfPassengers = 2;
 
+        int expDirDepartFlights = 0;
+        int expNonDirDepartFlights = 0;
+        int expDirReturnFlights = 0;
+        int expNonDirReturnFlights = 1;
+
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
-        mockMvc.perform(get("http://localhost:8080/api/search")
+        var json = mockMvc.perform(get("http://localhost:8080/api/search")
                 .param("airportFrom", String.valueOf(airportFrom))
                 .param("airportTo", String.valueOf(airportTo))
                 .param("departureDate", String.valueOf(departureDate))
                 .param("returnDate", String.valueOf(returnDate))
                 .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers))
+                ))
+                .andReturn().getResponse().getContentAsString();
+
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
+        assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
+        assertDepartFlightsNumberOfFreeSeats(search, json);
+        assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
+        assertReturnFlightsNumberOfFreeSeats(search, json);
     }
 
     //21. В базе: один прямой и один непрямой рейс туда и один прямой и один непрямой рейс
@@ -861,8 +931,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 1;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -878,7 +946,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -903,8 +975,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 1;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -920,7 +990,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -946,8 +1020,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 1;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -963,7 +1035,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -989,8 +1065,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 2;
         int expNonDirReturnFlights = 2;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -1006,7 +1080,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -1033,8 +1111,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 2;
         int expNonDirReturnFlights = 1;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -1050,7 +1126,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -1077,8 +1157,6 @@ class SearchControllerIT extends IntegrationTestBase {
         int expDirReturnFlights = 1;
         int expNonDirReturnFlights = 0;
 
-        int expectDepartSize = expDirDepartFlights + expNonDirDepartFlights * 2;
-        int expectReturnSize = expDirReturnFlights + expNonDirReturnFlights * 2;
         Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
@@ -1094,7 +1172,11 @@ class SearchControllerIT extends IntegrationTestBase {
                 ))
                 .andReturn().getResponse().getContentAsString();
 
-        assertSearchAndDepartAndReturnFlightsSizes(expectDepartSize, expectReturnSize, search, json);
+        assertSearchAndDepartAndReturnFlightsSizes(
+                expDirDepartFlights + expNonDirDepartFlights * 2,
+                expDirReturnFlights + expNonDirReturnFlights * 2,
+                search,
+                json);
         assertNumberOfDepartDirectAndNonDirectFlights(expDirDepartFlights, expNonDirDepartFlights, search, json);
         assertDepartFlightsNumberOfFreeSeats(search, json);
         assertNumberOfReturnDirectAndNonDirectFlights(expDirReturnFlights, expNonDirReturnFlights, search, json);
@@ -1122,16 +1204,12 @@ class SearchControllerIT extends IntegrationTestBase {
         var searchResult = getSearchResult(json);
         // Посчитать количество прямых флайтов туда
         int numberOfDirectDepartFlights = 0;
-
-            for (int i = 0; i < searchResult.getDepartFlights().size(); i++) {
-                if (searchResult.getDepartFlights().get(i).getAirportFrom() == search.getFrom() &&
-                        searchResult.getDepartFlights().get(i).getAirportTo() == search.getTo()) {
-                    numberOfDirectDepartFlights++;
-                }
+        for (int i = 0; i < searchResult.getDepartFlights().size(); i++) {
+            if (searchResult.getDepartFlights().get(i).getAirportFrom() == search.getFrom() &&
+                    searchResult.getDepartFlights().get(i).getAirportTo() == search.getTo()) {
+                numberOfDirectDepartFlights++;
             }
-
-
-
+        }
         assertEquals(expectDirect, numberOfDirectDepartFlights);
         // Посчитать количество НЕпрямых флайтов туда
         int numberOfNonDirectDepartFlights = 0;
