@@ -68,6 +68,7 @@ Minikube - это Kubernetes с одной нодой. Из-за этой осо
 3. Выполните команду <code>kubectl apply -f db-service.yaml</code>, чтобы создать Service для БД 
 4. Выполните команду <code>minikube image load airline-project</code>, чтобы загрузить образ нашего основого приложения в кеш Minikube
 5. Разверните оставшиеся объекты (ingress.yaml можно пока не трогать)
+   - airline-hpa.yaml - HorizontalPodAutoscaler, который автоматически масштабирует количество подов, в зависимости от нагрузки, в соответствии с конфигурацией в файле. Является необязательным. Чтобы работал, необходимо включить <code>minikube addons enable metrics-server</code>
 6. Выполните команды <code>kubectl get service</code>, <code>kubectl get deployment</code>, <code>kubectl get statefulset</code>, <code>kubectl get pod</code>, чтобы увидеть созданные вами объекты
 7. Выполните команду <code>minikube dashboard</code>. У вас откроется браузер с графическим интерфейсом Kubernetes
 8. Ознакомьтесь с дашбордом. Он позволяет взаимодействовать с Kubernetes в графической среде, что в некоторых случаях может быть удобнее, чем использовать kubectl. Здесь вы можете найти ранее созданные объекты. Попробуйте посмотреть логи нашего приложения. Для этого перейдите во вкладку Pods, нажмите на значок с тремя точками справа от нужной Pod'ы, нажмите Logs.
