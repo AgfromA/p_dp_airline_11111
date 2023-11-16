@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: airline-project-pod
-          image: airline-project:1.0.7
+          image: airline-project:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: JAVA_OPTS
