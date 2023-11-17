@@ -35,7 +35,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
         @Test
         void showAllFlights_test() throws Exception {
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().isOk());
         }
@@ -44,7 +44,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
         @Sql(value = {"/sqlQuery/delete-from-tables.sql"})
         void showAllFlights_testError() throws Exception {
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().is(204));
         }
@@ -54,7 +54,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String cityFrom = "Волгоград";
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .param("cityFrom", cityFrom))
+                    .param("cityFrom", cityFrom))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
@@ -66,7 +66,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String cityTo = "Омск";
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .param("cityTo", cityTo))
+                    .param("cityTo", cityTo))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
@@ -78,7 +78,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String dateStart = "2022-11-23T04:30:00";
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .param("dateStart", dateStart))
+                    .param("dateStart", dateStart))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
@@ -90,7 +90,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String dateFinish = "2022-11-23T07:30:00";
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .param("dateFinish", dateFinish))
+                    .param("dateFinish", dateFinish))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
@@ -103,8 +103,8 @@ class FlightRestControllerIT extends IntegrationTestBase {
             String cityFrom = "Волгоград";
             String cityTo = "Омск";
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .param("cityFrom", cityFrom)
-                            .param("cityTo", cityTo))
+                    .param("cityFrom", cityFrom)
+                    .param("cityTo", cityTo))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
@@ -117,8 +117,8 @@ class FlightRestControllerIT extends IntegrationTestBase {
             String dateStart = "2022-11-23T04:30:00";
             String dateFinish = "2022-11-23T07:30:00";
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .param("dateStart", dateStart)
-                            .param("dateFinish", dateFinish))
+                    .param("dateStart", dateStart)
+                    .param("dateFinish", dateFinish))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
@@ -131,8 +131,8 @@ class FlightRestControllerIT extends IntegrationTestBase {
             String cityFrom = "Волгоград";
             String dateStart = "2022-11-23T04:30:00";
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .param("cityFrom", cityFrom)
-                            .param("dateStart", dateStart))
+                    .param("cityFrom", cityFrom)
+                    .param("dateStart", dateStart))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
@@ -147,18 +147,19 @@ class FlightRestControllerIT extends IntegrationTestBase {
             String dateStart = "2022-11-23T04:30:00";
             String dateFinish = "2022-11-23T07:30:00";
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                            .param("cityFrom", cityFrom)
-                            .param("cityTo", cityTo)
-                            .param("dateStart", dateStart)
-                            .param("dateFinish", dateFinish))
+                    .param("cityFrom", cityFrom)
+                    .param("cityTo", cityTo)
+                    .param("dateStart", dateStart)
+                    .param("dateFinish", dateFinish))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
                             .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable))));
         }
     }
+
     @Nested
-    class EditFlightTest{
+    class EditFlightTest {
         @Test
         void contextLoads() throws Exception {
             assertThat(flightService).isNotNull();
@@ -174,10 +175,10 @@ class FlightRestControllerIT extends IntegrationTestBase {
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-            LocalDateTime departureDateTime = LocalDateTime.of(2023, 11, 20,  8, 15, 0);
+            LocalDateTime departureDateTime = LocalDateTime.of(2023, 11, 20, 8, 15, 0);
             String expectedDepartureFormattedDateTime = departureDateTime.format(formatter);
 
-            LocalDateTime arrivalDateTime = LocalDateTime.of(2023, 11, 20,  13, 52, 0);
+            LocalDateTime arrivalDateTime = LocalDateTime.of(2023, 11, 20, 13, 52, 0);
             String expectedArrivalFormattedDateTime = arrivalDateTime.format(formatter);
 
             Long aircraftId = 1L;
@@ -195,27 +196,25 @@ class FlightRestControllerIT extends IntegrationTestBase {
             flightDTO.setFlightStatus(flightStatus);
 
             mockMvc.perform(patch("http://localhost:8080/api/flights/2")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(flightDTO)))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(flightDTO)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").exists())
                     .andExpect(jsonPath("$.id").value(2))
                     .andExpect(jsonPath("$.code").exists())
                     .andExpect(jsonPath("$.code").value(code))
-                    .andExpect(jsonPath("$.from.airportCode").exists())
-                    .andExpect(jsonPath("$.from.airportCode").value(airportFrom.toString()))
-                    .andExpect(jsonPath("$.to.airportCode").exists())
-                    .andExpect(jsonPath("$.to.airportCode").value(airportTo.toString()))
+                    .andExpect(jsonPath("$.airportFrom").exists())
+                    .andExpect(jsonPath("$.airportFrom").value(airportFrom.toString()))
+                    .andExpect(jsonPath("$.airportTo").exists())
+                    .andExpect(jsonPath("$.airportTo").value(airportTo.toString()))
                     .andExpect(jsonPath("$.departureDateTime").exists())
                     .andExpect(jsonPath("$.departureDateTime").value(expectedDepartureFormattedDateTime))
                     .andExpect(jsonPath("$.arrivalDateTime").exists())
                     .andExpect(jsonPath("$.arrivalDateTime").value(expectedArrivalFormattedDateTime))
-                    .andExpect(jsonPath("$.aircraft.id").exists())
-                    .andExpect(jsonPath("$.aircraft.id").value(aircraftId.toString()))
+                    .andExpect(jsonPath("$.aircraftId").exists())
+                    .andExpect(jsonPath("$.aircraftId").value(aircraftId.toString()))
                     .andExpect(jsonPath("$.flightStatus").exists())
-                    .andExpect(jsonPath("$.flightStatus").value(flightStatus.toString()))
-                    .andExpect(jsonPath("$.seats").exists())
-                    .andExpect(jsonPath("$.ticket").exists());
+                    .andExpect(jsonPath("$.flightStatus").value(flightStatus.toString()));
         }
 
         @Test
@@ -224,14 +223,14 @@ class FlightRestControllerIT extends IntegrationTestBase {
             flightDTO.setCode("VKOVOG");
             flightDTO.setAirportTo(Airport.VKO);
             flightDTO.setAirportFrom(Airport.VOG);
-            flightDTO.setArrivalDateTime(LocalDateTime.of(2023, 10, 23,  10, 50, 0));
-            flightDTO.setDepartureDateTime(LocalDateTime.of(2023, 10, 23,  8, 15, 0));
+            flightDTO.setArrivalDateTime(LocalDateTime.of(2023, 10, 23, 10, 50, 0));
+            flightDTO.setDepartureDateTime(LocalDateTime.of(2023, 10, 23, 8, 15, 0));
             flightDTO.setAircraftId(1L);
             flightDTO.setFlightStatus(FlightStatus.DELAYED);
 
             mockMvc.perform(patch("http://localhost:8080/api/flights/100")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(flightDTO)))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(flightDTO)))
                     .andExpect(status().isNotFound());
         }
     }
