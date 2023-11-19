@@ -23,8 +23,6 @@ public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
 
-    private Header header = new Header();
-
     public MainLayout() {
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -34,7 +32,7 @@ public class MainLayout extends AppLayout {
     private void addHeaderContent() {
         viewTitle = new H2();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
-        addToNavbar(true, viewTitle, header);
+        addToNavbar(true, viewTitle);
     }
 
     private void addDrawerContent() {

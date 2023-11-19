@@ -17,18 +17,24 @@ import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.TabSheetVariant;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
 import com.vaadin.flow.component.html.Image;
 
-@Route(value = "/", layout = MainLayout.class)
+@Route(value = "/")
+@PageTitle("Start Page")
 public class StartPageView extends VerticalLayout {
 
     private Footer footer = new Footer();
     private Carousel carousel = new Carousel();
+    private Header header = new Header();
+
 
     public StartPageView() {
+        add(header);
+
         add(carousel);
 
         TabSheet tabSheet = getFormWithTabs();
