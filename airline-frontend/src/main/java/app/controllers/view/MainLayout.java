@@ -62,6 +62,7 @@ public class MainLayout extends AppLayout {
         Tabs tabs = new Tabs();
         tabs.add(createTab(VaadinIcon.AIRPLANE, "Start Page", StartPageView.class));
         tabs.add(createTab(VaadinIcon.HANDS_UP, "Hello", AdminView.class));
+        tabs.add(createTab(VaadinIcon.AIRPLANE, "Flights", FlightView.class));
         tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
         tabs.add(createTab(VaadinIcon.TABLE, "Seats", SeatView.class));
         tabs.add(createTab(VaadinIcon.CLOCK, "Timezones", TimezoneView.class));

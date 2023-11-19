@@ -2,14 +2,11 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.FlightRestApi;
 import app.dto.FlightDTO;
-import app.entities.Flight;
 import app.enums.FlightStatus;
 import app.mappers.FlightMapper;
 import app.services.interfaces.FlightService;
-import app.services.interfaces.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,6 +22,7 @@ import java.util.stream.Collectors;
 public class FlightRestController implements FlightRestApi {
 
     private final FlightService flightService;
+    private final FlightMapper flightMapper;
 
     @Override
     public ResponseEntity<Page<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
@@ -47,7 +45,7 @@ public class FlightRestController implements FlightRestApi {
         log.info("getById: get Flight by id. id = {}", id);
         var flight = flightService.getFlightById(id);
         return flight.isPresent()
-                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight.get(), flightService), HttpStatus.OK)
+                ? new ResponseEntity<>(flightMapper.flightToFlightDTO(flight.get(), flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -56,28 +54,27 @@ public class FlightRestController implements FlightRestApi {
         log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
         var flight = flightService.getFlightByIdAndDates(id, start, finish);
         return flight != null
-                ? new ResponseEntity<>(Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService), HttpStatus.OK)
+                ? new ResponseEntity<>(flightMapper.flightToFlightDTO(flight, flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Override
     public ResponseEntity<FlightStatus[]> getAllFlightStatus() {
         log.info("getAllFlightStatus: get all Flight Statuses");
-        return new ResponseEntity<>(flightService.getAllFlights().stream().map(flight ->
-                        Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService))
+        return new ResponseEntity<>(flightService.getAllFlights().stream().map(e -> flightMapper.flightToFlightDTO(e, flightService))
                 .map(FlightDTO::getFlightStatus)
                 .distinct().collect(Collectors.toList()).toArray(FlightStatus[]::new), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Flight> createFlight(FlightDTO flightDTO) {
+    public ResponseEntity<FlightDTO> createFlight(FlightDTO flightDTO) {
         log.info("create: create new Flight");
-        return new ResponseEntity<>(flightService.saveFlight(flightDTO),
+        return new ResponseEntity<>(flightMapper.flightToFlightDTO(flightService.saveFlight(flightDTO), flightService),
                 HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Flight> updateFlightById(Long id, FlightDTO flightDTO) {
+    public ResponseEntity<FlightDTO> updateFlightById(Long id, FlightDTO flightDTO) {
         var flight = flightService.getFlightById(id);
         if (flight.isEmpty()) {
             log.error("update: Flight with id={} doesn't exist.", id);
@@ -85,7 +82,7 @@ public class FlightRestController implements FlightRestApi {
         }
         flightDTO.setId(id);
         log.info("update: Flight with id = {} updated", id);
-        return new ResponseEntity<>(flightService.updateFlight(id, flightDTO),
+        return new ResponseEntity<>(flightMapper.flightToFlightDTO(flightService.updateFlight(id, flightDTO), flightService),
                 HttpStatus.OK);
     }
 

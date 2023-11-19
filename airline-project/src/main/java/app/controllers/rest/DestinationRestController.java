@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 @Slf4j
 @RestController
@@ -21,6 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class DestinationRestController implements DestinationRestApi {
 
     private final DestinationService destinationService;
+
+    @Override
+    public ResponseEntity<List<DestinationDTO>> getAllDestinationDTO() {
+        return new ResponseEntity<>(destinationService.getAllDestinationDTO(), HttpStatus.OK);
+    }
 
     @Override
     public ResponseEntity<Page<DestinationDTO>> getAllPagesDestinationsDTO(Integer page, Integer size, String cityName, String countryName, String timezone) {

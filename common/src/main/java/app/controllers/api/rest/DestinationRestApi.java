@@ -15,11 +15,20 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 
 @Api(tags = "Destination REST")
 @Tag(name = "Destination REST", description = "API для операций с пунктами назначения (прилет/вылет)")
 public interface DestinationRestApi {
+
+    @RequestMapping(value = "/api/destinations/all", method = RequestMethod.GET)
+    @ApiOperation(value = "Get list of all existing Destinations")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Destinations found"),
+            @ApiResponse(code = 404, message = "Destinations not found")
+    })
+    ResponseEntity<List<DestinationDTO>> getAllDestinationDTO();
 
     @RequestMapping(value = "/api/destinations", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of all Destinations")
@@ -27,22 +36,23 @@ public interface DestinationRestApi {
             @ApiResponse(code = 200, message = "Destinations found"),
             @ApiResponse(code = 404, message = "Destinations not found")
     })
-    ResponseEntity<Page<DestinationDTO>> getAllPagesDestinationsDTO(@PageableDefault(sort = {"id"})
-                                                @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-                                                @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size,
+    ResponseEntity<Page<DestinationDTO>> getAllPagesDestinationsDTO(
+            @PageableDefault(sort = {"id"})
+            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
+            @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size,
 
-                                                                    @ApiParam(
+            @ApiParam(
                     name = "cityName",
                     value = "cityName",
                     example = "Волгоград"
             )
             @RequestParam(value = "cityName", required = false) String cityName,
-                                                                    @ApiParam(
+            @ApiParam(
                     name = "countryName",
                     value = "countryName"
             )
             @RequestParam(value = "countryName", required = false) String countryName,
-                                                                    @ApiParam(
+            @ApiParam(
                     name = "timezone",
                     value = "timezone",
                     example = "gmt%20%2b5"
@@ -62,7 +72,6 @@ public interface DestinationRestApi {
     @ApiOperation(value = "Edit Destination by id")
     @ApiResponse(code = 200, message = "Destination has been updated")
     @RequestMapping(value = "/api/destinations/{id}", method = RequestMethod.PATCH)
-
     ResponseEntity<DestinationDTO> updateDestinationDTOById(
             @ApiParam(
                     name = "id",
