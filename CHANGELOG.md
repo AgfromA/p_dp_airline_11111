@@ -16,9 +16,9 @@
 - #229 Произведен рефакторинг PassengerRestController, добавлена логика фильтрации по firstName + lastName, оптимизированы тесты
 - #255 Произведен рефакторинг SearchController
 - #264 Паспорт сделан обязательным (not null) для PassengerDTO
+- #320 Фронт стартовой страницы с поиском
 - #321 Фронт для поиска свободных мест и отображения результатов, рефакторинг FlightDTO, FlightSeat, Search, SearchResult
 - #321 Рефакторинг DestinationDTO, FlightSeatDTO, фронт Destination, обработка FeignException во фронте
-- #286 Добавлен фронт для Flight
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.
