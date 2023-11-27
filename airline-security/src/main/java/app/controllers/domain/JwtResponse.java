@@ -1,4 +1,4 @@
-package app.config.security.jwt.domain;
+package app.controllers.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

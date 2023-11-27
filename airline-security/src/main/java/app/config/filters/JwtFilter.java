@@ -1,8 +1,9 @@
-package app.config.security.jwt.filter;
+package app.config.filters;
 
-import app.config.security.jwt.domain.JwtAuthentication;
-import app.config.security.jwt.service.JwtProvider;
-import app.config.security.jwt.util.JwtUtils;
+import app.controllers.domain.JwtAuthentication;
+import app.services.JwtProvider;
+import app.services.JwtUtils;
+
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
