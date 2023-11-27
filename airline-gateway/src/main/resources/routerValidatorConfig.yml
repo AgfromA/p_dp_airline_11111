@@ -1,0 +1,33 @@
+router-validator:
+  openEndpoints:
+    - uri: "/api/auth/login"
+    - uri: "/api/auth/token"
+    - uri: "/api/aircrafts/**"
+    - uri: "/api/destinations/**"
+    - uri: "/api/flights/**"
+    - uri: "/api/flight_seats/**"
+    - uri: "/api/seats/**"
+    - uri: "/api/payments/**"
+    - uri: "/api/example/**"
+    - uri: "/api/search/**"
+    - uri: "/email/**"
+    - uri: "/403"
+    - uri: "/api/example/**"
+      method: PATCH
+    - uri: /api/example/**
+      method: DELETE
+
+  authorityEndpoints:
+    ROLE_ADMIN:
+      - uri: "/admin"
+        method: GET
+      - uri: "/api/**"
+    ROLE_MANAGER:
+      - uri: "/manager"
+    ROLE_PASSENGER:
+      - uri: "/passenger"
+    All_ROLES:
+      - uri: "/api/payments"
+        method: POST
+      - uri: /api/example/
+        method: POST

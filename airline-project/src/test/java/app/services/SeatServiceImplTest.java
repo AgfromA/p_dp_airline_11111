@@ -5,19 +5,20 @@ import app.entities.Aircraft;
 import app.entities.Category;
 import app.entities.Seat;
 import app.enums.CategoryType;
+import app.mappers.SeatMapper;
 import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.CategoryService;
 import app.services.interfaces.SeatService;
-import app.mappers.SeatMapper;
 import org.junit.Test;
 import org.springframework.data.domain.PageImpl;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -63,7 +64,7 @@ public class SeatServiceImplTest {
         when(seatRepository.findByAircraftId(eq(AIRCRAFT_TEST_ID), any()))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
         when(seatMapper.convertToSeatEntity(any(), categoryService, aircraftService))
-                .thenAnswer( ans -> {
+                .thenAnswer(ans -> {
                     SeatDTO seatDTO = ans.getArgument(0);
                     var seat = new Seat();
                     seat.setCategory(categoryService.getCategoryByType(seatDTO.getCategory()));
@@ -89,4 +90,5 @@ public class SeatServiceImplTest {
         assertEquals(168, seatDTOs.size());
         assertEquals(12, businessSeatsCount);
     }
+
 }

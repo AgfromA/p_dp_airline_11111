@@ -1,7 +1,7 @@
-package app.config.security;
+package app.config;
 
-import app.config.security.jwt.filter.JwtFilter;
-import app.util.LoginSuccessHandler;
+import app.config.filters.JwtFilter;
+import app.config.util.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

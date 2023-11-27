@@ -15,6 +15,7 @@
         <module>airline-frontend</module>
         <module>airline-gateway</module>
         <module>airline-oauth</module>
+        <module>airline-security</module>
     </modules>
 
     <dependencies>
