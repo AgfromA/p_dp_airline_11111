@@ -1,13 +1,11 @@
 package app.dto;
 
 import app.entities.account.Account;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import app.entities.account.Role;
-import com.fasterxml.jackson.annotation.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;

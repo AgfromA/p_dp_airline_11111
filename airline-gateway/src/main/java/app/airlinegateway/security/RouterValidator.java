@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 @Scope("singleton")
@@ -33,8 +32,7 @@ public class RouterValidator {
         );
     }
 
-    public boolean authorize(ServerHttpRequest request, Set<String> roles) {
-        roles.add("ALL_ROLES");
+    public boolean authorize(ServerHttpRequest request, List<String> roles) {
         for (String role : roles) {
             List<EndpointConfig> endpointConfigs = authorityEndpoints.get(role);
 

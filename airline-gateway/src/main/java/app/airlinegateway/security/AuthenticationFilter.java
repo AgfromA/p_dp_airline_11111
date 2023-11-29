@@ -1,25 +1,27 @@
 package app.airlinegateway.security;
 
+import app.airlinegateway.security.exceptions.AuthorizationException;
+import app.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
-import java.util.Set;
+import java.util.List;
 
 @Component
+@Scope("singleton")
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<Object> {
 
     @Autowired
     private RouterValidator validator;
     @Autowired
-    private JwtProviderLite jwtProvider;
+    private JwtProvider jwtProvider;
 
     @Override
     public GatewayFilter apply(Object config) {
@@ -29,14 +31,12 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Object> {
             if (validator.isSecured(request)) {
                 if (authExist(request)) {
                     final String token = extractToken(request);
-                    Set<String> roles = jwtProvider.extractRoles(token); // ниже пройдем только если извлеклись роли => валидный токен
-                    if (validator.needAuthority(request)) {
-                        if (!validator.authorize(request, roles)) {
-                            return dropRequest(exchange, HttpStatus.FORBIDDEN);
-                        }
+                    List<String> roles = jwtProvider.extractRoles(token).orElseThrow(() -> new AuthorizationException("Error extract roles from token", HttpStatus.UNAUTHORIZED));
+                    if (validator.needAuthority(request) && !validator.authorize(request, roles)) {
+                        onError("Access denied", HttpStatus.FORBIDDEN);
                     }
                 } else {
-                    return dropRequest(exchange,HttpStatus.UNAUTHORIZED);
+                    onError("There is no authorization header", HttpStatus.UNAUTHORIZED);
                 }
             }
             return chain.filter(exchange);
@@ -48,10 +48,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Object> {
                 .substring(7);
     }
 
-    private Mono<Void> dropRequest(ServerWebExchange exchange, HttpStatus httpStatus) {
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(httpStatus);
-        return response.setComplete();
+    private void onError(String message, HttpStatus httpStatus) {
+        throw new AuthorizationException(message, httpStatus);
     }
 
     private boolean authExist(ServerHttpRequest request) {

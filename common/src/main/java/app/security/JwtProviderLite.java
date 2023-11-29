@@ -1,33 +1,30 @@
-package app.airlinegateway.security;
+package app.security;
 
-import app.airlinegateway.exceptions.ErrorExtractRolesFromTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
-public class JwtProviderLite {
+public class JwtProviderLite implements JwtProvider {
 
     private final SecretKey secret;
 
-    public JwtProviderLite(
-            @Value("${jwt.secret.access}")
-            String jwtAccessSecret) {
+    public JwtProviderLite(String jwtAccessSecret) {
         this.secret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
     }
 
 
-    private Optional<Claims> extractClaims(String token) {
+    @Override
+    public Optional<Claims> extractClaims(String token) {
         try {
             return Optional.of(Jwts.parserBuilder()
                     .setSigningKey(secret)
@@ -49,23 +46,23 @@ public class JwtProviderLite {
     }
 
     /**
-     *
-     * @param token
+     * @param token без Bearer без токена
      * @return Роли аутентифицированного пользователя + "ALL_ROLES"
      * для авторизации на endpoint открытых для аутентифицированных польхователях
      */
-    public Set<String> extractRoles(@NonNull String token) {
+    @Override
+    public Optional<List<String>> extractRoles(@NonNull String token) {
         try {
-            Set<String> roles = (Set<String>) extractClaims(token).get().get("roles", Set.class)
+            List<String> roles = (List<String>) extractClaims(token).get().get("roles", List.class)
                    .stream()
                    .map(x -> {
                        return ((Map<String, String>)x).get("name");
-                   }).collect(Collectors.toSet());
+                   }).collect(Collectors.toList());
             roles.add("ALL_ROLES");
-            return roles;
+            return Optional.of(roles);
         } catch (Exception e) {
             log.error("Can't extract roles from token: {}", token);
-            throw new ErrorExtractRolesFromTokenException();
+            return Optional.empty();
         }
     }
 

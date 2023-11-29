@@ -1,12 +1,10 @@
 package app.config;
 
-import app.config.filters.JwtFilter;
 import app.config.util.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +22,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginSuccessHandler successHandler;
     private final UserDetailsService userDetailsService;
-    private final JwtFilter jwtFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,33 +29,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/passenger").hasRole("PASSENGER")
-                .antMatchers("/manager").hasRole("MANAGER")
-                .antMatchers("/api/auth/login", "/api/auth/token").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/aircrafts/**", "/api/destinations/**", "/api/flights/**",
-                         "/api/flight_seats/**", "/api/seats/**","/api/payments/**","/api/example/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/payments","/api/example/").authenticated()
-                .antMatchers(HttpMethod.PATCH,"/api/example/**").permitAll()
-                .antMatchers(HttpMethod.DELETE,"/api/example/**").permitAll()
-                .antMatchers("/api/search/**").permitAll()
-                .antMatchers("/api/**").hasRole("ADMIN")
-                .antMatchers("/email/**").permitAll()
-                .antMatchers("/403").permitAll()
-                .anyRequest().permitAll()
+                .antMatchers("/api/auth/**").permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new Http403ForbiddenEntryPoint())
                 .and()
-                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
                     .loginPage("/login")
                     .loginProcessingUrl("/login")
                     .successHandler(successHandler)
                     .permitAll()
                     .and()
-                .logout()
-                    .logoutSuccessUrl("/")
-                    .permitAll();
+                .logout();
+
     }
 
 

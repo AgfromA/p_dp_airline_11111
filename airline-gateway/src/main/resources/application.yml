@@ -31,8 +31,6 @@ spring:
           uri: ${airline-project-base-url}
           predicates:
             - Path=/api/accounts/**
-          filters:
-            - AuthenticationFilter
 
         - id: airline-project_bookings_api
           uri: ${airline-project-base-url}
