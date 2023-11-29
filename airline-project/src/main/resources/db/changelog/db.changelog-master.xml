@@ -126,4 +126,9 @@
         <tagDatabase tag="v-1.19"/>
     </changeSet>
 
+    <include file="v-1.20/db.changelog-v-1.20.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.20" author="ne_andrey">
+        <tagDatabase tag="v-1.20"/>
+    </changeSet>
+
 </databaseChangeLog>
