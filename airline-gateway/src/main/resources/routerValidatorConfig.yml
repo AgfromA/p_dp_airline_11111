@@ -3,25 +3,37 @@ router-validator:
     - uri: "/api/auth/login"
     - uri: "/api/auth/token"
     - uri: "/api/aircrafts/**"
+      methods:
+        - GET
     - uri: "/api/destinations/**"
+      methods:
+        - GET
     - uri: "/api/flights/**"
+      methods:
+        - GET
     - uri: "/api/flight_seats/**"
+      methods:
+        - GET
     - uri: "/api/seats/**"
+      methods:
+        - GET
     - uri: "/api/payments/**"
+      methods:
+        - GET
     - uri: "/api/example/**"
     - uri: "/email/**"
     - uri: "/403"
     - uri: "/api/example/**"
-      method: PATCH
+      methods:
+        - PATCH
     - uri: /api/example/**
-      method: DELETE
+      methods:
+        - DELETE
 
   authorityEndpoints:
     ROLE_ADMIN:
       - uri: "/admin"
-        method: GET
       - uri: "/api/**"
-      - uri: "/api/search/**"
       - uri: "/api/accounts"
     ROLE_MANAGER:
       - uri: "/manager"
@@ -29,6 +41,8 @@ router-validator:
       - uri: "/passenger"
     All_ROLES:
       - uri: "/api/payments"
-        method: POST
+        methods:
+          - POST
       - uri: /api/example/
-        method: POST
+        methods:
+          - POST

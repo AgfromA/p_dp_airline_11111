@@ -27,8 +27,8 @@ public class RouterValidator {
     public boolean isSecured(ServerHttpRequest request) {
         return openEndpoints.stream().noneMatch(
                 endpointConfig ->
-                        isRequestToEndpoint(request.getURI().getPath(), endpointConfig.getUri()) &&
-                                isHttpMethodAllowed(request.getMethod(), endpointConfig.getMethod())
+                        findEndpoint(request.getURI().getPath(), endpointConfig.getUri()) &&
+                                isHttpMethodAllowed(request.getMethod(), endpointConfig.getMethods())
         );
     }
 
@@ -38,10 +38,10 @@ public class RouterValidator {
 
             for (EndpointConfig endpointConfig : endpointConfigs) {
                 String uri = endpointConfig.getUri();
-                String method = endpointConfig.getMethod();
+                List<String> allowedMethods = endpointConfig.getMethods();
 
-                if (isRequestToEndpoint(request.getURI().getPath(), uri) &&
-                        isHttpMethodAllowed(request.getMethod(), method)) {
+                if (findEndpoint(request.getURI().getPath(), uri) &&
+                        isHttpMethodAllowed(request.getMethod(), allowedMethods)) {
                     return true;
                 }
             }
@@ -52,21 +52,21 @@ public class RouterValidator {
     public boolean needAuthority(ServerHttpRequest request) {
         for (List<EndpointConfig> endpointConfigs : authorityEndpoints.values()) {
             for (EndpointConfig endpointConfig : endpointConfigs) {
-                if (isRequestToEndpoint(request.getURI().getPath(), endpointConfig.getUri()))
+                if (findEndpoint(request.getURI().getPath(), endpointConfig.getUri()))
                     return true;
             }
         }
         return false;
     }
 
-    public static boolean isRequestToEndpoint(String requestUri, String endpointUri) {
+    public static boolean findEndpoint(String requestUri, String endpointUri) {
         if (endpointUri.endsWith("/**")) {
             return requestUri.contains(endpointUri.substring(0, endpointUri.length() - 4));
         }
         return requestUri.equals(endpointUri);
     }
 
-    public static boolean isHttpMethodAllowed(HttpMethod requestMethod, String allowedMethod) {
-        return allowedMethod == null || HttpMethod.resolve(allowedMethod) == requestMethod;
+    public static boolean isHttpMethodAllowed(HttpMethod requestMethod, List<String> allowedMethods) {
+        return allowedMethods == null || allowedMethods.stream().anyMatch(method -> HttpMethod.resolve(method) == requestMethod);
     }
 }
