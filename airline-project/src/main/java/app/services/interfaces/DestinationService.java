@@ -4,10 +4,14 @@ import app.dto.DestinationDTO;
 import app.entities.Destination;
 import app.enums.Airport;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 
 
 public interface DestinationService {
+
+    List<DestinationDTO> getAllDestinationDTO();
 
     Page<DestinationDTO> getAllDestinations(Integer page, Integer size);
 
