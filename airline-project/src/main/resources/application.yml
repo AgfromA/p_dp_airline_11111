@@ -86,11 +86,7 @@ notification:
   beforeDeparture:
     seconds: 86400
 
-logging:
-  pattern:
-    level: "%5p [${spring.application.name:-},%X{traceId},%X{spanId}]"
-  level:
-    org.springframework.web.servlet.DispatcherServlet: DEBUG
+#logging:
 #  config: classpath:log4j2-dev.yaml
 
 app:
