@@ -22,7 +22,7 @@ public class AuthService {
 
     private final AccountService accountService;
     private final Map<String, String> refreshStorage = new HashMap<>();
-    private final JwtProvider jwtProvider;
+    private final JwtProviderFull jwtProvider;
     private final PasswordEncoder encoder;
 
     public JwtResponse login(@NonNull JwtRequest authRequest) throws AuthException {

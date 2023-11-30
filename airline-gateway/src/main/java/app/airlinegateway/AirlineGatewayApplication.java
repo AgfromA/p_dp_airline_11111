@@ -15,7 +15,7 @@ public class AirlineGatewayApplication {
     }
 
     @Bean
-    JwtProvider getJwtProvider(@Value("${jwt.secret.access}") String token) {
+    JwtProviderLite getJwtProvider(@Value("${jwt.secret.access}") String token) {
         return new JwtProviderLite(token);
     }
 }

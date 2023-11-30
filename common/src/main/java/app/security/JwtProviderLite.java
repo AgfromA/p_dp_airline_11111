@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class JwtProviderLite implements JwtProvider {
+public class JwtProviderLite {
 
     private final SecretKey secret;
 
@@ -22,8 +22,6 @@ public class JwtProviderLite implements JwtProvider {
         this.secret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
     }
 
-
-    @Override
     public Optional<Claims> extractClaims(String token) {
         try {
             return Optional.of(Jwts.parserBuilder()
@@ -50,7 +48,7 @@ public class JwtProviderLite implements JwtProvider {
      * @return Роли аутентифицированного пользователя + "ALL_ROLES"
      * для авторизации на endpoint открытых для аутентифицированных польхователях
      */
-    @Override
+
     public Optional<List<String>> extractRoles(@NonNull String token) {
         try {
             List<String> roles = (List<String>) extractClaims(token).get().get("roles", List.class)

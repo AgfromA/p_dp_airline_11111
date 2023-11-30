@@ -19,14 +19,14 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class JwtProvider {
+public class JwtProviderFull{
 
     private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
     private final int refreshExpirationAccessToken;
     private final int refreshExpirationRefreshToken;
 
-    public JwtProvider(
+    public JwtProviderFull(
             @Value("${jwt.secret.access}") String jwtAccessSecret,
             @Value("${jwt.secret.refresh}") String jwtRefreshSecret,
             @Value("${jwt.refreshExpiration.accessTokeMin}") int refreshExpiration,
