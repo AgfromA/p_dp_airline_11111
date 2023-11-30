@@ -1,4 +1,3 @@
-
 server:
   port: 8083
   servlet:
@@ -8,12 +7,7 @@ server:
 airline-project-base-url: http://localhost:8080
 airline-payments-base-url: http://localhost:8081
 airline-front-base-url: http://localhost:8082
-logging:
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
-  level:
-    org.springframework.web.servlet.DispatcherServlet: Debug
-    org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: Debug
+
 
 spring:
   application.name: gateway
