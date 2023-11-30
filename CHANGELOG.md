@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+
+
+- #332 Можно отправить во фронт информативное сообщение об ошибке поиска в одну строку: throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
+- #282 Добавлен View для Aircraft(в т.ч. клиент feign). DTO и API перенесено в Common. DTO теперь использует Mapper. Методы createAircraft() и updateAircraft() в API Теперь возвращает DTO вместо Entity;
 - #327 Рефакторинг Security. Аутентифкация на стороне security модуля, авторизация на стороне gateway
 - #282 Добавлен View для Aircraft(в т.ч. клиент feign). DTO и API перенесено в Common. DTO теперь использует Mapper. Методы createAircraft() и updateAircraft() в API Теперь возвращает DTO вместо Entity
 - #308 Добавлен сервис аутентификации через Google ("airline-oauth"), добавлена кнопка "Вход с google" во view. Работа сервиса описана в README oauth
@@ -17,6 +21,7 @@
 - #229 Произведен рефакторинг PassengerRestController, добавлена логика фильтрации по firstName + lastName, оптимизированы тесты
 - #255 Произведен рефакторинг SearchController
 - #264 Паспорт сделан обязательным (not null) для PassengerDTO
+- #320 Фронт стартовой страницы с поиском
 - #321 Фронт для поиска свободных мест и отображения результатов, рефакторинг FlightDTO, FlightSeat, Search, SearchResult
 - #321 Рефакторинг DestinationDTO, FlightSeatDTO, фронт Destination, обработка FeignException во фронте
 - #286 Добавлен фронт для Flight
