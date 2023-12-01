@@ -19,8 +19,4 @@ public class AirlineApplication {
         SpringApplication.run(AirlineApplication.class, args);
     }
 
-    @Bean
-    JwtProviderLite getJwtProvider(@Value("${jwt.secret.access}") String token) {
-        return new JwtProviderLite(token);
-    }
 }

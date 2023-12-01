@@ -2,6 +2,7 @@ package app.airlinegateway.security;
 
 import app.airlinegateway.security.exceptions.AuthorizationException;
 import app.security.JwtProvider;
+import app.security.JwtProviderLite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -21,7 +22,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Object> {
     @Autowired
     private RouterValidator validator;
     @Autowired
-    private JwtProvider jwtProvider;
+    private JwtProviderLite jwtProvider;
 
     @Override
     public GatewayFilter apply(Object config) {

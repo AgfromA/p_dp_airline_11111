@@ -1,11 +1,11 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.AccountRestApi;
+import app.security.JwtProviderLite;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
 import app.dto.AccountDTO;
 import app.entities.account.Role;
-import app.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ public class AccountRestController implements AccountRestApi {
 
     private final AccountService accountService;
     private final RoleService roleService;
-    private final JwtProvider jwtProvider;
+    private final JwtProviderLite jwtProvider;
 
     @Override
     public ResponseEntity<Page> getAllAccountsPages(Integer page, Integer size) {
