@@ -44,7 +44,7 @@ public class JwtProviderLite {
     }
 
     /**
-     * @param token без Bearer без токена
+     * @param token без Bearer
      * @return Роли аутентифицированного пользователя + "ALL_ROLES"
      * для авторизации на endpoint открытых для аутентифицированных польхователях
      */

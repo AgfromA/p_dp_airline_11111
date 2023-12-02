@@ -8,62 +8,66 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Scope("singleton")
 public class RouterValidator {
 
-    private final List<EndpointConfig> openEndpoints;
-    private final Map<String, List<EndpointConfig>> authorityEndpoints;
+    private final Map<String, List<EndpointConfig>> openEndpoints;
+    private final Set<String> needAuthoritySet;
+    private final Map<String, Map<String, List<EndpointConfig>>> authorityEndpoints = new HashMap<>();
 
     @Autowired
     public RouterValidator(RouterValidatorConfig routerValidatorConfig) {
-        this.openEndpoints = routerValidatorConfig.getOpenEndpoints();
-        this.authorityEndpoints = routerValidatorConfig.getAuthorityEndpoints();
+
+        openEndpoints = constructEndpointsMap(routerValidatorConfig.getOpenEndpoints());
+        for(Map.Entry<String, List<EndpointConfig>> entry : routerValidatorConfig.getAuthorityEndpoints().entrySet()) {
+            authorityEndpoints.put(entry.getKey(), constructEndpointsMap(entry.getValue()));
+        }
+        needAuthoritySet = authorityEndpoints.values().stream()
+                .flatMap(map -> map.keySet().stream()).collect(Collectors.toSet());
+    }
+
+    private Map<String, List<EndpointConfig>> constructEndpointsMap(List<EndpointConfig> endpointConfigs) {
+        return endpointConfigs.stream()
+                .collect(Collectors.groupingBy(this::getPath));
+    }
+
+    private String getPath(EndpointConfig x) {
+        String endpointUri = x.getUri();
+        if (endpointUri.endsWith("/**")) {
+            return endpointUri.substring(0, endpointUri.length() - 3);
+        }
+        return endpointUri;
     }
 
     public boolean isSecured(ServerHttpRequest request) {
-        return openEndpoints.stream().noneMatch(
-                endpointConfig ->
-                        findEndpoint(request.getURI().getPath(), endpointConfig.getUri()) &&
-                                isHttpMethodAllowed(request.getMethod(), endpointConfig.getMethods())
-        );
+        if(openEndpoints.containsKey(request.getURI().getPath())) {
+            return openEndpoints.get(request.getURI().getPath()).stream()
+                    .noneMatch(x -> isHttpMethodAllowed(request.getMethod(), x.getMethods()));
+        }
+        return false;
     }
 
     public boolean authorize(ServerHttpRequest request, List<String> roles) {
         for (String role : roles) {
-            List<EndpointConfig> endpointConfigs = authorityEndpoints.get(role);
-
-            for (EndpointConfig endpointConfig : endpointConfigs) {
-                String uri = endpointConfig.getUri();
-                List<String> allowedMethods = endpointConfig.getMethods();
-
-                if (findEndpoint(request.getURI().getPath(), uri) &&
-                        isHttpMethodAllowed(request.getMethod(), allowedMethods)) {
+            if (authorityEndpoints.get(role).containsKey(request.getURI().getPath())) {
+                if (authorityEndpoints.get(role)
+                        .get(request.getURI().getPath()).stream()
+                        .anyMatch(x -> isHttpMethodAllowed(request.getMethod(), x.getMethods())))
                     return true;
-                }
             }
         }
         return false;
     }
 
     public boolean needAuthority(ServerHttpRequest request) {
-        for (List<EndpointConfig> endpointConfigs : authorityEndpoints.values()) {
-            for (EndpointConfig endpointConfig : endpointConfigs) {
-                if (findEndpoint(request.getURI().getPath(), endpointConfig.getUri()))
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean findEndpoint(String requestUri, String endpointUri) {
-        if (endpointUri.endsWith("/**")) {
-            return requestUri.contains(endpointUri.substring(0, endpointUri.length() - 4));
-        }
-        return requestUri.equals(endpointUri);
+        return needAuthoritySet.contains(request.getURI().getPath());
     }
 
     public static boolean isHttpMethodAllowed(HttpMethod requestMethod, List<String> allowedMethods) {

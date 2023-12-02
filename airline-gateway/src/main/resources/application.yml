@@ -102,6 +102,11 @@ spring:
           predicates:
             - Path=/email/**
 
+        - id: airline-project_example_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/example/**
+
 ###################   airline-payments route
 
         - id: airline-payments_api

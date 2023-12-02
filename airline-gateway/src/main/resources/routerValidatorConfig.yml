@@ -20,14 +20,11 @@ router-validator:
     - uri: "/api/payments/**"
       methods:
         - GET
-    - uri: "/api/example/**"
     - uri: "/email/**"
     - uri: "/403"
     - uri: "/api/example/**"
       methods:
         - PATCH
-    - uri: /api/example/**
-      methods:
         - DELETE
 
   authorityEndpoints:
@@ -39,10 +36,10 @@ router-validator:
       - uri: "/manager"
     ROLE_PASSENGER:
       - uri: "/passenger"
-    All_ROLES:
+    ALL_ROLES:
       - uri: "/api/payments"
         methods:
           - POST
-      - uri: /api/example/
+      - uri: "/api/example/**"
         methods:
           - POST
