@@ -36,11 +36,17 @@ public class SearchForm extends HorizontalLayout {
         setReturnDateField();
         setNumberOfPassengersField();
 
+        reverseButton.getElement().getStyle().set("background-color", "#9ACD32");
+        reverseButton.getElement().getStyle().set("color", "white");
+
         reverseButton.addClickListener(e -> {
             Airport swap = fromField.getValue();
             fromField.setValue(toField.getValue());
             toField.setValue(swap);
         });
+
+        searchButton.getElement().getStyle().set("background-color", "#9ACD32");
+        searchButton.getElement().getStyle().set("color", "white");
 
         searchButton.addClickListener(e -> {
             if (createSearch()) {
@@ -57,7 +63,6 @@ public class SearchForm extends HorizontalLayout {
 
         setWidthFull();
         setAlignItems(Alignment.BASELINE);
-
     }
 
     private void setFromField() {
@@ -122,5 +127,4 @@ public class SearchForm extends HorizontalLayout {
         }
         return false;
     }
-
 }

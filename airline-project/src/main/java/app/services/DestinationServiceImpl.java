@@ -7,10 +7,14 @@ import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
 import app.services.interfaces.DestinationService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.converters.models.Sort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,6 +22,12 @@ import org.springframework.data.domain.Page;
 public class DestinationServiceImpl implements DestinationService {
     private final DestinationRepository destinationRepository;
     private final DestinationMapper destinationMapper;
+
+    @Override
+    public List<DestinationDTO> getAllDestinationDTO() {
+        return destinationRepository.findAll().stream()
+                .map(destinationMapper::convertToDestinationDTOEntity).collect(Collectors.toList());
+    }
 
     @Override
     public Page<DestinationDTO> getAllDestinations(Integer page, Integer size) {

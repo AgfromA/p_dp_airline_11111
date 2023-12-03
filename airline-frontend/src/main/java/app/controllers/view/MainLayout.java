@@ -58,12 +58,12 @@ public class MainLayout extends AppLayout {
      */
     private Tabs getTabs() {
         Tabs tabs = new Tabs();
+        tabs.add(createTab(VaadinIcon.AIRPLANE, "Start Page", StartPageView.class));
         tabs.add(createTab(VaadinIcon.HANDS_UP, "Hello", AdminView.class));
+        tabs.add(createTab(VaadinIcon.AIRPLANE, "Flights", FlightView.class));
         tabs.add(createTab(VaadinIcon.CLOSE_CIRCLE_O, "Examples", ExampleView.class));
         tabs.add(createTab(VaadinIcon.TABLE, "Seats", SeatView.class));
         tabs.add(createTab(VaadinIcon.CLOCK, "Timezones", TimezoneView.class));
-        tabs.add(createTab(VaadinIcon.AIRPLANE, "Aircrafts", AircraftView.class));
-        tabs.add(createTab(VaadinIcon.HOME_O, "Home", HomeView.class));
         tabs.add(createTab(VaadinIcon.SEARCH, "Search", SearchResultView.class));
         tabs.add(createTab(VaadinIcon.ARROWS, "Destination", DestinationView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);

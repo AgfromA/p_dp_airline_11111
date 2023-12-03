@@ -60,21 +60,58 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
 
     //поиск рейсов c одной пересадкой
     @Query(
-            value = "with cf1 as (\n" +
-                    "select f2.id as f2_id, f2.code as f2_code, f2.flight_status as f2_flight, f2.arrival_date as f2_arr, f2.departure_date as f2_dep, f2.aircraft_id as f2_air, f2.from_id as f2_from, f2.to_id as f2_to,\n" +
-                    "f3.id as f3_id, f3.code as f3_code, f3.flight_status as f3_flight, f3.arrival_date as f3_arr, f3.departure_date as f3_dep, f3.aircraft_id as f3_air, f3.from_id f3_from, f3.to_id as f3_to\n" +
-                    "from (select *\n" +
-                    "from flights f\n" +
-                    "where f.from_id = ?1 and f.to_id = ?2 and cast(f.departure_date as date) = ?3) fp\n" +
-                    "left join flights f2 on (f2.from_id = fp.from_id and cast(f2.departure_date as date) = cast(fp.departure_date as date))\n" +
-                    "join flights f3 on f3.from_id = f2.to_id \n" +
-                    "and (f3.departure_date - f2.arrival_date between interval'2 hour' and interval'12 hour') \n" +
-                    "and f3.to_id = fp.to_id)\n" +
-                    "select f2_id as id, f2_code as code, f2_flight as flight_status, f2_arr as arrival_date, f2_dep as departure_date, f2_air as aircraft_id, f2_from as from_id, f2_to as to_id\n" +
-                    "from cf1\n" +
+            value = "with xx as (\n" +
+                    "    select s1.id             as s1_id,\n" +
+                    "           s1.code           as s1_code,\n" +
+                    "           s1.flight_status  as s1_flight_status,\n" +
+                    "           s1.departure_date as s1_departure_date,\n" +
+                    "           s1.arrival_date   as s1_arrival_date,\n" +
+                    "           s1.aircraft_id    as s1_aircraft_id,\n" +
+                    "           s1.from_id        as s1_from,\n" +
+                    "           s1.to_id          as s1_to,\n" +
+                    "           s2.id             as s2_id,\n" +
+                    "           s2.code           as s2_code,\n" +
+                    "           s2.flight_status  as s2_flight_status,\n" +
+                    "           s2.departure_date as s2_departure_date,\n" +
+                    "           s2.arrival_date   as s2_arrival_date,\n" +
+                    "           s2.aircraft_id    as s2_aircraft_id,\n" +
+                    "           s2.from_id        as s2_from,\n" +
+                    "           s2.to_id          as s2_to\n" +
+                    "    from (\n" +
+                    "             select *\n" +
+                    "             from flights f1\n" +
+                    "             where f1.from_id = ?1\n" +
+                    "               and cast(f1.departure_date as date) = ?3) s1\n" +
+                    "             join\n" +
+                    "         (\n" +
+                    "             select *\n" +
+                    "             from flights f2\n" +
+                    "             where f2.to_id = ?2\n" +
+                    "               and cast(f2.departure_date as date) = ?3) s2\n" +
+                    "         on s1.to_id = s2.from_id\n" +
+                    "             and (s2.departure_date - s1.arrival_date between interval '2 hour' and interval '12 hour')\n" +
+                    ")\n" +
+                    "select s1_id             as id,\n" +
+                    "       s1_code           as code,\n" +
+                    "       s1_flight_status  as flight_status,\n" +
+                    "       s1_departure_date as departure_date,\n" +
+                    "       s1_arrival_date   as arrival_date,\n" +
+                    "       s1_aircraft_id    as aircraft_id,\n" +
+                    "       s1_from           as from_id,\n" +
+                    "       s1_to             as to_id\n" +
+                    "from xx\n" +
                     "union\n" +
-                    "select f3_id as id, f3_code as code, f3_flight as flight_status, f3_arr as arrival_date, f3_dep as departure_date, f3_air as aircraft_id, f3_from as from_id, f3_to as to_id\n" +
-                    "from cf1",
+                    "select s2_id             as id,\n" +
+                    "       s2_code           as code,\n" +
+                    "       s2_flight_status  as flight_status,\n" +
+                    "       s2_departure_date as departure_date,\n" +
+                    "       s2_arrival_date   as arrival_date,\n" +
+                    "       s2_aircraft_id    as aircraft_id,\n" +
+                    "       s2_from           as from_id,\n" +
+                    "       s2_to             as to_id\n" +
+                    "from xx\n" +
+                    "order by departure_date asc, arrival_date asc, from_id asc, to_id asc\n" +
+                    "\n",
             nativeQuery = true)
     List<Flight> getListNonDirectFlightsByFromAndToAndDepartureDate(int airportIdFrom, int airportIdTo, Date departureDate);
 
