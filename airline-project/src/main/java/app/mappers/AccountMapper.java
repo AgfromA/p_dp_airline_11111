@@ -1,7 +1,7 @@
 package app.mappers;
 
-import app.entities.account.Account;
 import app.dto.AccountDTO;
+import app.entities.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

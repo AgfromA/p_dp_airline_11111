@@ -11,7 +11,7 @@ Vaadin - это java-фрейморк для генерации html/css/js ко
 
 На нашем проетке Vaadin запускается как отдельное приложение, смотри модуль airline-frontend. Чтобы увидеть фронт,
 запусти:
-1. airline-project без security. Чтобы узнать, как это сделать, смотри [этот гайд](./guide_postman_and_security.md).
+1. airline-project.
 2. airline-frontend и перейди на http://localhost:8082/admin. При первом запуске потребуется некоторое время, чтобы
 фронтовый код скомпилировался.
 

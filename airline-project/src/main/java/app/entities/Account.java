@@ -1,4 +1,4 @@
-package app.entities.account;
+package app.entities;
 
 
 import jakarta.validation.constraints.NotNull;

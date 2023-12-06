@@ -1,7 +1,7 @@
 package app.services.interfaces;
 
-import app.entities.account.Account;
-import app.entities.account.Role;
+import app.account.Account;
+import app.account.Role;
 
 import java.util.List;
 import java.util.Set;

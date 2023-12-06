@@ -1,7 +1,7 @@
 package app.services.interfaces;
 
 import app.dto.AccountDTO;
-import app.entities.account.Account;
+import app.entities.Account;
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;

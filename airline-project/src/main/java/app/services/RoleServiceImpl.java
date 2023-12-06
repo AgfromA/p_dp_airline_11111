@@ -1,7 +1,7 @@
 package app.services;
 
-import app.entities.account.Account;
-import app.entities.account.Role;
+import app.entities.Account;
+import app.entities.Role;
 import app.repositories.RoleRepository;
 import app.services.interfaces.RoleService;
 import lombok.RequiredArgsConstructor;

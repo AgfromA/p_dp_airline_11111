@@ -1,7 +1,7 @@
 package app.services;
 
-import app.entities.account.Account;
-import app.entities.account.Role;
+import app.account.Account;
+import app.account.Role;
 import app.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

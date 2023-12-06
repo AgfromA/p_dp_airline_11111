@@ -1,7 +1,7 @@
 package app.controllers.api.rest;
 
 import app.dto.AccountDTO;
-import app.entities.account.Role;
+import app.entities.Role;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;

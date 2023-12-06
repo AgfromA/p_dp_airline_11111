@@ -1,8 +1,8 @@
 package app.mappers;
 
 import app.dto.AccountDTO;
-import app.entities.account.Account;
-import app.entities.account.Role;
+import app.entities.Account;
+import app.entities.Role;
 import app.services.interfaces.RoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

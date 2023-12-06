@@ -26,7 +26,7 @@
 
 **Авторизация в Swagger с помощью JWT:**
 
-- Получить access и refresh токен [здесь](http://localhost:8080/swagger-ui/#/JWT/loginUsingPOST). <code>("password": "admin", "username": "admin@mail.ru")</code>
+- Получить access и refresh токен [здесь](http://localhost:8084/swagger-ui/index.html#/JWT/login). <code>{"password": "admin", "username": "admin@mail.ru"}</code>
 - Авторизация JWT с помощью access токена, по кнопке Authorize, вводим в формате ```Bearer ``` + полученный ранее токен (Bearer обязательно с пробелом).
 - Далее запросы к серверу уже будут содержать ```accessToken```.
 - Время жизни токенов: ```accessToken``` = 24 часа, ```refreshToken``` = 15 дней.

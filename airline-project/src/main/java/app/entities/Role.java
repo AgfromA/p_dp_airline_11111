@@ -1,4 +1,4 @@
-package app.entities.account;
+package app.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

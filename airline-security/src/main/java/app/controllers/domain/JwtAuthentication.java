@@ -1,6 +1,6 @@
 package app.controllers.domain;
 
-import app.entities.account.Role;
+import app.account.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;

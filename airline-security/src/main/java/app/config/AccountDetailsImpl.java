@@ -1,6 +1,6 @@
 package app.config;
 
-import app.entities.account.Account;
+import app.account.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

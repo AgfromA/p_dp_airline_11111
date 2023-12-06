@@ -1,7 +1,7 @@
 package app.services;
 
 import app.dto.AccountDTO;
-import app.entities.account.Account;
+import app.entities.Account;
 import app.mappers.AccountMapper;
 import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;

@@ -1,6 +1,6 @@
 package app.services;
 
-import app.entities.account.Account;
+import app.account.Account;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -61,10 +61,6 @@ public class JwtProviderFull{
                 .compact();
     }
 
-    public boolean validateAccessToken(@NonNull String accessToken) {
-        return validateToken(accessToken, jwtAccessSecret);
-    }
-
     public boolean validateRefreshToken(@NonNull String refreshToken) {
         return validateToken(refreshToken, jwtRefreshSecret);
     }
@@ -90,9 +86,6 @@ public class JwtProviderFull{
         return false;
     }
 
-    public Claims getAccessClaims(@NonNull String token) {
-        return getClaims(token, jwtAccessSecret);
-    }
 
     public Claims getRefreshClaims(@NonNull String token) {
         return getClaims(token, jwtRefreshSecret);
