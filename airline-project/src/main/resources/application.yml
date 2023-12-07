@@ -1,4 +1,3 @@
-
 server:
   port: 8080
   servlet:
@@ -85,9 +84,6 @@ notification:
     milliseconds: 10000
   beforeDeparture:
     seconds: 86400
-
-#logging:
-#  config: classpath:log4j2-dev.yaml
 
 app:
   feign:
