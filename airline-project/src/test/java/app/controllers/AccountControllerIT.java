@@ -1,10 +1,12 @@
 package app.controllers;
 
 import app.dto.AccountDTO;
+import app.mappers.AccountMapper;
 import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -35,6 +37,8 @@ class AccountControllerIT extends IntegrationTestBase {
     @Autowired
     private AccountRepository accountRepository;
 
+    private final AccountMapper accountMapper = Mappers.getMapper(AccountMapper.class);
+
     @Test
     void shouldGetAllAccounts() throws Exception {
         mockMvc.perform(
@@ -50,8 +54,7 @@ class AccountControllerIT extends IntegrationTestBase {
                         get("http://localhost:8080/api/accounts/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        new AccountDTO(accountService.getAccountById(id).get()))));
+                .andExpect(content().json(objectMapper.writeValueAsString(accountMapper.convertToAccountDTO(accountService.getAccountById(id).get()))));
     }
 
     @Test
@@ -98,7 +101,7 @@ class AccountControllerIT extends IntegrationTestBase {
     @Test
     void shouldUpdateAccount() throws Exception {
         Long id = 2L;
-        var updatableAccount = new AccountDTO(accountService.getAccountById(id).get());
+        var updatableAccount = accountMapper.convertToAccountDTO(accountService.getAccountById(id).get());
         updatableAccount.setEmail("test@mail.ru");
         long numberOfAccounts = accountRepository.count();
 
