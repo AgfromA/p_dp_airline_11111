@@ -6,7 +6,6 @@ import app.dto.ExampleDto;
 import app.services.interfaces.ExampleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.logging.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,6 @@ public class ExampleRestController implements ExampleRestApi {
 
     @Override
     public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
-        log.info(String.format("traceId = %s",(MDC.get("traceId"))));
         if (page == null || size == null) {
             return createUnPagedResponse();
         }
