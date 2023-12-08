@@ -29,6 +29,13 @@ spec:
             - name: application-config
               mountPath: /config/application.yml
               subPath: application.yml
+          resources:
+            requests:
+              cpu: 0.5
+              memory: "400Mi"
+            limits:
+              cpu: 2
+              memory: "1Gi"
       volumes:
         - name: application-config
           configMap:
