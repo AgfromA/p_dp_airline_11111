@@ -17,7 +17,6 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/.well-known/jwks.json
-
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
   application:
@@ -85,9 +84,6 @@ notification:
     milliseconds: 10000
   beforeDeparture:
     seconds: 86400
-
-logging:
-  config: classpath:log4j2-dev.yaml
 
 app:
   feign:
