@@ -1,6 +1,5 @@
 package app.services;
 
-
 import app.controllers.domain.JwtRequest;
 import app.controllers.domain.JwtResponse;
 import app.services.interfaces.AccountService;
@@ -69,5 +68,4 @@ public class AuthService {
         }
         throw new AuthException("Невалидный JWT токен");
     }
-
 }

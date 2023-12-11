@@ -14,6 +14,7 @@ import java.io.IOException;
 
 @Component
 public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
     public LoginSuccessHandler(@Value("/") String defaultTargetUrl) {
         setDefaultTargetUrl(defaultTargetUrl);
     }

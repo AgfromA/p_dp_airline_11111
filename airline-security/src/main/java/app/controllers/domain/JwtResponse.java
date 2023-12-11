@@ -7,8 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class JwtResponse {
 
-    private final String type = "Bearer";
+    private static final String JWT_TYPE = "Bearer";
     private String accessToken;
     private String refreshToken;
-
 }

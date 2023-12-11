@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class JwtProviderFull{
+public class JwtProviderFull {
 
     private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;

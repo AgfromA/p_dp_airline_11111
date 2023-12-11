@@ -18,5 +18,4 @@ public interface AccountService {
     Account getAccountByEmail(String email);
 
     void deleteAccountById(Long id);
-
 }

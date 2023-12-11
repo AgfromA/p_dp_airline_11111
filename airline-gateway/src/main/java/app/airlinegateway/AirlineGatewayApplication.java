@@ -1,7 +1,6 @@
 package app.airlinegateway;
 
 import app.security.JwtProviderLite;
-import app.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,6 +1,5 @@
 package app.controllers;
 
-
 import app.controllers.api.JwtControllerApi;
 import app.controllers.domain.JwtRequest;
 import app.controllers.domain.JwtResponse;

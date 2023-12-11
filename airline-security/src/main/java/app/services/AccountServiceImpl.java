@@ -1,8 +1,6 @@
 package app.services;
 
-
 import app.account.Account;
-
 import app.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,4 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountByEmail(String email) {
         return accountRepository.getAccountByEmail(email);
     }
-
 }
-

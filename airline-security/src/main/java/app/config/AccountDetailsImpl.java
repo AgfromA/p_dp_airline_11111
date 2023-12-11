@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
+
 @RequiredArgsConstructor
 public class AccountDetailsImpl implements UserDetails {
 
