@@ -10,9 +10,11 @@ jwt:
 
 airline-project-base-url: http://localhost:8080
 airline-payments-base-url: http://localhost:8081
+airline-front-base-url: http://localhost:8082
 airline-security-base-url: http://localhost:8084
 
 spring:
+  application.name: gateway
   cloud:
     gateway:
       default-filters:
@@ -114,4 +116,9 @@ spring:
           predicates:
             - Path=/api/payments/**
 
+###################   airline-front route
 
+        - id: airline-front
+          uri: ${airline-front-base-url}
+          predicates:
+            - Path=/**

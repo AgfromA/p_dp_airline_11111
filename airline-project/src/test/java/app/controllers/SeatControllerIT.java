@@ -10,6 +10,8 @@ import app.services.interfaces.CategoryService;
 import app.services.interfaces.SeatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -153,5 +155,32 @@ class SeatControllerIT extends IntegrationTestBase {
     void creatingManySeatsForNotExistedAircraft() throws Exception {
         mockMvc.perform(post("http://localhost:8080/api/seats/aircraft/{aircraftId}", 100))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldGetNotExistedSeatsDTOByAircraftId() throws Exception {
+        var aircraftId = 100L;
+        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldGetNotValidExistedSeatsDTOByAircraftId() throws Exception {
+        var aircraftId = "notValid";
+        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetAllPagesSeatsDTOByAircraftId() throws Exception {
+        var aircraftId = 1L;
+        var pageable = PageRequest.of(0, 30, Sort.by("id"));
+        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper
+                        .writeValueAsString(seatService.getPagesSeatsByAircraftId(aircraftId, pageable))));
     }
 }

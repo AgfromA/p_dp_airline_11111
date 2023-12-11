@@ -1,0 +1,41 @@
+Configuration:
+  name: LoggerConfig
+  status: info
+
+  appenders:
+    Console:
+      name: LogToConsole
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %clr{[%4p,%X{traceId},%X{spanId}]} %clr{%pid}{magenta} %clr{---}{faint} %clr{[%4.15t]}{faint} %clr{%-25.50c{1.}}{cyan} %clr{:}{faint} %m%n%xwEx"
+
+    RollingFile:
+      - name: LogToRollingFile
+        fileName: logs/app.log
+        filePattern: "logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"
+        PatternLayout:
+          pattern: "%5p [${spring.application.name:},%X{traceId},%X{spanId}] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: 10MB
+        DefaultRollOverStrategy:
+          max: 10
+
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        ref: LogToConsole
+
+    Logger:
+      - name: info
+        level: info
+        additivity: false
+        AppenderRef:
+          ref: LogToConsole
+
+      - name: org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: LogToConsole
