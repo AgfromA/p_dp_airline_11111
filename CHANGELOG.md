@@ -3,6 +3,8 @@
 ## [Unreleased]
 - #332 Можно отправить во фронт информативное сообщение об ошибке поиска в одну строку: throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
 - #282 Добавлен View для Aircraft(в т.ч. клиент feign). DTO и API перенесено в Common. DTO теперь использует Mapper. Методы createAircraft() и updateAircraft() в API Теперь возвращает DTO вместо Entity;
+- #327 Рефакторинг Security. Аутентифкация на стороне security модуля, авторизация на стороне gateway
+- #282 Добавлен View для Aircraft(в т.ч. клиент feign). DTO и API перенесено в Common. DTO теперь использует Mapper. Методы createAircraft() и updateAircraft() в API Теперь возвращает DTO вместо Entity
 - #308 Добавлен сервис аутентификации через Google ("airline-oauth"), добавлена кнопка "Вход с google" во view. Работа сервиса описана в README oauth
 - #292 Добавлен view для timezone(в т.ч. клиент feign), исправлен вызов delete метода в интерфейсе рест контроллера (в common). Переписан контроллер для Timezone, перенесены example и exampleMapper в project
 - #296 Добавлен Mapper через MupStruck, Изменены зависимости в классе PassengerServiceImpl (логика в методах класса не менялась), Удален класс PassengerMapper, Добавлен unit тест для PassengerMapper (тест проходит успешно)
@@ -21,6 +23,7 @@
 - #321 Фронт для поиска свободных мест и отображения результатов, рефакторинг FlightDTO, FlightSeat, Search, SearchResult
 - #321 Рефакторинг DestinationDTO, FlightSeatDTO, фронт Destination, обработка FeignException во фронте
 - #192 Добавлены тесты на ендпоинт api/seats/aircraft/{aircraftId}
+- #286 Добавлен фронт для Flight
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.

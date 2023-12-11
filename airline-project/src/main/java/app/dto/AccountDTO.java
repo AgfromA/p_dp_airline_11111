@@ -1,13 +1,10 @@
 package app.dto;
 
-import app.entities.account.Account;
-import app.entities.account.Role;
-import com.fasterxml.jackson.annotation.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import app.entities.Role;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -58,17 +55,4 @@ public class AccountDTO {
     private String answerQuestion;
 
     private Set<Role> roles;
-
-    public AccountDTO(Account account) {
-        this.id = account.getId();
-        this.firstName = account.getFirstName();
-        this.lastName = account.getLastName();
-        this.birthDate = account.getBirthDate();
-        this.email = account.getEmail();
-        this.phoneNumber = account.getPhoneNumber();
-        this.password = account.getPassword();
-        this.securityQuestion = account.getSecurityQuestion();
-        this.answerQuestion = account.getAnswerQuestion();
-        this.roles = account.getRoles();
-    }
 }

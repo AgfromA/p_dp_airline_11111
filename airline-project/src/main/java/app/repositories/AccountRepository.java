@@ -1,6 +1,6 @@
 package app.repositories;
 
-import app.entities.account.Account;
+import app.entities.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

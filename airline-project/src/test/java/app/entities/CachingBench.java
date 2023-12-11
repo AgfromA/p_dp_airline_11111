@@ -1,8 +1,6 @@
 package app.entities;
 
 import app.controllers.IntegrationTestBase;
-import app.entities.account.Account;
-import app.entities.account.Role;
 import app.repositories.AccountRepository;
 import app.repositories.RoleRepository;
 import app.services.AccountServiceImpl;

@@ -1,6 +1,6 @@
 package app.services.interfaces;
 
-import app.entities.account.Role;
+import app.entities.Role;
 
 import java.util.List;
 

@@ -4,16 +4,29 @@ server:
     session:
       timeout: -1
 
+jwt:
+  secret:
+    access: QZnCUVCnP3aukiTOa8XxPkfHODqpXB9xkg/o72yhIh4GE3BPiZszU4fYjJZTbcUcyGM/Bb5N81rv9Csq7blwCA==
+
 airline-project-base-url: http://localhost:8080
 airline-payments-base-url: http://localhost:8081
 airline-front-base-url: http://localhost:8082
-
+airline-security-base-url: http://localhost:8084
 
 spring:
   application.name: gateway
   cloud:
     gateway:
+      default-filters:
+        - AuthenticationFilter
+
       routes:
+###################   airline-security route
+        - id: airline-project_accounts_api
+          uri: ${airline-security-base-url}
+          predicates:
+            - Path=/api/auth/**
+
 ###################   airline-project route
 
         - id: airline-project_accounts_api
@@ -90,6 +103,11 @@ spring:
           uri: ${airline-project-base-url}
           predicates:
             - Path=/email/**
+
+        - id: airline-project_example_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/example/**
 
 ###################   airline-payments route
 
