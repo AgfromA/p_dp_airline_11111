@@ -6,7 +6,6 @@ import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.entities.Seat;
 import app.enums.CategoryType;
-import app.util.aop.Loggable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
