@@ -173,13 +173,13 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "Seat found"),
             @ApiResponse(code = 404, message = "Seat not found")
     })
-    List<SeatDTO> getAllSeatDTO();
+    ResponseEntity<List<SeatDTO>> getAllSeatDTO();
 
-    @RequestMapping(value = "/api/flight-seats/seats/allSeats", method = RequestMethod.GET)
-    @ApiOperation(value = "Get all Flight Seats DTOO")
+    @RequestMapping(value = "/api/flight-seats/seats/all-seats", method = RequestMethod.GET)
+    @ApiOperation(value = "Get all list Flight Seats DTO")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Seat found"),
             @ApiResponse(code = 404, message = "Seat not found")
     })
-    List<FlightSeatDTO> getAllFlightSeatDTOO();
+    ResponseEntity<List<FlightSeatDTO>> getAllListFlightSeatDTO();
 }

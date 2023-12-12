@@ -140,27 +140,27 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public List<SeatDTO> getAllSeatDTO() {
+    public ResponseEntity<List<SeatDTO>> getAllSeatDTO() {
         var seats = flightSeatService.getAllSeatDTO();
         if (!seats.isEmpty()) {
-            log.info("getAll: found {} Flight Seats", seats.size());
-            return seats;
+            log.info("getAll: found {} Seats", seats.size());
+            return ResponseEntity.ok(seats);
         } else {
-            log.info("getAll: Flight Seats not found");
-            return new ArrayList<>();
+            log.info("getAll: Seats not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public List<FlightSeatDTO> getAllFlightSeatDTOO() {
-        var seats = flightSeatService.getAllFlightSeats();
+    public ResponseEntity<List<FlightSeatDTO>> getAllListFlightSeatDTO() {
+        var seats = flightSeatService.getAllListFlightSeats();
         if (!seats.isEmpty()) {
-            log.info("getAll: found {} Flight Seats", seats.size());
-            return seats.stream().map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService))
-                    .collect(Collectors.toList());
+            log.info("getAll List : found {} Flight Seats", seats.size());
+            return ResponseEntity.ok(seats.stream().map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService))
+                    .collect(Collectors.toList()));
         } else {
-            log.info("getAll: Flight Seats not found");
-            return new ArrayList<>();
+            log.info("getAll List: Flight Seats not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

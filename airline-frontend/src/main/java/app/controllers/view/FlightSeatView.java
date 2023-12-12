@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,7 +61,7 @@ public class FlightSeatView extends VerticalLayout {
     public FlightSeatView(FlightSeatClient flightSeatClient) {
         this.flightSeatClient = flightSeatClient;
         this.response = flightSeatClient.getAllFlightSeatDTO(currentPage, 10);
-        this.dataSourceAll = flightSeatClient.getAllSeatDTO();
+        this.dataSourceAll = flightSeatClient.getAllSeatDTO().getBody();
         this.currentPage = 0;
         this.isSearchByFare = false;
         this.isSearchById = false;
@@ -273,32 +274,24 @@ public class FlightSeatView extends VerticalLayout {
     }
 
     private void searchByFare() {
-        List<FlightSeatDTO> allFlightSeatDTO = flightSeatClient.getAllFlightSeatDTOO();
-        allFlightSeatDTO.sort(Comparator.comparing(FlightSeatDTO::getFare));
+        List<FlightSeatDTO> allFlightSeatDTO = flightSeatClient.getAllListFlightSeatDTO().getBody();
         Integer min = minFareSearchField.getValue();
         Integer max = maxFareSearchField.getValue();
-        dataSource.clear();
-        if (!allFlightSeatDTO.isEmpty()) {
-            try {
-                for (FlightSeatDTO seat : allFlightSeatDTO) {
-                    Integer fare = seat.getFare();
-                    if (fare >= min && fare <= max) {
-                        dataSource.add(seat);
-                    }
-                }
-            } catch (FeignException.NotFound ex) {
-                log.error(ex.getMessage());
-                Notification.show(" Flight Seat with this cost = not found.", 3000, Notification.Position.TOP_CENTER);
-                return;
+        List<FlightSeatDTO> filteredListSeats = new ArrayList<>();
+        for (FlightSeatDTO seat : allFlightSeatDTO) {
+            Integer fare = seat.getFare();
+            if (fare >= min && fare <= max) {
+                filteredListSeats.add(seat);
             }
         }
-        if (allFlightSeatDTO.isEmpty()) {
-            Notification.show(" Flight Seat with this cost = not found.", 3000, Notification.Position.TOP_CENTER);
+        if (filteredListSeats.isEmpty()) {
+            Notification.show(" Flight Seat with this cost not found.", 3000, Notification.Position.TOP_CENTER);
             return;
         }
+        filteredListSeats.sort(Comparator.comparing(FlightSeatDTO::getFare));
+        dataSource.clear();
+        dataSource.addAll(filteredListSeats);
         isSearchByFare = true;
-        currentPage = 0;
-        maxPages = allFlightSeatDTO.size() / 10 + 1;
         grid.getDataProvider().refreshAll();
     }
 

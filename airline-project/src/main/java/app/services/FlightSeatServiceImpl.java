@@ -22,10 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +39,14 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Loggable
     public Set<FlightSeat> getAllFlightSeats() {
         Set<FlightSeat> flightSeatSet = new HashSet<>();
+        flightSeatRepository.findAll().forEach(flightSeatSet::add);
+        return flightSeatSet;
+    }
+
+    @Override
+    @Loggable
+    public List<FlightSeat> getAllListFlightSeats() {
+        List<FlightSeat> flightSeatSet = new ArrayList<>();
         flightSeatRepository.findAll().forEach(flightSeatSet::add);
         return flightSeatSet;
     }
