@@ -2,23 +2,20 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.FlightSeatRestApi;
 import app.dto.FlightSeatDTO;
+import app.dto.SeatDTO;
 import app.enums.CategoryType;
 import app.mappers.FlightSeatMapper;
 import app.services.FlightSeatServiceImpl;
 import app.services.interfaces.FlightService;
-import app.services.interfaces.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,7 +50,6 @@ public class FlightSeatRestController implements FlightSeatRestApi {
                 ResponseEntity.notFound().build() :
                 ResponseEntity.ok(result);
     }
-
 
     @Override
     public ResponseEntity<FlightSeatDTO> getFlightSeatDTOById(Long id) {
@@ -116,6 +112,55 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         } catch (Exception e) {
             log.error("deleteFlightSeatById: error while deleting - FlightSeat with id={} not found.", id);
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<FlightSeatDTO> createFlightSeatDTO(FlightSeatDTO flightSeatDTO) {
+        if (flightService.getFlightById(flightSeatDTO.getFlightId()) == null) {
+            log.error("Flight with id = {} not found", flightSeatDTO.getFlightId());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        log.info("create: Flight Seat saved with id= {}", flightSeatDTO.getId());
+        return ResponseEntity.ok(FlightSeatMapper.INSTANCE
+                .convertToFlightSeatDTOEntity(flightSeatService.saveFlightSeatDTO(flightSeatDTO), flightService));
+
+    }
+
+    @Override
+    public ResponseEntity<Page<FlightSeatDTO>> getAllFlightSeatDTO(Integer page, Integer size) {
+        var seats = flightSeatService.getAllFlightSeats(page, size);
+        if (!seats.isEmpty()) {
+            log.info("getAll: found {} Flight Seats", seats.getSize());
+            return ResponseEntity.ok(seats.map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService)));
+        } else {
+            log.info("getAll: Flight Seats not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<SeatDTO>> getAllSeatDTO() {
+        var seats = flightSeatService.getAllSeatDTO();
+        if (!seats.isEmpty()) {
+            log.info("getAll: found {} Seats", seats.size());
+            return ResponseEntity.ok(seats);
+        } else {
+            log.info("getAll: Seats not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<FlightSeatDTO>> getAllListFlightSeatDTO() {
+        var seats = flightSeatService.getAllListFlightSeats();
+        if (!seats.isEmpty()) {
+            log.info("getAll List : found {} Flight Seats", seats.size());
+            return ResponseEntity.ok(seats.stream().map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService))
+                    .collect(Collectors.toList()));
+        } else {
+            log.info("getAll List: Flight Seats not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
