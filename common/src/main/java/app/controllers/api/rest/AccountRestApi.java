@@ -61,7 +61,7 @@ public interface AccountRestApi {
                     value = "Account model"
             )
             @RequestBody
-            @Valid
+            //@Valid fix it
             AccountDTO accountDTO);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.PATCH)
@@ -80,7 +80,7 @@ public interface AccountRestApi {
                     value = "AccountDto"
             )
             @RequestBody
-            @Valid
+            //@Valid
             AccountDTO accountDTO);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.DELETE)
