@@ -1,25 +1,25 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.AccountRestApi;
+import app.dto.AccountDTO;
+import app.dto.RoleDTO;
 import app.mappers.AccountMapper;
-import app.mappers.AircraftMapper;
 import app.security.JwtProviderLite;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
-import app.dto.AccountDTO;
-import app.entities.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.MethodNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -33,12 +33,38 @@ public class AccountRestController implements AccountRestApi {
     private final AccountMapper accountMapper = Mappers.getMapper(AccountMapper.class);
 
     @Override
-    public ResponseEntity<Page> getAllAccountsPages(Integer page, Integer size) {
+    public ResponseEntity<Page<AccountDTO>> getPage(Integer page, Integer size) {
         log.info("getAll: get all Accounts");
-        var users = accountService.getAllAccounts(page, size);
-        return users.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(users, HttpStatus.OK);
+        if (page == null || size == null) {
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            return ResponseEntity.noContent().build();
+        }
+
+        var accountPage = accountService.getPage(page, size);
+        if (accountPage.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return createPagedResponse(accountPage);
+        }
+    }
+
+    private ResponseEntity<Page<AccountDTO>> createUnPagedResponse() {
+        var account = accountService.findAll();
+        if (account.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(new PageImpl<>(account.stream().collect(Collectors.toList())));
+    }
+
+    private ResponseEntity<Page<AccountDTO>> createPagedResponse(Page<AccountDTO> accountPage) {
+        var accountDTOPage = new PageImpl<>(
+                accountPage.getContent().stream().collect(Collectors.toList()),
+                accountPage.getPageable(),
+                accountPage.getTotalElements()
+        );
+        return ResponseEntity.ok(accountDTOPage);
     }
 
     @Override
@@ -47,7 +73,7 @@ public class AccountRestController implements AccountRestApi {
         var account = accountService.getAccountById(id);
         return account.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(accountMapper.convertToAccountDTO(account.get()), HttpStatus.OK);
+                : new ResponseEntity<>(account.get(), HttpStatus.OK);
     }
 
     @Override
@@ -58,23 +84,21 @@ public class AccountRestController implements AccountRestApi {
             token = token.substring(7);
             String username = jwtProvider.extractClaims(token).get().getSubject();
             var authAccount = accountService.getAccountByEmail(username);
-            return ResponseEntity.ok(accountMapper.convertToAccountDTO(authAccount));
+            return ResponseEntity.ok(authAccount);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @Override
-    public ResponseEntity<AccountDTO> createAccountDTO(AccountDTO accountDTO)
-            throws MethodNotSupportedException {
+    public ResponseEntity<AccountDTO> createAccountDTO(AccountDTO accountDTO) {
         log.info("create: create new Account with email={}", accountDTO.getEmail());
         return ResponseEntity.ok(accountMapper.convertToAccountDTO((accountService.saveAccount(accountDTO))));
     }
 
     @Override
-    public ResponseEntity<AccountDTO> updateAccountDTOById(Long id, AccountDTO accountDTO)
-            throws MethodNotSupportedException {
+    public ResponseEntity<AccountDTO> updateAccountDTOById(Long id, AccountDTO accountDTO) {
         log.info("update: update Account with id = {}", id);
-        return new ResponseEntity<>(accountMapper.convertToAccountDTO( accountService.updateAccount(id,accountDTO)), HttpStatus.OK);
+        return new ResponseEntity<>( accountService.updateAccount(id,accountDTO).get(), HttpStatus.OK);
     }
 
     @Override
@@ -89,10 +113,10 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<List<Role>> getAllRoles() {
+    public ResponseEntity<Set<RoleDTO>> getAllRoles() {
         var allRolesFromDb = roleService.getAllRoles();
         if (allRolesFromDb.isEmpty()) {
-            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(Collections.emptySet(), HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(allRolesFromDb);
     }

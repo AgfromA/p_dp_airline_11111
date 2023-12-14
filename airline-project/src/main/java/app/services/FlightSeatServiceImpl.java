@@ -1,11 +1,13 @@
 package app.services;
 
 import app.dto.FlightSeatDTO;
+import app.dto.SeatDTO;
 import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.entities.Seat;
 import app.enums.CategoryType;
 import app.mappers.FlightSeatMapper;
+import app.mappers.SeatMapper;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
@@ -20,10 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +39,14 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Loggable
     public Set<FlightSeat> getAllFlightSeats() {
         Set<FlightSeat> flightSeatSet = new HashSet<>();
+        flightSeatRepository.findAll().forEach(flightSeatSet::add);
+        return flightSeatSet;
+    }
+
+    @Override
+    @Loggable
+    public List<FlightSeat> getAllListFlightSeats() {
+        List<FlightSeat> flightSeatSet = new ArrayList<>();
         flightSeatRepository.findAll().forEach(flightSeatSet::add);
         return flightSeatSet;
     }
@@ -142,7 +149,24 @@ public class FlightSeatServiceImpl implements FlightSeatService {
         return flightSeatRepository.save(flightSeat);
     }
 
+    @Override
+    @Transactional
     @Loggable
+    public FlightSeat saveFlightSeatDTO(FlightSeatDTO flightSeatDTO) {
+        var flightSeat = FlightSeatMapper.INSTANCE.convertToFlightSeatEntity(flightSeatDTO, flightService, seatService);
+        if (flightSeat.getId() == null) {
+            return flightSeatRepository.save(flightSeat);
+        } else {
+            var oldFlightSeat = getFlightSeatById(flightSeat.getId());
+            if (oldFlightSeat.isPresent() && oldFlightSeat.get().getSeat() != null) {
+                flightSeat.setSeat(oldFlightSeat.get().getSeat());
+            }
+            return flightSeatRepository.save(flightSeat);
+        }
+    }
+
+    @Loggable
+    @Transactional
     public FlightSeat editFlightSeat(Long id, FlightSeatDTO flightSeatDTO) {
         var flightSeat = FlightSeatMapper.INSTANCE.convertToFlightSeatEntity(flightSeatDTO, flightService, seatService);
         var targetFlightSeat = flightSeatRepository.findById(id).orElse(null);
@@ -186,6 +210,11 @@ public class FlightSeatServiceImpl implements FlightSeatService {
             setOfSeat.remove(s);
         }
         return setOfSeat;
+    }
+
+    @Override
+    public List<SeatDTO> getAllSeatDTO() {
+        return seatRepository.findAll().stream().map(SeatMapper.INSTANCE::convertToSeatDTOEntity).collect(Collectors.toList());
     }
 
     @Override
@@ -270,7 +299,4 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
         return Math.round(fare / 10) * 10;
     }
-
-
-
 }

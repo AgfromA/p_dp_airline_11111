@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,7 @@ import javax.persistence.Table;
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = {"name"})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@ToString
 public class Role implements GrantedAuthority {
 
     @Id

@@ -77,6 +77,5 @@ public class Account {
             joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @NotNull
-    @ToString.Exclude
     private Set<Role> roles;
 }

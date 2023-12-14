@@ -1,6 +1,7 @@
 package app.mappers;
 
 import app.dto.AccountDTO;
+import app.dto.RoleDTO;
 import app.entities.Account;
 import app.entities.Role;
 import app.services.interfaces.RoleService;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
@@ -27,8 +29,8 @@ class AccountMapperTest {
         Role role = new Role();
         role.setId(1L);
         role.setName("ROLE_MANAGER");
-
-        when(roleServiceMock.getRoleByName("ROLE_MANAGER")).thenReturn(role);
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
 
         Account account = new Account();
 
@@ -41,7 +43,7 @@ class AccountMapperTest {
         account.setPassword("Test123@");
         account.setAnswerQuestion("Test");
         account.setSecurityQuestion("Test");
-        account.setRoles(Set.of(roleServiceMock.getRoleByName("ROLE_MANAGER")));
+        account.setRoles(roles);
 
         AccountDTO accountDTO = accountMapper.convertToAccountDTO(account);
 
@@ -54,13 +56,13 @@ class AccountMapperTest {
         Assertions.assertEquals(account.getPassword(), accountDTO.getPassword());
         Assertions.assertEquals(account.getAnswerQuestion(), accountDTO.getAnswerQuestion());
         Assertions.assertEquals(account.getSecurityQuestion(), accountDTO.getSecurityQuestion());
-        Assertions.assertEquals(account.getRoles(), accountDTO.getRoles());
+        Assertions.assertEquals(account.getRoles().iterator().next().getName(), accountDTO.getRoles().iterator().next().getName());
 
     }
 
     @Test
     public void shouldConvertAccountDTOToAccount() throws Exception {
-        Role role = new Role();
+        RoleDTO role = new RoleDTO();
         role.setId(1L);
         role.setName("ROLE_MANAGER");
 
@@ -90,7 +92,7 @@ class AccountMapperTest {
         Assertions.assertEquals(accountDTO.getPassword(), account.getPassword());
         Assertions.assertEquals(accountDTO.getAnswerQuestion(), account.getAnswerQuestion());
         Assertions.assertEquals(accountDTO.getSecurityQuestion(), account.getSecurityQuestion());
-        Assertions.assertEquals(accountDTO.getRoles(), account.getRoles());
+        Assertions.assertEquals(accountDTO.getRoles().iterator().next().getName(), account.getRoles().iterator().next().getName());
 
     }
 }

@@ -1,36 +1,40 @@
 package app.controllers.api.rest;
 
 import app.dto.AccountDTO;
-import app.entities.Role;
-import io.swagger.annotations.*;
+import app.dto.RoleDTO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.mail.MethodNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import java.util.List;
+import java.util.Set;
 
 @Api(tags = "Account REST")
 @Tag(name = "Account REST", description = "API для операций с пользователем")
-@RequestMapping("/api/accounts")
 public interface AccountRestApi {
 
-    @GetMapping
+    @RequestMapping(value = "/api/accounts", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of all Accounts")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Accounts found"),
             @ApiResponse(code = 204, message = "Accounts not found")})
-    ResponseEntity<Page> getAllAccountsPages(@PageableDefault(sort = {"id"})
-                                             @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-                                             @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size);
+    ResponseEntity<Page<AccountDTO>> getPage(@ApiParam(name = "page")
+                                             @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                             @ApiParam(name = "size")
+                                             @RequestParam(value = "size", defaultValue = "10") Integer size);
 
-    @GetMapping("/{id}")
+    @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Account by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account found"),
@@ -40,24 +44,27 @@ public interface AccountRestApi {
                     name = "id",
                     value = "Account.id"
             )
-            @PathVariable Long id);
+            @PathVariable (value = "id")Long id);
 
-    @GetMapping("/auth")
+    @RequestMapping(value = "/api/accounts/auth", method = RequestMethod.GET)
     @ApiOperation(value = "Get authenticated Account")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Account found")})
     ResponseEntity<AccountDTO> getAuthenticatedAccount(HttpServletRequest request);
 
-    @PostMapping
+    @RequestMapping(value = "/api/accounts", method = RequestMethod.POST)
     @ApiOperation(value = "Create Account")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Account created")})
-    ResponseEntity<AccountDTO> createAccountDTO(
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Account created"),
+                            @ApiResponse(code = 500, message = "Server error")})
+    ResponseEntity<AccountDTO> createAccountDTO (
             @ApiParam(
                     name = "account",
                     value = "Account model"
             )
-            @RequestBody @Valid AccountDTO accountDTO) throws MethodNotSupportedException;
+            @RequestBody
+            @Valid
+            AccountDTO accountDTO);
 
-    @PatchMapping("/{id}")
+    @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Update Account by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account updated"),
@@ -67,14 +74,16 @@ public interface AccountRestApi {
                     name = "id",
                     value = "Account.id"
             )
-            @PathVariable("id") Long id,
+            @PathVariable(value = "id") Long id,
             @ApiParam(
-                    name = "accountDTO",
-                    value = "Account model"
+                    name = "account",
+                    value = "AccountDto"
             )
-            @RequestBody AccountDTO accountDTO) throws MethodNotSupportedException;
+            @RequestBody
+            @Valid
+            AccountDTO accountDTO);
 
-    @DeleteMapping("/{id}")
+    @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete Account by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account deleted"),
@@ -84,12 +93,12 @@ public interface AccountRestApi {
                     name = "id",
                     value = "Account.id"
             )
-            @PathVariable Long id);
+            @PathVariable (value = "id") Long id);
 
-    @GetMapping("/all-roles")
+    @RequestMapping(value = "/api/accounts/all-roles", method = RequestMethod.GET)
     @ApiOperation(value = "Get all existing roles")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Roles found"),
             @ApiResponse(code = 204, message = "No Role saved")})
-    ResponseEntity<List<Role>> getAllRoles();
+    ResponseEntity<Set<RoleDTO>> getAllRoles();
 }
