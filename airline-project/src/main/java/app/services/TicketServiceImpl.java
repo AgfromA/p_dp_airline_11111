@@ -3,6 +3,7 @@ package app.services;
 import app.dto.TicketDTO;
 import app.entities.Ticket;
 
+import app.exceptions.EntityNotFoundException;
 import app.mappers.TicketMapper;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
@@ -51,6 +52,18 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     public Ticket saveTicket(TicketDTO ticketDTO) {
+        if (passengerService.getPassengerById(ticketDTO.getPassengerId()).isEmpty()) {
+            throw new EntityNotFoundException("Operation was not finished because Passenger was not found with id = "
+                    + ticketDTO.getPassengerId());
+        }
+        if (flightService.getFlightById(ticketDTO.getFlightId()).isEmpty()) {
+            throw new EntityNotFoundException("Operation was not finished because Flight was not found with id = "
+                    + ticketDTO.getFlightId());
+        }
+        if (flightSeatService.getFlightSeatById(ticketDTO.getFlightSeatId()).isEmpty()) {
+            throw new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = "
+                    + ticketDTO.getFlightSeatId());
+        }
         var ticket = ticketMapper.convertToTicketEntity(ticketDTO, passengerService, flightService, flightSeatService);
         ticket.setPassenger(passengerRepository.findByEmail(ticket.getPassenger().getEmail()));
         ticket.setFlight(flightRepository.findByCodeWithLinkedEntities(ticket.getFlight().getCode()));
