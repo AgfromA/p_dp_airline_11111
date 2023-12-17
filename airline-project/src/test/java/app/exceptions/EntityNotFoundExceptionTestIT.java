@@ -1,7 +1,7 @@
 package app.exceptions;
 
 import app.controllers.IntegrationTestBase;
-import app.dto.TicketDTO;
+import app.mappers.TicketMapper;
 import app.services.interfaces.TicketService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,14 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
 
     @Autowired
     private TicketService ticketService;
+    @Autowired
+    private TicketMapper ticketMapper;
 
     @Test
     void shouldThrowExceptionIfPassengerIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = new TicketDTO(newTicket);
+        var ticketDTO = ticketMapper.convertToTicketDTO(newTicket);
         ticketDTO.setPassengerId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
@@ -37,7 +39,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
     void shouldThrowExceptionIfFlightIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = new TicketDTO(newTicket);
+        var ticketDTO = ticketMapper.convertToTicketDTO(newTicket);
         ticketDTO.setFlightId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
@@ -51,7 +53,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
     void shouldThrowExceptionIfIFlightSeatIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = new TicketDTO(newTicket);
+        var ticketDTO = ticketMapper.convertToTicketDTO(newTicket);
         ticketDTO.setFlightSeatId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))

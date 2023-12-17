@@ -21,7 +21,8 @@
 - #321 Фронт для поиска свободных мест и отображения результатов, рефакторинг FlightDTO, FlightSeat, Search, SearchResult
 - #321 Рефакторинг DestinationDTO, FlightSeatDTO, фронт Destination, обработка FeignException во фронте
 - #192 Добавлены тесты на ендпоинт api/seats/aircraft/{aircraftId}
-- #287 Добавлен фронт-круд для FlightSeat с поиском по id и цене
+- #286 Добавлен фронт для Flight
+- #301 Переход TicketMapper на Mapstruct, добавлен junit тест
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.
