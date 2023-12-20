@@ -3,12 +3,16 @@ package app.services;
 import app.dto.TicketDTO;
 import app.entities.Ticket;
 
+import app.exceptions.EntityNotFoundException;
+import app.mappers.TicketMapper;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.repositories.PassengerRepository;
 import app.repositories.TicketRepository;
+import app.services.interfaces.FlightSeatService;
+import app.services.interfaces.FlightService;
+import app.services.interfaces.PassengerService;
 import app.services.interfaces.TicketService;
-import app.util.mappers.TicketMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +29,9 @@ public class TicketServiceImpl implements TicketService {
     private final FlightRepository flightRepository;
     private final FlightSeatRepository flightSeatRepository;
     private final TicketMapper ticketMapper;
+    private final PassengerService passengerService;
+    private final FlightService flightService;
+    private final FlightSeatService flightSeatService;
 
     @Override
     public Page<Ticket> getAllTickets(int page, int size) {
@@ -45,13 +52,25 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     public Ticket saveTicket(TicketDTO ticketDTO) {
-        var ticket = ticketMapper.convertToTicketEntity(ticketDTO);
+        if (passengerService.getPassengerById(ticketDTO.getPassengerId()).isEmpty()) {
+            throw new EntityNotFoundException("Operation was not finished because Passenger was not found with id = "
+                    + ticketDTO.getPassengerId());
+        }
+        if (flightService.getFlightById(ticketDTO.getFlightId()).isEmpty()) {
+            throw new EntityNotFoundException("Operation was not finished because Flight was not found with id = "
+                    + ticketDTO.getFlightId());
+        }
+        if (flightSeatService.getFlightSeatById(ticketDTO.getFlightSeatId()).isEmpty()) {
+            throw new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = "
+                    + ticketDTO.getFlightSeatId());
+        }
+        var ticket = ticketMapper.convertToTicketEntity(ticketDTO, passengerService, flightService, flightSeatService);
         ticket.setPassenger(passengerRepository.findByEmail(ticket.getPassenger().getEmail()));
         ticket.setFlight(flightRepository.findByCodeWithLinkedEntities(ticket.getFlight().getCode()));
         ticket.setFlightSeat(flightSeatRepository
                 .findFlightSeatByFlightAndSeat(
-                ticket.getFlight().getCode(),
-                ticket.getFlightSeat().getSeat().getSeatNumber()
+                        ticket.getFlight().getCode(),
+                        ticket.getFlightSeat().getSeat().getSeatNumber()
                 ).orElse(null));
         return ticketRepository.save(ticket);
     }
@@ -59,7 +78,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     public Ticket updateTicketById(Long id, TicketDTO ticketDTO) {
-        var updatedTicket = ticketMapper.convertToTicketEntity(ticketDTO);
+        var updatedTicket = ticketMapper.convertToTicketEntity(ticketDTO, passengerService, flightService, flightSeatService);
         updatedTicket.setId(id);
         if (updatedTicket.getFlight() == null) {
             updatedTicket.setFlight(ticketRepository.findTicketById(id).getFlight());
@@ -77,9 +96,10 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public long [] getArrayOfFlightSeatIdByPassengerId(long passengerId) {
+    public long[] getArrayOfFlightSeatIdByPassengerId(long passengerId) {
         return ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId);
     }
+
     @Override
     @Transactional
     public void deleteTicketByPassengerId(long passengerId) {

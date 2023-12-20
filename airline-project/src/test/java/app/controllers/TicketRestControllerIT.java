@@ -1,7 +1,7 @@
 package app.controllers;
 
-import app.dto.TicketDTO;
 import app.entities.Ticket;
+import app.mappers.TicketMapper;
 import app.repositories.TicketRepository;
 import app.services.interfaces.TicketService;
 import org.junit.jupiter.api.Test;
@@ -28,13 +28,15 @@ class TicketRestControllerIT extends IntegrationTestBase {
     private TicketService ticketService;
     @Autowired
     private TicketRepository ticketRepository;
+    @Autowired
+    private TicketMapper ticketMapper;
 
     @Test
     void createTicket_test() throws Exception {
         Ticket newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
         newTicket.setId(null);
-        var ticketDTO = new TicketDTO(newTicket);
+        var ticketDTO = ticketMapper.convertToTicketDTO(newTicket);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -55,7 +57,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
 
     @Test
     void updateTicket_test() throws Exception {
-        var ticketDTO = new TicketDTO(ticketService.getTicketByTicketNumber("ZX-3333"));
+        var ticketDTO = ticketMapper.convertToTicketDTO(ticketService.getTicketByTicketNumber("ZX-3333"));
         ticketDTO.setTicketNumber("ZX-2222");
         long numberOfTicket = ticketRepository.count();
 

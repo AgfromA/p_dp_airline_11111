@@ -47,7 +47,7 @@ class AccountControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldGetAccountById() throws Exception {
-        var id = 3L;
+        var id = 4L;
         mockMvc.perform(
                         get("http://localhost:8080/api/accounts/{id}", id))
                 .andDo(print())
@@ -87,7 +87,7 @@ class AccountControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldDeleteAccountById() throws Exception {
-        var id = 3L;
+        var id = 4L;
         mockMvc.perform(delete("http://localhost:8080/api/accounts/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -99,7 +99,7 @@ class AccountControllerIT extends IntegrationTestBase {
     @Transactional
     @Test
     void shouldUpdateAccount() throws Exception {
-        Long id = 2L;
+        Long id = 4L;
         var updatableAccount = accountService.getAccountById(id).get();
         updatableAccount.setEmail("test@mail.ru");
         long numberOfAccounts = accountRepository.count();

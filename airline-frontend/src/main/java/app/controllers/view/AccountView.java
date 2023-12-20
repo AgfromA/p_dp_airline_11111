@@ -26,6 +26,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -217,9 +218,15 @@ public class AccountView extends VerticalLayout {
                 .bind(AccountDTO::getRoles, AccountDTO::setRoles);
         Set<RoleDTO> roles = accountClient.getAllRoles().getBody();
         Iterator iterator = roles.iterator();
+        var list = new ArrayList<RoleDTO>();
         while (iterator.hasNext()) {
-            comboBox.setItems((RoleDTO) iterator.next(), (RoleDTO)iterator.next());
+            list.add((RoleDTO) iterator.next());
         }
+        var roleArray = new RoleDTO[list.size()];
+        for (int i = 0; i < roleArray.length-1; i++) {
+            roleArray[i] = list.get(i);
+        }
+            comboBox.setItems(roleArray);
         rolesColumn.setEditorComponent(comboBox);
     }
 
@@ -309,12 +316,12 @@ public class AccountView extends VerticalLayout {
                 editor.editItem(account);
             });
             return update;
-        });
+        }).setWidth("150px");
     }
 
     private Grid.Column<AccountDTO> createRolesColumn() {
         return grid.addColumn(AccountDTO::getRoles).setHeader("AccountRoles")
-                .setWidth("600px").setFlexGrow(0);
+                .setWidth("400px").setFlexGrow(0);
     }
 
     private Grid.Column<AccountDTO> createEmailColumn() {
