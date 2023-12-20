@@ -5,6 +5,7 @@ import app.entities.Account;
 import app.mappers.AccountMapper;
 import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;
+import app.services.interfaces.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -21,62 +24,84 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder encoder;
-    private final RoleServiceImpl roleService;
+    private final RoleService roleService;
     private final AccountMapper accountMapper;
 
     @Override
+    public List<AccountDTO> findAll(){
+        return accountRepository.findAll()
+                .stream()
+                .map(accountMapper::convertToAccountDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Account saveAccount(AccountDTO accountDTO) {
-        var account = accountMapper.convertToAccount(accountDTO);
-        account.setPassword(encoder.encode(account.getPassword()));
-        account.setRoles(roleService.saveRolesToUser(account));
-        if (account.getAnswerQuestion() != null) {
-            account.setAnswerQuestion(encoder.encode(account.getAnswerQuestion()));
+        accountDTO.setPassword(encoder.encode(accountDTO.getPassword()));
+        accountDTO.setRoles(roleService.saveRolesToUser(accountDTO));
+        if (accountDTO.getAnswerQuestion() != null) {
+            accountDTO.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
+        var account = accountMapper.convertToAccount(accountDTO);
         return accountRepository.saveAndFlush(account);
     }
 
     @Override
-    public Account updateAccount(Long id, AccountDTO accountDTO) {
-        var editAccount = accountRepository.getAccountById(id);
-        var account = accountMapper.convertToAccount(accountDTO);
-        if (!account.getPassword().equals(editAccount.getPassword())) {
-            editAccount.setPassword(encoder.encode(account.getPassword()));
+    public Optional<AccountDTO> updateAccount(Long id, AccountDTO accountDTO) {
+        Optional<AccountDTO> optionalSavedAccount = getAccountById(id);
+        AccountDTO savedAccount;
+        if (optionalSavedAccount.isEmpty()) {
+            return optionalSavedAccount;
+        } else {
+            savedAccount = optionalSavedAccount.get();
         }
-        if (!account.getAnswerQuestion()
-                .equals(accountRepository.findById(id).orElse(null).getAnswerQuestion())) {
-            editAccount.setAnswerQuestion(encoder.encode(account.getAnswerQuestion()));
+        savedAccount.setFirstName(accountDTO.getFirstName());
+        savedAccount.setLastName(accountDTO.getLastName());
+        savedAccount.setBirthDate(accountDTO.getBirthDate());
+        savedAccount.setPhoneNumber(accountDTO.getPhoneNumber());
+        savedAccount.setEmail(accountDTO.getEmail());
+        savedAccount.setRoles(roleService.saveRolesToUser(accountDTO));
+        savedAccount.setSecurityQuestion(accountDTO.getSecurityQuestion());
+        if (!accountDTO.getPassword().equals(savedAccount.getPassword())) {
+            savedAccount.setPassword(encoder.encode(accountDTO.getPassword()));
         }
-
-        editAccount.setRoles(roleService.saveRolesToUser(account));
-        editAccount.setEmail(account.getEmail());
-        editAccount.setFirstName(account.getFirstName());
-        editAccount.setLastName(account.getLastName());
-        editAccount.setBirthDate(account.getBirthDate());
-        editAccount.setPhoneNumber(account.getPhoneNumber());
-
-        return accountRepository.saveAndFlush(editAccount);
+        if (!accountDTO.getAnswerQuestion().equals(savedAccount.getAnswerQuestion())) {
+            savedAccount.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
+        }
+        return Optional.of(accountMapper
+                .convertToAccountDTO(accountRepository
+                        .save(accountMapper.convertToAccount(savedAccount))));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Account> getAllAccounts(Integer page, Integer size) {
-        return accountRepository.findAll(PageRequest.of(page, size));
+    public Page<AccountDTO> getPage(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return accountRepository.findAll(pageRequest).map(accountMapper::convertToAccountDTO);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Account> getAccountById(Long id) {
-        return accountRepository.findById(id);
+    public Optional<AccountDTO> getAccountById(Long id) {
+        return accountRepository.findById(id).map(accountMapper::convertToAccountDTO);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Account getAccountByEmail(String email) {
-        return accountRepository.getAccountByEmail(email);
+    public AccountDTO getAccountByEmail(String email) {
+        return accountMapper.convertToAccountDTO(accountRepository.getAccountByEmail(email));
     }
 
+
     @Override
-    public void deleteAccountById(Long id) {
-        accountRepository.deleteById(id);
+    public Optional<AccountDTO> deleteAccountById(Long id) {
+
+        Optional<AccountDTO> optionalSavedAccount = getAccountById(id);
+        if (optionalSavedAccount.isEmpty()) {
+            return optionalSavedAccount;
+        } else {
+            accountRepository.deleteById(id);
+            return optionalSavedAccount;
+        }
     }
 }

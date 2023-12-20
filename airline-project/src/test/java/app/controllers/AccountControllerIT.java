@@ -37,8 +37,6 @@ class AccountControllerIT extends IntegrationTestBase {
     @Autowired
     private AccountRepository accountRepository;
 
-    private final AccountMapper accountMapper = Mappers.getMapper(AccountMapper.class);
-
     @Test
     void shouldGetAllAccounts() throws Exception {
         mockMvc.perform(
@@ -49,12 +47,13 @@ class AccountControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldGetAccountById() throws Exception {
-        var id = 3L;
+        var id = 4L;
         mockMvc.perform(
                         get("http://localhost:8080/api/accounts/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(accountMapper.convertToAccountDTO(accountService.getAccountById(id).get()))));
+                .andExpect(content().json(objectMapper
+                        .writeValueAsString(accountService.getAccountById(id).get())));
     }
 
     @Test
@@ -88,7 +87,7 @@ class AccountControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldDeleteAccountById() throws Exception {
-        var id = 3L;
+        var id = 4L;
         mockMvc.perform(delete("http://localhost:8080/api/accounts/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -100,8 +99,8 @@ class AccountControllerIT extends IntegrationTestBase {
     @Transactional
     @Test
     void shouldUpdateAccount() throws Exception {
-        Long id = 2L;
-        var updatableAccount = accountMapper.convertToAccountDTO(accountService.getAccountById(id).get());
+        Long id = 4L;
+        var updatableAccount = accountService.getAccountById(id).get();
         updatableAccount.setEmail("test@mail.ru");
         long numberOfAccounts = accountRepository.count();
 

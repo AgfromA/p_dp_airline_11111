@@ -1,12 +1,21 @@
 package app.dto;
 
-import app.entities.Role;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import lombok.*;
 
-import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.ReadOnlyProperty;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -15,11 +24,11 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-@ToString(exclude = {"roles"})
+@ToString
 @JsonTypeName(value = "account")
 public class AccountDTO {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotBlank(message = "Field should not be empty")
@@ -54,5 +63,5 @@ public class AccountDTO {
     @NotBlank(message = "The field cannot be empty")
     private String answerQuestion;
 
-    private Set<Role> roles;
+    private Set<RoleDTO> roles;
 }

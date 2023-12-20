@@ -65,6 +65,7 @@ public class MainLayout extends AppLayout {
         tabs.add(createTab(VaadinIcon.TABLE, "Seats", SeatView.class));
         tabs.add(createTab(VaadinIcon.BUS, "FlightSeats", FlightSeatView.class));
         tabs.add(createTab(VaadinIcon.CLOCK, "Timezones", TimezoneView.class));
+        tabs.add(createTab(VaadinIcon.HAND, "Account", AccountView.class));
         tabs.add(createTab(VaadinIcon.SEARCH, "Search", SearchResultView.class));
         tabs.add(createTab(VaadinIcon.ARROWS, "Destination", DestinationView.class));
         tabs.setOrientation(Tabs.Orientation.VERTICAL);

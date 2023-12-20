@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="01-create-sequence-table-account.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.21.1" author="anton-luboshnikov">
+        <tagDatabase tag="01-create-sequence-table-account"/>
+    </changeSet>
+
+    <include file="02-delete-values-table-account.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.21.2" author="anton-luboshnikov">
+        <tagDatabase tag="02-delete-values-table-account"/>
+    </changeSet>
+
+    <include file="03-filling-values-table-account.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.21.3" author="anton-luboshnikov">
+        <tagDatabase tag="03-filling-values-table-account"/>
+    </changeSet>
+
+</databaseChangeLog>
+

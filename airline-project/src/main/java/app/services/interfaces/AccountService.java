@@ -4,18 +4,21 @@ import app.dto.AccountDTO;
 import app.entities.Account;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AccountService {
+
+    List<AccountDTO> findAll();
     Account saveAccount(AccountDTO accountDTO);
 
-    Account updateAccount(Long id, AccountDTO accountDTO);
+    Optional<AccountDTO> updateAccount(Long id, AccountDTO accountDTO);
 
-    Page<Account> getAllAccounts(Integer page, Integer size);
+    Page<AccountDTO> getPage(Integer page, Integer size);
 
-    Optional<Account> getAccountById(Long id);
+    Optional<AccountDTO> getAccountById(Long id);
 
-    Account getAccountByEmail(String email);
+    AccountDTO getAccountByEmail(String email);
 
-    void deleteAccountById(Long id);
+    Optional<AccountDTO> deleteAccountById(Long id);
 }
