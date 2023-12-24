@@ -20,7 +20,7 @@
 ### Minikube не видит локальные образы из Docker (<code>minikube image load airline-project</code> не работает)
 ### Вариант 1 (вытащить образ из докера):
 - Установим дефолтный контекст у Docker <code>docker context use default</code>
-- Выполним команду с указанием версии образа в Docker'е <code>minikube image load airline-project:1.0.7</code>
+- Выполним команду с указанием версии образа в Docker'е <code>minikube image load airline-project:latest</code>
 - Если образ успешно загрузился, в описании Deployment модуля вместо "latest" указать версию образа из Docker (скрин ниже):
   ![image](./images/minikube-issue.jpg)
 
@@ -39,5 +39,5 @@
 - Bash <code>eval $(minikube docker-env)</code>
 
 Затем собираем образ по Dockerfile (находясь в директории с Dockerfile_Project, иначе полный путь к файлу)  
-- <code>docker build Dockerfile_Project -t airline-project:1.0.7</code>
+- <code>docker build Dockerfile_Project -t airline-project:latest</code>
 
