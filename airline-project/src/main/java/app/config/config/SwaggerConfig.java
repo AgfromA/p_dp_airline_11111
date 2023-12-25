@@ -1,4 +1,4 @@
-package app.config;
+package app.config.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 @OpenAPIDefinition(info = @Info(title = "S7 Airlines API", version = "1.0.8",
         description = "UI для работы с API проекта S7 Airlines."))
 @Configuration
