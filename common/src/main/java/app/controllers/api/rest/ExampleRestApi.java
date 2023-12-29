@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Tag(name = "Example REST", description = "API example description")
 public interface ExampleRestApi {
 
-    @RequestMapping(value = "/api/example/", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/example", method = RequestMethod.GET)
     @ApiOperation(value = "Get Page of Examples")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Examples Page found"),
@@ -30,7 +30,7 @@ public interface ExampleRestApi {
     ResponseEntity<Page<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
                                              @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
-    @RequestMapping(value = "/api/example/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/example{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Example by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Example found"),
@@ -38,7 +38,7 @@ public interface ExampleRestApi {
     )
     ResponseEntity<ExampleDto> get(@ApiParam(name = "id", value = "Example.id") @PathVariable(value = "id") Long id);
 
-    @RequestMapping(value = "/api/example/", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/example", method = RequestMethod.POST)
     @ApiOperation(value = "Create Example")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Example created"),
@@ -46,7 +46,7 @@ public interface ExampleRestApi {
     )
     ResponseEntity<ExampleDto> create(@ApiParam(name = "example", value = "ExampleDto") @Valid @RequestBody ExampleDto exampleDto);
 
-    @RequestMapping(value = "/api/example/{id}", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/api/example{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Update Example")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Example updated"),
@@ -55,7 +55,7 @@ public interface ExampleRestApi {
     ResponseEntity<ExampleDto> update(@ApiParam(name = "id", value = "Example.id") @PathVariable(value = "id") Long id,
                                       @ApiParam(name = "example", value = "ExampleDto") @Valid @RequestBody ExampleDto exampleDto);
 
-    @RequestMapping(value = "/api/example/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/api/example{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete Example by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Example deleted"),
