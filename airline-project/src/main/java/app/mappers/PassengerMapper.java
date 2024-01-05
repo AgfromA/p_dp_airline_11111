@@ -15,5 +15,6 @@ public interface PassengerMapper {
     Passenger convertToPassenger(PassengerDTO passengerDTO);
 
     List<PassengerDTO> convertToPassengerDTOList(List<Passenger> passengerList);
+
     List<Passenger> convertToPassengerList(List<PassengerDTO> passengerDTOList);
 }

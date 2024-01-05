@@ -15,6 +15,7 @@ public interface ExampleMapper {
 
     Example toEntity(ExampleDto exampleDto);
 
-    List<ExampleDto> convertToExamleDTOList (List<Example> examples);
-    List<Example> convertToExamleList (List<ExampleDto> exampleDtos);
+    List<ExampleDto> convertToExamleDTOList(List<Example> examples);
+
+    List<Example> convertToExamleList(List<ExampleDto> exampleDtos);
 }

@@ -161,6 +161,7 @@ class AccountMapperTest {
         Assertions.assertEquals(accountList.get(1).getSecurityQuestion(), accountDTOList.get(1).getSecurityQuestion());
         Assertions.assertEquals(accountList.get(1).getRoles().iterator().next().getName(), accountDTOList.get(1).getRoles().iterator().next().getName());
     }
+
     @Test
     public void shouldConvertAccountDTOListToAccountList() throws Exception {
         List<AccountDTO> accountDTOList = new ArrayList<>();

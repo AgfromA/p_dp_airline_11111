@@ -87,10 +87,11 @@ public class SeatMapperTest {
         Assertions.assertEquals(seatDTO.getCategory(), result.getCategory().getCategoryType());
         Assertions.assertEquals(seatDTO.getAircraftId(), result.getAircraft().getId());
     }
+
     @Test
     @DisplayName("Должен корректно конвертировать коллекцию сущностей в ДТО")
     public void shouldConvertSeatListToSeatDTOList() {
-        List<Seat> seatList =new ArrayList<>();
+        List<Seat> seatList = new ArrayList<>();
         Category category = new Category();
         category.setId(1001L);
         category.setCategoryType(CategoryType.BUSINESS);
@@ -120,6 +121,7 @@ public class SeatMapperTest {
         Assertions.assertEquals(seatList.get(0).getCategory().getCategoryType(), seatDTOList.get(0).getCategory());
         Assertions.assertEquals(seatList.get(0).getAircraft().getId(), seatDTOList.get(0).getAircraftId());
     }
+
     @Test
     @DisplayName("Должен корректно конвертировать коллекцию ДТО в сущности")
     public void shouldConvertSeatDTOListToSeatList() {

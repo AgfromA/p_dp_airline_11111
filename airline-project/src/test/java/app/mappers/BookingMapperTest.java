@@ -172,7 +172,7 @@ class BookingMapperTest {
         flightSeat1.setId(flightSeatId1);
         when(flightSeatServiceMock.getFlightSeatById(flightSeatId1)).thenReturn(Optional.of(flightSeat1));
         FlightSeat flightSeat2 = new FlightSeat();
-        Long flightSeatId2= 4L;
+        Long flightSeatId2 = 4L;
         flightSeat2.setId(flightSeatId2);
         when(flightSeatServiceMock.getFlightSeatById(flightSeatId2)).thenReturn(Optional.of(flightSeat2));
 

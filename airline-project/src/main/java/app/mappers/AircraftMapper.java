@@ -12,6 +12,8 @@ public interface AircraftMapper {
     Aircraft convertToAircraftEntity(AircraftDTO aircraftDTO);
 
     AircraftDTO convertToAircarftDTOEntity(Aircraft aircraft);
+
     List<Aircraft> convertToAircraftEntityList(List<AircraftDTO> aircraftDTOList);
-    List<AircraftDTO> convertToAircarftDTOList (List<Aircraft> aircraftList);
+
+    List<AircraftDTO> convertToAircarftDTOList(List<Aircraft> aircraftList);
 }

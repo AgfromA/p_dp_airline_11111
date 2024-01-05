@@ -102,10 +102,11 @@ class FlightSeatMapperTest {
         Assertions.assertEquals(flightSeatDTO.getFlightId(), result.getFlight().getId());
         Assertions.assertEquals(flightSeatDTO.getSeat().getSeatNumber(), result.getSeat().getSeatNumber());
     }
+
     @Test
     @DisplayName("Должен корректно конвертировать  коллекцию entity в DTO")
     public void shouldConvertFlightSeatListToFlightSeatDTOList() {
-        List <FlightSeat> flightSeatList = new ArrayList<>();
+        List<FlightSeat> flightSeatList = new ArrayList<>();
         Aircraft aircraft = new Aircraft();
         aircraft.setId(55L);
         Flight flight = new Flight();
@@ -142,6 +143,7 @@ class FlightSeatMapperTest {
         Assertions.assertEquals(flightSeatList.get(0).getFlight().getId(), flightSeatDTOList.get(0).getFlightId());
         Assertions.assertEquals(flightSeatList.get(0).getSeat().getSeatNumber(), flightSeatDTOList.get(0).getSeat().getSeatNumber());
     }
+
     @Test
     @DisplayName("Должен корректно конвертировать  коллекцию DTO в entity")
     public void shouldConvertFlightSeatDTOListToFlightSeatList() {

@@ -20,9 +20,9 @@ public interface DestinationMapper {
     @Mapping(target = "countryName", expression = "java(dto.getAirportCode().getCountry())")
     Destination convertToDestinationEntity(DestinationDTO dto);
 
-    List<DestinationDTO> convertToDestinationDTOList (List<Destination> destinations);
+    List<DestinationDTO> convertToDestinationDTOList(List<Destination> destinations);
 
-    default List<Destination> convertToDestinationEntityList (List<DestinationDTO> destinationDTOS){
+    default List<Destination> convertToDestinationEntityList(List<DestinationDTO> destinationDTOS) {
         return destinationDTOS.stream()
                 .map(this::convertToDestinationEntity)
                 .collect(Collectors.toList());
