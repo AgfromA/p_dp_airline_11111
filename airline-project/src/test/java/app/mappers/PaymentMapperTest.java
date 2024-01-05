@@ -5,7 +5,6 @@ import app.dto.PaymentResponse;
 import app.entities.Payment;
 import app.enums.Currency;
 import app.enums.State;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
