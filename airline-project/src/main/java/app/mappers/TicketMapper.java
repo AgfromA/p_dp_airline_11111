@@ -10,6 +10,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TicketMapper {
     @Mapping(target = "passengerId", expression = "java(ticket.getPassenger().getId())")
@@ -32,5 +35,19 @@ public interface TicketMapper {
     Ticket convertToTicketEntity(TicketDTO ticketDTO, @Context PassengerService passengerService,
                                  @Context FlightService flightService,
                                  @Context FlightSeatService flightSeatService);
+
+    default List<TicketDTO> convertToTicketDTOList(List<Ticket> ticketList) {
+        return ticketList.stream()
+                .map(this::convertToTicketDTO)
+                .collect(Collectors.toList());
+    }
+
+    default List<Ticket> convertToTicketEntityList(List<TicketDTO> ticketDTOList, PassengerService passengerService,
+                                                   FlightService flightService, FlightSeatService flightSeatService) {
+        return ticketDTOList.stream()
+                .map(ticketDTO -> convertToTicketEntity(ticketDTO, passengerService, flightService, flightSeatService))
+                .collect(Collectors.toList());
+
+    }
 
 }

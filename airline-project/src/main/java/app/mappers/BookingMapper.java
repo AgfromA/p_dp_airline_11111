@@ -8,6 +8,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Context;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookingMapper {
@@ -20,4 +24,16 @@ public interface BookingMapper {
     Booking convertToBookingEntity(BookingDTO bookingDTO, @Context PassengerService passengerService,
                                    @Context FlightSeatService flightSeatService);
 
+    default List<BookingDTO> convertToBookingDTOEntityList(List<Booking> bookings) {
+        return bookings.stream()
+                .map(this::convertToBookingDTOEntity)
+                .collect(Collectors.toList());
+    }
+
+    default List<Booking> convertToBookingEntityList(List<BookingDTO> bookingDTOs, PassengerService passengerService,
+                                                     FlightSeatService flightSeatService) {
+        return bookingDTOs.stream()
+                .map(bookingDTO -> convertToBookingEntity(bookingDTO, passengerService, flightSeatService))
+                .collect(Collectors.toList());
+    }
 }

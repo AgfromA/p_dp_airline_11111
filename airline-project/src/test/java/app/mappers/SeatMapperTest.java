@@ -14,6 +14,9 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 
 public class SeatMapperTest {
@@ -83,6 +86,70 @@ public class SeatMapperTest {
         Assertions.assertEquals(seatDTO.getIsLockedBack(), result.getIsLockedBack());
         Assertions.assertEquals(seatDTO.getCategory(), result.getCategory().getCategoryType());
         Assertions.assertEquals(seatDTO.getAircraftId(), result.getAircraft().getId());
+    }
+    @Test
+    @DisplayName("Должен корректно конвертировать коллекцию сущностей в ДТО")
+    public void shouldConvertSeatListToSeatDTOList() {
+        List<Seat> seatList =new ArrayList<>();
+        Category category = new Category();
+        category.setId(1001L);
+        category.setCategoryType(CategoryType.BUSINESS);
+        when(categoryService.getCategoryByType(CategoryType.BUSINESS)).thenReturn(category);
 
+        Aircraft aircraft = new Aircraft();
+        aircraft.setId(1002L);
+        aircraft.setAircraftNumber("77777");
+        when(aircraftService.getAircraftById(1002L)).thenReturn(aircraft);
+
+        Seat seat = new Seat();
+        seat.setId(1003L);
+        seat.setSeatNumber("400A");
+        seat.setIsNearEmergencyExit(true);
+        seat.setIsLockedBack(true);
+        seat.setCategory(category);
+        seat.setAircraft(aircraft);
+
+        seatList.add(seat);
+
+        List<SeatDTO> seatDTOList = seatMapper.convertToSeatDTOList(seatList);
+        Assertions.assertEquals(seatList.size(), seatDTOList.size());
+        Assertions.assertEquals(seatList.get(0).getId(), seatDTOList.get(0).getId());
+        Assertions.assertEquals(seatList.get(0).getSeatNumber(), seatDTOList.get(0).getSeatNumber());
+        Assertions.assertEquals(seatList.get(0).getIsNearEmergencyExit(), seatDTOList.get(0).getIsNearEmergencyExit());
+        Assertions.assertEquals(seatList.get(0).getIsLockedBack(), seatDTOList.get(0).getIsLockedBack());
+        Assertions.assertEquals(seatList.get(0).getCategory().getCategoryType(), seatDTOList.get(0).getCategory());
+        Assertions.assertEquals(seatList.get(0).getAircraft().getId(), seatDTOList.get(0).getAircraftId());
+    }
+    @Test
+    @DisplayName("Должен корректно конвертировать коллекцию ДТО в сущности")
+    public void shouldConvertSeatDTOListToSeatList() {
+        List<SeatDTO> seatDTOList = new ArrayList<>();
+        Category category = new Category();
+        category.setId(1001L);
+        category.setCategoryType(CategoryType.BUSINESS);
+        when(categoryService.getCategoryByType(CategoryType.BUSINESS)).thenReturn(category);
+
+        Aircraft aircraft = new Aircraft();
+        aircraft.setId(1002L);
+        aircraft.setAircraftNumber("77777");
+        when(aircraftService.getAircraftById(1002L)).thenReturn(aircraft);
+
+        SeatDTO seatDTO = new SeatDTO();
+        seatDTO.setId(1003L);
+        seatDTO.setSeatNumber("400A");
+        seatDTO.setIsNearEmergencyExit(true);
+        seatDTO.setIsLockedBack(true);
+        seatDTO.setCategory(category.getCategoryType());
+        seatDTO.setAircraftId(aircraft.getId());
+        seatDTOList.add(seatDTO);
+
+        List<Seat> seatList = seatMapper.convertToSeatEntityList(seatDTOList, categoryService, aircraftService);
+        Assertions.assertEquals(seatDTOList.size(), seatList.size());
+        Assertions.assertEquals(seatDTOList.get(0).getId(), seatList.get(0).getId());
+        Assertions.assertEquals(seatDTOList.get(0).getSeatNumber(), seatList.get(0).getSeatNumber());
+        Assertions.assertEquals(seatDTOList.get(0).getIsNearEmergencyExit(), seatList.get(0).getIsNearEmergencyExit());
+        Assertions.assertEquals(seatDTOList.get(0).getIsLockedBack(), seatList.get(0).getIsLockedBack());
+        Assertions.assertEquals(seatDTOList.get(0).getCategory(), seatList.get(0).getCategory().getCategoryType());
+        Assertions.assertEquals(seatDTOList.get(0).getAircraftId(), seatList.get(0).getAircraft().getId());
     }
 }

@@ -36,4 +36,19 @@ public interface FlightMapper {
         return flightSeats.stream().map(flightSeat -> Mappers.getMapper(FlightSeatMapper.class)
                 .convertToFlightSeatDTOEntity(flightSeat, flightService)).collect(Collectors.toList());
     }
+
+    default List<Flight> convertFlightDTOListToFlightList(List<FlightDTO> flightDTOList, AircraftService aircraftService,
+                                                          DestinationService destinationService, TicketService ticketService,
+                                                          FlightSeatService flightSeatService) {
+
+        return flightDTOList.stream()
+                .map(flightDTO -> flightDTOtoFlight(flightDTO, aircraftService, destinationService, ticketService, flightSeatService))
+                .collect(Collectors.toList());
+    }
+
+    default List<FlightDTO> convertFlightListToFlighDTOtList(List<Flight> flights, FlightService flightService) {
+        return flights.stream()
+                .map(flight -> flightToFlightDTO(flight, flightService))
+                .collect(Collectors.toList());
+    }
 }
