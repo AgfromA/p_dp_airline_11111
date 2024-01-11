@@ -2,19 +2,18 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.AircraftRestApi;
 import app.dto.AircraftDTO;
+import app.mappers.AircraftMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import app.mappers.AircraftMapper;
 import app.services.interfaces.AircraftService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.RollbackException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,12 +24,31 @@ public class AircraftRestController implements AircraftRestApi {
     private final AircraftMapper aircraftMapper = Mappers.getMapper(AircraftMapper.class);
 
     @Override
-    public ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
+    public ResponseEntity<List<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
         log.info("getAll: get all Aircrafts");
-        Page<AircraftDTO> aircrafts = aircraftService.getAllAircrafts(page, size);
-        return aircrafts.isEmpty()
+        if (page == null || size == null) {
+            log.info("getAll: get all List Aircrafts");
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            log.info("getAll: no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        var aircraft = aircraftService.getPage(page, size);
+        return aircraft.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(aircrafts, HttpStatus.OK);
+                : new ResponseEntity<>(aircraft.getContent(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<AircraftDTO>> createUnPagedResponse() {
+        var aircraft = aircraftService.findAll();
+        if (aircraft.isEmpty()) {
+            log.info("getAll: Aircrafts not found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Aircrafts", aircraft.size());
+            return new ResponseEntity<>(aircraft, HttpStatus.OK);
+        }
     }
 
     @Override
@@ -47,8 +65,7 @@ public class AircraftRestController implements AircraftRestApi {
     @Override
     public ResponseEntity<AircraftDTO> createAircraft(AircraftDTO aircraftDTO) {
         log.info("create: new Aircraft saved.");
-        return new ResponseEntity<>(aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)),
-                HttpStatus.CREATED);
+        return new ResponseEntity<>(aircraftService.saveAircraft(aircraftDTO), HttpStatus.CREATED);
     }
 
     @Override
@@ -59,11 +76,11 @@ public class AircraftRestController implements AircraftRestApi {
         }
         aircraftDTO.setId(id);
         log.info("update: the Aircraft with id={} has been edited.", id);
-        return ResponseEntity.ok(aircraftMapper.convertToAircarftDTOEntity(aircraftService.saveAircraft(aircraftDTO)));
+        return ResponseEntity.ok(aircraftService.saveAircraft(aircraftDTO));
     }
 
     /*
-    * Не удаляет aircraft, если у него есть seat
+     * Не удаляет aircraft, если у него есть seat
      */
     @Override
     public ResponseEntity<HttpStatus> deleteAircraftById(Long id) {

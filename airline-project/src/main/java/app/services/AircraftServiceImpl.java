@@ -23,30 +23,39 @@ public class AircraftServiceImpl implements AircraftService {
     private final FlightRepository flightRepository;
     private final AircraftMapper aircraftMapper;
 
+    @Override
+    public List<AircraftDTO> findAll() {
+        return aircraftMapper.convertToAircarftDTOList(aircraftRepository.findAll());
+    }
+
     @Transactional
-    public Aircraft saveAircraft(AircraftDTO aircraftDTO) {
+    @Override
+    public AircraftDTO saveAircraft(AircraftDTO aircraftDTO) {
         var aircraft = aircraftMapper.convertToAircraftEntity(aircraftDTO);
         if (!aircraft.getSeatSet().isEmpty()) {
             aircraft.getSeatSet().forEach(seat -> seat.setAircraft(aircraft));
         }
-        return aircraftRepository.save(aircraft);
+        return aircraftMapper.convertToAircarftDTOEntity(aircraftRepository.save(aircraft));
     }
 
-    public Page<AircraftDTO> getAllAircrafts(Integer page, Integer size) {
-        return aircraftRepository.findAll(PageRequest.of(page, size)).map(entity -> {
-            return aircraftMapper.convertToAircarftDTOEntity(entity);
-        });
+    @Override
+    public Page<AircraftDTO> getPage(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return aircraftRepository.findAll(pageRequest).map(aircraftMapper::convertToAircarftDTOEntity);
     }
 
+    @Override
     public Aircraft getAircraftById(Long id) {
         return aircraftRepository.findById(id).orElse(null);
     }
 
+    @Override
     public Aircraft getAircraftByAircraftNumber(String aircraftNumber) {
         return aircraftRepository.findByAircraftNumber(aircraftNumber);
     }
 
     @Transactional
+    @Override
     public void deleteAircraftById(Long id) {
         List<Flight> flightSet = flightRepository.findByAircraft_Id(id);
         if (flightSet != null) {

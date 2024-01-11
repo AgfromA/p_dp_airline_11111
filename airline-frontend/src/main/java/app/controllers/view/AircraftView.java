@@ -24,10 +24,9 @@ import feign.FeignException;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /*
-* Вью сделана на основе ExempleView, SeatView, TimezoneView с небольшим рефакторингом
+ * Вью сделана на основе ExempleView, SeatView, TimezoneView с небольшим рефакторингом
  */
 @Route(value = "aircrafts", layout = MainLayout.class)
 @CssImport(value = "grid.css")
@@ -46,9 +45,10 @@ public class AircraftView extends VerticalLayout {
 
     public AircraftView(AircraftClient aircraftClient) {
         this.aircraftClient = aircraftClient;
-        this.maxPages = aircraftClient.getAllPagesAircraftsDTO(0, 10).getBody().getTotalPages() - 1;
-        this.dataSource = aircraftClient.getAllPagesAircraftsDTO(0, 10).getBody().stream().collect(Collectors.toList());
-
+        List<AircraftDTO> aircrafts = aircraftClient.getAllPagesAircraftsDTO(null, null).getBody();
+        int pageSize = 10;
+        this.maxPages = (int) Math.ceil((double) aircrafts.size() / pageSize);
+        this.dataSource = aircraftClient.getAllPagesAircraftsDTO(0, 10).getBody();
         getThemeList().clear();
         getThemeList().add("spacing-s");
         contentTabContainer.setSizeFull();
@@ -124,7 +124,7 @@ public class AircraftView extends VerticalLayout {
 
     private void refreshGrid() {
         dataSource.clear();
-        List<AircraftDTO> newData = aircraftClient.getAllPagesAircraftsDTO(currentPage, 10).getBody().stream().collect(Collectors.toList());
+        List<AircraftDTO> newData = aircraftClient.getAllPagesAircraftsDTO(currentPage, 10).getBody();
         dataSource.addAll(newData);
         grid.getListDataView().refreshAll();
     }
@@ -213,8 +213,8 @@ public class AircraftView extends VerticalLayout {
             if (editor.isOpen()) editor.cancel();
             try {
                 statusCode = aircraftClient.deleteAircraftById(aircraftDTO.getId()).getStatusCode();
-            } catch ( FeignException.MethodNotAllowed except) {
-                Notification.show("You can't delete an aircraft because it has seats assigned to it",3000, Notification.Position.TOP_CENTER)
+            } catch (FeignException.MethodNotAllowed except) {
+                Notification.show("You can't delete an aircraft because it has seats assigned to it", 3000, Notification.Position.TOP_CENTER)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
             }
@@ -305,6 +305,4 @@ public class AircraftView extends VerticalLayout {
                 .bindReadOnly(aircraftDTO -> aircraftDTO.getId().intValue());
         idColumn.setEditorComponent(idField);
     }
-
-
 }

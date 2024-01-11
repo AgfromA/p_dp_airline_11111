@@ -4,11 +4,14 @@ import app.dto.AircraftDTO;
 import app.entities.Aircraft;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface AircraftService {
+    List<AircraftDTO> findAll();
 
-    Aircraft saveAircraft(AircraftDTO aircraftDTO);
+    AircraftDTO saveAircraft(AircraftDTO aircraftDTO);
 
-    Page<AircraftDTO> getAllAircrafts(Integer page, Integer size);
+    Page<AircraftDTO> getPage(Integer page, Integer size);
 
     Aircraft getAircraftById(Long id);
 
