@@ -33,6 +33,12 @@ public class SeatServiceImpl implements SeatService {
     private final AircraftService aircraftService;
     private final FlightSeatRepository flightSeatRepository;
 
+
+    @Override
+    public List<SeatDTO> getAllSeats() {
+        return SeatMapper.INSTANCE.convertToSeatDTOList(seatRepository.findAll());
+    }
+
     @Transactional
     @Override
     public Seat saveSeat(SeatDTO seatDTO) {
@@ -81,10 +87,8 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public Page<SeatDTO> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
-        return seatRepository.findByAircraftId(id, pageable).map(entity -> {
-            return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity);
-
-        });
+        return seatRepository.findByAircraftId(id, pageable)
+                .map(SeatMapper.INSTANCE::convertToSeatDTOEntity);
     }
 
     @Override
@@ -133,9 +137,7 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public Page<SeatDTO> getAllPagesSeats(Integer page, Integer size) {
-        return seatRepository.findAll(PageRequest.of(page, size)).map(entity -> {
-            return SeatMapper.INSTANCE.convertToSeatDTOEntity(entity);
-        });
+        return seatRepository.findAll(PageRequest.of(page, size))
+                .map(SeatMapper.INSTANCE::convertToSeatDTOEntity);
     }
-
 }

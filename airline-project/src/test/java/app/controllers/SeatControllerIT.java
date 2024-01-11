@@ -38,6 +38,54 @@ class SeatControllerIT extends IntegrationTestBase {
     @Autowired
     private AircraftService aircraftService;
 
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllSeats() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllSeatsByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllSeatsByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetPageSeats() throws Exception {
+        var pageable = PageRequest.of(0, 4);
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(seatService
+                        .getAllPagesSeats(pageable.getPageNumber(), pageable.getPageSize())
+                        .getContent())));
+    }
+    // Пагинация 2.0
+
     @Test
     void shouldSaveSeat() throws Exception {
         var seatDTO = new SeatDTO();
@@ -126,13 +174,6 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void shouldGetAllSeats() throws Exception {
-        mockMvc.perform(get("http://localhost:8080/api/seats"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
 
     @Test
     void shouldCreateManySeats() throws Exception {
@@ -181,6 +222,6 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(seatService.getPagesSeatsByAircraftId(aircraftId, pageable))));
+                        .writeValueAsString(seatService.getPagesSeatsByAircraftId(aircraftId, pageable).getContent())));
     }
 }

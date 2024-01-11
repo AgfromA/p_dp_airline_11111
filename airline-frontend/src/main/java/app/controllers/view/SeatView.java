@@ -24,20 +24,19 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 @Slf4j
 @Route(value = "seats", layout = MainLayout.class)
 public class SeatView extends VerticalLayout {
 
     private final Grid<SeatDTO> grid = new Grid<>(SeatDTO.class, false);
     private final Editor<SeatDTO> editor = grid.getEditor();
-    private ResponseEntity<Page<SeatDTO>> response;
+    private ResponseEntity<List<SeatDTO>> response;
     private final SeatClient seatClient;
     private final List<SeatDTO> dataSource;
     private final Button updateButton;
@@ -57,12 +56,13 @@ public class SeatView extends VerticalLayout {
 
     public SeatView(SeatClient seatClient) {
         this.seatClient = seatClient;
-        response = seatClient.getAllPagesSeatsDTO(currentPage, 10);
         currentPage = 0;
-        maxPages = response.getBody().getTotalPages() - 1;
+        response = seatClient.getAllPagesSeatsDTO(currentPage, 10);
+        List<SeatDTO> seatDTOList = seatClient.getAllPagesSeatsDTO(null, null).getBody();
+        maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
         isSearchById = false;
         isSearchByAircraftId = false;
-        dataSource = response.getBody().stream().collect(Collectors.toList());
+        dataSource = response.getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage seatNumberValidationMessage = new ValidationMessage();
@@ -211,13 +211,14 @@ public class SeatView extends VerticalLayout {
         isSearchById = false;
         dataSource.clear();
         response = seatClient.getAllPagesSeatsDTO(currentPage, 10);
-        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
-        maxPages = response.getBody().getTotalPages() - 1;
+        dataSource.addAll(response.getBody());
+        List<SeatDTO> seatDTOList = seatClient.getAllPagesSeatsDTO(null, null).getBody();
+        maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
         grid.getDataProvider().refreshAll();
     }
 
     private void searchById() {
-        if(isFoundSeatById(idSearchField.getValue().longValue())) {
+        if (isFoundSeatById(idSearchField.getValue().longValue())) {
             dataSource.clear();
             isSearchById = true;
             isSearchByAircraftId = false;
@@ -227,25 +228,27 @@ public class SeatView extends VerticalLayout {
             grid.getDataProvider().refreshAll();
         }
     }
+
     private boolean isFoundSeatById(Long id) {
         try {
             dataSource.add(seatClient.getSeatDTOById(id).getBody());
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
-            Notification.show("Seat with id = " + id + " not found.",3000, Notification.Position.TOP_CENTER);
+            Notification.show("Seat with id = " + id + " not found.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;
     }
 
     private void searchByAircraftId() {
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-        if(isFoundSeatsByAircraftId(pageable, searchByAircraftId)) {
+        if (isFoundSeatsByAircraftId(pageable, searchByAircraftId)) {
             isSearchById = false;
             dataSource.clear();
-            dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
+            dataSource.addAll(response.getBody());
             grid.getDataProvider().refreshAll();
-            maxPages = response.getBody().getTotalPages() - 1;
+            List<SeatDTO> seatDTOList = seatClient.getAllPagesSeatsDTO(null, null).getBody();
+            maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
         }
     }
 
@@ -255,7 +258,7 @@ public class SeatView extends VerticalLayout {
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
-            Notification.show("Seat with aircraftId = " + id + " not found.",3000, Notification.Position.TOP_CENTER);
+            Notification.show("Seat with aircraftId = " + id + " not found.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;
     }
@@ -314,10 +317,10 @@ public class SeatView extends VerticalLayout {
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
-            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.",3000, Notification.Position.TOP_CENTER);
+            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
-            Notification.show("Seat with id = " + seatDTO.getId() + " not found.",3000, Notification.Position.TOP_CENTER);
+            Notification.show("Seat with id = " + seatDTO.getId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;
     }
@@ -508,7 +511,7 @@ public class SeatView extends VerticalLayout {
             seatDTO.setIsLockedBack(isLockedBack.getValue());
             seatDTO.setCategory(category.getValue());
             seatDTO.setAircraftId(aircraftIdField.getValue().longValue());
-            if(isCreatedSeat(seatDTO)) {
+            if (isCreatedSeat(seatDTO)) {
                 seatNumber.clear();
                 isNearEmergencyExit.clear();
                 isLockedBack.clear();
@@ -525,10 +528,10 @@ public class SeatView extends VerticalLayout {
         try {
             SeatDTO savedSeat = seatClient.createSeatDTO(seatDTO).getBody();
             dataSource.add(savedSeat);
-                return true;
+            return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
-            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.",3000, Notification.Position.TOP_CENTER);
+            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;
     }

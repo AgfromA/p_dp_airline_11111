@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,23 +26,40 @@ public class SeatRestController implements SeatRestApi {
     private final AircraftService aircraftService;
 
     @Override
-    public ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTO(Integer page, Integer size) {
+    public ResponseEntity<List<SeatDTO>> getAllPagesSeatsDTO(Integer page, Integer size) {
+        log.info("getAll: get all Seats");
+        if (page == null || size == null) {
+            log.info("getAll: get all list Seats");
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            log.info("no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         var seats = seatService.getAllPagesSeats(page, size);
-        if (!seats.isEmpty()) {
-            log.info("getAll: found {} Seats", seats.getSize());
-            return new ResponseEntity<>(seats, HttpStatus.OK);
-        } else {
+
+        return seats.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<SeatDTO>> createUnPagedResponse() {
+        var seats = seatService.getAllSeats();
+        if (seats.isEmpty()) {
             log.info("getAll: Seats not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Seats", seats.size());
+            return new ResponseEntity<>(seats, HttpStatus.OK);
         }
     }
 
     @Override
-    public ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTOByAircraftId(Pageable pageable, Long aircraftId) {
+    public ResponseEntity<List<SeatDTO>> getAllPagesSeatsDTOByAircraftId(Pageable pageable, Long aircraftId) {
         var seats = seatService.getPagesSeatsByAircraftId(aircraftId, pageable);
         if (!seats.isEmpty()) {
             log.info("getAllByAircraftId: found {} Seats with aircraftId = {}", seats.getSize(), aircraftId);
-            return new ResponseEntity<>(seats, HttpStatus.OK);
+            return new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
         } else {
             log.info("getAllByAircraftId: Seats not found with aircraftId = {}", aircraftId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,7 +80,7 @@ public class SeatRestController implements SeatRestApi {
 
     @Override
     public ResponseEntity<SeatDTO> createSeatDTO(SeatDTO seatDTO) {
-        if(aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
+        if (aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
             log.error("Aircraft with id = {} not found", seatDTO.getAircraftId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -94,7 +110,7 @@ public class SeatRestController implements SeatRestApi {
             log.error("Seat not found id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if(aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
+        if (aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
             log.error("Aircraft with id = {} not found", seatDTO.getAircraftId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
