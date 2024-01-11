@@ -17,14 +17,14 @@ public interface FlightSeatService {
 
     Set<FlightSeat> getAllFlightSeats();
 
-    Page<FlightSeat> getAllFlightSeats(Integer page, Integer size);
+    Page<FlightSeatDTO> getAllFlightSeats(Integer page, Integer size);
 
     Optional<FlightSeat> getFlightSeatById(Long id);
 
-    Set<FlightSeat> getFlightSeatsByFlightId(Long flightId);
+    Set<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId);
 
 
-    List<FlightSeat> getAllListFlightSeats();
+    List<FlightSeatDTO> getAllListFlightSeats();
 
     Page<FlightSeatDTO> getFreeSeatsById(Pageable pageable, Long id);
 
@@ -38,7 +38,7 @@ public interface FlightSeatService {
 
     FlightSeat saveFlightSeat(FlightSeat flightSeat);
 
-    FlightSeat saveFlightSeatDTO(FlightSeatDTO flightSeatDTO);
+    FlightSeatDTO saveFlightSeatDTO(FlightSeatDTO flightSeatDTO);
 
     int getNumberOfFreeSeatOnFlight(Flight flight);
 
@@ -52,7 +52,7 @@ public interface FlightSeatService {
 
     Set<FlightSeat> getNotSoldFlightSeatsById(Long id);
 
-    List<FlightSeat> getCheapestFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type);
+    List<FlightSeatDTO> getCheapestFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type);
 
     Page<FlightSeatDTO> getNotSoldFlightSeatsById(Long id, Pageable pageable);
 

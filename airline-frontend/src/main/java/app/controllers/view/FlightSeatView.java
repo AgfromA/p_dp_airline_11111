@@ -24,20 +24,19 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Slf4j
 @Route(value = "flightSeats", layout = MainLayout.class)
 public class FlightSeatView extends VerticalLayout {
     private final Grid<FlightSeatDTO> grid = new Grid<>(FlightSeatDTO.class, false);
     private final Editor<FlightSeatDTO> editor = grid.getEditor();
-    private ResponseEntity<Page<FlightSeatDTO>> response;
+    private ResponseEntity<List<FlightSeatDTO>> response;
     private final List<SeatDTO> dataSourceAll;
     private final FlightSeatClient flightSeatClient;
     private final List<FlightSeatDTO> dataSource;
@@ -60,13 +59,16 @@ public class FlightSeatView extends VerticalLayout {
 
     public FlightSeatView(FlightSeatClient flightSeatClient) {
         this.flightSeatClient = flightSeatClient;
-        this.response = flightSeatClient.getAllFlightSeatDTO(currentPage, 10);
-        this.dataSourceAll = flightSeatClient.getAllSeatDTO().getBody();
         this.currentPage = 0;
+        Optional<Long> id = null;
+        this.response = flightSeatClient.getAllPagesFlightSeatsDTO(currentPage, 10, id, null, null);
+        this.dataSourceAll = flightSeatClient.getAllSeatDTO().getBody();
         this.isSearchByFare = false;
         this.isSearchById = false;
-        this.maxPages = response.getBody().getTotalPages() - 1;
-        this.dataSource = response.getBody().stream().collect(Collectors.toList());
+
+        List<FlightSeatDTO> flightSeatDTOList = flightSeatClient.getAllPagesFlightSeatsDTO(null, null, id, null, null).getBody();
+        this.maxPages = (int) Math.ceil((double) flightSeatDTOList.size() / 10);
+        this.dataSource = response.getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage fareValidationMessage = new ValidationMessage();
@@ -274,7 +276,9 @@ public class FlightSeatView extends VerticalLayout {
     }
 
     private void searchByFare() {
-        List<FlightSeatDTO> allFlightSeatDTO = flightSeatClient.getAllListFlightSeatDTO().getBody();
+        Optional<Long> id = null; //работает только так
+        List<FlightSeatDTO> allFlightSeatDTO = flightSeatClient.getAllPagesFlightSeatsDTO(null, null,
+                id, null, null).getBody();
         Integer min = minFareSearchField.getValue();
         Integer max = maxFareSearchField.getValue();
         List<FlightSeatDTO> filteredListSeats = new ArrayList<>();
@@ -495,9 +499,11 @@ public class FlightSeatView extends VerticalLayout {
         dataSource.clear();
         isSearchById = false;
         isSearchByFare = false;
-        response = flightSeatClient.getAllFlightSeatDTO(currentPage, 10);
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
+        Optional<Long> id = null;
+        response = flightSeatClient.getAllPagesFlightSeatsDTO(currentPage, 10, id, null, null);
+        List<FlightSeatDTO> flightSeatDTOList = flightSeatClient.getAllPagesFlightSeatsDTO(null, null, id, null, null).getBody();
+        this.maxPages = (int) Math.ceil((double) flightSeatDTOList.size() / 10);
+        dataSource.addAll(response.getBody());
         grid.getDataProvider().refreshAll();
     }
 

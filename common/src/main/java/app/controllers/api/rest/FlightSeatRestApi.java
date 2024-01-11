@@ -9,15 +9,12 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -47,8 +44,10 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "flight seats found"),
             @ApiResponse(code = 404, message = "Not found")
     })
-    ResponseEntity<Page<FlightSeatDTO>> getAllPagesFlightSeatsDTO(
-            @PageableDefault(sort = {"id"}) Pageable pageable,
+    ResponseEntity<List<FlightSeatDTO>> getAllPagesFlightSeatsDTO(
+            @PageableDefault(sort = {"id"})
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
             @ApiParam(
                     name = "flightId",
                     value = "Flight.id"
@@ -64,7 +63,6 @@ public interface FlightSeatRestApi {
                     value = "FlightSeat.isRegistered"
             )
             @RequestParam(required = false) Boolean isRegistered);
-
 
     @RequestMapping(value = "/api/flight-seats/cheapest", method = RequestMethod.GET)
     @ApiOperation(value = "Get cheapest FlightSeat by flightId and seat category")
@@ -84,7 +82,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "free seats found"),
             @ApiResponse(code = 204, message = "no data found")
     })
-    ResponseEntity<Page<FlightSeatDTO>> getPagesFreeSeatsById(
+    ResponseEntity<List<FlightSeatDTO>> getPagesFreeSeatsById(
             @PageableDefault(sort = {"id"}) Pageable pageable,
             @ApiParam(
                     name = "id",
@@ -157,16 +155,6 @@ public interface FlightSeatRestApi {
             )
             @RequestBody @Valid FlightSeatDTO flightSeatDTO);
 
-    @RequestMapping(value = "/api/flight-seats/seats", method = RequestMethod.GET)
-    @ApiOperation(value = "Get all Flight Seats")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Flight Seat found"),
-            @ApiResponse(code = 404, message = "Flight Seat not found")
-    })
-    ResponseEntity<Page<FlightSeatDTO>> getAllFlightSeatDTO(@PageableDefault()
-                                                            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-                                                            @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size);
-
     @RequestMapping(value = "/api/flight-seats/seats/all", method = RequestMethod.GET)
     @ApiOperation(value = "Get all Seats DTO")
     @ApiResponses(value = {
@@ -174,12 +162,4 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 404, message = "Seat not found")
     })
     ResponseEntity<List<SeatDTO>> getAllSeatDTO();
-
-    @RequestMapping(value = "/api/flight-seats/seats/all-seats", method = RequestMethod.GET)
-    @ApiOperation(value = "Get all list Flight Seats DTO")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Seat found"),
-            @ApiResponse(code = 404, message = "Seat not found")
-    })
-    ResponseEntity<List<FlightSeatDTO>> getAllListFlightSeatDTO();
 }

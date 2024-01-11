@@ -35,6 +35,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     private final SeatService seatService;
     private final FlightService flightService;
 
+
     @Override
     @Loggable
     public Set<FlightSeat> getAllFlightSeats() {
@@ -45,10 +46,10 @@ public class FlightSeatServiceImpl implements FlightSeatService {
 
     @Override
     @Loggable
-    public List<FlightSeat> getAllListFlightSeats() {
-        List<FlightSeat> flightSeatSet = new ArrayList<>();
-        flightSeatRepository.findAll().forEach(flightSeatSet::add);
-        return flightSeatSet;
+    public List<FlightSeatDTO> getAllListFlightSeats() {
+        List<FlightSeat> flightSeatList = new ArrayList<>();
+        flightSeatRepository.findAll().forEach(flightSeatList::add);
+        return FlightSeatMapper.INSTANCE.convertToFlightSeatDTOList(flightSeatList, flightService);
     }
 
     @Override
@@ -60,8 +61,9 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     }
 
     @Override
-    public Page<FlightSeat> getAllFlightSeats(Integer page, Integer size) {
-        return flightSeatRepository.findAll(PageRequest.of(page, size));
+    public Page<FlightSeatDTO> getAllFlightSeats(Integer page, Integer size) {
+        return flightSeatRepository.findAll(PageRequest.of(page, size))
+                .map(entity -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(entity, flightService));
     }
 
     @Override
@@ -72,8 +74,10 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     @Override
     @Loggable
-    public Set<FlightSeat> getFlightSeatsByFlightId(Long flightId) {
-        return flightSeatRepository.findFlightSeatsByFlightId(flightId);
+    public Set<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId) {
+        return flightSeatRepository.findFlightSeatsByFlightId(flightId).stream()
+                .map(flightSeat -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(flightSeat, flightService))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -152,22 +156,22 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     @Override
     @Transactional
     @Loggable
-    public FlightSeat saveFlightSeatDTO(FlightSeatDTO flightSeatDTO) {
+    public FlightSeatDTO saveFlightSeatDTO(FlightSeatDTO flightSeatDTO) {
         var flightSeat = FlightSeatMapper.INSTANCE.convertToFlightSeatEntity(flightSeatDTO, flightService, seatService);
         if (flightSeat.getId() == null) {
-            return flightSeatRepository.save(flightSeat);
+            return FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(flightSeatRepository.save(flightSeat), flightService);
         } else {
             var oldFlightSeat = getFlightSeatById(flightSeat.getId());
             if (oldFlightSeat.isPresent() && oldFlightSeat.get().getSeat() != null) {
                 flightSeat.setSeat(oldFlightSeat.get().getSeat());
             }
-            return flightSeatRepository.save(flightSeat);
+            return FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(flightSeatRepository.save(flightSeat), flightService);
         }
     }
 
     @Loggable
     @Transactional
-    public FlightSeat editFlightSeat(Long id, FlightSeatDTO flightSeatDTO) {
+    public FlightSeatDTO editFlightSeat(Long id, FlightSeatDTO flightSeatDTO) {
         var flightSeat = FlightSeatMapper.INSTANCE.convertToFlightSeatEntity(flightSeatDTO, flightService, seatService);
         var targetFlightSeat = flightSeatRepository.findById(id).orElse(null);
         flightSeat.setId(id);
@@ -187,7 +191,7 @@ public class FlightSeatServiceImpl implements FlightSeatService {
         if (flightSeat.getSeat() == null) {
             flightSeat.setSeat(targetFlightSeat.getSeat());
         }
-        return flightSeatRepository.save(flightSeat);
+        return FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(flightSeatRepository.save(flightSeat), flightService);
     }
 
     @Override
@@ -243,8 +247,8 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     }
 
     @Override
-    public List<FlightSeat> getCheapestFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type) {
-        return flightSeatRepository.findFlightSeatsByFlightIdAndSeatCategory(id, type);
+    public List<FlightSeatDTO> getCheapestFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type) {
+        return FlightSeatMapper.INSTANCE.convertToFlightSeatDTOList(flightSeatRepository.findFlightSeatsByFlightIdAndSeatCategory(id, type), flightService);
     }
 
 
