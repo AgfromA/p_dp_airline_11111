@@ -8,33 +8,38 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Api(tags = "Flight REST")
 @Tag(name = "Flight REST", description = "API для операций с рейсами")
 public interface FlightRestApi {
-
     @RequestMapping(value = "/api/flights/all", method = RequestMethod.GET)
     @ApiOperation(value = "Get all Flights or Flights by params")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Flights found"),
             @ApiResponse(code = 204, message = "Flights not found")
     })
-    ResponseEntity<Page<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
+    ResponseEntity<List<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
+            @PageableDefault(sort = {"id"})
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
+
             @ApiParam(value = "Departure cityName", example = "Москва")
             @RequestParam(name = "cityFrom", required = false) String cityFrom,
+
             @ApiParam(value = "Arrival cityName", example = "Омск")
             @RequestParam(name = "cityTo", required = false) String cityTo,
+
             @ApiParam(value = "Departure Data-Time", example = "2022-12-10T15:56:49")
             @RequestParam(name = "dateStart", required = false) String dateStart,
+
             @ApiParam(value = "Arrival Data-Time", example = "2022-12-10T15:57:49")
-            @RequestParam(name = "dateFinish", required = false) String dateFinish,
-            @PageableDefault(sort = {"id"}) Pageable pageable);
+            @RequestParam(name = "dateFinish", required = false) String dateFinish);
 
     @RequestMapping(value = "/api/flights/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Flight by \"id\"")

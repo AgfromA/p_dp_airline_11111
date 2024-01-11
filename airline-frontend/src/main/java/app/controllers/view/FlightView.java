@@ -40,7 +40,6 @@ import org.springframework.http.HttpStatus;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,9 +80,11 @@ public class FlightView extends VerticalLayout {
         isSearchById = false;
         isSearchByDestinationsAndDates = false;
         var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null, null, null, null, pageable);
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource = response.getBody().stream().collect(Collectors.toList());
+                pageable.getPageNumber(), pageable.getPageSize(), null, null, null, null);
+        dataSource = response.getBody();
+        List<FlightDTO> flightDTOList = flightClient.getAllPagesFlightsByDestinationsAndDates(null, null, null,
+                null, null, null).getBody();
+        maxPages = (int) Math.ceil((double) flightDTOList.size() / 10);
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage codeValidationMessage = new ValidationMessage();
@@ -216,11 +217,12 @@ public class FlightView extends VerticalLayout {
             grid.getDataProvider().refreshAll();
             PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
             var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
                     cityFrom,
                     cityTo,
                     dateStartString,
-                    dateFinishString,
-                    pageable
+                    dateFinishString
             );
             if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
                 Notification.show("Flights with these parameters not found.", 3000, Notification.Position.TOP_CENTER);
@@ -228,8 +230,10 @@ public class FlightView extends VerticalLayout {
                 List<FlightDTO> emptyList = Collections.emptyList();
                 grid.setItems(emptyList);
             } else {
-                maxPages = response.getBody().getTotalPages() - 1;
-                dataSource = response.getBody().stream().collect(Collectors.toList());
+                List<FlightDTO> flightDTOList = flightClient.getAllPagesFlightsByDestinationsAndDates(null, null, null,
+                        null, null, null).getBody();
+                maxPages = (int) Math.ceil((double) flightDTOList.size() / 10);
+                dataSource = response.getBody();
                 grid.setItems(dataSource);
             }
         } else {
@@ -388,9 +392,11 @@ public class FlightView extends VerticalLayout {
         dataSource.clear();
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null, null, null, null, pageable);
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource = response.getBody().stream().collect(Collectors.toList());
+                pageable.getPageNumber(), pageable.getPageSize(), null, null, null, null);
+        List<FlightDTO> flightDTOList = flightClient.getAllPagesFlightsByDestinationsAndDates(null, null, null,
+                null, null, null).getBody();
+        maxPages = (int) Math.ceil((double) flightDTOList.size() / 10);
+        dataSource = response.getBody();
 
 
         grid.getDataProvider().refreshAll();
@@ -721,8 +727,11 @@ public class FlightView extends VerticalLayout {
         TextField code = new TextField("Flight code");
         code.setWidth("200px");
 
-        List<Airport> airports = destinationClient.getAllDestinationDTO().getBody()
-                .stream().map(DestinationDTO::getAirportCode).collect(Collectors.toList());
+        List<Airport> airports = destinationClient.getAllPagesDestinationsDTO(null, null, null, null, null)
+                .getBody()
+                .stream()
+                .map(DestinationDTO::getAirportCode)
+                .collect(Collectors.toList());
 
         ComboBox<Airport> airportFrom = new ComboBox<>("Airport from");
         airportFrom.setWidth("200px");

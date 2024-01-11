@@ -14,9 +14,9 @@ import java.util.Optional;
 
 public interface FlightService {
 
-    List<Flight> getAllFlights();
+    List<FlightDTO> getAllListFlights();
 
-    Page<Flight> getAllFlights(Pageable pageable);
+    Page<FlightDTO> getAllFlights(Pageable pageable);
 
     Flight getFlightByCode(String code);
 
@@ -25,13 +25,13 @@ public interface FlightService {
 
     List<Flight> getFlightsByDestinationsAndDepartureDate(Destination fromId, Destination toId, LocalDate departureDate);
 
-    Flight getFlightByIdAndDates(Long id, String start, String finish);
+    FlightDTO getFlightByIdAndDates(Long id, String start, String finish);
 
     Optional<Flight> getFlightById(Long id);
 
-    Flight saveFlight(FlightDTO flightDTO);
+    FlightDTO saveFlight(FlightDTO flightDTO);
 
-    Flight updateFlight(Long id, FlightDTO flightDTO);
+    FlightDTO updateFlight(Long id, FlightDTO flightDTO);
 
     List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo,
                                                                  Date departureDate);
@@ -46,5 +46,4 @@ public interface FlightService {
     public double parseLatitude(Airport airport);
 
     public double parseLongitude(Airport airport);
-
 }
