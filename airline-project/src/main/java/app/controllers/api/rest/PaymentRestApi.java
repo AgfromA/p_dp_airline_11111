@@ -4,13 +4,11 @@ import app.dto.PaymentRequest;
 import app.entities.Payment;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import java.util.List;
 
 @Api(tags = "Payment REST")
 @Tag(name = "Payment REST", description = "API для оплаты бронирования")
@@ -23,9 +21,9 @@ public interface PaymentRestApi {
             @ApiResponse(code = 200, message = "payments found"),
             @ApiResponse(code = 404, message = "payments not found")
     })
-    ResponseEntity<Page<Payment>> getAllPagesPayments(
-            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-            @RequestParam(value = "count", defaultValue = "10") @Min(1) @Max(10) Integer count
+    ResponseEntity<List<Payment>> getAllPagesPayments(
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "count", required = false) Integer count
     );
 
     @GetMapping("/{id}")

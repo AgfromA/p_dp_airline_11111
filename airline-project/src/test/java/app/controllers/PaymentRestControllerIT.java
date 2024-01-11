@@ -8,6 +8,7 @@ import app.services.interfaces.PaymentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +34,54 @@ class PaymentRestControllerIT extends IntegrationTestBase {
     private PaymentService paymentService;
     @MockBean
     private PaymentFeignClient feignClientPayment;
+
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllPayments() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/payments"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllPaymentsByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/payments?count=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllPaymentsByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/payments?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/payments?page=-1&count=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/payments?page=0&count=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetPagePayments() throws Exception {
+        var pageable = PageRequest.of(0, 4);
+        mockMvc.perform(get("http://localhost:8080/api/payments?page=0&count=4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(paymentService
+                        .pagePagination(pageable.getPageNumber(), pageable.getPageSize())
+                        .getContent())));
+    }
+    // Пагинация 2.0
 
     @Test
     void shouldSavePayment() throws Exception {
