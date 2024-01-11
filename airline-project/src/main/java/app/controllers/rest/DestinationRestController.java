@@ -3,19 +3,16 @@ package app.controllers.rest;
 import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDTO;
 import app.entities.Destination;
-import app.mappers.DestinationMapper;
 import app.services.interfaces.DestinationService;
 import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
 
 @Slf4j
 @RestController
@@ -25,31 +22,47 @@ public class DestinationRestController implements DestinationRestApi {
     private final DestinationService destinationService;
 
     @Override
-    public ResponseEntity<List<DestinationDTO>> getAllDestinationDTO() {
-        return new ResponseEntity<>(destinationService.getAllDestinationDTO(), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Page<DestinationDTO>> getAllPagesDestinationsDTO(Integer page, Integer size, String cityName, String countryName, String timezone) {
-        Page<DestinationDTO> destination = null;
+    public ResponseEntity<List<DestinationDTO>> getAllPagesDestinationsDTO(Integer page, Integer size, String cityName,
+                                                                           String countryName, String timezone) {
+        log.info("get all Destinations");
+        if (page == null || size == null) {
+            log.info("get all List Destinations");
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            log.info("no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Page<DestinationDTO> destination;
         if (cityName == null && countryName == null && timezone == null) {
             destination = destinationService.getAllDestinations(page, size);
             log.info("get all Destinations: found {} Destination", destination.getNumberOfElements());
         } else {
             destination = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
-            log.info("get all Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}: found {} Destination", countryName, cityName, timezone, destination.getNumberOfElements());
+            log.info("get all Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}: found {} Destination",
+                    countryName, cityName, timezone, destination.getNumberOfElements());
         }
-        return (!destination.isEmpty())
-                ? new ResponseEntity<>(destination, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return destination.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(destination.getContent(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<DestinationDTO>> createUnPagedResponse() {
+        var destinations = destinationService.getAllDestinationDTO();
+        if (destinations.isEmpty()) {
+            log.info("Destinations not found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("found {} Destinations", destinations.size());
+            return new ResponseEntity<>(destinations, HttpStatus.OK);
+        }
     }
 
     @Override
     public ResponseEntity<DestinationDTO> createDestinationDTO(DestinationDTO destinationDTO) {
         Destination existingDestination = destinationService.getDestinationByAirportCode(destinationDTO.getAirportCode());
         log.info("create: new Destination - {}", LogsUtils.objectToJson(destinationDTO));
-        return new ResponseEntity<>(Mappers.getMapper(DestinationMapper.class)
-                .convertToDestinationDTOEntity(destinationService.saveDestination(destinationDTO)), HttpStatus.CREATED);
+        return new ResponseEntity<>(destinationService.saveDestination(destinationDTO), HttpStatus.CREATED);
     }
 
     @Override

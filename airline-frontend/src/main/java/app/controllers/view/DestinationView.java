@@ -39,7 +39,7 @@ public class DestinationView extends VerticalLayout {
     private final Editor<DestinationDTO> editor = grid.getEditor();
     private final DestinationClient destinationClient;
     private final List<DestinationDTO> dataSource;
-    private ResponseEntity<Page<DestinationDTO>> response;
+    private ResponseEntity<List<DestinationDTO>> response;
     private final Button updateButton;
     private final Button cancelButton;
     private final Button nextButton;
@@ -59,14 +59,16 @@ public class DestinationView extends VerticalLayout {
     public DestinationView(DestinationClient destinationClient) {
 
         this.destinationClient = destinationClient;
+        this.currentPage = 0; // сначала инициализация страницы иначе вытаскивает весь список
         this.response = destinationClient.getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
-        city = null;
-        country = null;
-        timezone = null;
-        isFilteredSearch = false;
-        currentPage = 0;
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource = response.getBody().stream().collect(Collectors.toList());
+        this.city = null;
+        this.country = null;
+        this.timezone = null;
+        this.isFilteredSearch = false;
+        List<DestinationDTO> dtos = destinationClient.getAllPagesDestinationsDTO(null, null, null, null, null).getBody();
+        int pageSize = 10;
+        this.maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
+        this.dataSource = response.getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage airportCodeValidationMessage = new ValidationMessage();
@@ -179,10 +181,13 @@ public class DestinationView extends VerticalLayout {
 
     private boolean isFoundDestinations(String city, String country, String timezone) {
         try {
-            ResponseEntity<Page<DestinationDTO>> filteredResponse = destinationClient
+            ResponseEntity<List<DestinationDTO>> filteredResponse = destinationClient
                     .getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
-            maxPages = filteredResponse.getBody().getTotalPages() - 1;
-            dataSource.addAll(filteredResponse.getBody().stream().collect(Collectors.toList()));
+            List<DestinationDTO> dtos = destinationClient.getAllPagesDestinationsDTO(null, null,
+                    null, null, null).getBody();
+            int pageSize = 10;
+            maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
+            dataSource.addAll(filteredResponse.getBody());
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -202,8 +207,11 @@ public class DestinationView extends VerticalLayout {
     private void updateGridData() {
         dataSource.clear();
         response = destinationClient.getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
+        List<DestinationDTO> dtos = destinationClient.getAllPagesDestinationsDTO(null, null,
+                null, null, null).getBody();
+        int pageSize = 10;
+        maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
+        dataSource.addAll(response.getBody());
         grid.getDataProvider().refreshAll();
     }
 

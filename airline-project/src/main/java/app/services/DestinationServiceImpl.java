@@ -7,14 +7,12 @@ import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
 import app.services.interfaces.DestinationService;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.converters.models.Sort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -25,8 +23,7 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     public List<DestinationDTO> getAllDestinationDTO() {
-        return destinationRepository.findAll().stream()
-                .map(destinationMapper::convertToDestinationDTOEntity).collect(Collectors.toList());
+        return destinationMapper.convertToDestinationDTOList(destinationRepository.findAll());
     }
 
     @Override
@@ -39,7 +36,7 @@ public class DestinationServiceImpl implements DestinationService {
         if (cityName != null && !cityName.isEmpty()) {
             return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName)
                     .map(destinationMapper::convertToDestinationDTOEntity);
-        } else if(countryName != null && !countryName.isEmpty()) {
+        } else if (countryName != null && !countryName.isEmpty()) {
             return destinationRepository.findByCountryNameContainingIgnoreCase(PageRequest.of(page, size), countryName)
                     .map(destinationMapper::convertToDestinationDTOEntity);
         } else {
@@ -50,9 +47,9 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     @Transactional
-    public Destination saveDestination(DestinationDTO destinationDTO) {
+    public DestinationDTO saveDestination(DestinationDTO destinationDTO) {
         var destination = destinationMapper.convertToDestinationEntity(destinationDTO);
-        return destinationRepository.save(destination);
+        return destinationMapper.convertToDestinationDTOEntity(destinationRepository.save(destination));
     }
 
     @Override

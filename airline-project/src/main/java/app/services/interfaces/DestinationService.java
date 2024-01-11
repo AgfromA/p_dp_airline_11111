@@ -4,7 +4,6 @@ import app.dto.DestinationDTO;
 import app.entities.Destination;
 import app.enums.Airport;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public interface DestinationService {
 
     Page<DestinationDTO> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone);
 
-    Destination saveDestination(DestinationDTO destinationDTO);
+    DestinationDTO saveDestination(DestinationDTO destinationDTO);
 
     void updateDestinationById(Long id, DestinationDTO destinationDTO);
 
