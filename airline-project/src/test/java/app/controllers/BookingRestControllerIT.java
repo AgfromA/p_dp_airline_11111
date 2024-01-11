@@ -41,6 +41,55 @@ class BookingRestControllerIT extends IntegrationTestBase {
     @Autowired
     private BookingMapper bookingMapper;
 
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllBookings() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/bookings"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllBookingsByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/bookings?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllBookingsByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/bookings?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Get All Bookings")
+    void shouldGetPageBookings() throws Exception {
+        var pageable = PageRequest.of(0, 1);
+        mockMvc.perform(get("http://localhost:8080/api/bookings?page=0&size=1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(bookingService
+                        .getAllBookings(pageable.getPageNumber(), pageable.getPageSize())
+                        .getContent())));
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/bookings?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/bookings?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+    // Пагинация 2.0
+
     @Test
     @DisplayName("Save Booking")
     void shouldSaveBooking() throws Exception {
@@ -58,19 +107,6 @@ class BookingRestControllerIT extends IntegrationTestBase {
                 .andExpect(status().isCreated());
     }
 
-
-    @Test
-    @DisplayName("Get All Bookings")
-    void shouldGetAllBookings() throws Exception {
-        var pageable = PageRequest.of(0, 1);
-        mockMvc.perform(get("http://localhost:8080/api/bookings?page=0&size=1"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(bookingService
-                        .getAllBookings(pageable.getPageNumber(), pageable.getPageSize()))));
-    }
-
-
     @Test
     @DisplayName("Get Booking by ID")
     void shouldGetBookingById() throws Exception {
@@ -79,7 +115,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        bookingMapper.convertToBookingDTOEntity(bookingService.getBookingById(id)))));
+                        bookingService.getBookingById(id))));
     }
 
 
@@ -92,8 +128,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        bookingMapper.convertToBookingDTOEntity(bookingService
-                        .getBookingByNumber(bookingNumber)))));
+                        bookingService.getBookingByNumber(bookingNumber))));
     }
 
 
@@ -101,7 +136,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     @DisplayName("Edit Booking by ID")
     void shouldEditBookingById() throws Exception {
         long id = 6002;
-        var booking = bookingMapper.convertToBookingDTOEntity(bookingService.getBookingById(id));
+        var booking = bookingService.getBookingById(id);
         booking.setBookingDate(LocalDateTime.now());
         booking.setPassengerId(passengerService.getPassengerById(1002L).get().getId());
         long numberOfBooking = bookingRepository.count();

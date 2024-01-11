@@ -27,12 +27,17 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
 
 
+    @Override
+    public List<BookingDTO> findAll() {
+        return bookingMapper.convertToBookingDTOEntityList(bookingRepository.findAll());
+    }
+
     @Transactional
     @Override
-    public Booking saveBooking(BookingDTO bookingDTO) {
+    public BookingDTO saveBooking(BookingDTO bookingDTO) {
         var booking = bookingMapper
-                .convertToBookingEntity(bookingDTO,passengerService,flightSeatService);
-        if (booking.getFlightSeat().getIsBooked()){
+                .convertToBookingEntity(bookingDTO, passengerService, flightSeatService);
+        if (booking.getFlightSeat().getIsBooked()) {
             throw new FlightSeatIsBookedException("FlightSeat is already booked.");
         } else {
             booking.getFlightSeat().setIsBooked(true);
@@ -48,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setBookingNumber(bookingRepository.findById(booking.getId()).get().getBookingNumber());
         }
 
-        return bookingRepository.save(booking);
+        return bookingMapper.convertToBookingDTOEntity(bookingRepository.save(booking));
     }
 
     @Override
@@ -57,8 +62,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking getBookingById(Long id) {
-        return bookingRepository.findById(id).orElse(null);
+    public BookingDTO getBookingById(Long id) {
+        return bookingMapper.convertToBookingDTOEntity(bookingRepository.findById(id).orElse(null));
     }
 
     @Transactional
@@ -73,8 +78,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking getBookingByNumber(String number) {
-        return bookingRepository.findByBookingNumber(number).orElse(null);
+    public BookingDTO getBookingByNumber(String number) {
+        return bookingMapper.convertToBookingDTOEntity(bookingRepository.findByBookingNumber(number).orElse(null));
     }
 
     @Override
