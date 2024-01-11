@@ -8,14 +8,11 @@ import app.services.interfaces.TimezoneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -26,25 +23,32 @@ public class TimezoneRestController implements TimezoneRestApi {
     private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
 
     @Override
-    public ResponseEntity<Page<TimezoneDTO>> getAllPagesTimezonesDTO(Integer page, Integer size) {
-        var timezone = timezoneService.getAllPagesTimezones(page, size);
-        if (timezone == null) {
-            log.error("getAll: Timezones not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<List<TimezoneDTO>> getAllPagesTimezonesDTO(Integer page, Integer size) {
+        log.info("getAll: get all Timezones");
+        if (page == null || size == null) {
+            log.info("getAll: get all List Timezones");
+            return createUnPagedResponse();
         }
-        log.info("getAll: Find all timezones");
+        if (page < 0 || size < 1) {
+            log.info("no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        var timezone = timezoneService.getAllPagesTimezones(page, size);
 
-        var timezoneDTOS = timezone.stream().map(tz -> {
-            TimezoneDTO dto = new TimezoneDTO();
-            dto.setId(tz.getId());
-            dto.setCountryName(tz.getCountryName());
-            dto.setCityName(tz.getCityName());
-            dto.setGmt(tz.getGmt());
-            dto.setGmtWinter(tz.getGmtWinter());
-            return dto;
-        }).collect(Collectors.toList());
+        return timezone.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(timezone.getContent(), HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(new PageImpl<>(timezoneDTOS, PageRequest.of(page, size), timezone.getTotalElements()), HttpStatus.OK);
+    private ResponseEntity<List<TimezoneDTO>> createUnPagedResponse() {
+        var timezone = timezoneService.getAllTimeZone();
+        if (timezone.isEmpty()) {
+            log.error("getAll: Timezones not found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Timezones", timezone.size());
+            return new ResponseEntity<>(timezone, HttpStatus.OK);
+        }
     }
 
 
@@ -68,6 +72,7 @@ public class TimezoneRestController implements TimezoneRestApi {
         return new ResponseEntity<>(new TimezoneDTO(),
                 HttpStatus.CREATED);
     }
+
     @Override
     public ResponseEntity<TimezoneDTO> updateTimezoneDTOById(Long id, TimezoneDTO timezoneDTO) {
         timezoneDTO.setId(id);

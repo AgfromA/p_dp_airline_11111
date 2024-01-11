@@ -19,11 +19,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.BinderValidationStatus;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * Тут страшно, но мы справимся
@@ -36,7 +34,7 @@ public class TimezoneView extends VerticalLayout {
     private final TimezoneClient timezoneClient;
     private final List<TimezoneDTO> dataSource;
 
-    private Integer currentPage = 0;
+    private Integer currentPage;
     private Button nextButton = new Button("Next", VaadinIcon.ARROW_RIGHT.create());
     private Button prevButton = new Button("Back", VaadinIcon.ARROW_LEFT.create());
 
@@ -44,9 +42,12 @@ public class TimezoneView extends VerticalLayout {
 
     public TimezoneView(TimezoneClient timezoneClient) {
         this.timezoneClient = timezoneClient;
-        maxPages = timezoneClient.getAllPagesTimezonesDTO(currentPage, 10).getBody().getTotalPages() - 1;
-        dataSource = timezoneClient.getAllPagesTimezonesDTO(currentPage, 10)
-                .getBody().stream().collect(Collectors.toList());
+        currentPage = 0;
+        var response = timezoneClient.getAllPagesTimezonesDTO(currentPage, 10);
+        dataSource = response.getBody();
+        List<TimezoneDTO> timezoneDTOList = timezoneClient.getAllPagesTimezonesDTO(null, null).getBody();
+        maxPages = (int) Math.ceil((double) timezoneDTOList.size() / 10);
+
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 
@@ -111,8 +112,7 @@ public class TimezoneView extends VerticalLayout {
 
     private void refreshGrid() {
         dataSource.clear();
-        List<TimezoneDTO> newData = timezoneClient.getAllPagesTimezonesDTO(currentPage, 10).getBody().stream()
-                .collect(Collectors.toList());
+        List<TimezoneDTO> newData = timezoneClient.getAllPagesTimezonesDTO(currentPage, 10).getBody();
         dataSource.addAll(newData);
         grid.getDataProvider().refreshAll();
     }
@@ -199,7 +199,6 @@ public class TimezoneView extends VerticalLayout {
         exampleTextColumn.setEditorComponent(countryNameFiled);
 
     }
-
 
 
     private void createCityNameField(Binder<TimezoneDTO> binder,
@@ -324,6 +323,4 @@ public class TimezoneView extends VerticalLayout {
 
         return createTab;
     }
-
-
 }

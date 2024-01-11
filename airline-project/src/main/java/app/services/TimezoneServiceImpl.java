@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +21,11 @@ public class TimezoneServiceImpl implements TimezoneService {
 
     private final TimezoneRepository timezoneRepository;
     private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
+
+    @Override
+    public List<TimezoneDTO> getAllTimeZone() {
+        return timezoneMapper.convertToTimezoneDTOList(timezoneRepository.findAll());
+    }
 
     @Transactional
     @Override
@@ -36,8 +42,9 @@ public class TimezoneServiceImpl implements TimezoneService {
     }
 
     @Override
-    public Page<Timezone> getAllPagesTimezones(int page, int size) {
-        return timezoneRepository.findAll(PageRequest.of(page, size));
+    public Page<TimezoneDTO> getAllPagesTimezones(int page, int size) {
+        return timezoneRepository.findAll(PageRequest.of(page, size))
+                .map(timezoneMapper::convertToTimezoneDTO);
     }
 
     @Override
