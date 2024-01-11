@@ -53,9 +53,7 @@ public class AccountView extends VerticalLayout {
         this.accountClient = accountClient;
         page = 0;
         size = 10;
-        this.dataSource = accountClient.getPage(page, size)
-                .getBody()
-                .stream().collect(Collectors.toList());
+        this.dataSource = accountClient.getPage(page, size).getBody();
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage nameValidationMessage = new ValidationMessage();
         ValidationMessage lastnameValidationMessage = new ValidationMessage();
@@ -81,7 +79,7 @@ public class AccountView extends VerticalLayout {
         Grid.Column<AccountDTO> updateColumn = createEditColumn();
         createDeleteColumn();
 
-        Binder <AccountDTO> binder = createBinder();
+        Binder<AccountDTO> binder = createBinder();
 
         createIdField(binder, idValidationMessage, idColumn);
         createNameField(binder, nameValidationMessage, nameColumn);
@@ -91,8 +89,8 @@ public class AccountView extends VerticalLayout {
         createRolesField(binder, rolesValidationMessage, rolesColumn);
         createPhoneNumberField(binder, phoneNumberValidationMessage, phoneNumberColumn);
         createPasswordField(binder, passwordValidationMessage, passwordColumn);
-        createSecQuestionField(binder,secQuestionValidationMessage,secQuestionColumn);
-        createAnsQuestionField(binder,ansQuestionValidationMessage,ansQuestionColumn);
+        createSecQuestionField(binder, secQuestionValidationMessage, secQuestionColumn);
+        createAnsQuestionField(binder, ansQuestionValidationMessage, ansQuestionColumn);
 
 
         updateButton = new Button("Update", e -> editor.save());
@@ -223,10 +221,10 @@ public class AccountView extends VerticalLayout {
             list.add((RoleDTO) iterator.next());
         }
         var roleArray = new RoleDTO[list.size()];
-        for (int i = 0; i < roleArray.length-1; i++) {
+        for (int i = 0; i < roleArray.length - 1; i++) {
             roleArray[i] = list.get(i);
         }
-            comboBox.setItems(roleArray);
+        comboBox.setItems(roleArray);
         rolesColumn.setEditorComponent(comboBox);
     }
 
@@ -351,10 +349,12 @@ public class AccountView extends VerticalLayout {
             grid.getDataProvider().refreshAll();
         });
     }
+
     private void addTheme() {
         getThemeList().clear();
         getThemeList().add("spacing-s");
     }
+
     private Tabs createTabs(Div contentContainer) {
         Tabs tabs = new Tabs();
 
@@ -396,9 +396,8 @@ public class AccountView extends VerticalLayout {
                 .stream().collect(Collectors.toSet());
         Iterator iterator = roles.iterator();
         while (iterator.hasNext()) {
-            rolesSelectBox.setItems((RoleDTO) iterator.next(), (RoleDTO)iterator.next());
+            rolesSelectBox.setItems((RoleDTO) iterator.next(), (RoleDTO) iterator.next());
         }
-
 
 
         Button createButton = new Button("Create");
@@ -412,7 +411,6 @@ public class AccountView extends VerticalLayout {
                 securityQuestionField,
                 answerQuestionField,
                 createButton);
-
 
 
         createButton.addClickListener(event -> {

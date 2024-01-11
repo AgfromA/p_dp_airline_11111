@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 @Api(tags = "Account REST")
@@ -29,10 +28,10 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Accounts found"),
             @ApiResponse(code = 204, message = "Accounts not found")})
-    ResponseEntity<Page<AccountDTO>> getPage(@ApiParam(name = "page")
-                                             @RequestParam(value = "page", defaultValue = "0") Integer page,
+    ResponseEntity<List<AccountDTO>> getPage(@ApiParam(name = "page")
+                                             @RequestParam(value = "page", required = false) Integer page,
                                              @ApiParam(name = "size")
-                                             @RequestParam(value = "size", defaultValue = "10") Integer size);
+                                             @RequestParam(value = "size", required = false) Integer size);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Account by \"id\"")
@@ -44,7 +43,7 @@ public interface AccountRestApi {
                     name = "id",
                     value = "Account.id"
             )
-            @PathVariable (value = "id")Long id);
+            @PathVariable(value = "id") Long id);
 
     @RequestMapping(value = "/api/accounts/auth", method = RequestMethod.GET)
     @ApiOperation(value = "Get authenticated Account")
@@ -54,8 +53,8 @@ public interface AccountRestApi {
     @RequestMapping(value = "/api/accounts", method = RequestMethod.POST)
     @ApiOperation(value = "Create Account")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Account created"),
-                            @ApiResponse(code = 500, message = "Server error")})
-    ResponseEntity<AccountDTO> createAccountDTO (
+            @ApiResponse(code = 500, message = "Server error")})
+    ResponseEntity<AccountDTO> createAccountDTO(
             @ApiParam(
                     name = "account",
                     value = "Account model"
@@ -93,7 +92,7 @@ public interface AccountRestApi {
                     name = "id",
                     value = "Account.id"
             )
-            @PathVariable (value = "id") Long id);
+            @PathVariable(value = "id") Long id);
 
     @RequestMapping(value = "/api/accounts/all-roles", method = RequestMethod.GET)
     @ApiOperation(value = "Get all existing roles")

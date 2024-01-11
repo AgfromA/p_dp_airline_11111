@@ -1,7 +1,6 @@
 package app.services;
 
 import app.dto.AccountDTO;
-import app.entities.Account;
 import app.mappers.AccountMapper;
 import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,22 +26,19 @@ public class AccountServiceImpl implements AccountService {
     private final AccountMapper accountMapper;
 
     @Override
-    public List<AccountDTO> findAll(){
-        return accountRepository.findAll()
-                .stream()
-                .map(accountMapper::convertToAccountDTO)
-                .collect(Collectors.toList());
+    public List<AccountDTO> findAll() {
+        return accountMapper.convertToAccountDTOList(accountRepository.findAll());
     }
 
     @Override
-    public Account saveAccount(AccountDTO accountDTO) {
+    public AccountDTO saveAccount(AccountDTO accountDTO) {
         accountDTO.setPassword(encoder.encode(accountDTO.getPassword()));
         accountDTO.setRoles(roleService.saveRolesToUser(accountDTO));
         if (accountDTO.getAnswerQuestion() != null) {
             accountDTO.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
         var account = accountMapper.convertToAccount(accountDTO);
-        return accountRepository.saveAndFlush(account);
+        return accountMapper.convertToAccountDTO(accountRepository.saveAndFlush(account));
     }
 
     @Override

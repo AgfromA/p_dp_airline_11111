@@ -1,7 +1,6 @@
 package app.services.interfaces;
 
 import app.dto.AccountDTO;
-import app.entities.Account;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -10,7 +9,8 @@ import java.util.Optional;
 public interface AccountService {
 
     List<AccountDTO> findAll();
-    Account saveAccount(AccountDTO accountDTO);
+
+    AccountDTO saveAccount(AccountDTO accountDTO);
 
     Optional<AccountDTO> updateAccount(Long id, AccountDTO accountDTO);
 

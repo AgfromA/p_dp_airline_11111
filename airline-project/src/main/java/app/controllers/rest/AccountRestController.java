@@ -3,23 +3,19 @@ package app.controllers.rest;
 import app.controllers.api.rest.AccountRestApi;
 import app.dto.AccountDTO;
 import app.dto.RoleDTO;
-import app.mappers.AccountMapper;
 import app.security.JwtProviderLite;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -30,41 +26,33 @@ public class AccountRestController implements AccountRestApi {
     private final RoleService roleService;
     private final JwtProviderLite jwtProvider;
 
-    private final AccountMapper accountMapper = Mappers.getMapper(AccountMapper.class);
-
     @Override
-    public ResponseEntity<Page<AccountDTO>> getPage(Integer page, Integer size) {
+    public ResponseEntity<List<AccountDTO>> getPage(Integer page, Integer size) {
         log.info("getAll: get all Accounts");
         if (page == null || size == null) {
+            log.info("getAll: get all List Accounts");
             return createUnPagedResponse();
         }
         if (page < 0 || size < 1) {
-            return ResponseEntity.noContent().build();
+            log.info("getAll: no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
         var accountPage = accountService.getPage(page, size);
-        if (accountPage.getContent().isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return createPagedResponse(accountPage);
-        }
+
+        return accountPage.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(accountPage.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<Page<AccountDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<AccountDTO>> createUnPagedResponse() {
         var account = accountService.findAll();
         if (account.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            log.info("getAll: Accounts not found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Accounts", account.size());
+            return new ResponseEntity<>(account, HttpStatus.OK);
         }
-        return ResponseEntity.ok(new PageImpl<>(account.stream().collect(Collectors.toList())));
-    }
-
-    private ResponseEntity<Page<AccountDTO>> createPagedResponse(Page<AccountDTO> accountPage) {
-        var accountDTOPage = new PageImpl<>(
-                accountPage.getContent().stream().collect(Collectors.toList()),
-                accountPage.getPageable(),
-                accountPage.getTotalElements()
-        );
-        return ResponseEntity.ok(accountDTOPage);
     }
 
     @Override
@@ -92,13 +80,13 @@ public class AccountRestController implements AccountRestApi {
     @Override
     public ResponseEntity<AccountDTO> createAccountDTO(AccountDTO accountDTO) {
         log.info("create: create new Account with email={}", accountDTO.getEmail());
-        return ResponseEntity.ok(accountMapper.convertToAccountDTO((accountService.saveAccount(accountDTO))));
+        return ResponseEntity.ok((accountService.saveAccount(accountDTO)));
     }
 
     @Override
     public ResponseEntity<AccountDTO> updateAccountDTOById(Long id, AccountDTO accountDTO) {
         log.info("update: update Account with id = {}", id);
-        return new ResponseEntity<>( accountService.updateAccount(id,accountDTO).get(), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.updateAccount(id, accountDTO).get(), HttpStatus.OK);
     }
 
     @Override
