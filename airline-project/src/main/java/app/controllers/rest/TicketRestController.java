@@ -6,14 +6,11 @@ import app.mappers.TicketMapper;
 import app.services.interfaces.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,15 +21,32 @@ public class TicketRestController implements TicketRestApi {
     private final TicketMapper ticketMapper;
 
     @Override
-    public ResponseEntity<Page<TicketDTO>> getAllPagesTicketsDTO(Integer page, Integer size) {
+    public ResponseEntity<List<TicketDTO>> getAllPagesTicketsDTO(Integer page, Integer size) {
+        log.info("getAll: get all Tickets");
+        if (page == null || size == null) {
+            log.info("getAll: get all List Tickets");
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            log.info("no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         var ticketPage = ticketService.getAllTickets(page, size);
-        if (ticketPage.isEmpty()) {
+
+        return ticketPage.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(ticketPage.getContent(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<TicketDTO>> createUnPagedResponse() {
+        var tickets = ticketService.getAllTickets();
+        if (tickets.isEmpty()) {
             log.error("getAll: Tickets not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Tickets", tickets.size());
+            return new ResponseEntity<>(tickets, HttpStatus.OK);
         }
-        log.info("getAll: get all Tickets");
-        var ticketDTOS = ticketPage.stream().map(ticketMapper::convertToTicketDTO).collect(Collectors.toList());
-        return new ResponseEntity<>(new PageImpl<>(ticketDTOS, PageRequest.of(page, size), ticketPage.getTotalElements()), HttpStatus.OK);
     }
 
     @Override

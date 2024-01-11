@@ -34,8 +34,14 @@ public class TicketServiceImpl implements TicketService {
     private final FlightSeatService flightSeatService;
 
     @Override
-    public Page<Ticket> getAllTickets(int page, int size) {
-        return ticketRepository.findAll(PageRequest.of(page, size));
+    public List<TicketDTO> getAllTickets() {
+        return ticketMapper.convertToTicketDTOList(ticketRepository.findAll());
+    }
+
+    @Override
+    public Page<TicketDTO> getAllTickets(int page, int size) {
+        return ticketRepository.findAll(PageRequest.of(page, size))
+                .map(ticketMapper::convertToTicketDTO);
     }
 
     @Override

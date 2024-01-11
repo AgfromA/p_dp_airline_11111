@@ -7,8 +7,9 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface TicketService {
+    List<TicketDTO> getAllTickets();
 
-    Page<Ticket> getAllTickets(int page, int size);
+    Page<TicketDTO> getAllTickets(int page, int size);
 
     Ticket getTicketByTicketNumber(String bookingNumber);
 
@@ -19,7 +20,7 @@ public interface TicketService {
     Ticket updateTicketById(Long id, TicketDTO ticketDTO);
 
 
-    long [] getArrayOfFlightSeatIdByPassengerId(long passengerId);
+    long[] getArrayOfFlightSeatIdByPassengerId(long passengerId);
 
     void deleteTicketByPassengerId(long passengerId);
 

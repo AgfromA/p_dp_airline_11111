@@ -1,19 +1,14 @@
 package app.controllers.api.rest;
 
 import app.dto.TicketDTO;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import java.util.List;
 
 
 @Api(tags = "Ticket REST")
@@ -23,9 +18,13 @@ public interface TicketRestApi {
 
     @GetMapping
     @ApiOperation(value = "Get list of all Tickets")
-    ResponseEntity<Page<TicketDTO>> getAllPagesTicketsDTO(
-            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-            @RequestParam(value = "size", defaultValue = "10") @Max(10) Integer size);
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tickets found"),
+            @ApiResponse(code = 204, message = "Tickets not found")
+    })
+    ResponseEntity<List<TicketDTO>> getAllPagesTicketsDTO(
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size);
 
     @ApiOperation(value = "Get Ticket by ticketNumber")
     @ApiResponse(code = 200, message = "Found the ticket")

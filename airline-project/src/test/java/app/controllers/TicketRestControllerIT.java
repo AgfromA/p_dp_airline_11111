@@ -6,6 +6,7 @@ import app.repositories.TicketRepository;
 import app.services.interfaces.TicketService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -30,6 +31,54 @@ class TicketRestControllerIT extends IntegrationTestBase {
     private TicketRepository ticketRepository;
     @Autowired
     private TicketMapper ticketMapper;
+
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllTickets() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllTicketsByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllTicketsByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetPageTickets() throws Exception {
+        var pageable = PageRequest.of(0, 4);
+        mockMvc.perform(get("http://localhost:8080/api/tickets?page=0&size=4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(ticketService
+                        .getAllTickets(pageable.getPageNumber(), pageable.getPageSize())
+                        .getContent())));
+    }
+    // Пагинация 2.0
 
     @Test
     void createTicket_test() throws Exception {
