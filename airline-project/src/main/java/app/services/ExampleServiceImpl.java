@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public class ExampleServiceImpl implements ExampleService {
     private final ExampleMapper exampleMapper;
 
     public List<ExampleDto> findAll() {
-        return exampleRepository.findAll().stream().map(exampleMapper::toDto).collect(Collectors.toList());
+        return exampleMapper.convertToExamleDTOList(exampleRepository.findAll());
     }
 
     public Page<ExampleDto> getPage(int page, int size) {
@@ -35,7 +34,7 @@ public class ExampleServiceImpl implements ExampleService {
     }
 
     public ExampleDto save(ExampleDto exampleDto) {
-       var example = exampleMapper.toEntity(exampleDto);
+        var example = exampleMapper.toEntity(exampleDto);
         return exampleMapper.toDto(exampleRepository.save(example));
     }
 

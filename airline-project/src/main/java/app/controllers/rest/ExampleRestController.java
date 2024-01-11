@@ -6,15 +6,13 @@ import app.dto.ExampleDto;
 import app.services.interfaces.ExampleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Validated
@@ -25,37 +23,32 @@ public class ExampleRestController implements ExampleRestApi {
     private final ExampleService exampleService;
 
     @Override
-    public ResponseEntity<Page<ExampleDto>> getPage(Integer page, Integer size) {
+    public ResponseEntity<List<ExampleDto>> getPage(Integer page, Integer size) {
+        log.info("getAll: get  Examples");
         if (page == null || size == null) {
+            log.info("getAll: get all List Example");
             return createUnPagedResponse();
         }
         if (page < 0 || size < 1) {
-            return ResponseEntity.noContent().build();
+            log.info("getAll: no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
         var examplePage = exampleService.getPage(page, size);
-        if (examplePage.getContent().isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return createPagedResponse(examplePage);
-        }
+
+        return examplePage.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(examplePage.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {
+    private ResponseEntity<List<ExampleDto>> createUnPagedResponse() {
         var examples = exampleService.findAll();
         if (examples.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            log.info("getAll: not found Example");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Example", examples.size());
+            return new ResponseEntity<>(examples, HttpStatus.OK);
         }
-        return ResponseEntity.ok(new PageImpl<>(examples.stream().collect(Collectors.toList())));
-    }
-
-    private ResponseEntity<Page<ExampleDto>> createPagedResponse(Page<ExampleDto> examplePage) {
-        var exampleDtoPage = new PageImpl<>(
-                examplePage.getContent().stream().collect(Collectors.toList()),
-                examplePage.getPageable(),
-                examplePage.getTotalElements()
-        );
-        return ResponseEntity.ok(exampleDtoPage);
     }
 
     @Override
