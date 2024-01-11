@@ -10,10 +10,11 @@ import app.services.interfaces.PassengerService;
 import app.services.interfaces.TicketService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -36,6 +37,11 @@ public class PassengerServiceImpl implements PassengerService {
         this.ticketService = ticketService;
         this.flightSeatService = flightSeatService;
         this.passengerMapper = passengerMapper;
+    }
+
+    @Override
+    public List<PassengerDTO> getAllPassengers() {
+        return passengerMapper.convertToPassengerDTOList(passengerRepository.findAll());
     }
 
     @Override
@@ -69,39 +75,27 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public Page<PassengerDTO> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
         if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
-            return passengerRepository.findByFirstNameAndLastName(pageable, firstName, lastName).map(entity -> {
-                var dto = passengerMapper.convertToPassengerDTO(entity);
-                return dto;
-            });
+            return passengerRepository.findByFirstNameAndLastName(pageable, firstName, lastName)
+                    .map(passengerMapper::convertToPassengerDTO);
         }
         if (firstName != null && !firstName.isEmpty()) {
-            return passengerRepository.findAllByFirstName(pageable, firstName).map(entity -> {
-                var dto = passengerMapper.convertToPassengerDTO(entity);
-                return dto;
-            });
+            return passengerRepository.findAllByFirstName(pageable, firstName)
+                    .map(passengerMapper::convertToPassengerDTO);
         }
         if (lastName != null && !lastName.isEmpty()) {
-            return passengerRepository.findByLastName(pageable, lastName).map(entity -> {
-                var dto = passengerMapper.convertToPassengerDTO(entity);
-                return dto;
-            });
+            return passengerRepository.findByLastName(pageable, lastName)
+                    .map(passengerMapper::convertToPassengerDTO);
         }
         if (email != null && !email.isEmpty()) {
-            return passengerRepository.findByEmail(pageable, email).map(entity -> {
-                var dto = passengerMapper.convertToPassengerDTO(entity);
-                return dto;
-            });
+            return passengerRepository.findByEmail(pageable, email)
+                    .map(passengerMapper::convertToPassengerDTO);
         }
         if (serialNumberPassport != null && !serialNumberPassport.isEmpty()) {
-            return passengerRepository.findByPassportSerialNumber(pageable, serialNumberPassport).map(entity -> {
-                var dto = passengerMapper.convertToPassengerDTO(entity);
-                return dto;
-            });
+            return passengerRepository.findByPassportSerialNumber(pageable, serialNumberPassport)
+                    .map(passengerMapper::convertToPassengerDTO);
         }
-        return passengerRepository.findAll(pageable).map(entity -> {
-            var dto = passengerMapper.convertToPassengerDTO(entity);
-            return dto;
-        });
+        return passengerRepository.findAll(pageable)
+                .map(passengerMapper::convertToPassengerDTO);
     }
 
     @Override
@@ -115,11 +109,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public Page<PassengerDTO> getAllPagesPassengers(Pageable pageable) {
-        return passengerRepository.findAll(pageable).map(entity -> {
-            var dto = passengerMapper.convertToPassengerDTO(entity);
-            return dto;
-        });
+        return passengerRepository.findAll(pageable).map(passengerMapper::convertToPassengerDTO);
     }
-
 }
 

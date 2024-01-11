@@ -7,28 +7,28 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Api(tags = "Passenger REST")
 @Tag(name = "Passenger REST", description = "API для операций с пассажирами")
 @RequestMapping("/api/passengers")
 public interface PassengerRestApi {
-
     @ApiOperation(value = "Get list of all Passengers filtered")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Passenger found"),
             @ApiResponse(code = 400, message = "Passenger not found")
     })
     @GetMapping
-    ResponseEntity<Page<PassengerDTO>> getAll(
-            @PageableDefault(sort = {"id"}) Pageable pageable,
+    ResponseEntity<List<PassengerDTO>> getAll(
+            @PageableDefault(sort = {"id"})
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
             @RequestParam(value = "firstName", required = false) String firstName,
             @RequestParam(value = "lastName", required = false) String lastName,
             @RequestParam(value = "email", required = false) String email,

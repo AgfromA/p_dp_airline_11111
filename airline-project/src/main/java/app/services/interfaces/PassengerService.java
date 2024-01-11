@@ -5,9 +5,12 @@ import app.entities.Passenger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PassengerService {
+    List<PassengerDTO> getAllPassengers();
+
     Passenger savePassenger(PassengerDTO passengerDTO);
 
     Passenger updatePassengerById(Long id, PassengerDTO passengerDTO);

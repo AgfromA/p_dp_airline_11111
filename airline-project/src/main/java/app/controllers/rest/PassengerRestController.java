@@ -6,11 +6,13 @@ import app.services.interfaces.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -20,22 +22,44 @@ public class PassengerRestController implements PassengerRestApi {
     private final PassengerService passengerService;
 
     @Override
-    public ResponseEntity<Page<PassengerDTO>> getAll(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
+    public ResponseEntity<List<PassengerDTO>> getAll(Integer page, Integer size, String firstName, String lastName,
+                                                     String email, String serialNumberPassport) {
+        log.info("getAll: get all Passenger");
+        if (page == null || size == null) {
+            log.info("getAll: get all List Passenger");
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            log.info("no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         Page<PassengerDTO> passengers;
+        Pageable pageable = PageRequest.of(page, size);
+
         if (firstName == null && lastName == null && email == null && serialNumberPassport == null) {
             passengers = passengerService.getAllPagesPassengers(pageable);
-            log.info("getAll: get all Passenger");
+            log.info("getAll: get all Passenger by page");
             log.info(passengers.toString());
         } else {
             log.info("filter: filter Passenger by firstname or lastname or email or serialNumberPassport");
             passengers = passengerService.getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, serialNumberPassport);
             log.info(passengers.toString());
         }
-        log.info("passenger пустой: " + passengers.isEmpty());
+        return passengers.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(passengers.getContent(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<PassengerDTO>> createUnPagedResponse() {
+        var passengers = passengerService.getAllPassengers();
         if (passengers.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            log.info("getAll:  Passengers not found ");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Passengers", passengers.size());
+            return new ResponseEntity<>(passengers, HttpStatus.OK);
         }
-        return new ResponseEntity<>(passengers, HttpStatus.OK);
     }
 
     @Override
