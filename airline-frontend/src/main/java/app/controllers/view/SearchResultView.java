@@ -97,7 +97,7 @@ public class SearchResultView extends VerticalLayout {
             noDepartFlightsMessage.setVisible(true);
             noReturnFlightsMessage.setVisible(true);
             if (searchForm.createSearch()) {
-                ResponseEntity<SearchResult> response = searchClient.get(searchForm.getSearch().getFrom()
+                ResponseEntity<SearchResult> response = searchClient.search(searchForm.getSearch().getFrom()
                         , searchForm.getSearch().getTo(), searchForm.getSearch().getDepartureDate()
                         , searchForm.getSearch().getReturnDate(), searchForm.getSearch().getNumberOfPassengers());
                 if (!(response.getStatusCode() == HttpStatus.NO_CONTENT)) {

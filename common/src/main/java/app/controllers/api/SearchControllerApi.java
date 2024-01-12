@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
-@Api(tags = "Search API")
-@Tag(name = "Search API", description = "API поиска рейсов по заданными параметрам")
+@Api(tags = "Search")
+@Tag(name = "Search", description = "API поиска рейсов по заданными параметрам")
 public interface SearchControllerApi {
 
     @RequestMapping(value = "/api/search", method = RequestMethod.GET)
