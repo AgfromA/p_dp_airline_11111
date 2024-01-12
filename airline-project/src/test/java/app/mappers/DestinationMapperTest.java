@@ -27,7 +27,7 @@ public class DestinationMapperTest {
         destination.setCountryName("Россия");
 
         // Convert the Destination object to DestinationDto using the mapper
-        DestinationDto destinationDTO = destinationMapper.convertToDestinationDtoEntity(destination);
+        DestinationDto destinationDTO = destinationMapper.toDto(destination);
 
         // Verify the mapping
         assertEquals(destination.getId(), destinationDTO.getId());
@@ -46,7 +46,7 @@ public class DestinationMapperTest {
         destinationDTO.setAirportCode(Airport.AAQ);
         destinationDTO.setTimezone("UTC+3");
 
-        Destination destination = destinationMapper.convertToDestinationEntity(destinationDTO);
+        Destination destination = destinationMapper.toEntity(destinationDTO);
 
         assertEquals(destinationDTO.getId(), destination.getId());
         assertEquals(destinationDTO.getAirportCode(), destination.getAirportCode());
@@ -79,7 +79,7 @@ public class DestinationMapperTest {
         destinationList.add(destinationOne);
         destinationList.add(destinationTwo);
 
-        List<DestinationDto> destinationDtoList = destinationMapper.convertToDestinationDtoList(destinationList);
+        List<DestinationDto> destinationDtoList = destinationMapper.toDtoList(destinationList);
         assertEquals(destinationList.size(), destinationDtoList.size());
         assertEquals(destinationList.get(0).getId(), destinationDtoList.get(0).getId());
         assertEquals(destinationList.get(0).getAirportCode(), destinationDtoList.get(0).getAirportCode());
@@ -111,7 +111,7 @@ public class DestinationMapperTest {
         destinationDtoList.add(destinationDtoOne);
         destinationDtoList.add(destinationDtoTwo);
 
-        List<Destination> destinationList = destinationMapper.convertToDestinationEntityList(destinationDtoList);
+        List<Destination> destinationList = destinationMapper.toEntityList(destinationDtoList);
         assertEquals(destinationDtoList.size(), destinationList.size());
         assertEquals(destinationDtoList.get(0).getId(), destinationList.get(0).getId());
         assertEquals(destinationDtoList.get(0).getAirportCode(), destinationList.get(0).getAirportCode());

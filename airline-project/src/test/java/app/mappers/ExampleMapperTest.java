@@ -51,7 +51,7 @@ public class ExampleMapperTest {
         examples.add(example1);
         examples.add(example2);
 
-        List<ExampleDto> exampleDtos = exampleMapper.convertToExamleDTOList(examples);
+        List<ExampleDto> exampleDtos = exampleMapper.toDtoList(examples);
         Assertions.assertEquals(examples.size(), exampleDtos.size());
         Assertions.assertEquals(examples.get(0).getId(), exampleDtos.get(0).getId());
         Assertions.assertEquals(examples.get(0).getExampleText(), exampleDtos.get(0).getExampleText());
@@ -71,7 +71,7 @@ public class ExampleMapperTest {
         exampleDtos.add(exampleDto1);
         exampleDtos.add(exampleDto2);
 
-        List<Example> examples = exampleMapper.convertToExamleList(exampleDtos);
+        List<Example> examples = exampleMapper.toEntityList(exampleDtos);
         Assertions.assertEquals(exampleDtos.size(), examples.size());
         Assertions.assertEquals(exampleDtos.get(0).getId(), examples.get(0).getId());
         Assertions.assertEquals(exampleDtos.get(0).getExampleText(), examples.get(0).getExampleText());

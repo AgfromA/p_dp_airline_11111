@@ -24,6 +24,7 @@ public class SeatRestController implements SeatRestApi {
 
     private final SeatService seatService;
     private final AircraftService aircraftService;
+    private final SeatMapper seatMapper;
 
     @Override
     public ResponseEntity<List<SeatDto>> getAllSeats(Integer page, Integer size) {
@@ -71,7 +72,7 @@ public class SeatRestController implements SeatRestApi {
         var seat = seatService.getSeatById(id);
         if (seat != null) {
             log.info("getById: Seat with id = {}", id);
-            return new ResponseEntity<>(SeatMapper.INSTANCE.convertToSeatDtoEntity(seat), HttpStatus.OK);
+            return new ResponseEntity<>(seatMapper.toDto(seat), HttpStatus.OK);
         } else {
             log.info("getById: Seat not found. id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -85,7 +86,7 @@ public class SeatRestController implements SeatRestApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.info("create: Seat saved with id= {}", seatDTO.getId());
-        return ResponseEntity.ok(SeatMapper.INSTANCE.convertToSeatDtoEntity(seatService.saveSeat(seatDTO)));
+        return ResponseEntity.ok(seatMapper.toDto(seatService.saveSeat(seatDTO)));
     }
 
     @Override
@@ -117,7 +118,7 @@ public class SeatRestController implements SeatRestApi {
         seatService.editSeatById(id, seatDTO);
         log.info("update: Seat with id = {} has been edited.", id);
 
-        return new ResponseEntity<>(SeatMapper.INSTANCE.convertToSeatDtoEntity(seatService.getSeatById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(seatMapper.toDto(seatService.getSeatById(id)), HttpStatus.OK);
     }
 
     @Override

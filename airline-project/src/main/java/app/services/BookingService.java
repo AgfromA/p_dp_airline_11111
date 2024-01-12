@@ -26,13 +26,13 @@ public class BookingService {
     private final BookingMapper bookingMapper;
 
     public List<BookingDto> findAll() {
-        return bookingMapper.convertToBookingDtoEntityList(bookingRepository.findAll());
+        return bookingMapper.toDtoList(bookingRepository.findAll());
     }
 
     @Transactional
     public BookingDto saveBooking(BookingDto bookingDto) {
         var booking = bookingMapper
-                .convertToBookingEntity(bookingDto, passengerService, flightSeatService);
+                .toEntity(bookingDto, passengerService, flightSeatService);
         if (booking.getFlightSeat().getIsBooked()) {
             throw new FlightSeatIsBookedException("FlightSeat is already booked.");
         } else {
@@ -49,15 +49,15 @@ public class BookingService {
             booking.setBookingNumber(bookingRepository.findById(booking.getId()).get().getBookingNumber());
         }
 
-        return bookingMapper.convertToBookingDtoEntity(bookingRepository.save(booking));
+        return bookingMapper.toDto(bookingRepository.save(booking));
     }
 
     public Page<BookingDto> getAllBookings(Integer page, Integer size) {
-        return bookingRepository.findAll(PageRequest.of(page, size)).map(bookingMapper::convertToBookingDtoEntity);
+        return bookingRepository.findAll(PageRequest.of(page, size)).map(bookingMapper::toDto);
     }
 
     public BookingDto getBookingById(Long id) {
-        return bookingMapper.convertToBookingDtoEntity(bookingRepository.findById(id).orElse(null));
+        return bookingMapper.toDto(bookingRepository.findById(id).orElse(null));
     }
 
     @Transactional
@@ -70,7 +70,7 @@ public class BookingService {
     }
 
     public BookingDto getBookingByNumber(String number) {
-        return bookingMapper.convertToBookingDtoEntity(bookingRepository.findByBookingNumber(number).orElse(null));
+        return bookingMapper.toDto(bookingRepository.findByBookingNumber(number).orElse(null));
     }
 
     @Transactional

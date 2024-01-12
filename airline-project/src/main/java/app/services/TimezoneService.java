@@ -5,7 +5,6 @@ import app.entities.Timezone;
 import app.repositories.TimezoneRepository;
 import app.mappers.TimezoneMapper;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,27 +18,27 @@ import java.util.Optional;
 public class TimezoneService {
 
     private final TimezoneRepository timezoneRepository;
-    private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
+    private final TimezoneMapper timezoneMapper;
 
     public List<TimezoneDto> getAllTimeZone() {
-        return timezoneMapper.convertToTimezoneDtoList(timezoneRepository.findAll());
+        return timezoneMapper.toDtoList(timezoneRepository.findAll());
     }
 
     @Transactional
     public Timezone saveTimezone(TimezoneDto timezoneDto) {
-        var timezone = timezoneMapper.convertToTimezone(timezoneDto);
+        var timezone = timezoneMapper.toEntity(timezoneDto);
         return timezoneRepository.save(timezone);
     }
 
     @Transactional
     public Timezone updateTimezone(TimezoneDto timezoneDto) {
-        var timezone = timezoneMapper.convertToTimezone(timezoneDto);
+        var timezone = timezoneMapper.toEntity(timezoneDto);
         return timezoneRepository.save(timezone);
     }
 
     public Page<TimezoneDto> getAllPagesTimezones(int page, int size) {
         return timezoneRepository.findAll(PageRequest.of(page, size))
-                .map(timezoneMapper::convertToTimezoneDto);
+                .map(timezoneMapper::toDto);
     }
 
     public Optional<Timezone> getTimezoneById(Long id) {

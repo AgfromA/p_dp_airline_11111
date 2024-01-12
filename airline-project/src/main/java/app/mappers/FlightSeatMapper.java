@@ -9,41 +9,42 @@ import app.services.SeatService;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface FlightSeatMapper {
 
-    FlightSeatMapper INSTANCE = Mappers.getMapper(FlightSeatMapper.class);
+    SeatMapper seatMapper = Mappers.getMapper(SeatMapper.class);
 
     @Mapping(target = "flightId", expression = "java(flightService.getFlightById(flightSeat.getFlight().getId()).get().getId())")
     @Mapping(target = "category", expression = "java(flightSeat.getSeat().getCategory().getCategoryType())")
     @Mapping(target = "seat", expression = "java(toSeatDto(flightSeat.getSeat()))")
-    FlightSeatDto convertToFlightSeatDtoEntity(FlightSeat flightSeat, @Context FlightService flightService);
+    FlightSeatDto toDto(FlightSeat flightSeat, @Context FlightService flightService);
 
     @Mapping(target = "flight", expression = "java(flightService.getFlightById(flightSeatDto.getFlightId()).get())")
     @Mapping(target = "seat", expression = "java(seatService.getSeatById(flightSeatDto.getSeat().getId()))")
-    FlightSeat convertToFlightSeatEntity(FlightSeatDto flightSeatDto,
-                                         @Context FlightService flightService,
-                                         @Context SeatService seatService);
+    FlightSeat toEntity(FlightSeatDto flightSeatDto,
+                        @Context FlightService flightService,
+                        @Context SeatService seatService);
 
     default SeatDto toSeatDto(Seat seat) {
-        return SeatMapper.INSTANCE.convertToSeatDtoEntity(seat);
+        return seatMapper.toDto(seat);
     }
 
-    default List<FlightSeatDto> convertToFlightSeatDtoList(List<FlightSeat> flightSeats, FlightService flightService) {
+    default List<FlightSeatDto> toDtoList(List<FlightSeat> flightSeats, FlightService flightService) {
         return flightSeats.stream()
-                .map(flightSeat -> convertToFlightSeatDtoEntity(flightSeat, flightService))
+                .map(flightSeat -> toDto(flightSeat, flightService))
                 .collect(Collectors.toList());
     }
 
-    default List<FlightSeat> convertToFlightSeatEntityList(List<FlightSeatDto> flightSeatDtoList, FlightService flightService,
-                                                           SeatService seatService) {
+    default List<FlightSeat> toEntityList(List<FlightSeatDto> flightSeatDtoList, FlightService flightService,
+                                          SeatService seatService) {
         return flightSeatDtoList.stream()
-                .map(flightSeatDTO -> convertToFlightSeatEntity(flightSeatDTO, flightService, seatService))
+                .map(flightSeatDTO -> toEntity(flightSeatDTO, flightService, seatService))
                 .collect(Collectors.toList());
     }
 }

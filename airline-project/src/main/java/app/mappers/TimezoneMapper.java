@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TimezoneMapper {
 
-    TimezoneDto convertToTimezoneDto(Timezone timezone);
+    TimezoneDto toDto(Timezone timezone);
 
-    Timezone convertToTimezone(TimezoneDto timezoneDto);
+    Timezone toEntity(TimezoneDto timezoneDto);
 
-    List<TimezoneDto> convertToTimezoneDtoList(List<Timezone> timezoneList);
+    List<TimezoneDto> toDtoList(List<Timezone> timezoneList);
 
-    List<Timezone> convertToTimezoneList(List<TimezoneDto> timezoneDtoList);
+    List<Timezone> toEntityList(List<TimezoneDto> timezoneDtoList);
 }

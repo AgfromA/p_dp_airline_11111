@@ -47,7 +47,7 @@ class AccountMapperTest {
         account.setSecurityQuestion("Test");
         account.setRoles(roles);
 
-        AccountDto accountDTO = accountMapper.convertToAccountDto(account);
+        AccountDto accountDTO = accountMapper.toDto(account);
 
         Assertions.assertEquals(account.getId(), accountDTO.getId());
         Assertions.assertEquals(account.getFirstName(), accountDTO.getFirstName());
@@ -83,7 +83,7 @@ class AccountMapperTest {
         accountDTO.setSecurityQuestion("Test");
         accountDTO.setRoles(Set.of(roleServiceMock.getRoleByName("ROLE_MANAGER")));
 
-        Account account = accountMapper.convertToAccount(accountDTO);
+        Account account = accountMapper.toEntity(accountDTO);
 
         Assertions.assertEquals(accountDTO.getId(), account.getId());
         Assertions.assertEquals(accountDTO.getFirstName(), account.getFirstName());
@@ -136,7 +136,7 @@ class AccountMapperTest {
         accountList.add(accountOne);
         accountList.add(accountTwo);
 
-        List<AccountDto> accountDtoList = accountMapper.convertToAccountDtoList(accountList);
+        List<AccountDto> accountDtoList = accountMapper.toDtoList(accountList);
         Assertions.assertEquals(accountList.size(), accountDtoList.size());
 
         Assertions.assertEquals(accountList.get(0).getId(), accountDtoList.get(0).getId());
@@ -200,7 +200,7 @@ class AccountMapperTest {
         accountDtoList.add(accountDtoOne);
         accountDtoList.add(accountDtoTwo);
 
-        List<Account> accountList = accountMapper.convertToAccountList(accountDtoList);
+        List<Account> accountList = accountMapper.toEntityList(accountDtoList);
         Assertions.assertEquals(accountList.size(), accountDtoList.size());
 
         Assertions.assertEquals(accountDtoList.get(0).getId(), accountList.get(0).getId());

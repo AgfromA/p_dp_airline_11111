@@ -54,7 +54,7 @@ public class TicketRestController implements TicketRestApi {
         log.info("getByNumber: Ticket by ticketNumber = {}", ticketNumber);
         var ticket = ticketService.getTicketByTicketNumber(ticketNumber);
         return ticket != null
-                ? new ResponseEntity<>(ticketMapper.convertToTicketDto(ticket), HttpStatus.OK)
+                ? new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -62,14 +62,14 @@ public class TicketRestController implements TicketRestApi {
     public ResponseEntity<TicketDto> createTicket(TicketDto ticketDTO) {
         log.info("create: new Ticket = {}", ticketDTO);
         var savedTicket = ticketService.saveTicket(ticketDTO);
-        return new ResponseEntity<>(ticketMapper.convertToTicketDto(savedTicket), HttpStatus.CREATED);
+        return new ResponseEntity<>(ticketMapper.toDto(savedTicket), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<?> updateTicketById(Long id, TicketDto ticketDTO) {
         log.info("update: Ticket with id = {}", id);
         var ticket = ticketService.updateTicketById(id, ticketDTO);
-        return new ResponseEntity<>(ticketMapper.convertToTicketDto(ticket), HttpStatus.OK);
+        return new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK);
     }
 
     @Override

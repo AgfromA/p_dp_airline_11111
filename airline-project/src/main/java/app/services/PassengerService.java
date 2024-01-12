@@ -35,12 +35,12 @@ public class PassengerService {
     }
 
     public List<PassengerDto> getAllPassengers() {
-        return passengerMapper.convertToPassengerDtoList(passengerRepository.findAll());
+        return passengerMapper.toDtoList(passengerRepository.findAll());
     }
 
     @Transactional
     public Passenger savePassenger(PassengerDto passengerDTO) {
-        var passenger = passengerMapper.convertToPassenger(passengerDTO);
+        var passenger = passengerMapper.toEntity(passengerDTO);
         return passengerRepository.save(passenger);
     }
 
@@ -50,7 +50,7 @@ public class PassengerService {
 
     @Transactional
     public Passenger updatePassengerById(Long id, PassengerDto passengerDTO) {
-        var passenger = passengerMapper.convertToPassenger(passengerDTO);
+        var passenger = passengerMapper.toEntity(passengerDTO);
         var editPassenger = new Passenger();
         editPassenger.setFirstName(passenger.getFirstName());
         editPassenger.setLastName(passenger.getLastName());
@@ -65,26 +65,26 @@ public class PassengerService {
     public Page<PassengerDto> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
         if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
             return passengerRepository.findByFirstNameAndLastName(pageable, firstName, lastName)
-                    .map(passengerMapper::convertToPassengerDto);
+                    .map(passengerMapper::toDto);
         }
         if (firstName != null && !firstName.isEmpty()) {
             return passengerRepository.findAllByFirstName(pageable, firstName)
-                    .map(passengerMapper::convertToPassengerDto);
+                    .map(passengerMapper::toDto);
         }
         if (lastName != null && !lastName.isEmpty()) {
             return passengerRepository.findByLastName(pageable, lastName)
-                    .map(passengerMapper::convertToPassengerDto);
+                    .map(passengerMapper::toDto);
         }
         if (email != null && !email.isEmpty()) {
             return passengerRepository.findByEmail(pageable, email)
-                    .map(passengerMapper::convertToPassengerDto);
+                    .map(passengerMapper::toDto);
         }
         if (serialNumberPassport != null && !serialNumberPassport.isEmpty()) {
             return passengerRepository.findByPassportSerialNumber(pageable, serialNumberPassport)
-                    .map(passengerMapper::convertToPassengerDto);
+                    .map(passengerMapper::toDto);
         }
         return passengerRepository.findAll(pageable)
-                .map(passengerMapper::convertToPassengerDto);
+                .map(passengerMapper::toDto);
     }
 
     @Transactional
@@ -96,6 +96,6 @@ public class PassengerService {
     }
 
     public Page<PassengerDto> getAllPagesPassengers(Pageable pageable) {
-        return passengerRepository.findAll(pageable).map(passengerMapper::convertToPassengerDto);
+        return passengerRepository.findAll(pageable).map(passengerMapper::toDto);
     }
 }

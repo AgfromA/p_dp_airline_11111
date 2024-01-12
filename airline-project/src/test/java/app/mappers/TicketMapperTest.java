@@ -66,7 +66,7 @@ class TicketMapperTest {
         ticket.setFlight(flight);
         ticket.setFlightSeat(flightSeat);
 
-        TicketDto ticketDTO = ticketMapper.convertToTicketDto(ticket);
+        TicketDto ticketDTO = ticketMapper.toDto(ticket);
 
         Assertions.assertNotNull(ticketDTO);
         Assertions.assertEquals(ticket.getId(), ticketDTO.getId());
@@ -134,7 +134,7 @@ class TicketMapperTest {
         ticketDTO.setFlightSeatId(3001L);
         ticketDTO.setSeatNumber("42L");
 
-        Ticket ticket = ticketMapper.convertToTicketEntity(ticketDTO, passengerServiceMock, flightServiceMock, flightSeatServiceMock);
+        Ticket ticket = ticketMapper.toEntity(ticketDTO, passengerServiceMock, flightServiceMock, flightSeatServiceMock);
 
         Assertions.assertNotNull(ticket);
         Assertions.assertEquals(ticketDTO.getId(), ticket.getId());
@@ -195,7 +195,7 @@ class TicketMapperTest {
 
         ticketList.add(ticket);
 
-        List<TicketDto> ticketDtoList = ticketMapper.convertToTicketDtoList(ticketList);
+        List<TicketDto> ticketDtoList = ticketMapper.toDtoList(ticketList);
 
         Assertions.assertEquals(ticketList.size(), ticketDtoList.size());
         Assertions.assertEquals(ticketList.get(0).getId(), ticketDtoList.get(0).getId());
@@ -266,7 +266,7 @@ class TicketMapperTest {
 
         ticketDtoList.add(ticketDTO);
 
-        List<Ticket> ticketList = ticketMapper.convertToTicketEntityList(ticketDtoList, passengerServiceMock,
+        List<Ticket> ticketList = ticketMapper.toEntityList(ticketDtoList, passengerServiceMock,
                 flightServiceMock, flightSeatServiceMock);
 
         Assertions.assertEquals(ticketDtoList.size(), ticketList.size());

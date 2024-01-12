@@ -3,7 +3,6 @@ package app.controllers.rest;
 import app.controllers.api.rest.AircraftRestApi;
 import app.dto.AircraftDto;
 import app.mappers.AircraftMapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import app.services.AircraftService;
@@ -21,7 +20,7 @@ import java.util.List;
 public class AircraftRestController implements AircraftRestApi {
 
     private final AircraftService aircraftService;
-    private final AircraftMapper aircraftMapper = Mappers.getMapper(AircraftMapper.class);
+    private final AircraftMapper aircraftMapper;
 
     @Override
     public ResponseEntity<List<AircraftDto>> getAllAircrafts(Integer page, Integer size) {
@@ -59,7 +58,7 @@ public class AircraftRestController implements AircraftRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("getById: Aircraft with id={} returned.", id);
-        return new ResponseEntity<>(aircraftMapper.convertToAircarftDTOEntity(aircraft), HttpStatus.OK);
+        return new ResponseEntity<>(aircraftMapper.toDto(aircraft), HttpStatus.OK);
     }
 
     @Override

@@ -34,7 +34,7 @@ class PassengerMapperTest {
         passenger.setPhoneNumber("+79999999999");
         passenger.setPassport(passport);
 
-        PassengerDto passengerDTO = passengerMapper.convertToPassengerDto(passenger);
+        PassengerDto passengerDTO = passengerMapper.toDto(passenger);
 
         assertEquals(passenger.getId(), passengerDTO.getId());
         assertEquals(passenger.getFirstName(), passengerDTO.getFirstName());
@@ -63,7 +63,7 @@ class PassengerMapperTest {
         passengerDTO.setPassport(passport);
         passengerDTO.setBirthDate(LocalDate.MIN);
 
-        Passenger passenger = passengerMapper.convertToPassenger(passengerDTO);
+        Passenger passenger = passengerMapper.toEntity(passengerDTO);
 
         assertEquals(passenger.getId(), passengerDTO.getId());
         assertEquals(passenger.getFirstName(), passengerDTO.getFirstName());
@@ -112,7 +112,7 @@ class PassengerMapperTest {
         passengerList.add(passenger2);
 
 
-        List<PassengerDto> passengerDtoList = passengerMapper.convertToPassengerDtoList(passengerList);
+        List<PassengerDto> passengerDtoList = passengerMapper.toDtoList(passengerList);
 
         assertEquals(passengerList.size(), passengerDtoList.size());
         assertEquals(passengerList.get(0).getId(), passengerDtoList.get(0).getId());
@@ -169,7 +169,7 @@ class PassengerMapperTest {
         passengerDtoList.add(passengerDto1);
         passengerDtoList.add(passengerDto2);
 
-        List<Passenger> passengerList = passengerMapper.convertToPassengerList(passengerDtoList);
+        List<Passenger> passengerList = passengerMapper.toEntityList(passengerDtoList);
 
         assertEquals(passengerDtoList.size(), passengerList.size());
         assertEquals(passengerDtoList.get(0).getId(), passengerList.get(0).getId());

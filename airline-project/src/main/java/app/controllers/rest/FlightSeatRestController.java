@@ -26,6 +26,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
 
     private final FlightSeatService flightSeatService;
     private final FlightService flightService;
+    private final FlightSeatMapper flightSeatMapper;
 
     @Override
     public ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(Integer page, Integer size,
@@ -88,7 +89,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         log.info("get: FlightSeat by id={}", id);
         return (flightSeatService.getFlightSeatById(id).isEmpty()) ?
                 ResponseEntity.notFound().build() :
-                ResponseEntity.ok(FlightSeatMapper.INSTANCE.convertToFlightSeatDtoEntity(flightSeatService.getFlightSeatById(id).get(), flightService));
+                ResponseEntity.ok(flightSeatMapper.toDto(flightSeatService.getFlightSeatById(id).get(), flightService));
     }
 
     @Override
@@ -111,7 +112,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         }
         return new ResponseEntity<>(flightSeatService.addFlightSeatsByFlightId(flightId)
                 .stream()
-                .map(f -> FlightSeatMapper.INSTANCE.convertToFlightSeatDtoEntity(f, flightService))
+                .map(f -> flightSeatMapper.toDto(f, flightService))
                 .collect(Collectors.toSet()),
                 HttpStatus.CREATED);
     }

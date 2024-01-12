@@ -94,7 +94,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
-                        content().json(objectMapper.writeValueAsString(passengerMapper.convertToPassengerDto(
+                        content().json(objectMapper.writeValueAsString(passengerMapper.toDto(
                                 passengerService.getPassengerById(id).get()))));
     }
 
@@ -151,7 +151,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @DisplayName("Update passenger")
     void shouldUpdatePassenger() throws Exception {
         var id = 4L;
-        var passengerDTO = passengerMapper.convertToPassengerDto(passengerService.getPassengerById(id).get());
+        var passengerDTO = passengerMapper.toDto(passengerService.getPassengerById(id).get());
         passengerDTO.setFirstName("Klark");
         long numberOfPassenger = passengerRepository.count();
 

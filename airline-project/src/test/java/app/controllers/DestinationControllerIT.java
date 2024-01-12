@@ -186,7 +186,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         rat.setAirportCode(RAT);
         rat.setTimezone("+3");
         mockMvc.perform(patch("http://localhost:8080/api/destinations/{id}", id)
-                        .content(objectMapper.writeValueAsString(destinationMapper.convertToDestinationEntity(rat)))
+                        .content(objectMapper.writeValueAsString(destinationMapper.toEntity(rat)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

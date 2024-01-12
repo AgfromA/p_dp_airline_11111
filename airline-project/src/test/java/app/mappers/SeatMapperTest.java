@@ -48,7 +48,7 @@ public class SeatMapperTest {
         seat.setCategory(category);
         seat.setAircraft(aircraft);
 
-        SeatDto result = seatMapper.convertToSeatDtoEntity(seat);
+        SeatDto result = seatMapper.toDto(seat);
         Assertions.assertEquals(seat.getId(), result.getId());
         Assertions.assertEquals(seat.getSeatNumber(), result.getSeatNumber());
         Assertions.assertEquals(seat.getIsNearEmergencyExit(), result.getIsNearEmergencyExit());
@@ -79,7 +79,7 @@ public class SeatMapperTest {
         seatDTO.setCategory(category.getCategoryType());
         seatDTO.setAircraftId(aircraft.getId());
 
-        Seat result = seatMapper.convertToSeatEntity(seatDTO, categoryService, aircraftService);
+        Seat result = seatMapper.toEntity(seatDTO, categoryService, aircraftService);
         Assertions.assertEquals(seatDTO.getId(), result.getId());
         Assertions.assertEquals(seatDTO.getSeatNumber(), result.getSeatNumber());
         Assertions.assertEquals(seatDTO.getIsNearEmergencyExit(), result.getIsNearEmergencyExit());
@@ -112,7 +112,7 @@ public class SeatMapperTest {
 
         seatList.add(seat);
 
-        List<SeatDto> seatDtoList = seatMapper.convertToSeatList(seatList);
+        List<SeatDto> seatDtoList = seatMapper.toDtoList(seatList);
         Assertions.assertEquals(seatList.size(), seatDtoList.size());
         Assertions.assertEquals(seatList.get(0).getId(), seatDtoList.get(0).getId());
         Assertions.assertEquals(seatList.get(0).getSeatNumber(), seatDtoList.get(0).getSeatNumber());
@@ -145,7 +145,7 @@ public class SeatMapperTest {
         seatDTO.setAircraftId(aircraft.getId());
         seatDtoList.add(seatDTO);
 
-        List<Seat> seatList = seatMapper.convertToSeatEntityList(seatDtoList, categoryService, aircraftService);
+        List<Seat> seatList = seatMapper.toEntityList(seatDtoList, categoryService, aircraftService);
         Assertions.assertEquals(seatDtoList.size(), seatList.size());
         Assertions.assertEquals(seatDtoList.get(0).getId(), seatList.get(0).getId());
         Assertions.assertEquals(seatDtoList.get(0).getSeatNumber(), seatList.get(0).getSeatNumber());

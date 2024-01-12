@@ -55,7 +55,7 @@ public class FlightService {
     @Transactional(readOnly = true)
     @Loggable
     public Page<FlightDto> getAllFlights(Pageable pageable) {
-        return flightRepository.findAll(pageable).map(flight -> flightMapper.flightToFlightDto(flight, this));
+        return flightRepository.findAll(pageable).map(flight -> flightMapper.toDto(flight, this));
     }
 
     @Transactional(readOnly = true)
@@ -70,7 +70,7 @@ public class FlightService {
                                                                String dateStart, String dateFinish,
                                                                Pageable pageable) {
         return flightRepository.getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
-                .map(flight -> flightMapper.flightToFlightDto(flight, this));
+                .map(flight -> flightMapper.toDto(flight, this));
     }
 
     @Transactional(readOnly = true)
@@ -100,7 +100,7 @@ public class FlightService {
         var flight = flightRepository.findById(id);
         if (flight.isPresent() && (flight.get().getDepartureDateTime().isEqual(LocalDateTime.parse(start))
                 && flight.get().getArrivalDateTime().isEqual(LocalDateTime.parse(finish)))) {
-            return flightMapper.flightToFlightDto(flight.get(), this);
+            return flightMapper.toDto(flight.get(), this);
         }
         return null;
     }
@@ -112,16 +112,16 @@ public class FlightService {
     }
 
     public FlightDto saveFlight(FlightDto flightDto) {
-        var savedFlight = flightRepository.save(flightMapper.flightDtotoFlight(flightDto, aircraftService,
+        var savedFlight = flightRepository.save(flightMapper.toEntity(flightDto, aircraftService,
                 destinationService, ticketService, flightSeatService));
-        return flightMapper.flightToFlightDto(savedFlight, this);
+        return flightMapper.toDto(savedFlight, this);
     }
 
     @Loggable
     public FlightDto updateFlight(Long id, FlightDto flightDto) {
-        var updatedFlight = flightRepository.saveAndFlush(flightMapper.flightDtotoFlight(flightDto, aircraftService,
+        var updatedFlight = flightRepository.saveAndFlush(flightMapper.toEntity(flightDto, aircraftService,
                 destinationService, ticketService, flightSeatService));
-        return flightMapper.flightToFlightDto(updatedFlight, this);
+        return flightMapper.toDto(updatedFlight, this);
     }
 
     @Loggable

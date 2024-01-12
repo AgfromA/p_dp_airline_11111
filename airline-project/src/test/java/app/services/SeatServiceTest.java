@@ -8,9 +8,6 @@ import app.enums.CategoryType;
 import app.mappers.SeatMapper;
 import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
-import app.services.AircraftService;
-import app.services.CategoryService;
-import app.services.SeatService;
 import org.junit.Test;
 import org.springframework.data.domain.PageImpl;
 
@@ -39,7 +36,8 @@ public class SeatServiceTest {
             seatRepository,
             categoryService,
             aircraftService,
-            flightSeatRepository
+            flightSeatRepository,
+            seatMapper
     );
 
     @Test
@@ -63,7 +61,7 @@ public class SeatServiceTest {
                 .thenReturn(aircraft);
         when(seatRepository.findByAircraftId(eq(AIRCRAFT_TEST_ID), any()))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
-        when(seatMapper.convertToSeatEntity(any(), categoryService, aircraftService))
+        when(seatMapper.toEntity(any(), categoryService, aircraftService))
                 .thenAnswer(ans -> {
                     SeatDto seatDTO = ans.getArgument(0);
                     var seat = new Seat();

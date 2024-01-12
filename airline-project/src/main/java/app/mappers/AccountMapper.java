@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AccountMapper {
 
-    AccountDto convertToAccountDto(Account account);
+    AccountDto toDto(Account account);
 
-    Account convertToAccount(AccountDto accountDto);
+    Account toEntity(AccountDto accountDto);
 
-    List<AccountDto> convertToAccountDtoList(List<Account> accounts);
+    List<AccountDto> toDtoList(List<Account> accounts);
 
-    List<Account> convertToAccountList(List<AccountDto> accountDtos);
+    List<Account> toEntityList(List<AccountDto> accountDtos);
 }

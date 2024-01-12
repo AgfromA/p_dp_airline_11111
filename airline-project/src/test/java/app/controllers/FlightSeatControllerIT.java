@@ -165,7 +165,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         flight.setFrom(from);
         flight.setTo(to);
         flight.setSeats(flightSeatService.findByFlightId(1L));
-        FlightDto flightDTO = Mappers.getMapper(FlightMapper.class).flightToFlightDto(flight, flightService);
+        FlightDto flightDTO = Mappers.getMapper(FlightMapper.class).toDto(flight, flightService);
         flightService.updateFlight(1L, flightDTO);
         var flightId = "1";
         Set<FlightSeatDto> flightSeatSet = flightSeatService.getFlightSeatsByFlightId(1L);
@@ -191,7 +191,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         long numberOfFlightSeat = flightSeatRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/flight-seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDtoEntity(flightSeat, flightService)))
+                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).toDto(flightSeat, flightService)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

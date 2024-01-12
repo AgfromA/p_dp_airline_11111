@@ -74,7 +74,7 @@ public class PassengerRestController implements PassengerRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         }
-        return new ResponseEntity<>(passengerMapper.convertToPassengerDto(passenger.get()), HttpStatus.OK);
+        return new ResponseEntity<>(passengerMapper.toDto(passenger.get()), HttpStatus.OK);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class PassengerRestController implements PassengerRestApi {
         }
         log.info("create: new passenger added");
         return new ResponseEntity<>(
-                passengerMapper.convertToPassengerDto(passengerService.savePassenger(passengerDTO)),
+                passengerMapper.toDto(passengerService.savePassenger(passengerDTO)),
                 HttpStatus.CREATED);
     }
 
@@ -94,7 +94,7 @@ public class PassengerRestController implements PassengerRestApi {
         passengerDTO.setId(id);
         log.info("update: update Passenger with id = {}", id);
         return new ResponseEntity<>(
-                passengerMapper.convertToPassengerDto(passengerService.updatePassengerById(id, passengerDTO)),
+                passengerMapper.toDto(passengerService.updatePassengerById(id, passengerDTO)),
                 HttpStatus.OK);
     }
 

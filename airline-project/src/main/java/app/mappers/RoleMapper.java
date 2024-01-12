@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface RoleMapper {
 
-    RoleDto convertToRoleDto(Role role);
+    RoleDto toDto(Role role);
 
-    Role convertToRole(RoleDto roleDTO);
+    Role toEntity(RoleDto roleDTO);
 
-    List<RoleDto> convertToRoleDtoList(List<Role> roleList);
+    List<RoleDto> toDtoList(List<Role> roleList);
 
-    List<Role> convertToRoleList(List<RoleDto> roleDtoList);
+    List<Role> toEntityList(List<RoleDto> roleDtoList);
 }

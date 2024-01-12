@@ -104,13 +104,13 @@ class AircraftRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(aircraftMapper.convertToAircarftDTOEntity(aircraftService.getAircraftById(id)))));
+                        .writeValueAsString(aircraftMapper.toDto(aircraftService.getAircraftById(id)))));
     }
 
     @Test
     void shouldEditById() throws Exception {
         long id = 2;
-        var aircraft = aircraftMapper.convertToAircarftDTOEntity(aircraftService.getAircraftById(id));
+        var aircraft = aircraftMapper.toDto(aircraftService.getAircraftById(id));
         aircraft.setAircraftNumber("531487");
         aircraft.setModel("Boeing 737");
         aircraft.setModelYear(2001);

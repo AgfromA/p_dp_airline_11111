@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AircraftMapper {
 
-    Aircraft convertToAircraftEntity(AircraftDto aircraftDTO);
+    Aircraft toEntity(AircraftDto aircraftDTO);
 
-    AircraftDto convertToAircarftDTOEntity(Aircraft aircraft);
+    AircraftDto toDto(Aircraft aircraft);
 
-    List<Aircraft> convertToAircraftEntityList(List<AircraftDto> aircraftDtoList);
+    List<Aircraft> toEntityList(List<AircraftDto> aircraftDtoList);
 
-    List<AircraftDto> convertToAircarftDTOList(List<Aircraft> aircraftList);
+    List<AircraftDto> toDtoList(List<Aircraft> aircraftList);
 }

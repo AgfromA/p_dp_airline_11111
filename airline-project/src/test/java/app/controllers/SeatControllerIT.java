@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 
-
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-seat-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class SeatControllerIT extends IntegrationTestBase {
@@ -37,6 +36,8 @@ class SeatControllerIT extends IntegrationTestBase {
     private SeatRepository seatRepository;
     @Autowired
     private AircraftService aircraftService;
+    @Autowired
+    private SeatMapper seatMapper;
 
     // Пагинация 2.0
     @Test
@@ -111,7 +112,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
 
-                .andExpect(content().json(objectMapper.writeValueAsString(SeatMapper.INSTANCE.convertToSeatDtoEntity(seatService.getSeatById(id)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(seatMapper.toDto(seatService.getSeatById(id)))));
     }
 
     @Test
@@ -124,7 +125,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldEditSeat() throws Exception {
-        var seatDTO = SeatMapper.INSTANCE.convertToSeatDtoEntity(seatService.getSeatById(1));
+        var seatDTO = seatMapper.toDto(seatService.getSeatById(1));
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(false);
         seatDTO.setIsNearEmergencyExit(true);

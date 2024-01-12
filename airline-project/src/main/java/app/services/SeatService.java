@@ -29,14 +29,15 @@ public class SeatService {
     private final CategoryService categoryService;
     private final AircraftService aircraftService;
     private final FlightSeatRepository flightSeatRepository;
+    private final SeatMapper seatMapper;
 
     public List<SeatDto> getAllSeats() {
-        return SeatMapper.INSTANCE.convertToSeatList(seatRepository.findAll());
+        return seatMapper.toDtoList(seatRepository.findAll());
     }
 
     @Transactional
     public Seat saveSeat(SeatDto seatDTO) {
-        var seat = SeatMapper.INSTANCE.convertToSeatEntity(seatDTO, categoryService, aircraftService);
+        var seat = seatMapper.toEntity(seatDTO, categoryService, aircraftService);
         if (seat.getId() != 0) {
             Seat aldSeat = getSeatById(seat.getId());
             if (aldSeat != null && aldSeat.getAircraft() != null) {
@@ -53,7 +54,7 @@ public class SeatService {
 
     @Transactional
     public Seat editSeatById(Long id, SeatDto seatDTO) {
-        var seat = SeatMapper.INSTANCE.convertToSeatEntity(seatDTO, categoryService, aircraftService);
+        var seat = seatMapper.toEntity(seatDTO, categoryService, aircraftService);
         var targetSeat = seatRepository.findById(id).orElse(null);
         if (seat.getCategory() != null && seat.getCategory().getCategoryType() != targetSeat.getCategory().getCategoryType()) {
             targetSeat.setCategory(categoryService.getCategoryByType(seat.getCategory().getCategoryType()));
@@ -78,7 +79,7 @@ public class SeatService {
 
     public Page<SeatDto> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
         return seatRepository.findByAircraftId(id, pageable)
-                .map(SeatMapper.INSTANCE::convertToSeatDtoEntity);
+                .map(seatMapper::toDto);
     }
 
     @Transactional
@@ -103,7 +104,7 @@ public class SeatService {
 
             var savedSeat = saveSeat(seatDTO);
 
-            savedSeatsDTO.add(SeatMapper.INSTANCE.convertToSeatDtoEntity(savedSeat));
+            savedSeatsDTO.add(seatMapper.toDto(savedSeat));
         }
         return savedSeatsDTO;
     }
@@ -126,6 +127,6 @@ public class SeatService {
 
     public Page<SeatDto> getAllPagesSeats(Integer page, Integer size) {
         return seatRepository.findAll(PageRequest.of(page, size))
-                .map(SeatMapper.INSTANCE::convertToSeatDtoEntity);
+                .map(seatMapper::toDto);
     }
 }

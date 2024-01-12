@@ -55,7 +55,7 @@ class FlightSeatMapperTest {
         flightSeat.setFlight(flight);
         flightSeat.setSeat(seat);
 
-        FlightSeatDto result = SUT.convertToFlightSeatDtoEntity(flightSeat, flightServiceMock);
+        FlightSeatDto result = SUT.toDto(flightSeat, flightServiceMock);
 
         Assertions.assertEquals(flightSeat.getId(), result.getId());
         Assertions.assertEquals(flightSeat.getFare(), result.getFare());
@@ -92,7 +92,7 @@ class FlightSeatMapperTest {
         flightSeatDTO.setSeat(seatDTO);
 
         when(seatService.getSeatById(42L)).thenReturn(seat);
-        FlightSeat result = SUT.convertToFlightSeatEntity(flightSeatDTO, flightServiceMock, seatService);
+        FlightSeat result = SUT.toEntity(flightSeatDTO, flightServiceMock, seatService);
 
         Assertions.assertEquals(flightSeatDTO.getId(), result.getId());
         Assertions.assertEquals(flightSeatDTO.getFare(), result.getFare());
@@ -133,7 +133,7 @@ class FlightSeatMapperTest {
 
         flightSeatList.add(flightSeat);
 
-        List<FlightSeatDto> flightSeatDtoList = SUT.convertToFlightSeatDtoList(flightSeatList, flightServiceMock);
+        List<FlightSeatDto> flightSeatDtoList = SUT.toDtoList(flightSeatList, flightServiceMock);
         Assertions.assertEquals(flightSeatList.size(), flightSeatDtoList.size());
         Assertions.assertEquals(flightSeatList.get(0).getId(), flightSeatDtoList.get(0).getId());
         Assertions.assertEquals(flightSeatList.get(0).getFare(), flightSeatDtoList.get(0).getFare());
@@ -172,7 +172,7 @@ class FlightSeatMapperTest {
 
         when(seatService.getSeatById(42L)).thenReturn(seat);
         flightSeatDtoList.add(flightSeatDTO);
-        List<FlightSeat> flightSeatList = SUT.convertToFlightSeatEntityList(flightSeatDtoList, flightServiceMock, seatService);
+        List<FlightSeat> flightSeatList = SUT.toEntityList(flightSeatDtoList, flightServiceMock, seatService);
 
         Assertions.assertEquals(flightSeatDtoList.get(0).getId(), flightSeatList.get(0).getId());
         Assertions.assertEquals(flightSeatDtoList.get(0).getFare(), flightSeatList.get(0).getFare());

@@ -79,7 +79,7 @@ public class TimezoneRestController implements TimezoneRestApi {
 
         Timezone updatedTimezone = timezoneService.updateTimezone(timezoneDto);
 
-        TimezoneDto updatedTimezoneDto = timezoneMapper.convertToTimezoneDto(updatedTimezone);
+        TimezoneDto updatedTimezoneDto = timezoneMapper.toDto(updatedTimezone);
 
         return new ResponseEntity<>(updatedTimezoneDto, HttpStatus.OK);
     }

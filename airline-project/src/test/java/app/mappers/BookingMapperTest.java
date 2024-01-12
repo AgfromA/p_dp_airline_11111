@@ -47,7 +47,7 @@ class BookingMapperTest {
         booking.setCreateTime(createTime);
         booking.setBookingStatus(BookingStatus.NOT_PAID);
 
-        BookingDto bookingDTO = bookingMapper.convertToBookingDtoEntity(booking);
+        BookingDto bookingDTO = bookingMapper.toDto(booking);
 
         Assertions.assertNotNull(bookingDTO);
         Assertions.assertEquals(booking.getId(), bookingDTO.getId());
@@ -84,7 +84,7 @@ class BookingMapperTest {
 
         when(flightSeatServiceMock.getFlightSeatById(flightSeatId)).thenReturn(Optional.of(flightSeat));
 
-        Booking booking = bookingMapper.convertToBookingEntity(bookingDTO, passengerServiceMock, flightSeatServiceMock);
+        Booking booking = bookingMapper.toEntity(bookingDTO, passengerServiceMock, flightSeatServiceMock);
 
         Assertions.assertNotNull(booking);
         Assertions.assertEquals(bookingDTO.getId(), booking.getId());
@@ -135,7 +135,7 @@ class BookingMapperTest {
         bookingList.add(bookingOne);
         bookingList.add(bookingTwo);
 
-        List<BookingDto> bookingDtoList = bookingMapper.convertToBookingDtoEntityList(bookingList);
+        List<BookingDto> bookingDtoList = bookingMapper.toDtoList(bookingList);
 
         Assertions.assertEquals(bookingList.size(), bookingDtoList.size());
 
@@ -199,7 +199,7 @@ class BookingMapperTest {
         bookingDtoList.add(bookingDtoOne);
         bookingDtoList.add(bookingDtoTwo);
 
-        List<Booking> bookingList = bookingMapper.convertToBookingEntityList(bookingDtoList, passengerServiceMock,
+        List<Booking> bookingList = bookingMapper.toEntityList(bookingDtoList, passengerServiceMock,
                 flightSeatServiceMock);
 
         Assertions.assertEquals(bookingList.size(), bookingDtoList.size());

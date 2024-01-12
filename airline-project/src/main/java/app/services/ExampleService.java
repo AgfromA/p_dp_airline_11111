@@ -19,7 +19,7 @@ public class ExampleService {
     private final ExampleMapper exampleMapper;
 
     public List<ExampleDto> findAll() {
-        return exampleMapper.convertToExamleDTOList(exampleRepository.findAll());
+        return exampleMapper.toDtoList(exampleRepository.findAll());
     }
 
     public Page<ExampleDto> getPage(int page, int size) {

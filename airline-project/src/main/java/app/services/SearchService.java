@@ -45,7 +45,7 @@ public class SearchService {
 
         var searchDepartFlightDto = searchDepartFlight.stream()
                 .map(departFlight -> Mappers.getMapper(FlightMapper.class)
-                        .flightToFlightDto(departFlight, flightService))
+                        .toDto(departFlight, flightService))
                 .collect(Collectors.toList());
 
         searchResult.setDepartFlights(searchDepartFlightDto);
@@ -59,7 +59,7 @@ public class SearchService {
 
             var searchReturnFlightDto = searchReturnFlight.stream()
                     .map(returnFlight -> Mappers.getMapper(FlightMapper.class)
-                            .flightToFlightDto(returnFlight, flightService))
+                            .toDto(returnFlight, flightService))
                     .collect(Collectors.toList());
 
             searchResult.setReturnFlights(searchReturnFlightDto);

@@ -22,7 +22,7 @@ public class RoleService {
 
     @Transactional(readOnly = true)
     public RoleDto getRoleByName(String name) {
-        return roleMapper.convertToRoleDto(roleRepository.findByName(name));
+        return roleMapper.toDto(roleRepository.findByName(name));
     }
 
     public Set<RoleDto> saveRolesToUser(AccountDto user) {
@@ -38,12 +38,12 @@ public class RoleService {
     }
 
     public void saveRole(RoleDto role) {
-        roleRepository.save(roleMapper.convertToRole(role));
+        roleRepository.save(roleMapper.toEntity(role));
     }
 
     public Set<RoleDto> getAllRoles() {
         return roleRepository.findAll().stream()
-                .map(roleMapper::convertToRoleDto)
+                .map(roleMapper::toDto)
                 .collect(Collectors.toSet());
     }
 }

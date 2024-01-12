@@ -18,25 +18,25 @@ public interface BookingMapper {
 
     @Mapping(target = "passengerId", expression = "java(booking.getPassenger().getId())")
     @Mapping(target = "flightSeatId", expression = "java(booking.getFlightSeat().getId())")
-    BookingDto convertToBookingDtoEntity(Booking booking);
+    BookingDto toDto(Booking booking);
 
     @Mapping(target = "passenger", expression = "java(passengerService.getPassengerById(bookingDto.getPassengerId()).get())")
     @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeatById(bookingDto.getFlightSeatId()).get())")
-    Booking convertToBookingEntity(BookingDto bookingDto,
-                                   @Context PassengerService passengerService,
-                                   @Context FlightSeatService flightSeatService);
+    Booking toEntity(BookingDto bookingDto,
+                     @Context PassengerService passengerService,
+                     @Context FlightSeatService flightSeatService);
 
-    default List<BookingDto> convertToBookingDtoEntityList(List<Booking> bookings) {
+    default List<BookingDto> toDtoList(List<Booking> bookings) {
         return bookings.stream()
-                .map(this::convertToBookingDtoEntity)
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    default List<Booking> convertToBookingEntityList(List<BookingDto> bookingDtos,
-                                                     PassengerService passengerService,
-                                                     FlightSeatService flightSeatService) {
+    default List<Booking> toEntityList(List<BookingDto> bookingDtos,
+                                       PassengerService passengerService,
+                                       FlightSeatService flightSeatService) {
         return bookingDtos.stream()
-                .map(bookingDTO -> convertToBookingEntity(bookingDTO, passengerService, flightSeatService))
+                .map(bookingDTO -> toEntity(bookingDTO, passengerService, flightSeatService))
                 .collect(Collectors.toList());
     }
 }

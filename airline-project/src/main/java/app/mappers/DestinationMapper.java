@@ -13,18 +13,18 @@ import java.util.stream.Collectors;
 @Component
 public interface DestinationMapper {
 
-    DestinationDto convertToDestinationDtoEntity(Destination destination);
+    DestinationDto toDto(Destination destination);
 
     @Mapping(target = "airportName", expression = "java(destinationDto.getAirportCode().getAirportName())")
     @Mapping(target = "cityName", expression = "java(destinationDto.getAirportCode().getCity())")
     @Mapping(target = "countryName", expression = "java(destinationDto.getAirportCode().getCountry())")
-    Destination convertToDestinationEntity(DestinationDto destinationDto);
+    Destination toEntity(DestinationDto destinationDto);
 
-    List<DestinationDto> convertToDestinationDtoList(List<Destination> destinations);
+    List<DestinationDto> toDtoList(List<Destination> destinations);
 
-    default List<Destination> convertToDestinationEntityList(List<DestinationDto> destinationDtos) {
+    default List<Destination> toEntityList(List<DestinationDto> destinationDtos) {
         return destinationDtos.stream()
-                .map(this::convertToDestinationEntity)
+                .map(this::toEntity)
                 .collect(Collectors.toList());
 
     }

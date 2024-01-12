@@ -25,7 +25,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
     void shouldThrowExceptionIfPassengerIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = ticketMapper.convertToTicketDto(newTicket);
+        var ticketDTO = ticketMapper.toDto(newTicket);
         ticketDTO.setPassengerId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
@@ -39,7 +39,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
     void shouldThrowExceptionIfFlightIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = ticketMapper.convertToTicketDto(newTicket);
+        var ticketDTO = ticketMapper.toDto(newTicket);
         ticketDTO.setFlightId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
@@ -53,7 +53,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
     void shouldThrowExceptionIfIFlightSeatIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = ticketMapper.convertToTicketDto(newTicket);
+        var ticketDTO = ticketMapper.toDto(newTicket);
         ticketDTO.setFlightSeatId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))

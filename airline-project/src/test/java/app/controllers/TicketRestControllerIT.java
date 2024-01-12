@@ -85,7 +85,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         Ticket newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
         newTicket.setId(null);
-        var ticketDTO = ticketMapper.convertToTicketDto(newTicket);
+        var ticketDTO = ticketMapper.toDto(newTicket);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +106,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
 
     @Test
     void updateTicket_test() throws Exception {
-        var ticketDTO = ticketMapper.convertToTicketDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+        var ticketDTO = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
         ticketDTO.setTicketNumber("ZX-2222");
         long numberOfTicket = ticketRepository.count();
 

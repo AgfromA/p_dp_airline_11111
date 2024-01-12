@@ -22,7 +22,7 @@ public class TimezoneMapperTest {
         timezone.setCityName("Moscow");
         timezone.setCountryName("Russia");
 
-        TimezoneDto timezoneDto = timezoneMapper.convertToTimezoneDto(timezone);
+        TimezoneDto timezoneDto = timezoneMapper.toDto(timezone);
 
         assertEquals(timezone.getId(), timezoneDto.getId());
         assertEquals(timezone.getGmt(), timezoneDto.getGmt());
@@ -40,7 +40,7 @@ public class TimezoneMapperTest {
         timezoneDto.setCityName("Moscow");
         timezoneDto.setCountryName("Russia");
 
-        Timezone timezone = timezoneMapper.convertToTimezone(timezoneDto);
+        Timezone timezone = timezoneMapper.toEntity(timezoneDto);
 
         assertEquals(timezone.getId(), timezoneDto.getId());
         assertEquals(timezone.getGmt(), timezoneDto.getGmt());
@@ -69,7 +69,7 @@ public class TimezoneMapperTest {
         timezoneList.add(timezoneOne);
         timezoneList.add(timezoneTwo);
 
-        List<TimezoneDto> timezoneDtoList = timezoneMapper.convertToTimezoneDtoList(timezoneList);
+        List<TimezoneDto> timezoneDtoList = timezoneMapper.toDtoList(timezoneList);
 
         assertEquals(timezoneList.size(), timezoneDtoList.size());
         assertEquals(timezoneList.get(0).getId(), timezoneDtoList.get(0).getId());
@@ -105,7 +105,7 @@ public class TimezoneMapperTest {
         timezoneDtoList.add(timezoneDtoOne);
         timezoneDtoList.add(timezoneDtoTwo);
 
-        List<Timezone> timezoneList = timezoneMapper.convertToTimezoneList(timezoneDtoList);
+        List<Timezone> timezoneList = timezoneMapper.toEntityList(timezoneDtoList);
 
         assertEquals(timezoneDtoList.size(), timezoneList.size());
         assertEquals(timezoneDtoList.get(0).getId(), timezoneList.get(0).getId());

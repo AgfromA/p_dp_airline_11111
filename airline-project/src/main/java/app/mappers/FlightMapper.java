@@ -22,21 +22,21 @@ public interface FlightMapper {
     @Mapping(target = "from", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportFrom()))")
     @Mapping(target = "to", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportTo()))")
     @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraftById(flightDto.getAircraftId()))")
-    Flight flightDtotoFlight(FlightDto flightDto,
-                             @Context AircraftService aircraftService,
-                             @Context DestinationService destinationService,
-                             @Context TicketService ticketService,
-                             @Context FlightSeatService flightSeatService);
+    Flight toEntity(FlightDto flightDto,
+                    @Context AircraftService aircraftService,
+                    @Context DestinationService destinationService,
+                    @Context TicketService ticketService,
+                    @Context FlightSeatService flightSeatService);
 
     @Mapping(target = "airportFrom", expression = "java(flight.getFrom().getAirportCode())")
     @Mapping(target = "airportTo", expression = "java(flight.getTo().getAirportCode())")
     @Mapping(target = "aircraftId", expression = "java(flight.getAircraft().getId())")
     @Mapping(target = "seats", expression = "java(toFlightSeatsDtoList(flight.getSeats(), flightService))")
-    FlightDto flightToFlightDto(Flight flight, @Context FlightService flightService);
+    FlightDto toDto(Flight flight, @Context FlightService flightService);
 
     default List<FlightSeatDto> toFlightSeatsDtoList(List<FlightSeat> flightSeats, FlightService flightService) {
         return flightSeats.stream().map(flightSeat -> Mappers.getMapper(FlightSeatMapper.class)
-                .convertToFlightSeatDtoEntity(flightSeat, flightService)).collect(Collectors.toList());
+                .toDto(flightSeat, flightService)).collect(Collectors.toList());
     }
 
     default List<Flight> convertFlightDtoListToFlightList(List<FlightDto> flightDtoList, AircraftService aircraftService,
@@ -44,13 +44,13 @@ public interface FlightMapper {
                                                           FlightSeatService flightSeatService) {
 
         return flightDtoList.stream()
-                .map(flightDto -> flightDtotoFlight(flightDto, aircraftService, destinationService, ticketService, flightSeatService))
+                .map(flightDto -> toEntity(flightDto, aircraftService, destinationService, ticketService, flightSeatService))
                 .collect(Collectors.toList());
     }
 
     default List<FlightDto> convertFlightListToFlighDtotList(List<Flight> flights, FlightService flightService) {
         return flights.stream()
-                .map(flight -> flightToFlightDto(flight, flightService))
+                .map(flight -> toDto(flight, flightService))
                 .collect(Collectors.toList());
     }
 }

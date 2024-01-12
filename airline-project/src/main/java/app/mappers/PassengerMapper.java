@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PassengerMapper {
 
-    PassengerDto convertToPassengerDto(Passenger passenger);
+    PassengerDto toDto(Passenger passenger);
 
-    Passenger convertToPassenger(PassengerDto passengerDTO);
+    Passenger toEntity(PassengerDto passengerDTO);
 
-    List<PassengerDto> convertToPassengerDtoList(List<Passenger> passengerList);
+    List<PassengerDto> toDtoList(List<Passenger> passengerList);
 
-    List<Passenger> convertToPassengerList(List<PassengerDto> passengerDtoList);
+    List<Passenger> toEntityList(List<PassengerDto> passengerDtoList);
 }

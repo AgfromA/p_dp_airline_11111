@@ -107,7 +107,7 @@ class FlightMapperTest {
 
         when(flightServiceMock.getFlightById(1L)).thenReturn(Optional.of(flight));
         when(seatServiceMock.getSeatById(anyLong())).thenReturn(flightSeat1.getSeat());
-        FlightDto flightDto = flightMapper.flightToFlightDto(flight, flightServiceMock);
+        FlightDto flightDto = flightMapper.toDto(flight, flightServiceMock);
 
         Assertions.assertNotNull(flightDto);
         Assertions.assertEquals(flightDto.getId(), flight.getId());
@@ -178,7 +178,7 @@ class FlightMapperTest {
 
         when(aircraftServiceMock.getAircraftById(flightDto.getAircraftId())).thenReturn(aircraft);
 
-        Flight flight = flightMapper.flightDtotoFlight(flightDto, aircraftServiceMock, destinationServiceMock,
+        Flight flight = flightMapper.toEntity(flightDto, aircraftServiceMock, destinationServiceMock,
                 ticketServiceMock, flightSeatServiceMock);
 
         Assertions.assertNotNull(flight);

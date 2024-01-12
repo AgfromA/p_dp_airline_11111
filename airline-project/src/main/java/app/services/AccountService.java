@@ -24,7 +24,7 @@ public class AccountService {
     private final AccountMapper accountMapper;
 
     public List<AccountDto> findAll() {
-        return accountMapper.convertToAccountDtoList(accountRepository.findAll());
+        return accountMapper.toDtoList(accountRepository.findAll());
     }
 
     public AccountDto saveAccount(AccountDto accountDTO) {
@@ -33,8 +33,8 @@ public class AccountService {
         if (accountDTO.getAnswerQuestion() != null) {
             accountDTO.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
-        var account = accountMapper.convertToAccount(accountDTO);
-        return accountMapper.convertToAccountDto(accountRepository.saveAndFlush(account));
+        var account = accountMapper.toEntity(accountDTO);
+        return accountMapper.toDto(accountRepository.saveAndFlush(account));
     }
 
     public Optional<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
@@ -59,24 +59,24 @@ public class AccountService {
             savedAccount.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
         return Optional.of(accountMapper
-                .convertToAccountDto(accountRepository
-                        .save(accountMapper.convertToAccount(savedAccount))));
+                .toDto(accountRepository
+                        .save(accountMapper.toEntity(savedAccount))));
     }
 
     @Transactional(readOnly = true)
     public Page<AccountDto> getPage(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return accountRepository.findAll(pageRequest).map(accountMapper::convertToAccountDto);
+        return accountRepository.findAll(pageRequest).map(accountMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public Optional<AccountDto> getAccountById(Long id) {
-        return accountRepository.findById(id).map(accountMapper::convertToAccountDto);
+        return accountRepository.findById(id).map(accountMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     public AccountDto getAccountByEmail(String email) {
-        return accountMapper.convertToAccountDto(accountRepository.getAccountByEmail(email));
+        return accountMapper.toDto(accountRepository.getAccountByEmail(email));
     }
 
     public Optional<AccountDto> deleteAccountById(Long id) {

@@ -31,12 +31,12 @@ public class TicketService {
     private final FlightSeatService flightSeatService;
 
     public List<TicketDto> getAllTickets() {
-        return ticketMapper.convertToTicketDtoList(ticketRepository.findAll());
+        return ticketMapper.toDtoList(ticketRepository.findAll());
     }
 
     public Page<TicketDto> getAllTickets(int page, int size) {
         return ticketRepository.findAll(PageRequest.of(page, size))
-                .map(ticketMapper::convertToTicketDto);
+                .map(ticketMapper::toDto);
     }
 
     public Ticket getTicketByTicketNumber(String ticketNumber) {
@@ -62,7 +62,7 @@ public class TicketService {
             throw new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = "
                     + timezoneDto.getFlightSeatId());
         }
-        var ticket = ticketMapper.convertToTicketEntity(timezoneDto, passengerService, flightService, flightSeatService);
+        var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService);
         ticket.setPassenger(passengerRepository.findByEmail(ticket.getPassenger().getEmail()));
         ticket.setFlight(flightRepository.findByCodeWithLinkedEntities(ticket.getFlight().getCode()));
         ticket.setFlightSeat(flightSeatRepository
@@ -75,7 +75,7 @@ public class TicketService {
 
     @Transactional
     public Ticket updateTicketById(Long id, TicketDto timezoneDto) {
-        var updatedTicket = ticketMapper.convertToTicketEntity(timezoneDto, passengerService, flightService, flightSeatService);
+        var updatedTicket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService);
         updatedTicket.setId(id);
         if (updatedTicket.getFlight() == null) {
             updatedTicket.setFlight(ticketRepository.findTicketById(id).getFlight());

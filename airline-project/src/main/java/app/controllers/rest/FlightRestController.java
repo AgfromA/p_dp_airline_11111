@@ -70,7 +70,7 @@ public class FlightRestController implements FlightRestApi {
         log.info("getById: get Flight by id. id = {}", id);
         var flight = flightService.getFlightById(id);
         return flight.isPresent()
-                ? new ResponseEntity<>(flightMapper.flightToFlightDto(flight.get(), flightService), HttpStatus.OK)
+                ? new ResponseEntity<>(flightMapper.toDto(flight.get(), flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 

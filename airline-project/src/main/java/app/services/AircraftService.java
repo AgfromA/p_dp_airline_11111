@@ -23,21 +23,21 @@ public class AircraftService  {
     private final AircraftMapper aircraftMapper;
 
     public List<AircraftDto> findAll() {
-        return aircraftMapper.convertToAircarftDTOList(aircraftRepository.findAll());
+        return aircraftMapper.toDtoList(aircraftRepository.findAll());
     }
 
     @Transactional
     public AircraftDto saveAircraft(AircraftDto aircraftDTO) {
-        var aircraft = aircraftMapper.convertToAircraftEntity(aircraftDTO);
+        var aircraft = aircraftMapper.toEntity(aircraftDTO);
         if (!aircraft.getSeatSet().isEmpty()) {
             aircraft.getSeatSet().forEach(seat -> seat.setAircraft(aircraft));
         }
-        return aircraftMapper.convertToAircarftDTOEntity(aircraftRepository.save(aircraft));
+        return aircraftMapper.toDto(aircraftRepository.save(aircraft));
     }
 
     public Page<AircraftDto> getPage(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return aircraftRepository.findAll(pageRequest).map(aircraftMapper::convertToAircarftDTOEntity);
+        return aircraftRepository.findAll(pageRequest).map(aircraftMapper::toDto);
     }
 
     public Aircraft getAircraftById(Long id) {

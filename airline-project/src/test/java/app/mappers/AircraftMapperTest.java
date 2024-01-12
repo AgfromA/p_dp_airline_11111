@@ -24,7 +24,7 @@ public class AircraftMapperTest {
         aircraftDTO.setModelYear(2020);
         aircraftDTO.setFlightRange(10000);
 
-        Aircraft aircraft = aircraftMapper.convertToAircraftEntity(aircraftDTO);
+        Aircraft aircraft = aircraftMapper.toEntity(aircraftDTO);
 
         assertEquals(aircraftDTO.getId(), aircraft.getId());
         assertEquals(aircraftDTO.getAircraftNumber(), aircraft.getAircraftNumber());
@@ -35,14 +35,14 @@ public class AircraftMapperTest {
 
     @Test
     public void testConvertToAircraftEntityWhenGivenNullThenReturnsNull() {
-        Aircraft aircraft = aircraftMapper.convertToAircraftEntity(null);
+        Aircraft aircraft = aircraftMapper.toEntity(null);
         assertNull(aircraft);
     }
 
     @Test
     public void testConvertToAircraftEntityWhenGivenEmptyAircraftDTOThenReturnsEmptyAircraft() {
         AircraftDto aircraftDTO = new AircraftDto();
-        Aircraft aircraft = aircraftMapper.convertToAircraftEntity(aircraftDTO);
+        Aircraft aircraft = aircraftMapper.toEntity(aircraftDTO);
 
         assertNull(aircraft.getId());
         assertNull(aircraft.getAircraftNumber());
@@ -70,7 +70,7 @@ public class AircraftMapperTest {
         aircraftDtoList.add(aircraftDtoOne);
         aircraftDtoList.add(aircraftDtoTwo);
 
-        List<Aircraft> aircraftList = aircraftMapper.convertToAircraftEntityList(aircraftDtoList);
+        List<Aircraft> aircraftList = aircraftMapper.toEntityList(aircraftDtoList);
 
         assertEquals(aircraftDtoList.size(), aircraftList.size());
         assertEquals(aircraftDtoList.get(0).getId(), aircraftList.get(0).getId());
@@ -106,7 +106,7 @@ public class AircraftMapperTest {
         aircraftList.add(aircraftOne);
         aircraftList.add(aircraftTwo);
 
-        List<AircraftDto> aircraftDtoList = aircraftMapper.convertToAircarftDTOList(aircraftList);
+        List<AircraftDto> aircraftDtoList = aircraftMapper.toDtoList(aircraftList);
 
         assertEquals(aircraftList.size(), aircraftDtoList.size());
         assertEquals(aircraftList.get(0).getId(), aircraftDtoList.get(0).getId());
