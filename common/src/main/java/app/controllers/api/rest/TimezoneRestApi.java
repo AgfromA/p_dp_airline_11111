@@ -22,7 +22,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 200, message = "Timezones found"),
             @ApiResponse(code = 404, message = "Timezones not found")
     })
-    ResponseEntity<List<TimezoneDTO>> getAllPagesTimezonesDTO(
+    ResponseEntity<List<TimezoneDTO>> getAllTimezones(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size
     );
@@ -33,7 +33,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 404, message = "Timezone not found")
     })
     @RequestMapping(value = "/api/timezones/{id}", method = RequestMethod.GET)
-    ResponseEntity<TimezoneDTO> getTimezoneDTOById(
+    ResponseEntity<TimezoneDTO> getTimezoneById(
             @ApiParam(
                     name = "id",
                     value = "Timezone.id",
@@ -47,7 +47,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 405, message = "Bad request")
     })
     @RequestMapping(value = "/api/timezones", method = RequestMethod.POST)
-    ResponseEntity<TimezoneDTO> createTimezoneDTO(
+    ResponseEntity<TimezoneDTO> createTimezone(
             @ApiParam(
                     name = "timezone",
                     value = "Timezone model"
@@ -60,7 +60,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 404, message = "Timezone not found")
     })
     @RequestMapping(value = "/api/timezones/{id}", method = RequestMethod.PATCH)
-    ResponseEntity<TimezoneDTO> updateTimezoneDTOById(
+    ResponseEntity<TimezoneDTO> updateTimezoneById(
             @ApiParam(
                     name = "id",
                     value = "Timezone.id",

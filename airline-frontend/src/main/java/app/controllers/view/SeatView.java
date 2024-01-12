@@ -57,8 +57,8 @@ public class SeatView extends VerticalLayout {
     public SeatView(SeatClient seatClient) {
         this.seatClient = seatClient;
         currentPage = 0;
-        response = seatClient.getAllPagesSeatsDTO(currentPage, 10);
-        List<SeatDTO> seatDTOList = seatClient.getAllPagesSeatsDTO(null, null).getBody();
+        response = seatClient.getAllSeats(currentPage, 10);
+        List<SeatDTO> seatDTOList = seatClient.getAllSeats(null, null).getBody();
         maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
         isSearchById = false;
         isSearchByAircraftId = false;
@@ -210,9 +210,9 @@ public class SeatView extends VerticalLayout {
     private void updateGridData() {
         isSearchById = false;
         dataSource.clear();
-        response = seatClient.getAllPagesSeatsDTO(currentPage, 10);
+        response = seatClient.getAllSeats(currentPage, 10);
         dataSource.addAll(response.getBody());
-        List<SeatDTO> seatDTOList = seatClient.getAllPagesSeatsDTO(null, null).getBody();
+        List<SeatDTO> seatDTOList = seatClient.getAllSeats(null, null).getBody();
         maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
         grid.getDataProvider().refreshAll();
     }
@@ -224,14 +224,14 @@ public class SeatView extends VerticalLayout {
             isSearchByAircraftId = false;
             currentPage = 0;
             maxPages = 1;
-            dataSource.add(seatClient.getSeatDTOById(idSearchField.getValue().longValue()).getBody());
+            dataSource.add(seatClient.getSeatById(idSearchField.getValue().longValue()).getBody());
             grid.getDataProvider().refreshAll();
         }
     }
 
     private boolean isFoundSeatById(Long id) {
         try {
-            dataSource.add(seatClient.getSeatDTOById(id).getBody());
+            dataSource.add(seatClient.getSeatById(id).getBody());
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -247,14 +247,14 @@ public class SeatView extends VerticalLayout {
             dataSource.clear();
             dataSource.addAll(response.getBody());
             grid.getDataProvider().refreshAll();
-            List<SeatDTO> seatDTOList = seatClient.getAllPagesSeatsDTO(null, null).getBody();
+            List<SeatDTO> seatDTOList = seatClient.getAllSeats(null, null).getBody();
             maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
         }
     }
 
     private boolean isFoundSeatsByAircraftId(PageRequest pageable, Long id) {
         try {
-            response = seatClient.getAllPagesSeatsDTOByAircraftId(pageable, id);
+            response = seatClient.getAllSeatsByAircraftId(pageable, id);
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -313,7 +313,7 @@ public class SeatView extends VerticalLayout {
 
     private boolean isEditedSeat(Long id, SeatDTO seatDTO) {
         try {
-            seatClient.updateSeatDTOById(id, seatDTO);
+            seatClient.updateSeatById(id, seatDTO);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
@@ -526,7 +526,7 @@ public class SeatView extends VerticalLayout {
 
     private boolean isCreatedSeat(SeatDTO seatDTO) {
         try {
-            SeatDTO savedSeat = seatClient.createSeatDTO(seatDTO).getBody();
+            SeatDTO savedSeat = seatClient.createSeat(seatDTO).getBody();
             dataSource.add(savedSeat);
             return true;
         } catch (FeignException.BadRequest ex) {

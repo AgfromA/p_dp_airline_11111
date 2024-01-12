@@ -45,10 +45,10 @@ public class AircraftView extends VerticalLayout {
 
     public AircraftView(AircraftClient aircraftClient) {
         this.aircraftClient = aircraftClient;
-        List<AircraftDTO> aircrafts = aircraftClient.getAllPagesAircraftsDTO(null, null).getBody();
+        List<AircraftDTO> aircrafts = aircraftClient.getAllAircrafts(null, null).getBody();
         int pageSize = 10;
         this.maxPages = (int) Math.ceil((double) aircrafts.size() / pageSize);
-        this.dataSource = aircraftClient.getAllPagesAircraftsDTO(0, 10).getBody();
+        this.dataSource = aircraftClient.getAllAircrafts(0, 10).getBody();
         getThemeList().clear();
         getThemeList().add("spacing-s");
         contentTabContainer.setSizeFull();
@@ -124,7 +124,7 @@ public class AircraftView extends VerticalLayout {
 
     private void refreshGrid() {
         dataSource.clear();
-        List<AircraftDTO> newData = aircraftClient.getAllPagesAircraftsDTO(currentPage, 10).getBody();
+        List<AircraftDTO> newData = aircraftClient.getAllAircrafts(currentPage, 10).getBody();
         dataSource.addAll(newData);
         grid.getListDataView().refreshAll();
     }

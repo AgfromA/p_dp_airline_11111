@@ -24,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TicketServiceImpl implements TicketService {
+
     private final TicketRepository ticketRepository;
     private final PassengerRepository passengerRepository;
     private final FlightRepository flightRepository;
@@ -116,5 +117,4 @@ public class TicketServiceImpl implements TicketService {
     public List<Ticket> findByFlightId(Long id) {
         return ticketRepository.findByFlightId(id);
     }
-
 }

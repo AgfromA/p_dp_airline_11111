@@ -20,7 +20,7 @@ public class BookingRestController implements BookingRestApi {
     private final BookingService bookingService;
 
     @Override
-    public ResponseEntity<List<BookingDTO>> getAllPagesBookingsDTO(Integer page, Integer size) {
+    public ResponseEntity<List<BookingDTO>> getAllBookings(Integer page, Integer size) {
         log.info("getAll: search all Bookings");
         if (page == null || size == null) {
             log.info("getAll: get all list Bookings");
@@ -48,7 +48,7 @@ public class BookingRestController implements BookingRestApi {
     }
 
     @Override
-    public ResponseEntity<BookingDTO> getBookingDTOById(Long id) {
+    public ResponseEntity<BookingDTO> getBookingById(Long id) {
         log.info("getById: search Booking by id = {}", id);
         var booking = bookingService.getBookingById(id);
         if (booking == null) {
@@ -59,7 +59,7 @@ public class BookingRestController implements BookingRestApi {
     }
 
     @Override
-    public ResponseEntity<BookingDTO> getBookingDTOByBookingNumber(String bookingNumber) {
+    public ResponseEntity<BookingDTO> getBookingByBookingNumber(String bookingNumber) {
         log.info("getByNumber: search Booking by number = {}", bookingNumber);
         var booking = bookingService.getBookingByNumber(bookingNumber);
         if (booking == null) {
@@ -70,14 +70,14 @@ public class BookingRestController implements BookingRestApi {
     }
 
     @Override
-    public ResponseEntity<BookingDTO> createBookingDTO(BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDTO> createBooking(BookingDTO bookingDTO) {
         log.info("create: creating a new Booking");
         bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
         return new ResponseEntity<>(bookingService.saveBooking(bookingDTO), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<BookingDTO> updateBookingDTOById(Long id, BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDTO> updateBookingById(Long id, BookingDTO bookingDTO) {
         log.info("update: edit Booking with id = {}", id);
         var booking = bookingService.getBookingById(id);
         if (booking == null) {

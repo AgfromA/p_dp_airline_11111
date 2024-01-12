@@ -3,7 +3,6 @@ package app.exceptions;
 import app.controllers.IntegrationTestBase;
 import app.controllers.rest.AccountRestController;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import org.mockito.Mock;
 import org.springframework.test.context.jdbc.Sql;
@@ -30,7 +29,7 @@ class RuntimeExceptionHandlerTestIT extends IntegrationTestBase {
     public void runtimeExceptionHandlerTestIT() throws Exception {
         Long id = 1L;
 
-        when(accountRestController.getAccountDTOById(id)).thenThrow(new RuntimeException("Runtime Exception"));
+        when(accountRestController.getAccountById(id)).thenThrow(new RuntimeException("Runtime Exception"));
 
         mockMvc.perform(
                         get("http://localhost:8080/api/accounts/{id}", id))

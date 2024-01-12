@@ -1,8 +1,6 @@
 package app.dto;
 
-
 import app.entities.Passport;
-import app.entities.Passenger;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -15,14 +13,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
-
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @JsonTypeName(value = "passenger")
 public class PassengerDTO {
-
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
@@ -51,15 +47,4 @@ public class PassengerDTO {
     @Email
     @NotBlank(message = "The field cannot be empty")
     private String email;
-
-
-    public PassengerDTO(Passenger passenger) {
-        this.id = passenger.getId();
-        this.firstName = passenger.getFirstName();
-        this.lastName = passenger.getLastName();
-        this.birthDate = passenger.getBirthDate();
-        this.phoneNumber = passenger.getPhoneNumber();
-        this.passport = passenger.getPassport();
-        this.email = passenger.getEmail();
-    }
 }

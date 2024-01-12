@@ -53,7 +53,7 @@ public class AccountView extends VerticalLayout {
         this.accountClient = accountClient;
         page = 0;
         size = 10;
-        this.dataSource = accountClient.getPage(page, size).getBody();
+        this.dataSource = accountClient.getAllAccounts(page, size).getBody();
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage nameValidationMessage = new ValidationMessage();
         ValidationMessage lastnameValidationMessage = new ValidationMessage();
@@ -345,7 +345,7 @@ public class AccountView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            accountClient.updateAccountDTOById(e.getItem().getId(), e.getItem());
+            accountClient.updateAccountById(e.getItem().getId(), e.getItem());
             grid.getDataProvider().refreshAll();
         });
     }
@@ -424,7 +424,7 @@ public class AccountView extends VerticalLayout {
             accountDTO.setPassword(passwordField.getValue());
             accountDTO.setSecurityQuestion(securityQuestionField.getValue());
             accountDTO.setAnswerQuestion(answerQuestionField.getValue());
-            AccountDTO savedAccount = accountClient.createAccountDTO(accountDTO).getBody();
+            AccountDTO savedAccount = accountClient.createAccount(accountDTO).getBody();
             dataSource.add(savedAccount);
             nameTextField.clear();
             lastnameTextField.clear();

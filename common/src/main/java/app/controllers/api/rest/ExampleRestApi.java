@@ -28,8 +28,8 @@ public interface ExampleRestApi {
             @ApiResponse(code = 200, message = "Examples Page found"),
             @ApiResponse(code = 204, message = "Examples Page not present")}
     )
-    ResponseEntity<List<ExampleDto>> getPage(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
-                                             @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
+    ResponseEntity<List<ExampleDto>> getAllExamples(@ApiParam(name = "page") @RequestParam(required = false, value = "page") Integer page,
+                                                    @ApiParam(name = "size") @RequestParam(required = false, value = "size") Integer size);
 
     @RequestMapping(value = "/api/example{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Example by id")

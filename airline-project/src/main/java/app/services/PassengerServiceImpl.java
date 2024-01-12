@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @Transactional(readOnly = true)
 public class PassengerServiceImpl implements PassengerService {
@@ -112,4 +111,3 @@ public class PassengerServiceImpl implements PassengerService {
         return passengerRepository.findAll(pageable).map(passengerMapper::convertToPassengerDTO);
     }
 }
-

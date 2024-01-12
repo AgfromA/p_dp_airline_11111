@@ -18,13 +18,14 @@ import java.util.List;
 @Api(tags = "Flight REST")
 @Tag(name = "Flight REST", description = "API для операций с рейсами")
 public interface FlightRestApi {
+
     @RequestMapping(value = "/api/flights/all", method = RequestMethod.GET)
     @ApiOperation(value = "Get all Flights or Flights by params")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Flights found"),
             @ApiResponse(code = 204, message = "Flights not found")
     })
-    ResponseEntity<List<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
+    ResponseEntity<List<FlightDTO>> getAllFlightsByDestinationsAndDates(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
@@ -47,7 +48,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flight found"),
             @ApiResponse(code = 404, message = "Flight not found")
     })
-    ResponseEntity<FlightDTO> getFlightDTOById(
+    ResponseEntity<FlightDTO> getFlightById(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
@@ -60,7 +61,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "flight found"),
             @ApiResponse(code = 404, message = "flight not found")
     })
-    ResponseEntity<FlightDTO> getFlightDTOByIdAndDates(
+    ResponseEntity<FlightDTO> getFlightByIdAndDates(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"

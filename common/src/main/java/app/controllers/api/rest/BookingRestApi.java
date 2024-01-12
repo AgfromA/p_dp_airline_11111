@@ -31,7 +31,7 @@ public interface BookingRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Bookings found"),
             @ApiResponse(code = 204, message = "Bookings not found")})
-    ResponseEntity<List<BookingDTO>> getAllPagesBookingsDTO(
+    ResponseEntity<List<BookingDTO>> getAllBookings(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size
     );
@@ -42,7 +42,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking found"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> getBookingDTOById(
+    ResponseEntity<BookingDTO> getBookingById(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"
@@ -55,7 +55,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking found"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> getBookingDTOByBookingNumber(
+    ResponseEntity<BookingDTO> getBookingByBookingNumber(
             @ApiParam(
                     value = "bookingNumber",
                     example = "SV-221122",
@@ -68,7 +68,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking created"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    ResponseEntity<BookingDTO> createBookingDTO(
+    ResponseEntity<BookingDTO> createBooking(
             @ApiParam(
                     name = "booking",
                     value = "Booking model"
@@ -82,7 +82,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> updateBookingDTOById(
+    ResponseEntity<BookingDTO> updateBookingById(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"

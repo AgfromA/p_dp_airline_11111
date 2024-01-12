@@ -22,7 +22,7 @@ public class PaymentRestController implements PaymentRestApi {
     private final PaymentService paymentService;
 
     @Override
-    public ResponseEntity<List<Payment>> getAllPagesPayments(Integer page, Integer count) {
+    public ResponseEntity<List<Payment>> getAllPayments(Integer page, Integer count) {
         log.info("getAll: get all Payments");
         if (page == null || count == null) {
             log.info("getAll: get all List Payments");

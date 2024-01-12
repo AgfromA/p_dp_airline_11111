@@ -79,10 +79,10 @@ public class FlightView extends VerticalLayout {
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         isSearchById = false;
         isSearchByDestinationsAndDates = false;
-        var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+        var response = flightClient.getAllFlightsByDestinationsAndDates(
                 pageable.getPageNumber(), pageable.getPageSize(), null, null, null, null);
         dataSource = response.getBody();
-        List<FlightDTO> flightDTOList = flightClient.getAllPagesFlightsByDestinationsAndDates(null, null, null,
+        List<FlightDTO> flightDTOList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
                 null, null, null).getBody();
         maxPages = (int) Math.ceil((double) flightDTOList.size() / 10);
 
@@ -216,7 +216,7 @@ public class FlightView extends VerticalLayout {
             dataSource.clear();
             grid.getDataProvider().refreshAll();
             PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-            var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+            var response = flightClient.getAllFlightsByDestinationsAndDates(
                     pageable.getPageNumber(),
                     pageable.getPageSize(),
                     cityFrom,
@@ -230,7 +230,7 @@ public class FlightView extends VerticalLayout {
                 List<FlightDTO> emptyList = Collections.emptyList();
                 grid.setItems(emptyList);
             } else {
-                List<FlightDTO> flightDTOList = flightClient.getAllPagesFlightsByDestinationsAndDates(null, null, null,
+                List<FlightDTO> flightDTOList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
                         null, null, null).getBody();
                 maxPages = (int) Math.ceil((double) flightDTOList.size() / 10);
                 dataSource = response.getBody();
@@ -379,7 +379,7 @@ public class FlightView extends VerticalLayout {
     private void searchById() {
         dataSource.clear();
         grid.getDataProvider().refreshAll();
-        var a = flightClient.getFlightDTOById(idSearchField.getValue().longValue());
+        var a = flightClient.getFlightById(idSearchField.getValue().longValue());
         if (a.getStatusCode() == HttpStatus.NOT_FOUND) {
             List<FlightDTO> emptyList = Collections.emptyList();
             grid.setItems(emptyList);
@@ -391,9 +391,9 @@ public class FlightView extends VerticalLayout {
     private void defaultCurrentPageOfFlights() {
         dataSource.clear();
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-        var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+        var response = flightClient.getAllFlightsByDestinationsAndDates(
                 pageable.getPageNumber(), pageable.getPageSize(), null, null, null, null);
-        List<FlightDTO> flightDTOList = flightClient.getAllPagesFlightsByDestinationsAndDates(null, null, null,
+        List<FlightDTO> flightDTOList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
                 null, null, null).getBody();
         maxPages = (int) Math.ceil((double) flightDTOList.size() / 10);
         dataSource = response.getBody();
@@ -656,7 +656,7 @@ public class FlightView extends VerticalLayout {
 
 
             try {
-                var a = aircraftClient.getAircraftDTOById(e.getItem().getAircraftId());
+                var a = aircraftClient.getAircraftById(e.getItem().getAircraftId());
             } catch (FeignException.NotFound ex) {
                 Notification.show("Aircraft with id = " + e.getItem().getAircraftId() + " not exists, ",
                         3000, Notification.Position.TOP_CENTER);
@@ -727,7 +727,7 @@ public class FlightView extends VerticalLayout {
         TextField code = new TextField("Flight code");
         code.setWidth("200px");
 
-        List<Airport> airports = destinationClient.getAllPagesDestinationsDTO(null, null, null, null, null)
+        List<Airport> airports = destinationClient.getAllDestinations(null, null, null, null, null)
                 .getBody()
                 .stream()
                 .map(DestinationDTO::getAirportCode)
@@ -798,7 +798,7 @@ public class FlightView extends VerticalLayout {
                 return;
             }
             try {
-                var a = aircraftClient.getAircraftDTOById(aircraftId.getValue().longValue());
+                var a = aircraftClient.getAircraftById(aircraftId.getValue().longValue());
             } catch (FeignException.NotFound ex) {
                 Notification.show("Aircraft with id = " + aircraftId.getValue().toString() + " not exists, ",
                         3000, Notification.Position.TOP_CENTER);

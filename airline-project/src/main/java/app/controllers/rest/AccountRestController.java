@@ -27,7 +27,7 @@ public class AccountRestController implements AccountRestApi {
     private final JwtProviderLite jwtProvider;
 
     @Override
-    public ResponseEntity<List<AccountDTO>> getPage(Integer page, Integer size) {
+    public ResponseEntity<List<AccountDTO>> getAllAccounts(Integer page, Integer size) {
         log.info("getAll: get all Accounts");
         if (page == null || size == null) {
             log.info("getAll: get all List Accounts");
@@ -56,7 +56,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDTO> getAccountDTOById(Long id) {
+    public ResponseEntity<AccountDTO> getAccountById(Long id) {
         log.info("getById: get Account by id. id = {}", id);
         var account = accountService.getAccountById(id);
         return account.isEmpty()
@@ -78,13 +78,13 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDTO> createAccountDTO(AccountDTO accountDTO) {
+    public ResponseEntity<AccountDTO> createAccount(AccountDTO accountDTO) {
         log.info("create: create new Account with email={}", accountDTO.getEmail());
         return ResponseEntity.ok((accountService.saveAccount(accountDTO)));
     }
 
     @Override
-    public ResponseEntity<AccountDTO> updateAccountDTOById(Long id, AccountDTO accountDTO) {
+    public ResponseEntity<AccountDTO> updateAccountById(Long id, AccountDTO accountDTO) {
         log.info("update: update Account with id = {}", id);
         return new ResponseEntity<>(accountService.updateAccount(id, accountDTO).get(), HttpStatus.OK);
     }

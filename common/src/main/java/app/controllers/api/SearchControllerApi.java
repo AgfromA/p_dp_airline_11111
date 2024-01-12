@@ -45,6 +45,3 @@ public interface SearchControllerApi {
             @ApiParam(name = "numberOfPassengers", value = "numberOfPassengers")
             @RequestParam(value = "numberOfPassengers") Integer numberOfPassengers);
 }
-
-
-

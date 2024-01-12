@@ -23,7 +23,7 @@ public class TimezoneRestController implements TimezoneRestApi {
     private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
 
     @Override
-    public ResponseEntity<List<TimezoneDTO>> getAllPagesTimezonesDTO(Integer page, Integer size) {
+    public ResponseEntity<List<TimezoneDTO>> getAllTimezones(Integer page, Integer size) {
         log.info("getAll: get all Timezones");
         if (page == null || size == null) {
             log.info("getAll: get all List Timezones");
@@ -51,9 +51,8 @@ public class TimezoneRestController implements TimezoneRestApi {
         }
     }
 
-
     @Override
-    public ResponseEntity<TimezoneDTO> getTimezoneDTOById(Long id) {
+    public ResponseEntity<TimezoneDTO> getTimezoneById(Long id) {
         log.info("getById: search Timezone by id = {}", id);
         var timezone = timezoneService.getTimezoneById(id);
 
@@ -66,7 +65,7 @@ public class TimezoneRestController implements TimezoneRestApi {
     }
 
     @Override
-    public ResponseEntity<TimezoneDTO> createTimezoneDTO(TimezoneDTO timezoneDTO) {
+    public ResponseEntity<TimezoneDTO> createTimezone(TimezoneDTO timezoneDTO) {
         timezoneService.saveTimezone(timezoneDTO);
         log.info("create: new Timezone");
         return new ResponseEntity<>(new TimezoneDTO(),
@@ -74,7 +73,7 @@ public class TimezoneRestController implements TimezoneRestApi {
     }
 
     @Override
-    public ResponseEntity<TimezoneDTO> updateTimezoneDTOById(Long id, TimezoneDTO timezoneDTO) {
+    public ResponseEntity<TimezoneDTO> updateTimezoneById(Long id, TimezoneDTO timezoneDTO) {
         timezoneDTO.setId(id);
         log.info("update: timezone = {}", timezoneDTO);
 
@@ -84,7 +83,6 @@ public class TimezoneRestController implements TimezoneRestApi {
 
         return new ResponseEntity<>(updatedTimezoneDTO, HttpStatus.OK);
     }
-
 
     @Override
     public ResponseEntity<HttpStatus> deleteTimezoneById(Long id) {

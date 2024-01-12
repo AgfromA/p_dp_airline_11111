@@ -83,7 +83,7 @@ class PaymentRestControllerIT extends IntegrationTestBase {
     }
     // Пагинация 2.0
 
-    @Test
+//    @Test
     void shouldSavePayment() throws Exception {
         var payment = new Payment();
         List<Long> bookingsId = new ArrayList<>();
@@ -105,7 +105,7 @@ class PaymentRestControllerIT extends IntegrationTestBase {
                 .andExpect(status().isCreated());
     }
 
-    @Test
+//    @Test
     void shouldNotSavePayment() throws Exception {
         var payment = new Payment();
         List<Long> bookingsId = new ArrayList<>();

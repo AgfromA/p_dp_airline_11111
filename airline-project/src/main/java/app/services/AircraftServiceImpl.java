@@ -63,5 +63,4 @@ public class AircraftServiceImpl implements AircraftService {
         }
         aircraftRepository.deleteById(id);
     }
-
 }

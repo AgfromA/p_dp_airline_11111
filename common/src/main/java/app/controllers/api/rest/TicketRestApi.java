@@ -22,14 +22,14 @@ public interface TicketRestApi {
             @ApiResponse(code = 200, message = "Tickets found"),
             @ApiResponse(code = 204, message = "Tickets not found")
     })
-    ResponseEntity<List<TicketDTO>> getAllPagesTicketsDTO(
+    ResponseEntity<List<TicketDTO>> getAllTickets(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size);
 
     @ApiOperation(value = "Get Ticket by ticketNumber")
     @ApiResponse(code = 200, message = "Found the ticket")
     @GetMapping("/{ticketNumber}")
-    ResponseEntity<TicketDTO> getTicketDTOByTicketNumber(
+    ResponseEntity<TicketDTO> getTicketByTicketNumber(
             @ApiParam(
                     name = "ticketNumber",
                     value = "ticketNumber",
@@ -40,7 +40,7 @@ public interface TicketRestApi {
     @ApiOperation(value = "Create new Ticket")
     @ApiResponse(code = 201, message = "Ticket created")
     @PostMapping
-    ResponseEntity<TicketDTO> createTicketDTO(
+    ResponseEntity<TicketDTO> createTicket(
             @ApiParam(
                     name = "ticket",
                     value = "Ticket model"

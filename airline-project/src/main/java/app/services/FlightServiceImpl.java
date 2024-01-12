@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 public class FlightServiceImpl implements FlightService {
+
     private final FlightRepository flightRepository;
     private final AircraftService aircraftService;
     private final DestinationService destinationService;

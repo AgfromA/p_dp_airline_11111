@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 public class PaymentRequest {
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-
 
     private List<Long> bookingsId = new ArrayList<>();
 

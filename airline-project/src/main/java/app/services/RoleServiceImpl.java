@@ -50,5 +50,4 @@ public class RoleServiceImpl implements RoleService {
                 .map(roleMapper::convertToRoleDTO)
                 .collect(Collectors.toSet());
     }
-
 }

@@ -43,9 +43,9 @@ public class TimezoneView extends VerticalLayout {
     public TimezoneView(TimezoneClient timezoneClient) {
         this.timezoneClient = timezoneClient;
         currentPage = 0;
-        var response = timezoneClient.getAllPagesTimezonesDTO(currentPage, 10);
+        var response = timezoneClient.getAllTimezones(currentPage, 10);
         dataSource = response.getBody();
-        List<TimezoneDTO> timezoneDTOList = timezoneClient.getAllPagesTimezonesDTO(null, null).getBody();
+        List<TimezoneDTO> timezoneDTOList = timezoneClient.getAllTimezones(null, null).getBody();
         maxPages = (int) Math.ceil((double) timezoneDTOList.size() / 10);
 
         ValidationMessage idValidationMessage = new ValidationMessage();
@@ -112,7 +112,7 @@ public class TimezoneView extends VerticalLayout {
 
     private void refreshGrid() {
         dataSource.clear();
-        List<TimezoneDTO> newData = timezoneClient.getAllPagesTimezonesDTO(currentPage, 10).getBody();
+        List<TimezoneDTO> newData = timezoneClient.getAllTimezones(currentPage, 10).getBody();
         dataSource.addAll(newData);
         grid.getDataProvider().refreshAll();
     }
@@ -245,7 +245,7 @@ public class TimezoneView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            timezoneClient.updateTimezoneDTOById(e.getItem().getId(), e.getItem());
+            timezoneClient.updateTimezoneById(e.getItem().getId(), e.getItem());
             grid.getDataProvider().refreshAll();
         });
     }
@@ -312,7 +312,7 @@ public class TimezoneView extends VerticalLayout {
             timezoneDTO.setCityName(cityNameField.getValue());
             timezoneDTO.setGmt(gmtField.getValue());
             timezoneDTO.setGmtWinter(gmtWinterField.getValue());
-            timezoneClient.createTimezoneDTO(timezoneDTO);
+            timezoneClient.createTimezone(timezoneDTO);
             countryNameField.clear();
             cityNameField.clear();
             gmtField.clear();

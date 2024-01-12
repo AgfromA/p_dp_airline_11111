@@ -24,7 +24,7 @@ public class AircraftRestController implements AircraftRestApi {
     private final AircraftMapper aircraftMapper = Mappers.getMapper(AircraftMapper.class);
 
     @Override
-    public ResponseEntity<List<AircraftDTO>> getAllPagesAircraftsDTO(Integer page, Integer size) {
+    public ResponseEntity<List<AircraftDTO>> getAllAircrafts(Integer page, Integer size) {
         log.info("getAll: get all Aircrafts");
         if (page == null || size == null) {
             log.info("getAll: get all List Aircrafts");
@@ -52,7 +52,7 @@ public class AircraftRestController implements AircraftRestApi {
     }
 
     @Override
-    public ResponseEntity<AircraftDTO> getAircraftDTOById(Long id) {
+    public ResponseEntity<AircraftDTO> getAircraftById(Long id) {
         var aircraft = aircraftService.getAircraftById(id);
         if (aircraft == null) {
             log.error("getById: Aircraft with id={} doesn't exist.", id);

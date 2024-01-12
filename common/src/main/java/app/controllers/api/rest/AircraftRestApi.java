@@ -29,7 +29,7 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircrafts found"),
             @ApiResponse(code = 204, message = "Aircrafts not found")})
-    ResponseEntity<List<AircraftDTO>> getAllPagesAircraftsDTO(
+    ResponseEntity<List<AircraftDTO>> getAllAircrafts(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size);
 
@@ -38,7 +38,7 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft found"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDTO> getAircraftDTOById(
+    ResponseEntity<AircraftDTO> getAircraftById(
             @ApiParam(name = "id", value = "Aircraft.id")
             @PathVariable("id") Long id);
 

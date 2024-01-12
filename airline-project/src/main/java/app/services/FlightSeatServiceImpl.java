@@ -35,7 +35,6 @@ public class FlightSeatServiceImpl implements FlightSeatService {
     private final SeatService seatService;
     private final FlightService flightService;
 
-
     @Override
     @Loggable
     public Set<FlightSeat> getAllFlightSeats() {
@@ -300,7 +299,6 @@ public class FlightSeatServiceImpl implements FlightSeatService {
         if (distance > 1000) {
             fare += fare * (distance / 10000);
         }
-
         return Math.round(fare / 10) * 10;
     }
 }

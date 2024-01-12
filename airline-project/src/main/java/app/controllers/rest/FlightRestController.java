@@ -26,9 +26,9 @@ public class FlightRestController implements FlightRestApi {
     private final FlightMapper flightMapper;
 
     @Override
-    public ResponseEntity<List<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(Integer page, Integer size,
-                                                                                    String cityFrom, String cityTo,
-                                                                                    String dateStart, String dateFinish) {
+    public ResponseEntity<List<FlightDTO>> getAllFlightsByDestinationsAndDates(Integer page, Integer size,
+                                                                               String cityFrom, String cityTo,
+                                                                               String dateStart, String dateFinish) {
         log.info("get all Flights");
         if (page == null || size == null) {
             log.info("get all List Flights");
@@ -66,7 +66,7 @@ public class FlightRestController implements FlightRestApi {
     }
 
     @Override
-    public ResponseEntity<FlightDTO> getFlightDTOById(Long id) {
+    public ResponseEntity<FlightDTO> getFlightById(Long id) {
         log.info("getById: get Flight by id. id = {}", id);
         var flight = flightService.getFlightById(id);
         return flight.isPresent()
@@ -75,7 +75,7 @@ public class FlightRestController implements FlightRestApi {
     }
 
     @Override
-    public ResponseEntity<FlightDTO> getFlightDTOByIdAndDates(Long id, String start, String finish) {
+    public ResponseEntity<FlightDTO> getFlightByIdAndDates(Long id, String start, String finish) {
         log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
         var flight = flightService.getFlightByIdAndDates(id, start, finish);
         return flight != null

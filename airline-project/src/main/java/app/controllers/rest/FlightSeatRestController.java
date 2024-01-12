@@ -28,10 +28,10 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     private final FlightService flightService;
 
     @Override
-    public ResponseEntity<List<FlightSeatDTO>> getAllPagesFlightSeatsDTO(Integer page, Integer size,
-                                                                         Optional<Long> flightId,
-                                                                         Boolean isSold,
-                                                                         Boolean isRegistered) {
+    public ResponseEntity<List<FlightSeatDTO>> getAllFlightSeats(Integer page, Integer size,
+                                                                 Optional<Long> flightId,
+                                                                 Boolean isSold,
+                                                                 Boolean isRegistered) {
         log.info("get all FlightSeats");
         if (page == null || size == null) {
             return createUnPagedResponse();
@@ -77,14 +77,14 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<List<FlightSeatDTO>> getPagesFreeSeatsById(Pageable pageable, Long id) {
+    public ResponseEntity<List<FlightSeatDTO>> getFreeSeatsById(Pageable pageable, Long id) {
         log.info("getFreeSeats: get free seats on Flight with id = {}", id);
         var seats = flightSeatService.getFreeSeatsById(pageable, id);
         return ResponseEntity.ok(seats.getContent());
     }
 
     @Override
-    public ResponseEntity<FlightSeatDTO> getFlightSeatDTOById(Long id) {
+    public ResponseEntity<FlightSeatDTO> getFlightSeatById(Long id) {
         log.info("get: FlightSeat by id={}", id);
         return (flightSeatService.getFlightSeatById(id).isEmpty()) ?
                 ResponseEntity.notFound().build() :
@@ -103,7 +103,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<Set<FlightSeatDTO>> generateAllFlightSeatsDTOByFlightId(Long flightId) {
+    public ResponseEntity<Set<FlightSeatDTO>> generateAllFlightSeatsByFlightId(Long flightId) {
         log.info("generate: FlightSeats by flightId. flightId={}", flightId);
         var flightSeats = flightSeatService.getFlightSeatsByFlightId(flightId);
         if (!flightSeats.isEmpty()) {
@@ -117,7 +117,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<FlightSeatDTO> updateFlightSeatDTOById(Long id, FlightSeatDTO flightSeatDTO) {
+    public ResponseEntity<FlightSeatDTO> updateFlightSeatById(Long id, FlightSeatDTO flightSeatDTO) {
         log.info("update: FlightSeat by id={}", id);
         if (flightSeatService.getFlightSeatById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -138,7 +138,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<FlightSeatDTO> createFlightSeatDTO(FlightSeatDTO flightSeatDTO) {
+    public ResponseEntity<FlightSeatDTO> createFlightSeat(FlightSeatDTO flightSeatDTO) {
         if (flightService.getFlightById(flightSeatDTO.getFlightId()) == null) {
             log.error("Flight with id = {} not found", flightSeatDTO.getFlightId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -148,7 +148,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<List<SeatDTO>> getAllSeatDTO() {
+    public ResponseEntity<List<SeatDTO>> getAllSeat() {
         var seats = flightSeatService.getAllSeatDTO();
         if (!seats.isEmpty()) {
             log.info("getAll: found {} Seats", seats.size());
@@ -158,5 +158,4 @@ public class FlightSeatRestController implements FlightSeatRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 }

@@ -14,10 +14,10 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class DestinationServiceImpl implements DestinationService {
+
     private final DestinationRepository destinationRepository;
     private final DestinationMapper destinationMapper;
 

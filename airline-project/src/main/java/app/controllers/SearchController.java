@@ -39,7 +39,7 @@ public class SearchController implements SearchControllerApi {
         }
         log.debug("incoming numberOfPassengers = {}", LogsUtils.objectToJson(numberOfPassengers));
         if (numberOfPassengers == null || numberOfPassengers < 1) {
-            errorMessage ="NumberOfPassengers is incorrect";
+            errorMessage = "NumberOfPassengers is incorrect";
             log.info(errorMessage);
             throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
         }
@@ -65,7 +65,3 @@ public class SearchController implements SearchControllerApi {
         }
     }
 }
-
-
-
-

@@ -87,7 +87,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.convertToAccountDTO(accountRepository.getAccountByEmail(email));
     }
 
-
     @Override
     public Optional<AccountDTO> deleteAccountById(Long id) {
 

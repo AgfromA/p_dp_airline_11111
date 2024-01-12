@@ -22,8 +22,8 @@ public class DestinationRestController implements DestinationRestApi {
     private final DestinationService destinationService;
 
     @Override
-    public ResponseEntity<List<DestinationDTO>> getAllPagesDestinationsDTO(Integer page, Integer size, String cityName,
-                                                                           String countryName, String timezone) {
+    public ResponseEntity<List<DestinationDTO>> getAllDestinations(Integer page, Integer size, String cityName,
+                                                                   String countryName, String timezone) {
         log.info("get all Destinations");
         if (page == null || size == null) {
             log.info("get all List Destinations");
@@ -59,14 +59,14 @@ public class DestinationRestController implements DestinationRestApi {
     }
 
     @Override
-    public ResponseEntity<DestinationDTO> createDestinationDTO(DestinationDTO destinationDTO) {
+    public ResponseEntity<DestinationDTO> createDestination(DestinationDTO destinationDTO) {
         Destination existingDestination = destinationService.getDestinationByAirportCode(destinationDTO.getAirportCode());
         log.info("create: new Destination - {}", LogsUtils.objectToJson(destinationDTO));
         return new ResponseEntity<>(destinationService.saveDestination(destinationDTO), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<DestinationDTO> updateDestinationDTOById(Long id, DestinationDTO destinationDTO) {
+    public ResponseEntity<DestinationDTO> updateDestinationById(Long id, DestinationDTO destinationDTO) {
         log.info("update: Destination with id={}", id);
         destinationService.updateDestinationById(id, destinationDTO);
         var updatedDestinationDTO = destinationService.getDestinationById(id);

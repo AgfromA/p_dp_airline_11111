@@ -21,7 +21,7 @@ public interface PaymentRestApi {
             @ApiResponse(code = 200, message = "payments found"),
             @ApiResponse(code = 404, message = "payments not found")
     })
-    ResponseEntity<List<Payment>> getAllPagesPayments(
+    ResponseEntity<List<Payment>> getAllPayments(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "count", required = false) Integer count
     );

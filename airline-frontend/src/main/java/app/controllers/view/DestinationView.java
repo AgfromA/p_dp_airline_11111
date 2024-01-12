@@ -24,12 +24,10 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.Route;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Route(value = "destination", layout = MainLayout.class)
@@ -60,12 +58,12 @@ public class DestinationView extends VerticalLayout {
 
         this.destinationClient = destinationClient;
         this.currentPage = 0; // сначала инициализация страницы иначе вытаскивает весь список
-        this.response = destinationClient.getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
+        this.response = destinationClient.getAllDestinations(currentPage, 10, city, country, timezone);
         this.city = null;
         this.country = null;
         this.timezone = null;
         this.isFilteredSearch = false;
-        List<DestinationDTO> dtos = destinationClient.getAllPagesDestinationsDTO(null, null, null, null, null).getBody();
+        List<DestinationDTO> dtos = destinationClient.getAllDestinations(null, null, null, null, null).getBody();
         int pageSize = 10;
         this.maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
         this.dataSource = response.getBody();
@@ -182,8 +180,8 @@ public class DestinationView extends VerticalLayout {
     private boolean isFoundDestinations(String city, String country, String timezone) {
         try {
             ResponseEntity<List<DestinationDTO>> filteredResponse = destinationClient
-                    .getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
-            List<DestinationDTO> dtos = destinationClient.getAllPagesDestinationsDTO(null, null,
+                    .getAllDestinations(currentPage, 10, city, country, timezone);
+            List<DestinationDTO> dtos = destinationClient.getAllDestinations(null, null,
                     null, null, null).getBody();
             int pageSize = 10;
             maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
@@ -206,8 +204,8 @@ public class DestinationView extends VerticalLayout {
 
     private void updateGridData() {
         dataSource.clear();
-        response = destinationClient.getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
-        List<DestinationDTO> dtos = destinationClient.getAllPagesDestinationsDTO(null, null,
+        response = destinationClient.getAllDestinations(currentPage, 10, city, country, timezone);
+        List<DestinationDTO> dtos = destinationClient.getAllDestinations(null, null,
                 null, null, null).getBody();
         int pageSize = 10;
         maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
@@ -348,7 +346,7 @@ public class DestinationView extends VerticalLayout {
 
     private boolean isEditedDestination(Long id, DestinationDTO destinationDTO) {
         try {
-            destinationClient.updateDestinationDTOById(id, destinationDTO);
+            destinationClient.updateDestinationById(id, destinationDTO);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
@@ -444,7 +442,7 @@ public class DestinationView extends VerticalLayout {
 
     private boolean isCreatedDestination(DestinationDTO destinationDTO) {
         try {
-            ResponseEntity<DestinationDTO> responseCreated = destinationClient.createDestinationDTO(destinationDTO);
+            ResponseEntity<DestinationDTO> responseCreated = destinationClient.createDestination(destinationDTO);
             if (responseCreated.getStatusCode() == HttpStatus.CREATED) {
                 DestinationDTO savedDestination = responseCreated.getBody();
                 dataSource.add(savedDestination);

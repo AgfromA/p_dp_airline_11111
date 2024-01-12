@@ -1,6 +1,5 @@
 package app.controllers.rest;
 
-
 import app.controllers.api.rest.ExampleRestApi;
 import app.dto.ExampleDto;
 import app.services.interfaces.ExampleService;
@@ -23,7 +22,7 @@ public class ExampleRestController implements ExampleRestApi {
     private final ExampleService exampleService;
 
     @Override
-    public ResponseEntity<List<ExampleDto>> getPage(Integer page, Integer size) {
+    public ResponseEntity<List<ExampleDto>> getAllExamples(Integer page, Integer size) {
         log.info("getAll: get  Examples");
         if (page == null || size == null) {
             log.info("getAll: get all List Example");

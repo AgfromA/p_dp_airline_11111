@@ -61,12 +61,12 @@ public class FlightSeatView extends VerticalLayout {
         this.flightSeatClient = flightSeatClient;
         this.currentPage = 0;
         Optional<Long> id = null;
-        this.response = flightSeatClient.getAllPagesFlightSeatsDTO(currentPage, 10, id, null, null);
-        this.dataSourceAll = flightSeatClient.getAllSeatDTO().getBody();
+        this.response = flightSeatClient.getAllFlightSeats(currentPage, 10, id, null, null);
+        this.dataSourceAll = flightSeatClient.getAllSeat().getBody();
         this.isSearchByFare = false;
         this.isSearchById = false;
 
-        List<FlightSeatDTO> flightSeatDTOList = flightSeatClient.getAllPagesFlightSeatsDTO(null, null, id, null, null).getBody();
+        List<FlightSeatDTO> flightSeatDTOList = flightSeatClient.getAllFlightSeats(null, null, id, null, null).getBody();
         this.maxPages = (int) Math.ceil((double) flightSeatDTOList.size() / 10);
         this.dataSource = response.getBody();
 
@@ -231,14 +231,14 @@ public class FlightSeatView extends VerticalLayout {
             isSearchById = true;
             currentPage = 0;
             maxPages = 1;
-            dataSource.add(flightSeatClient.getFlightSeatDTOById(idSearchField.getValue().longValue()).getBody());
+            dataSource.add(flightSeatClient.getFlightSeatById(idSearchField.getValue().longValue()).getBody());
             grid.getDataProvider().refreshAll();
         }
     }
 
     private boolean isFoundSeatById(Long id) {
         try {
-            dataSource.add(flightSeatClient.getFlightSeatDTOById(id).getBody());
+            dataSource.add(flightSeatClient.getFlightSeatById(id).getBody());
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -277,7 +277,7 @@ public class FlightSeatView extends VerticalLayout {
 
     private void searchByFare() {
         Optional<Long> id = null; //работает только так
-        List<FlightSeatDTO> allFlightSeatDTO = flightSeatClient.getAllPagesFlightSeatsDTO(null, null,
+        List<FlightSeatDTO> allFlightSeatDTO = flightSeatClient.getAllFlightSeats(null, null,
                 id, null, null).getBody();
         Integer min = minFareSearchField.getValue();
         Integer max = maxFareSearchField.getValue();
@@ -483,7 +483,7 @@ public class FlightSeatView extends VerticalLayout {
 
     private boolean isEditedFlightSeat(Long id, FlightSeatDTO flightSeatDTO) {
         try {
-            flightSeatClient.updateFlightSeatDTOById(id, flightSeatDTO);
+            flightSeatClient.updateFlightSeatById(id, flightSeatDTO);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
@@ -500,8 +500,8 @@ public class FlightSeatView extends VerticalLayout {
         isSearchById = false;
         isSearchByFare = false;
         Optional<Long> id = null;
-        response = flightSeatClient.getAllPagesFlightSeatsDTO(currentPage, 10, id, null, null);
-        List<FlightSeatDTO> flightSeatDTOList = flightSeatClient.getAllPagesFlightSeatsDTO(null, null, id, null, null).getBody();
+        response = flightSeatClient.getAllFlightSeats(currentPage, 10, id, null, null);
+        List<FlightSeatDTO> flightSeatDTOList = flightSeatClient.getAllFlightSeats(null, null, id, null, null).getBody();
         this.maxPages = (int) Math.ceil((double) flightSeatDTOList.size() / 10);
         dataSource.addAll(response.getBody());
         grid.getDataProvider().refreshAll();
@@ -623,7 +623,7 @@ public class FlightSeatView extends VerticalLayout {
 
     private boolean isCreatedSeat(FlightSeatDTO flightSeatDTO) {
         try {
-            FlightSeatDTO savedFlightSeat = flightSeatClient.createFlightSeatDTO(flightSeatDTO).getBody();
+            FlightSeatDTO savedFlightSeat = flightSeatClient.createFlightSeat(flightSeatDTO).getBody();
             dataSource.add(savedFlightSeat);
             return true;
         } catch (FeignException.BadRequest ex) {

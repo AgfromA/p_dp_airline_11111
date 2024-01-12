@@ -19,13 +19,14 @@ import java.util.List;
 @Tag(name = "Passenger REST", description = "API для операций с пассажирами")
 @RequestMapping("/api/passengers")
 public interface PassengerRestApi {
+
     @ApiOperation(value = "Get list of all Passengers filtered")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Passenger found"),
             @ApiResponse(code = 400, message = "Passenger not found")
     })
     @GetMapping
-    ResponseEntity<List<PassengerDTO>> getAll(
+    ResponseEntity<List<PassengerDTO>> getAllPassengers(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,

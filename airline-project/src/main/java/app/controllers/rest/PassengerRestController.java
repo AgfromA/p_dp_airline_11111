@@ -2,6 +2,7 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.PassengerRestApi;
 import app.dto.PassengerDTO;
+import app.mappers.PassengerMapper;
 import app.services.interfaces.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,11 @@ import java.util.List;
 public class PassengerRestController implements PassengerRestApi {
 
     private final PassengerService passengerService;
+    private final PassengerMapper passengerMapper;
 
     @Override
-    public ResponseEntity<List<PassengerDTO>> getAll(Integer page, Integer size, String firstName, String lastName,
-                                                     String email, String serialNumberPassport) {
+    public ResponseEntity<List<PassengerDTO>> getAllPassengers(Integer page, Integer size, String firstName, String lastName,
+                                                               String email, String serialNumberPassport) {
         log.info("getAll: get all Passenger");
         if (page == null || size == null) {
             log.info("getAll: get all List Passenger");
@@ -72,7 +74,7 @@ public class PassengerRestController implements PassengerRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         }
-        return new ResponseEntity<>(new PassengerDTO(passenger.get()), HttpStatus.OK);
+        return new ResponseEntity<>(passengerMapper.convertToPassengerDTO(passenger.get()), HttpStatus.OK);
     }
 
     @Override
@@ -82,7 +84,8 @@ public class PassengerRestController implements PassengerRestApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.info("create: new passenger added");
-        return new ResponseEntity<>(new PassengerDTO(passengerService.savePassenger(passengerDTO)),
+        return new ResponseEntity<>(
+                passengerMapper.convertToPassengerDTO(passengerService.savePassenger(passengerDTO)),
                 HttpStatus.CREATED);
     }
 
@@ -90,7 +93,9 @@ public class PassengerRestController implements PassengerRestApi {
     public ResponseEntity<PassengerDTO> updateById(Long id, PassengerDTO passengerDTO) {
         passengerDTO.setId(id);
         log.info("update: update Passenger with id = {}", id);
-        return new ResponseEntity<>(new PassengerDTO(passengerService.updatePassengerById(id, passengerDTO)), HttpStatus.OK);
+        return new ResponseEntity<>(
+                passengerMapper.convertToPassengerDTO(passengerService.updatePassengerById(id, passengerDTO)),
+                HttpStatus.OK);
     }
 
     @Override

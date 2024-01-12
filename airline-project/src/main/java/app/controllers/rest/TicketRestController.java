@@ -21,7 +21,7 @@ public class TicketRestController implements TicketRestApi {
     private final TicketMapper ticketMapper;
 
     @Override
-    public ResponseEntity<List<TicketDTO>> getAllPagesTicketsDTO(Integer page, Integer size) {
+    public ResponseEntity<List<TicketDTO>> getAllTickets(Integer page, Integer size) {
         log.info("getAll: get all Tickets");
         if (page == null || size == null) {
             log.info("getAll: get all List Tickets");
@@ -50,7 +50,7 @@ public class TicketRestController implements TicketRestApi {
     }
 
     @Override
-    public ResponseEntity<TicketDTO> getTicketDTOByTicketNumber(String ticketNumber) {
+    public ResponseEntity<TicketDTO> getTicketByTicketNumber(String ticketNumber) {
         log.info("getByNumber: Ticket by ticketNumber = {}", ticketNumber);
         var ticket = ticketService.getTicketByTicketNumber(ticketNumber);
         return ticket != null
@@ -59,7 +59,7 @@ public class TicketRestController implements TicketRestApi {
     }
 
     @Override
-    public ResponseEntity<TicketDTO> createTicketDTO(TicketDTO ticketDTO) {
+    public ResponseEntity<TicketDTO> createTicket(TicketDTO ticketDTO) {
         log.info("create: new Ticket = {}", ticketDTO);
         var savedTicket = ticketService.saveTicket(ticketDTO);
         return new ResponseEntity<>(ticketMapper.convertToTicketDTO(savedTicket), HttpStatus.CREATED);

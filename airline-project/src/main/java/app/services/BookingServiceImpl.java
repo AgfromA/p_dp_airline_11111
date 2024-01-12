@@ -26,7 +26,6 @@ public class BookingServiceImpl implements BookingService {
     private final FlightSeatService flightSeatService;
     private final BookingMapper bookingMapper;
 
-
     @Override
     public List<BookingDTO> findAll() {
         return bookingMapper.convertToBookingDTOEntityList(bookingRepository.findAll());

@@ -49,7 +49,6 @@ public class PaymentServiceImpl implements PaymentService {
         return ResponseEntity.status(response.getStatusCode())
                 .header("url",url)
                 .body(paymentResponse);
-
     }
 
     @Override

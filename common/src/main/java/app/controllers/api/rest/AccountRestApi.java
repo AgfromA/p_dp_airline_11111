@@ -28,9 +28,9 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Accounts found"),
             @ApiResponse(code = 204, message = "Accounts not found")})
-    ResponseEntity<List<AccountDTO>> getPage(@ApiParam(name = "page")
+    ResponseEntity<List<AccountDTO>> getAllAccounts(@ApiParam(name = "page")
                                              @RequestParam(value = "page", required = false) Integer page,
-                                             @ApiParam(name = "size")
+                                                    @ApiParam(name = "size")
                                              @RequestParam(value = "size", required = false) Integer size);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.GET)
@@ -38,7 +38,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account found"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<AccountDTO> getAccountDTOById(
+    ResponseEntity<AccountDTO> getAccountById(
             @ApiParam(
                     name = "id",
                     value = "Account.id"
@@ -54,7 +54,7 @@ public interface AccountRestApi {
     @ApiOperation(value = "Create Account")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Account created"),
             @ApiResponse(code = 500, message = "Server error")})
-    ResponseEntity<AccountDTO> createAccountDTO(
+    ResponseEntity<AccountDTO> createAccount(
             @ApiParam(
                     name = "account",
                     value = "Account model"
@@ -68,7 +68,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account updated"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<AccountDTO> updateAccountDTOById(
+    ResponseEntity<AccountDTO> updateAccountById(
             @ApiParam(
                     name = "id",
                     value = "Account.id"

@@ -26,7 +26,7 @@ public interface DestinationRestApi {
             @ApiResponse(code = 200, message = "Destinations found"),
             @ApiResponse(code = 404, message = "Destinations not found")
     })
-    ResponseEntity<List<DestinationDTO>> getAllPagesDestinationsDTO(
+    ResponseEntity<List<DestinationDTO>> getAllDestinations(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
@@ -52,7 +52,7 @@ public interface DestinationRestApi {
     @ApiOperation(value = "Create new Destination")
     @ApiResponse(code = 201, message = "Destination created")
     @RequestMapping(value = "/api/destinations", method = RequestMethod.POST)
-    ResponseEntity<DestinationDTO> createDestinationDTO(
+    ResponseEntity<DestinationDTO> createDestination(
             @ApiParam(
                     name = "Destination",
                     value = "Destination"
@@ -62,7 +62,7 @@ public interface DestinationRestApi {
     @ApiOperation(value = "Edit Destination by id")
     @ApiResponse(code = 200, message = "Destination has been updated")
     @RequestMapping(value = "/api/destinations/{id}", method = RequestMethod.PATCH)
-    ResponseEntity<DestinationDTO> updateDestinationDTOById(
+    ResponseEntity<DestinationDTO> updateDestinationById(
             @ApiParam(
                     name = "id",
                     value = "Destination.id"
@@ -86,5 +86,4 @@ public interface DestinationRestApi {
                     required = true
             )
             @PathVariable("id") Long id);
-
 }

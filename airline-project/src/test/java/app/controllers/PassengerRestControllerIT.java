@@ -3,6 +3,7 @@ package app.controllers;
 import app.dto.PassengerDTO;
 import app.entities.Passport;
 import app.enums.Gender;
+import app.mappers.PassengerMapper;
 import app.repositories.PassengerRepository;
 import app.services.interfaces.PassengerService;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +31,8 @@ class PassengerRestControllerIT extends IntegrationTestBase {
 
     @Autowired
     private PassengerService passengerService;
+    @Autowired
+    private PassengerMapper passengerMapper;
 
     @Autowired
     private PassengerRepository passengerRepository;
@@ -91,9 +94,8 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
-                        content().json(objectMapper.writeValueAsString(new PassengerDTO(passengerService.getPassengerById(id).get())))
-                );
-
+                        content().json(objectMapper.writeValueAsString(passengerMapper.convertToPassengerDTO(
+                                passengerService.getPassengerById(id).get()))));
     }
 
     @Test
@@ -149,7 +151,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @DisplayName("Update passenger")
     void shouldUpdatePassenger() throws Exception {
         var id = 4L;
-        var passengerDTO = new PassengerDTO(passengerService.getPassengerById(4L).get());
+        var passengerDTO = passengerMapper.convertToPassengerDTO(passengerService.getPassengerById(id).get());
         passengerDTO.setFirstName("Klark");
         long numberOfPassenger = passengerRepository.count();
 

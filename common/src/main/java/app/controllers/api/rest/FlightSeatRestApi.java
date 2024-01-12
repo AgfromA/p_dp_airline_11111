@@ -29,7 +29,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "FlightSeat found"),
             @ApiResponse(code = 404, message = "FlightSeat not found")
     })
-    ResponseEntity<FlightSeatDTO> getFlightSeatDTOById(
+    ResponseEntity<FlightSeatDTO> getFlightSeatById(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id",
@@ -44,7 +44,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "flight seats found"),
             @ApiResponse(code = 404, message = "Not found")
     })
-    ResponseEntity<List<FlightSeatDTO>> getAllPagesFlightSeatsDTO(
+    ResponseEntity<List<FlightSeatDTO>> getAllFlightSeats(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
@@ -82,7 +82,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "free seats found"),
             @ApiResponse(code = 204, message = "no data found")
     })
-    ResponseEntity<List<FlightSeatDTO>> getPagesFreeSeatsById(
+    ResponseEntity<List<FlightSeatDTO>> getFreeSeatsById(
             @PageableDefault(sort = {"id"}) Pageable pageable,
             @ApiParam(
                     name = "id",
@@ -98,7 +98,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Flight with this id not found")
     })
-    ResponseEntity<Set<FlightSeatDTO>> generateAllFlightSeatsDTOByFlightId(
+    ResponseEntity<Set<FlightSeatDTO>> generateAllFlightSeatsByFlightId(
             @ApiParam(
                     name = "flightId",
                     value = "Flight.id",
@@ -113,7 +113,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "FlightSeat edited"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    ResponseEntity<FlightSeatDTO> updateFlightSeatDTOById(
+    ResponseEntity<FlightSeatDTO> updateFlightSeatById(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id",
@@ -148,7 +148,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 201, message = "Flight Seat created"),
             @ApiResponse(code = 400, message = "Flight Seat not created")
     })
-    ResponseEntity<FlightSeatDTO> createFlightSeatDTO(
+    ResponseEntity<FlightSeatDTO> createFlightSeat(
             @ApiParam(
                     name = "flightSeat",
                     value = "FlightSeat DTO"
@@ -161,5 +161,5 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "Seat found"),
             @ApiResponse(code = 404, message = "Seat not found")
     })
-    ResponseEntity<List<SeatDTO>> getAllSeatDTO();
+    ResponseEntity<List<SeatDTO>> getAllSeat();
 }

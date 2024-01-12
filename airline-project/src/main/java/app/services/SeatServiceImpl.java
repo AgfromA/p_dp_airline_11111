@@ -33,7 +33,6 @@ public class SeatServiceImpl implements SeatService {
     private final AircraftService aircraftService;
     private final FlightSeatRepository flightSeatRepository;
 
-
     @Override
     public List<SeatDTO> getAllSeats() {
         return SeatMapper.INSTANCE.convertToSeatDTOList(seatRepository.findAll());
