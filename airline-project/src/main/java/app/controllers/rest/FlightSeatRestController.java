@@ -5,8 +5,8 @@ import app.dto.FlightSeatDto;
 import app.dto.SeatDto;
 import app.enums.CategoryType;
 import app.mappers.FlightSeatMapper;
-import app.services.FlightSeatServiceImpl;
-import app.services.interfaces.FlightService;
+import app.services.FlightSeatService;
+import app.services.FlightService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FlightSeatRestController implements FlightSeatRestApi {
 
-    private final FlightSeatServiceImpl flightSeatService;
+    private final FlightSeatService flightSeatService;
     private final FlightService flightService;
 
     @Override

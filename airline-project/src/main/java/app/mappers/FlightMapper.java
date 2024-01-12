@@ -4,7 +4,7 @@ import app.dto.FlightDto;
 import app.dto.FlightSeatDto;
 import app.entities.Flight;
 import app.entities.FlightSeat;
-import app.services.interfaces.*;
+import app.services.*;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

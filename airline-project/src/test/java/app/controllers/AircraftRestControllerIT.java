@@ -3,7 +3,7 @@ package app.controllers;
 import app.dto.AircraftDto;
 import app.mappers.AircraftMapper;
 import app.repositories.AircraftRepository;
-import app.services.interfaces.AircraftService;
+import app.services.AircraftService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

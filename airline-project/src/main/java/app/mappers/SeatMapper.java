@@ -2,8 +2,8 @@ package app.mappers;
 
 import app.dto.SeatDto;
 import app.entities.Seat;
-import app.services.interfaces.AircraftService;
-import app.services.interfaces.CategoryService;
+import app.services.AircraftService;
+import app.services.CategoryService;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

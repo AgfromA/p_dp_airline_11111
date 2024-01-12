@@ -3,7 +3,7 @@ package app.controllers;
 import app.dto.TimezoneDto;
 import app.mappers.TimezoneMapper;
 import app.repositories.TimezoneRepository;
-import app.services.interfaces.TimezoneService;
+import app.services.TimezoneService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

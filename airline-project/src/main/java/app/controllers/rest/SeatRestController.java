@@ -5,8 +5,8 @@ import app.dto.SeatDto;
 
 import app.exceptions.ViolationOfForeignKeyConstraintException;
 import app.mappers.SeatMapper;
-import app.services.interfaces.AircraftService;
-import app.services.interfaces.SeatService;
+import app.services.AircraftService;
+import app.services.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;

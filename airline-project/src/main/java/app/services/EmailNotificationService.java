@@ -2,7 +2,6 @@ package app.services;
 
 import app.entities.Booking;
 import app.entities.Passenger;
-import app.services.interfaces.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;

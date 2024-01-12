@@ -4,7 +4,7 @@ import app.dto.DestinationDto;
 import app.enums.Airport;
 import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
-import app.services.interfaces.DestinationService;
+import app.services.DestinationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

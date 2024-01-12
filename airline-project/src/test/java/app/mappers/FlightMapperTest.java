@@ -4,7 +4,7 @@ import app.dto.FlightDto;
 import app.entities.*;
 import app.enums.Airport;
 import app.enums.FlightStatus;
-import app.services.interfaces.*;
+import app.services.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

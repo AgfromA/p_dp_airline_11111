@@ -3,7 +3,7 @@ package app.mappers;
 import app.dto.BookingDto;
 import app.entities.*;
 import app.enums.BookingStatus;
-import app.services.interfaces.*;
+import app.services.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

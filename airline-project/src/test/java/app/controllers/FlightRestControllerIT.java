@@ -3,7 +3,7 @@ package app.controllers;
 import app.dto.FlightDto;
 import app.enums.Airport;
 import app.enums.FlightStatus;
-import app.services.interfaces.FlightService;
+import app.services.FlightService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,7 @@ package app.controllers.rest;
 import app.controllers.api.rest.PassengerRestApi;
 import app.dto.PassengerDto;
 import app.mappers.PassengerMapper;
-import app.services.interfaces.PassengerService;
+import app.services.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -12,9 +12,9 @@ import app.mappers.FlightSeatMapper;
 import app.repositories.DestinationRepository;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
-import app.services.interfaces.FlightSeatService;
-import app.services.interfaces.FlightService;
-import app.services.interfaces.SeatService;
+import app.services.FlightSeatService;
+import app.services.FlightService;
+import app.services.SeatService;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

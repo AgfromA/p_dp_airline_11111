@@ -3,7 +3,7 @@ package app.controllers.rest;
 import app.controllers.api.rest.BookingRestApi;
 import app.dto.BookingDto;
 import app.enums.BookingStatus;
-import app.services.interfaces.BookingService;
+import app.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -3,7 +3,8 @@ package app.mappers;
 import app.dto.BookingDto;
 import app.entities.Booking;
 
-import app.services.interfaces.*;
+import app.services.FlightSeatService;
+import app.services.PassengerService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Context;

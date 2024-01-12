@@ -2,7 +2,7 @@ package app.mappers;
 
 import app.dto.ExampleDto;
 import app.entities.Example;
-import app.services.interfaces.ExampleService;
+import app.services.ExampleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

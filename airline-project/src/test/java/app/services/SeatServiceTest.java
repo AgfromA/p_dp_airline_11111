@@ -8,9 +8,9 @@ import app.enums.CategoryType;
 import app.mappers.SeatMapper;
 import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
-import app.services.interfaces.AircraftService;
-import app.services.interfaces.CategoryService;
-import app.services.interfaces.SeatService;
+import app.services.AircraftService;
+import app.services.CategoryService;
+import app.services.SeatService;
 import org.junit.Test;
 import org.springframework.data.domain.PageImpl;
 
@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SeatServiceImplTest {
+public class SeatServiceTest {
 
     private static final Long AIRCRAFT_TEST_ID = 1L;
     private static final String AIRCRAFT_TEST_MODEL = "Boeing 737-800";
@@ -35,7 +35,7 @@ public class SeatServiceImplTest {
     private final SeatMapper seatMapper = mock(SeatMapper.class);
     private final FlightSeatRepository flightSeatRepository = mock(FlightSeatRepository.class);
 
-    private final SeatService seatService = new SeatServiceImpl(
+    private final SeatService seatService = new SeatService(
             seatRepository,
             categoryService,
             aircraftService,

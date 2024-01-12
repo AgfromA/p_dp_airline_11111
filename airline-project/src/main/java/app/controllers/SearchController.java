@@ -4,7 +4,7 @@ import app.controllers.api.SearchControllerApi;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.exceptions.controller.SearchControllerException;
-import app.services.interfaces.SearchService;
+import app.services.SearchService;
 import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

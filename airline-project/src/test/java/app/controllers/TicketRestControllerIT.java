@@ -3,7 +3,7 @@ package app.controllers;
 import app.entities.Ticket;
 import app.mappers.TicketMapper;
 import app.repositories.TicketRepository;
-import app.services.interfaces.TicketService;
+import app.services.TicketService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

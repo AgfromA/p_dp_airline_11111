@@ -3,7 +3,7 @@ package app.controllers.rest;
 import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDto;
 import app.entities.Destination;
-import app.services.interfaces.DestinationService;
+import app.services.DestinationService;
 import app.util.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

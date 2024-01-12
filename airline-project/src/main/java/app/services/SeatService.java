@@ -8,9 +8,6 @@ import app.enums.seats.interfaces.AircraftSeats;
 import app.exceptions.ViolationOfForeignKeyConstraintException;
 import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
-import app.services.interfaces.AircraftService;
-import app.services.interfaces.CategoryService;
-import app.services.interfaces.SeatService;
 import app.mappers.SeatMapper;
 import org.springframework.data.domain.PageRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,20 +23,18 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
-public class SeatServiceImpl implements SeatService {
+public class SeatService {
 
     private final SeatRepository seatRepository;
     private final CategoryService categoryService;
     private final AircraftService aircraftService;
     private final FlightSeatRepository flightSeatRepository;
 
-    @Override
     public List<SeatDto> getAllSeats() {
         return SeatMapper.INSTANCE.convertToSeatList(seatRepository.findAll());
     }
 
     @Transactional
-    @Override
     public Seat saveSeat(SeatDto seatDTO) {
         var seat = SeatMapper.INSTANCE.convertToSeatEntity(seatDTO, categoryService, aircraftService);
         if (seat.getId() != 0) {
@@ -52,12 +47,10 @@ public class SeatServiceImpl implements SeatService {
         return seatRepository.saveAndFlush(seat);
     }
 
-    @Override
     public Seat getSeatById(long id) {
         return seatRepository.findById(id).orElse(null);
     }
 
-    @Override
     @Transactional
     public Seat editSeatById(Long id, SeatDto seatDTO) {
         var seat = SeatMapper.INSTANCE.convertToSeatEntity(seatDTO, categoryService, aircraftService);
@@ -74,7 +67,6 @@ public class SeatServiceImpl implements SeatService {
         return seatRepository.saveAndFlush(targetSeat);
     }
 
-    @Override
     @Transactional
     public void deleteSeatById(Long id) throws ViolationOfForeignKeyConstraintException {
         if (!(flightSeatRepository.findFlightSeatsBySeat(getSeatById(id))).isEmpty()) {
@@ -84,13 +76,11 @@ public class SeatServiceImpl implements SeatService {
         seatRepository.deleteById(id);
     }
 
-    @Override
     public Page<SeatDto> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
         return seatRepository.findByAircraftId(id, pageable)
                 .map(SeatMapper.INSTANCE::convertToSeatDtoEntity);
     }
 
-    @Override
     @Transactional
     public List<SeatDto> generateSeatsDTOByAircraftId(long aircraftId) {
 
@@ -134,7 +124,6 @@ public class SeatServiceImpl implements SeatService {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public Page<SeatDto> getAllPagesSeats(Integer page, Integer size) {
         return seatRepository.findAll(PageRequest.of(page, size))
                 .map(SeatMapper.INSTANCE::convertToSeatDtoEntity);

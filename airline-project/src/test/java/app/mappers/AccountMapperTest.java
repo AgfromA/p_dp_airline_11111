@@ -4,7 +4,7 @@ import app.dto.AccountDto;
 import app.dto.RoleDto;
 import app.entities.Account;
 import app.entities.Role;
-import app.services.interfaces.RoleService;
+import app.services.RoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

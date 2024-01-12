@@ -5,7 +5,6 @@ import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.mappers.FlightMapper;
-import app.services.interfaces.*;
 import app.util.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SearchServiceImpl implements SearchService {
+public class SearchService {
 
     private final FlightService flightService;
     private final DestinationService destinationService;
@@ -30,7 +29,6 @@ public class SearchServiceImpl implements SearchService {
 
     @Transactional
     @Loggable
-    @Override
     public SearchResult search(Airport from, Airport to, LocalDate departureDate,
                                LocalDate returnDate, Integer numberOfPassengers) {
 

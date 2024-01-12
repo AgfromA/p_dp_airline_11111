@@ -1,10 +1,8 @@
 package app.services;
 
-
 import app.dto.ExampleDto;
 import app.mappers.ExampleMapper;
 import app.repositories.ExampleRepository;
-import app.services.interfaces.ExampleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ExampleServiceImpl implements ExampleService {
+public class ExampleService {
 
     private final ExampleRepository exampleRepository;
     private final ExampleMapper exampleMapper;

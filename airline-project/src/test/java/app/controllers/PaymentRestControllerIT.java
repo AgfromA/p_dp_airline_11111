@@ -4,7 +4,7 @@ import app.clients.PaymentFeignClient;
 import app.dto.PaymentRequest;
 import app.dto.PaymentResponse;
 import app.entities.Payment;
-import app.services.interfaces.PaymentService;
+import app.services.PaymentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;

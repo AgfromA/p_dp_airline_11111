@@ -8,9 +8,9 @@ import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.enums.Airport;
 import app.enums.FlightStatus;
-import app.services.interfaces.DestinationService;
-import app.services.interfaces.FlightSeatService;
-import app.services.interfaces.FlightService;
+import app.services.DestinationService;
+import app.services.FlightSeatService;
+import app.services.FlightService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-public class SearchServiceImplTest {
+public class SearchServiceTest {
 
     @Mock
     private FlightService flightService;
@@ -40,7 +40,7 @@ public class SearchServiceImplTest {
     @Mock
     private FlightSeatService flightSeatService;
     @InjectMocks
-    private SearchServiceImpl searchService;
+    private SearchService searchService;
 
     @DisplayName("1 search(), Positive test search 1 direct depart flight and 0 return flights")
     @Test

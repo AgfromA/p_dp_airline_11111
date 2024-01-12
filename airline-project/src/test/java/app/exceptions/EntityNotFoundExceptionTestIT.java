@@ -2,7 +2,7 @@ package app.exceptions;
 
 import app.controllers.IntegrationTestBase;
 import app.mappers.TicketMapper;
-import app.services.interfaces.TicketService;
+import app.services.TicketService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

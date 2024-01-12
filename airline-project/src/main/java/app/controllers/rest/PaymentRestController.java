@@ -4,7 +4,7 @@ import app.controllers.api.rest.PaymentRestApi;
 import app.dto.PaymentRequest;
 import app.dto.PaymentResponse;
 import app.entities.Payment;
-import app.services.interfaces.PaymentService;
+import app.services.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

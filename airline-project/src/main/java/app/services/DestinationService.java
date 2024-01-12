@@ -5,7 +5,6 @@ import app.entities.Destination;
 import app.enums.Airport;
 import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
-import app.services.interfaces.DestinationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,22 +15,19 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DestinationServiceImpl implements DestinationService {
+public class DestinationService {
 
     private final DestinationRepository destinationRepository;
     private final DestinationMapper destinationMapper;
 
-    @Override
     public List<DestinationDto> getAllDestinationDTO() {
         return destinationMapper.convertToDestinationDtoList(destinationRepository.findAll());
     }
 
-    @Override
     public Page<DestinationDto> getAllDestinations(Integer page, Integer size) {
         return destinationRepository.findAll(PageRequest.of(page, size)).map(destinationMapper::convertToDestinationDtoEntity);
     }
 
-    @Override
     public Page<DestinationDto> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
         if (cityName != null && !cityName.isEmpty()) {
             return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName)
@@ -45,14 +41,12 @@ public class DestinationServiceImpl implements DestinationService {
         }
     }
 
-    @Override
     @Transactional
     public DestinationDto saveDestination(DestinationDto destinationDTO) {
         var destination = destinationMapper.convertToDestinationEntity(destinationDTO);
         return destinationMapper.convertToDestinationDtoEntity(destinationRepository.save(destination));
     }
 
-    @Override
     @Transactional
     public void updateDestinationById(Long id, DestinationDto destinationDTO) {
         var destination = destinationMapper.convertToDestinationEntity(destinationDTO);
@@ -60,17 +54,14 @@ public class DestinationServiceImpl implements DestinationService {
         destinationRepository.save(destination);
     }
 
-    @Override
     public DestinationDto getDestinationById(Long id) {
         return destinationMapper.convertToDestinationDtoEntity(destinationRepository.findById(id).orElse(null));
     }
 
-    @Override
     public Destination getDestinationByAirportCode(Airport airportCode) {
         return destinationRepository.findDestinationByAirportCode(airportCode).orElse(null);
     }
 
-    @Override
     public void deleteDestinationById(Long id) {
         destinationRepository.deleteById(id);
     }

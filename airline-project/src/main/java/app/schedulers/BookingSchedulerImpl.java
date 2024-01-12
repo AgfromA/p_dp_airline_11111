@@ -1,7 +1,7 @@
 package app.schedulers;
 
 import app.schedulers.interfaces.BookingScheduler;
-import app.services.interfaces.BookingService;
+import app.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,6 @@ package app.services;
 
 import app.controllers.domain.JwtRequest;
 import app.controllers.domain.JwtResponse;
-import app.services.interfaces.AccountService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +18,7 @@ public class AuthService {
 
     private static final String USER_NOT_FOUND_MESSAGE = "Пользователь не найден";
 
-    private final AccountService accountService;
+    private final AccountServiceImpl accountService;
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JwtProviderFull jwtProvider;
     private final PasswordEncoder encoder;

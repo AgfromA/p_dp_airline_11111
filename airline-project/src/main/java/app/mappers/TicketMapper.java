@@ -2,9 +2,9 @@ package app.mappers;
 
 import app.dto.TicketDto;
 import app.entities.Ticket;
-import app.services.interfaces.FlightSeatService;
-import app.services.interfaces.FlightService;
-import app.services.interfaces.PassengerService;
+import app.services.FlightSeatService;
+import app.services.FlightService;
+import app.services.PassengerService;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

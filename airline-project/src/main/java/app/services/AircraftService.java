@@ -6,7 +6,6 @@ import app.entities.Flight;
 import app.mappers.AircraftMapper;
 import app.repositories.AircraftRepository;
 import app.repositories.FlightRepository;
-import app.services.interfaces.AircraftService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,19 +16,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AircraftServiceImpl implements AircraftService {
+public class AircraftService  {
 
     private final AircraftRepository aircraftRepository;
     private final FlightRepository flightRepository;
     private final AircraftMapper aircraftMapper;
 
-    @Override
     public List<AircraftDto> findAll() {
         return aircraftMapper.convertToAircarftDTOList(aircraftRepository.findAll());
     }
 
     @Transactional
-    @Override
     public AircraftDto saveAircraft(AircraftDto aircraftDTO) {
         var aircraft = aircraftMapper.convertToAircraftEntity(aircraftDTO);
         if (!aircraft.getSeatSet().isEmpty()) {
@@ -38,24 +35,20 @@ public class AircraftServiceImpl implements AircraftService {
         return aircraftMapper.convertToAircarftDTOEntity(aircraftRepository.save(aircraft));
     }
 
-    @Override
     public Page<AircraftDto> getPage(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return aircraftRepository.findAll(pageRequest).map(aircraftMapper::convertToAircarftDTOEntity);
     }
 
-    @Override
     public Aircraft getAircraftById(Long id) {
         return aircraftRepository.findById(id).orElse(null);
     }
 
-    @Override
     public Aircraft getAircraftByAircraftNumber(String aircraftNumber) {
         return aircraftRepository.findByAircraftNumber(aircraftNumber);
     }
 
     @Transactional
-    @Override
     public void deleteAircraftById(Long id) {
         List<Flight> flightSet = flightRepository.findByAircraft_Id(id);
         if (flightSet != null) {

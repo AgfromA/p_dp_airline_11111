@@ -2,8 +2,8 @@ package app.controllers;
 
 import app.dto.AccountDto;
 import app.repositories.AccountRepository;
-import app.services.interfaces.AccountService;
-import app.services.interfaces.RoleService;
+import app.services.AccountService;
+import app.services.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

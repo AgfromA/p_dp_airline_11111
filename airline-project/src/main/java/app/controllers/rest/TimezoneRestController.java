@@ -4,7 +4,7 @@ import app.controllers.api.rest.TimezoneRestApi;
 import app.dto.TimezoneDto;
 import app.entities.Timezone;
 import app.mappers.TimezoneMapper;
-import app.services.interfaces.TimezoneService;
+import app.services.TimezoneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;

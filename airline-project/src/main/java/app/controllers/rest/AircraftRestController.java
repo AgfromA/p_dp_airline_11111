@@ -6,7 +6,7 @@ import app.mappers.AircraftMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import app.services.interfaces.AircraftService;
+import app.services.AircraftService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

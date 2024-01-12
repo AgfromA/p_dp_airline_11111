@@ -9,10 +9,6 @@ import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.repositories.PassengerRepository;
 import app.repositories.TicketRepository;
-import app.services.interfaces.FlightSeatService;
-import app.services.interfaces.FlightService;
-import app.services.interfaces.PassengerService;
-import app.services.interfaces.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TicketServiceImpl implements TicketService {
+public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final PassengerRepository passengerRepository;
@@ -34,29 +30,24 @@ public class TicketServiceImpl implements TicketService {
     private final FlightService flightService;
     private final FlightSeatService flightSeatService;
 
-    @Override
     public List<TicketDto> getAllTickets() {
         return ticketMapper.convertToTicketDtoList(ticketRepository.findAll());
     }
 
-    @Override
     public Page<TicketDto> getAllTickets(int page, int size) {
         return ticketRepository.findAll(PageRequest.of(page, size))
                 .map(ticketMapper::convertToTicketDto);
     }
 
-    @Override
     public Ticket getTicketByTicketNumber(String ticketNumber) {
         return ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
     }
 
-    @Override
     @Transactional
     public void deleteTicketById(Long id) {
         ticketRepository.deleteById(id);
     }
 
-    @Override
     @Transactional
     public Ticket saveTicket(TicketDto timezoneDto) {
         if (passengerService.getPassengerById(timezoneDto.getPassengerId()).isEmpty()) {
@@ -82,7 +73,6 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.save(ticket);
     }
 
-    @Override
     @Transactional
     public Ticket updateTicketById(Long id, TicketDto timezoneDto) {
         var updatedTicket = ticketMapper.convertToTicketEntity(timezoneDto, passengerService, flightService, flightSeatService);
@@ -102,18 +92,15 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.save(updatedTicket);
     }
 
-    @Override
     public long[] getArrayOfFlightSeatIdByPassengerId(long passengerId) {
         return ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId);
     }
 
-    @Override
     @Transactional
     public void deleteTicketByPassengerId(long passengerId) {
         ticketRepository.deleteTicketByPassengerId(passengerId);
     }
 
-    @Override
     public List<Ticket> findByFlightId(Long id) {
         return ticketRepository.findByFlightId(id);
     }

@@ -5,7 +5,7 @@ import app.enums.Airport;
 import app.enums.CategoryType;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
-import app.services.interfaces.FlightService;
+import app.services.FlightService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FlightSeatServiceImplTest {
+class FlightSeatServiceTest {
 
     @Mock
     FlightSeatRepository flightSeatRepository;
@@ -33,7 +33,7 @@ class FlightSeatServiceImplTest {
     FlightService flightService;
 
     @InjectMocks
-    FlightSeatServiceImpl flightSeatService;
+    FlightSeatService flightSeatService;
 
     @Test
     void addFlightSeatsByFlightNumber() {

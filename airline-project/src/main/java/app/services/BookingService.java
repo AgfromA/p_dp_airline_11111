@@ -6,7 +6,6 @@ import app.enums.BookingStatus;
 import app.exceptions.FlightSeatIsBookedException;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
-import app.services.interfaces.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,20 +18,18 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class BookingServiceImpl implements BookingService {
+public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final PassengerService passengerService;
     private final FlightSeatService flightSeatService;
     private final BookingMapper bookingMapper;
 
-    @Override
     public List<BookingDto> findAll() {
         return bookingMapper.convertToBookingDtoEntityList(bookingRepository.findAll());
     }
 
     @Transactional
-    @Override
     public BookingDto saveBooking(BookingDto bookingDto) {
         var booking = bookingMapper
                 .convertToBookingEntity(bookingDto, passengerService, flightSeatService);
@@ -55,33 +52,27 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.convertToBookingDtoEntity(bookingRepository.save(booking));
     }
 
-    @Override
     public Page<BookingDto> getAllBookings(Integer page, Integer size) {
         return bookingRepository.findAll(PageRequest.of(page, size)).map(bookingMapper::convertToBookingDtoEntity);
     }
 
-    @Override
     public BookingDto getBookingById(Long id) {
         return bookingMapper.convertToBookingDtoEntity(bookingRepository.findById(id).orElse(null));
     }
 
     @Transactional
-    @Override
     public void deleteBookingById(Long id) {
         bookingRepository.deleteById(id);
     }
 
-    @Override
     public List<Booking> getAllBookingsForEmailNotification(LocalDateTime departureIn, LocalDateTime gap) {
         return bookingRepository.getAllBooksForEmailNotification(departureIn, gap);
     }
 
-    @Override
     public BookingDto getBookingByNumber(String number) {
         return bookingMapper.convertToBookingDtoEntity(bookingRepository.findByBookingNumber(number).orElse(null));
     }
 
-    @Override
     @Transactional
     public void deleteBookingByPassengerId(long passengerId) {
         bookingRepository.deleteBookingByPassengerId(passengerId);
@@ -91,7 +82,6 @@ public class BookingServiceImpl implements BookingService {
         return UUID.randomUUID().toString().substring(0, 9);
     }
 
-    @Override
     @Transactional
     public void updateBookingAndFlightSeatStatusIfExpired() {
         List<Booking> bookingList = bookingRepository.findByBookingStatusAndCreateTime(BookingStatus.NOT_PAID,

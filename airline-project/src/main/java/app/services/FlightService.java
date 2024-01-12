@@ -6,7 +6,6 @@ import app.entities.Flight;
 import app.mappers.FlightMapper;
 import app.repositories.*;
 import app.enums.Airport;
-import app.services.interfaces.*;
 import app.util.aop.Loggable;
 import net.sf.geographiclib.Geodesic;
 import net.sf.geographiclib.GeodesicData;
@@ -26,7 +25,7 @@ import java.util.regex.Pattern;
 
 @Service
 @Transactional
-public class FlightServiceImpl implements FlightService {
+public class FlightService {
 
     private final FlightRepository flightRepository;
     private final AircraftService aircraftService;
@@ -36,9 +35,9 @@ public class FlightServiceImpl implements FlightService {
     private final FlightMapper flightMapper;
     private final Pattern LAT_LONG_PATTERN = Pattern.compile("([-+]?\\d{1,2}\\.\\d+),\\s+([-+]?\\d{1,3}\\.\\d+)");
 
-    public FlightServiceImpl(FlightRepository flightRepository, AircraftService aircraftService,
-                             DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
-                             @Lazy TicketService ticketService, FlightMapper flightMapper, SeatService seatService) {
+    public FlightService(FlightRepository flightRepository, AircraftService aircraftService,
+                         DestinationService destinationService, @Lazy FlightSeatService flightSeatService,
+                         @Lazy TicketService ticketService, FlightMapper flightMapper, SeatService seatService) {
         this.flightRepository = flightRepository;
         this.aircraftService = aircraftService;
         this.destinationService = destinationService;
@@ -47,28 +46,24 @@ public class FlightServiceImpl implements FlightService {
         this.flightMapper = flightMapper;
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public List<FlightDto> getAllListFlights() {
         return flightMapper.convertFlightListToFlighDtotList(flightRepository.findAll(), this);
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public Page<FlightDto> getAllFlights(Pageable pageable) {
         return flightRepository.findAll(pageable).map(flight -> flightMapper.flightToFlightDto(flight, this));
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public Flight getFlightByCode(String code) {
         return flightRepository.getByCode(code);
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public Page<FlightDto> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo,
@@ -78,7 +73,6 @@ public class FlightServiceImpl implements FlightService {
                 .map(flight -> flightMapper.flightToFlightDto(flight, this));
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public List<Flight> getFlightsByDestinationsAndDepartureDate(Destination from, Destination to,
@@ -86,7 +80,6 @@ public class FlightServiceImpl implements FlightService {
         return flightRepository.getByFromAndToAndDepartureDate(from, to, departureDate);
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo
@@ -95,14 +88,12 @@ public class FlightServiceImpl implements FlightService {
                 , departureDate);
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public List<Flight> getListNonDirectFlightsByFromAndToAndDepartureDate(int airportIdFrom, int airportIdTo, Date departureDate) {
         return flightRepository.getListNonDirectFlightsByFromAndToAndDepartureDate(airportIdFrom, airportIdTo, departureDate);
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public FlightDto getFlightByIdAndDates(Long id, String start, String finish) {
@@ -114,21 +105,18 @@ public class FlightServiceImpl implements FlightService {
         return null;
     }
 
-    @Override
     @Transactional(readOnly = true)
     @Loggable
     public Optional<Flight> getFlightById(Long id) {
         return flightRepository.findById(id);
     }
 
-    @Override
     public FlightDto saveFlight(FlightDto flightDto) {
         var savedFlight = flightRepository.save(flightMapper.flightDtotoFlight(flightDto, aircraftService,
                 destinationService, ticketService, flightSeatService));
         return flightMapper.flightToFlightDto(savedFlight, this);
     }
 
-    @Override
     @Loggable
     public FlightDto updateFlight(Long id, FlightDto flightDto) {
         var updatedFlight = flightRepository.saveAndFlush(flightMapper.flightDtotoFlight(flightDto, aircraftService,
@@ -136,13 +124,11 @@ public class FlightServiceImpl implements FlightService {
         return flightMapper.flightToFlightDto(updatedFlight, this);
     }
 
-    @Override
     @Loggable
     public void deleteFlightById(Long id) {
         flightRepository.deleteById(id);
     }
 
-    @Override
     @Loggable
     public Long getDistance(Flight flight) {
         Geodesic geodesic = Geodesic.WGS84;

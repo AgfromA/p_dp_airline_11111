@@ -3,7 +3,7 @@ package app.controllers.rest;
 import app.controllers.api.rest.TicketRestApi;
 import app.dto.TicketDto;
 import app.mappers.TicketMapper;
-import app.services.interfaces.TicketService;
+import app.services.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

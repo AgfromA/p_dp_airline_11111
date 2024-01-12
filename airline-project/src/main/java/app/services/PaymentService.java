@@ -7,8 +7,6 @@ import app.entities.Payment;
 import app.enums.State;
 import app.mappers.PaymentMapper;
 import app.repositories.PaymentRepository;
-import app.services.interfaces.BookingService;
-import app.services.interfaces.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,18 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PaymentServiceImpl implements PaymentService {
+public class PaymentService {
 
     private final PaymentFeignClient paymentFeignClient;
     private final PaymentRepository paymentRepository;
     private final BookingService bookingService;
     private final PaymentMapper paymentMapper;
 
-    @Override
     @Transactional
     public ResponseEntity<PaymentResponse> createPayment(PaymentRequest paymentRequest) {
         paymentRequest.getBookingsId().forEach(id -> {
@@ -51,17 +47,14 @@ public class PaymentServiceImpl implements PaymentService {
                 .body(paymentResponse);
     }
 
-    @Override
     public List<Payment> getAllPayments() {
         return paymentRepository.findAll();
     }
 
-    @Override
     public Payment getPaymentById(long id) {
         return paymentRepository.findById(id).orElse(null);
     }
 
-    @Override
     @Transactional(readOnly = true)
     public Page<Payment> pagePagination(int page, int count) {
         return paymentRepository.findAll(PageRequest.of(page, count));

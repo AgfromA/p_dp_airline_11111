@@ -3,7 +3,7 @@ package app.services;
 import app.entities.Destination;
 import app.entities.Flight;
 import app.enums.Airport;
-import app.services.interfaces.*;
+import app.services.*;
 import org.junit.Test;
 
 
@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @ExtendWith(MockitoExtension.class)
-public class FlightServiceImplTest {
+public class FlightServiceTest {
 
-    private final FlightService flightService = new FlightServiceImpl(null
+    private final FlightService flightService = new FlightService(null
             , null
             , null
             , null

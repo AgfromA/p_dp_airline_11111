@@ -3,8 +3,6 @@ package app.services;
 import app.dto.AccountDto;
 import app.mappers.AccountMapper;
 import app.repositories.AccountRepository;
-import app.services.interfaces.AccountService;
-import app.services.interfaces.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,19 +16,17 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AccountServiceImpl implements AccountService {
+public class AccountService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder encoder;
     private final RoleService roleService;
     private final AccountMapper accountMapper;
 
-    @Override
     public List<AccountDto> findAll() {
         return accountMapper.convertToAccountDtoList(accountRepository.findAll());
     }
 
-    @Override
     public AccountDto saveAccount(AccountDto accountDTO) {
         accountDTO.setPassword(encoder.encode(accountDTO.getPassword()));
         accountDTO.setRoles(roleService.saveRolesToUser(accountDTO));
@@ -41,7 +37,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.convertToAccountDto(accountRepository.saveAndFlush(account));
     }
 
-    @Override
     public Optional<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
         Optional<AccountDto> optionalSavedAccount = getAccountById(id);
         AccountDto savedAccount;
@@ -69,25 +64,21 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Transactional(readOnly = true)
-    @Override
     public Page<AccountDto> getPage(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return accountRepository.findAll(pageRequest).map(accountMapper::convertToAccountDto);
     }
 
     @Transactional(readOnly = true)
-    @Override
     public Optional<AccountDto> getAccountById(Long id) {
         return accountRepository.findById(id).map(accountMapper::convertToAccountDto);
     }
 
     @Transactional(readOnly = true)
-    @Override
     public AccountDto getAccountByEmail(String email) {
         return accountMapper.convertToAccountDto(accountRepository.getAccountByEmail(email));
     }
 
-    @Override
     public Optional<AccountDto> deleteAccountById(Long id) {
 
         Optional<AccountDto> optionalSavedAccount = getAccountById(id);
