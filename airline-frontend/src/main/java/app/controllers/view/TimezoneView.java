@@ -2,7 +2,7 @@ package app.controllers.view;
 
 import app.clients.TimezoneClient;
 
-import app.dto.TimezoneDTO;
+import app.dto.TimezoneDto;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -29,10 +29,10 @@ import java.util.List;
 @Route(value = "timezones", layout = MainLayout.class)
 public class TimezoneView extends VerticalLayout {
 
-    private final Grid<TimezoneDTO> grid = new Grid<>(TimezoneDTO.class, false);
-    private final Editor<TimezoneDTO> editor = grid.getEditor();
+    private final Grid<TimezoneDto> grid = new Grid<>(TimezoneDto.class, false);
+    private final Editor<TimezoneDto> editor = grid.getEditor();
     private final TimezoneClient timezoneClient;
-    private final List<TimezoneDTO> dataSource;
+    private final List<TimezoneDto> dataSource;
 
     private Integer currentPage;
     private Button nextButton = new Button("Next", VaadinIcon.ARROW_RIGHT.create());
@@ -45,23 +45,23 @@ public class TimezoneView extends VerticalLayout {
         currentPage = 0;
         var response = timezoneClient.getAllTimezones(currentPage, 10);
         dataSource = response.getBody();
-        List<TimezoneDTO> timezoneDTOList = timezoneClient.getAllTimezones(null, null).getBody();
-        maxPages = (int) Math.ceil((double) timezoneDTOList.size() / 10);
+        List<TimezoneDto> timezoneDtoList = timezoneClient.getAllTimezones(null, null).getBody();
+        maxPages = (int) Math.ceil((double) timezoneDtoList.size() / 10);
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 
 
-        Grid.Column<TimezoneDTO> idColumn = createIdColumn();
-        Grid.Column<TimezoneDTO> countryNameColumn = createCountryNameColumn();
-        Grid.Column<TimezoneDTO> cityNameColumn = createCityNameColumn();
-        Grid.Column<TimezoneDTO> gmtColumn = createGMTColumn();
-        Grid.Column<TimezoneDTO> gmtWinterColumn = createGMTWinterColumn();
-        Grid.Column<TimezoneDTO> updateColumn = createEditColumn();
+        Grid.Column<TimezoneDto> idColumn = createIdColumn();
+        Grid.Column<TimezoneDto> countryNameColumn = createCountryNameColumn();
+        Grid.Column<TimezoneDto> cityNameColumn = createCityNameColumn();
+        Grid.Column<TimezoneDto> gmtColumn = createGMTColumn();
+        Grid.Column<TimezoneDto> gmtWinterColumn = createGMTWinterColumn();
+        Grid.Column<TimezoneDto> updateColumn = createEditColumn();
         createDeleteColumn();
 
 
-        Binder<TimezoneDTO> binder = createBinder();
+        Binder<TimezoneDto> binder = createBinder();
 
         createIdField(binder, idValidationMessage, idColumn);
         createCountryNameField(binder, exampleTextValidationMessage, countryNameColumn);
@@ -112,32 +112,32 @@ public class TimezoneView extends VerticalLayout {
 
     private void refreshGrid() {
         dataSource.clear();
-        List<TimezoneDTO> newData = timezoneClient.getAllTimezones(currentPage, 10).getBody();
+        List<TimezoneDto> newData = timezoneClient.getAllTimezones(currentPage, 10).getBody();
         dataSource.addAll(newData);
         grid.getDataProvider().refreshAll();
     }
 
-    private Grid.Column<TimezoneDTO> createIdColumn() {
-        return grid.addColumn(timezoneDTO -> timezoneDTO.getId().intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
+    private Grid.Column<TimezoneDto> createIdColumn() {
+        return grid.addColumn(timezoneDto -> timezoneDto.getId().intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
     }
 
-    private Grid.Column<TimezoneDTO> createCountryNameColumn() {
-        return grid.addColumn(TimezoneDTO::getCountryName).setHeader("Country").setWidth("50px");
+    private Grid.Column<TimezoneDto> createCountryNameColumn() {
+        return grid.addColumn(TimezoneDto::getCountryName).setHeader("Country").setWidth("50px");
     }
 
-    private Grid.Column<TimezoneDTO> createCityNameColumn() {
-        return grid.addColumn(TimezoneDTO::getCityName).setHeader("City").setWidth("50px");
+    private Grid.Column<TimezoneDto> createCityNameColumn() {
+        return grid.addColumn(TimezoneDto::getCityName).setHeader("City").setWidth("50px");
     }
 
-    private Grid.Column<TimezoneDTO> createGMTColumn() {
-        return grid.addColumn(TimezoneDTO::getGmt).setHeader("GMT").setWidth("50px");
+    private Grid.Column<TimezoneDto> createGMTColumn() {
+        return grid.addColumn(TimezoneDto::getGmt).setHeader("GMT").setWidth("50px");
     }
 
-    private Grid.Column<TimezoneDTO> createGMTWinterColumn() {
-        return grid.addColumn(TimezoneDTO::getGmtWinter).setHeader("GMT Winter").setWidth("50px");
+    private Grid.Column<TimezoneDto> createGMTWinterColumn() {
+        return grid.addColumn(TimezoneDto::getGmtWinter).setHeader("GMT Winter").setWidth("50px");
     }
 
-    private Grid.Column<TimezoneDTO> createEditColumn() {
+    private Grid.Column<TimezoneDto> createEditColumn() {
         return grid.addComponentColumn(example -> {
             Button updateButton = new Button("Update");
             updateButton.addClickListener(e -> {
@@ -149,14 +149,14 @@ public class TimezoneView extends VerticalLayout {
         });
     }
 
-    private Grid.Column<TimezoneDTO> createDeleteColumn() {
+    private Grid.Column<TimezoneDto> createDeleteColumn() {
         return grid.addComponentColumn(example -> {
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
-                    ListDataProvider<TimezoneDTO> dataProvider = (ListDataProvider<TimezoneDTO>) grid.getDataProvider();
+                    ListDataProvider<TimezoneDto> dataProvider = (ListDataProvider<TimezoneDto>) grid.getDataProvider();
                     timezoneClient.deleteTimezoneById(example.getId());
                     dataProvider.getItems().remove(example);
                 }
@@ -166,16 +166,16 @@ public class TimezoneView extends VerticalLayout {
         }).setWidth("150px").setFlexGrow(0);
     }
 
-    private Binder<TimezoneDTO> createBinder() {
-        Binder<TimezoneDTO> binder = new Binder<>(TimezoneDTO.class);
+    private Binder<TimezoneDto> createBinder() {
+        Binder<TimezoneDto> binder = new Binder<>(TimezoneDto.class);
         editor.setBinder(binder);
         editor.setBuffered(true);
         return binder;
     }
 
-    private void createIdField(Binder<TimezoneDTO> binder,
+    private void createIdField(Binder<TimezoneDto> binder,
                                ValidationMessage idValidationMessage,
-                               Grid.Column<TimezoneDTO> idColumn) {
+                               Grid.Column<TimezoneDto> idColumn) {
         IntegerField idField = new IntegerField();
         idField.setWidthFull();
         binder.forField(idField)
@@ -186,59 +186,59 @@ public class TimezoneView extends VerticalLayout {
         idColumn.setEditorComponent(idField);
     }
 
-    private void createCountryNameField(Binder<TimezoneDTO> binder,
+    private void createCountryNameField(Binder<TimezoneDto> binder,
                                         ValidationMessage exampleTextValidationMessage,
-                                        Grid.Column<TimezoneDTO> exampleTextColumn) {
+                                        Grid.Column<TimezoneDto> exampleTextColumn) {
         TextField countryNameFiled = new TextField();
         countryNameFiled.setWidthFull();
         binder.forField(countryNameFiled).asRequired("Country name text must not be empty")
                 .withStatusLabel(exampleTextValidationMessage)
                 .withValidator(number -> number.length() >= 2 && number.length() <= 15,
                         "Country name must be between 2 and 15 characters")
-                .bind(TimezoneDTO::getCountryName, TimezoneDTO::setCountryName);
+                .bind(TimezoneDto::getCountryName, TimezoneDto::setCountryName);
         exampleTextColumn.setEditorComponent(countryNameFiled);
 
     }
 
 
-    private void createCityNameField(Binder<TimezoneDTO> binder,
+    private void createCityNameField(Binder<TimezoneDto> binder,
                                      ValidationMessage exampleTextValidationMessage,
-                                     Grid.Column<TimezoneDTO> exampleTextColumn) {
+                                     Grid.Column<TimezoneDto> exampleTextColumn) {
         TextField cityNameField = new TextField();
         cityNameField.setWidthFull();
         binder.forField(cityNameField).asRequired("City name text must not be empty")
                 .withStatusLabel(exampleTextValidationMessage)
                 .withValidator(number -> number.length() >= 2 && number.length() <= 15,
                         "City name must be between 2 and 15 characters")
-                .bind(TimezoneDTO::getCityName, TimezoneDTO::setCityName);
+                .bind(TimezoneDto::getCityName, TimezoneDto::setCityName);
         exampleTextColumn.setEditorComponent(cityNameField);
 
     }
 
-    private void createGMTField(Binder<TimezoneDTO> binder,
+    private void createGMTField(Binder<TimezoneDto> binder,
                                 ValidationMessage exampleTextValidationMessage,
-                                Grid.Column<TimezoneDTO> exampleTextColumn) {
+                                Grid.Column<TimezoneDto> exampleTextColumn) {
         TextField gmtField = new TextField();
         gmtField.setWidthFull();
         binder.forField(gmtField).asRequired("GMT must not be empty")
                 .withStatusLabel(exampleTextValidationMessage)
                 .withValidator(number -> number.length() >= 2 && number.length() <= 15,
                         "GMT name must be between 4 and 7 characters")
-                .bind(TimezoneDTO::getGmt, TimezoneDTO::setGmt);
+                .bind(TimezoneDto::getGmt, TimezoneDto::setGmt);
         exampleTextColumn.setEditorComponent(gmtField);
 
     }
 
-    private void createGMTWinterField(Binder<TimezoneDTO> binder,
+    private void createGMTWinterField(Binder<TimezoneDto> binder,
                                       ValidationMessage exampleTextValidationMessage,
-                                      Grid.Column<TimezoneDTO> exampleTextColumn) {
+                                      Grid.Column<TimezoneDto> exampleTextColumn) {
         TextField gmtWinterField = new TextField();
         gmtWinterField.setWidthFull();
         binder.forField(gmtWinterField).asRequired("GMT Winter must not be empty")
                 .withStatusLabel(exampleTextValidationMessage)
                 .withValidator(number -> number.length() >= 2 && number.length() <= 15,
                         "GMT name must be between 4 and 7 characters")
-                .bind(TimezoneDTO::getGmtWinter, TimezoneDTO::setGmtWinter);
+                .bind(TimezoneDto::getGmtWinter, TimezoneDto::setGmtWinter);
         exampleTextColumn.setEditorComponent(gmtWinterField);
 
     }
@@ -307,12 +307,12 @@ public class TimezoneView extends VerticalLayout {
         formLayout.add(gmtField, createButton);
         formLayout.add(gmtWinterField, createButton);
         createButton.addClickListener(event -> {
-            TimezoneDTO timezoneDTO = new TimezoneDTO();
-            timezoneDTO.setCountryName(countryNameField.getValue());
-            timezoneDTO.setCityName(cityNameField.getValue());
-            timezoneDTO.setGmt(gmtField.getValue());
-            timezoneDTO.setGmtWinter(gmtWinterField.getValue());
-            timezoneClient.createTimezone(timezoneDTO);
+            TimezoneDto timezoneDto = new TimezoneDto();
+            timezoneDto.setCountryName(countryNameField.getValue());
+            timezoneDto.setCityName(cityNameField.getValue());
+            timezoneDto.setGmt(gmtField.getValue());
+            timezoneDto.setGmtWinter(gmtWinterField.getValue());
+            timezoneClient.createTimezone(timezoneDto);
             countryNameField.clear();
             cityNameField.clear();
             gmtField.clear();

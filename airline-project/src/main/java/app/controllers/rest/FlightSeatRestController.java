@@ -1,8 +1,8 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.FlightSeatRestApi;
-import app.dto.FlightSeatDTO;
-import app.dto.SeatDTO;
+import app.dto.FlightSeatDto;
+import app.dto.SeatDto;
 import app.enums.CategoryType;
 import app.mappers.FlightSeatMapper;
 import app.services.FlightSeatServiceImpl;
@@ -28,7 +28,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     private final FlightService flightService;
 
     @Override
-    public ResponseEntity<List<FlightSeatDTO>> getAllFlightSeats(Integer page, Integer size,
+    public ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(Integer page, Integer size,
                                                                  Optional<Long> flightId,
                                                                  Boolean isSold,
                                                                  Boolean isRegistered) {
@@ -41,7 +41,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Page<FlightSeatDTO> seats;
+        Page<FlightSeatDto> seats;
         Pageable pageable = PageRequest.of(page, size);
 
         if (flightId.isEmpty() && isSold == null && isRegistered == null) {
@@ -65,7 +65,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
                 : new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<List<FlightSeatDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<FlightSeatDto>> createUnPagedResponse() {
         var seats = flightSeatService.getAllListFlightSeats();
         if (!seats.isEmpty()) {
             log.info("getAll List : found {} Flight Seats", seats.size());
@@ -77,22 +77,22 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<List<FlightSeatDTO>> getFreeSeatsById(Pageable pageable, Long id) {
+    public ResponseEntity<List<FlightSeatDto>> getFreeSeatsById(Pageable pageable, Long id) {
         log.info("getFreeSeats: get free seats on Flight with id = {}", id);
         var seats = flightSeatService.getFreeSeatsById(pageable, id);
         return ResponseEntity.ok(seats.getContent());
     }
 
     @Override
-    public ResponseEntity<FlightSeatDTO> getFlightSeatById(Long id) {
+    public ResponseEntity<FlightSeatDto> getFlightSeatById(Long id) {
         log.info("get: FlightSeat by id={}", id);
         return (flightSeatService.getFlightSeatById(id).isEmpty()) ?
                 ResponseEntity.notFound().build() :
-                ResponseEntity.ok(FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(flightSeatService.getFlightSeatById(id).get(), flightService));
+                ResponseEntity.ok(FlightSeatMapper.INSTANCE.convertToFlightSeatDtoEntity(flightSeatService.getFlightSeatById(id).get(), flightService));
     }
 
     @Override
-    public ResponseEntity<List<FlightSeatDTO>> getCheapestByFlightIdAndSeatCategory(Long flightID, CategoryType category) {
+    public ResponseEntity<List<FlightSeatDto>> getCheapestByFlightIdAndSeatCategory(Long flightID, CategoryType category) {
         log.info("getCheapestByFlightIdAndSeatCategory: get FlightSeats by flight ID = {} and seat category = {}", flightID, category);
         var flightSeats = flightSeatService.getCheapestFlightSeatsByFlightIdAndSeatCategory(flightID, category);
         if (flightSeats.isEmpty()) {
@@ -103,7 +103,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<Set<FlightSeatDTO>> generateAllFlightSeatsByFlightId(Long flightId) {
+    public ResponseEntity<Set<FlightSeatDto>> generateAllFlightSeatsByFlightId(Long flightId) {
         log.info("generate: FlightSeats by flightId. flightId={}", flightId);
         var flightSeats = flightSeatService.getFlightSeatsByFlightId(flightId);
         if (!flightSeats.isEmpty()) {
@@ -111,18 +111,18 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         }
         return new ResponseEntity<>(flightSeatService.addFlightSeatsByFlightId(flightId)
                 .stream()
-                .map(f -> FlightSeatMapper.INSTANCE.convertToFlightSeatDTOEntity(f, flightService))
+                .map(f -> FlightSeatMapper.INSTANCE.convertToFlightSeatDtoEntity(f, flightService))
                 .collect(Collectors.toSet()),
                 HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<FlightSeatDTO> updateFlightSeatById(Long id, FlightSeatDTO flightSeatDTO) {
+    public ResponseEntity<FlightSeatDto> updateFlightSeatById(Long id, FlightSeatDto flightSeatDto) {
         log.info("update: FlightSeat by id={}", id);
         if (flightSeatService.getFlightSeatById(id).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(flightSeatService.editFlightSeat(id, flightSeatDTO));
+        return ResponseEntity.ok(flightSeatService.editFlightSeat(id, flightSeatDto));
     }
 
     @Override
@@ -138,18 +138,18 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<FlightSeatDTO> createFlightSeat(FlightSeatDTO flightSeatDTO) {
-        if (flightService.getFlightById(flightSeatDTO.getFlightId()) == null) {
-            log.error("Flight with id = {} not found", flightSeatDTO.getFlightId());
+    public ResponseEntity<FlightSeatDto> createFlightSeat(FlightSeatDto flightSeatDto) {
+        if (flightService.getFlightById(flightSeatDto.getFlightId()) == null) {
+            log.error("Flight with id = {} not found", flightSeatDto.getFlightId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.info("create: Flight Seat saved with id= {}", flightSeatDTO.getId());
-        return ResponseEntity.ok(flightSeatService.saveFlightSeatDTO(flightSeatDTO));
+        log.info("create: Flight Seat saved with id= {}", flightSeatDto.getId());
+        return ResponseEntity.ok(flightSeatService.saveFlightSeat(flightSeatDto));
     }
 
     @Override
-    public ResponseEntity<List<SeatDTO>> getAllSeat() {
-        var seats = flightSeatService.getAllSeatDTO();
+    public ResponseEntity<List<SeatDto>> getAllSeat() {
+        var seats = flightSeatService.getAllSeats();
         if (!seats.isEmpty()) {
             log.info("getAll: found {} Seats", seats.size());
             return ResponseEntity.ok(seats);

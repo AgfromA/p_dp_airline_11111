@@ -12,7 +12,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 
-public class SeatDTOTest extends EntityTest {
+public class SeatDtoTest extends EntityTest {
 
     private Validator validator;
 
@@ -24,7 +24,7 @@ public class SeatDTOTest extends EntityTest {
 
     @Test
     public void wrongSeatNumberTest() {
-        SeatDTO seat;
+        SeatDto seat;
         var mapper = new ObjectMapper();
         var jsonObject = new JSONObject();
         jsonObject.put("id", 1);
@@ -36,7 +36,7 @@ public class SeatDTOTest extends EntityTest {
         String testJSON = jsonObject.toString();
 
         try {
-            seat = mapper.readValue(testJSON, SeatDTO.class);
+            seat = mapper.readValue(testJSON, SeatDto.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +46,7 @@ public class SeatDTOTest extends EntityTest {
 
     @Test
     public void wrongSeatIsNearEmergencyExitTest() {
-        SeatDTO seat;
+        SeatDto seat;
         var mapper = new ObjectMapper();
         var jsonObject = new JSONObject();
         jsonObject.put("id", 1);
@@ -58,7 +58,7 @@ public class SeatDTOTest extends EntityTest {
         String testJSON = jsonObject.toString();
 
         try {
-            seat = mapper.readValue(testJSON, SeatDTO.class);
+            seat = mapper.readValue(testJSON, SeatDto.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -67,7 +67,7 @@ public class SeatDTOTest extends EntityTest {
 
     @Test
     public void wrongSeatIsLockedBackTest() {
-        SeatDTO seat;
+        SeatDto seat;
         var mapper = new ObjectMapper();
         var jsonObject = new JSONObject();
         jsonObject.put("id", 1);
@@ -79,7 +79,7 @@ public class SeatDTOTest extends EntityTest {
         var testJSON = jsonObject.toString();
 
         try {
-            seat = mapper.readValue(testJSON, SeatDTO.class);
+            seat = mapper.readValue(testJSON, SeatDto.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

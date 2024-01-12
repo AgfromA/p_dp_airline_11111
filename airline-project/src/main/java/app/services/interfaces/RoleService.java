@@ -1,16 +1,16 @@
 package app.services.interfaces;
 
-import app.dto.AccountDTO;
-import app.dto.RoleDTO;
+import app.dto.AccountDto;
+import app.dto.RoleDto;
 
 import java.util.Set;
 
 public interface RoleService {
-    RoleDTO getRoleByName(String name);
+    RoleDto getRoleByName(String name);
 
-    Set<RoleDTO> saveRolesToUser(AccountDTO user);
+    Set<RoleDto> saveRolesToUser(AccountDto user);
 
-    void saveRole(RoleDTO role);
+    void saveRole(RoleDto role);
 
-    Set<RoleDTO> getAllRoles();
+    Set<RoleDto> getAllRoles();
 }

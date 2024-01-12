@@ -1,8 +1,8 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.AccountRestApi;
-import app.dto.AccountDTO;
-import app.dto.RoleDTO;
+import app.dto.AccountDto;
+import app.dto.RoleDto;
 import app.security.JwtProviderLite;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
@@ -27,7 +27,7 @@ public class AccountRestController implements AccountRestApi {
     private final JwtProviderLite jwtProvider;
 
     @Override
-    public ResponseEntity<List<AccountDTO>> getAllAccounts(Integer page, Integer size) {
+    public ResponseEntity<List<AccountDto>> getAllAccounts(Integer page, Integer size) {
         log.info("getAll: get all Accounts");
         if (page == null || size == null) {
             log.info("getAll: get all List Accounts");
@@ -44,7 +44,7 @@ public class AccountRestController implements AccountRestApi {
                 : new ResponseEntity<>(accountPage.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<List<AccountDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<AccountDto>> createUnPagedResponse() {
         var account = accountService.findAll();
         if (account.isEmpty()) {
             log.info("getAll: Accounts not found");
@@ -56,7 +56,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDTO> getAccountById(Long id) {
+    public ResponseEntity<AccountDto> getAccountById(Long id) {
         log.info("getById: get Account by id. id = {}", id);
         var account = accountService.getAccountById(id);
         return account.isEmpty()
@@ -65,7 +65,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDTO> getAuthenticatedAccount(HttpServletRequest request) {
+    public ResponseEntity<AccountDto> getAuthenticatedAccount(HttpServletRequest request) {
         log.info("getAuthenticatedAccount: get currently authenticated Account");
         String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
@@ -78,13 +78,13 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDTO> createAccount(AccountDTO accountDTO) {
+    public ResponseEntity<AccountDto> createAccount(AccountDto accountDTO) {
         log.info("create: create new Account with email={}", accountDTO.getEmail());
         return ResponseEntity.ok((accountService.saveAccount(accountDTO)));
     }
 
     @Override
-    public ResponseEntity<AccountDTO> updateAccountById(Long id, AccountDTO accountDTO) {
+    public ResponseEntity<AccountDto> updateAccountById(Long id, AccountDto accountDTO) {
         log.info("update: update Account with id = {}", id);
         return new ResponseEntity<>(accountService.updateAccount(id, accountDTO).get(), HttpStatus.OK);
     }
@@ -101,7 +101,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<Set<RoleDTO>> getAllRoles() {
+    public ResponseEntity<Set<RoleDto>> getAllRoles() {
         var allRolesFromDb = roleService.getAllRoles();
         if (allRolesFromDb.isEmpty()) {
             return new ResponseEntity<>(Collections.emptySet(), HttpStatus.NO_CONTENT);

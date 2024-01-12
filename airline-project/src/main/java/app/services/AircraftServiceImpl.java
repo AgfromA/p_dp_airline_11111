@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.AircraftDTO;
+import app.dto.AircraftDto;
 import app.entities.Aircraft;
 import app.entities.Flight;
 import app.mappers.AircraftMapper;
@@ -24,13 +24,13 @@ public class AircraftServiceImpl implements AircraftService {
     private final AircraftMapper aircraftMapper;
 
     @Override
-    public List<AircraftDTO> findAll() {
+    public List<AircraftDto> findAll() {
         return aircraftMapper.convertToAircarftDTOList(aircraftRepository.findAll());
     }
 
     @Transactional
     @Override
-    public AircraftDTO saveAircraft(AircraftDTO aircraftDTO) {
+    public AircraftDto saveAircraft(AircraftDto aircraftDTO) {
         var aircraft = aircraftMapper.convertToAircraftEntity(aircraftDTO);
         if (!aircraft.getSeatSet().isEmpty()) {
             aircraft.getSeatSet().forEach(seat -> seat.setAircraft(aircraft));
@@ -39,7 +39,7 @@ public class AircraftServiceImpl implements AircraftService {
     }
 
     @Override
-    public Page<AircraftDTO> getPage(Integer page, Integer size) {
+    public Page<AircraftDto> getPage(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return aircraftRepository.findAll(pageRequest).map(aircraftMapper::convertToAircarftDTOEntity);
     }

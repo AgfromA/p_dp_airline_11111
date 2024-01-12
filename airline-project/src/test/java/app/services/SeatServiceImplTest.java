@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.SeatDTO;
+import app.dto.SeatDto;
 import app.entities.Aircraft;
 import app.entities.Category;
 import app.entities.Seat;
@@ -65,7 +65,7 @@ public class SeatServiceImplTest {
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
         when(seatMapper.convertToSeatEntity(any(), categoryService, aircraftService))
                 .thenAnswer(ans -> {
-                    SeatDTO seatDTO = ans.getArgument(0);
+                    SeatDto seatDTO = ans.getArgument(0);
                     var seat = new Seat();
                     seat.setCategory(categoryService.getCategoryByType(seatDTO.getCategory()));
                     seat.setAircraft(aircraft);
@@ -79,15 +79,15 @@ public class SeatServiceImplTest {
                     return seat;
                 });
 
-        List<SeatDTO> seatDTOs = seatService.generateSeatsDTOByAircraftId(AIRCRAFT_TEST_ID);
+        List<SeatDto> seatDtos = seatService.generateSeatsDTOByAircraftId(AIRCRAFT_TEST_ID);
 
-        long businessSeatsCount = seatDTOs.stream()
-                .map(SeatDTO::getCategory)
+        long businessSeatsCount = seatDtos.stream()
+                .map(SeatDto::getCategory)
                 .filter(categoryType -> CategoryType.BUSINESS == categoryType)
                 .count();
 
-        assertFalse(seatDTOs.isEmpty());
-        assertEquals(168, seatDTOs.size());
+        assertFalse(seatDtos.isEmpty());
+        assertEquals(168, seatDtos.size());
         assertEquals(12, businessSeatsCount);
     }
 

@@ -1,7 +1,7 @@
 package app.controllers.api.rest;
 
-import app.dto.FlightSeatDTO;
-import app.dto.SeatDTO;
+import app.dto.FlightSeatDto;
+import app.dto.SeatDto;
 import app.enums.CategoryType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +29,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "FlightSeat found"),
             @ApiResponse(code = 404, message = "FlightSeat not found")
     })
-    ResponseEntity<FlightSeatDTO> getFlightSeatById(
+    ResponseEntity<FlightSeatDto> getFlightSeatById(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id",
@@ -44,7 +44,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "flight seats found"),
             @ApiResponse(code = 404, message = "Not found")
     })
-    ResponseEntity<List<FlightSeatDTO>> getAllFlightSeats(
+    ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
@@ -71,7 +71,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 204, message = "FlightSeat not found"),
             @ApiResponse(code = 404, message = "Provided Flight not found")
     })
-    ResponseEntity<List<FlightSeatDTO>> getCheapestByFlightIdAndSeatCategory(
+    ResponseEntity<List<FlightSeatDto>> getCheapestByFlightIdAndSeatCategory(
             @RequestParam(name = "flightID") Long flightID,
             @RequestParam(name = "category") CategoryType category
     );
@@ -82,7 +82,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "free seats found"),
             @ApiResponse(code = 204, message = "no data found")
     })
-    ResponseEntity<List<FlightSeatDTO>> getFreeSeatsById(
+    ResponseEntity<List<FlightSeatDto>> getFreeSeatsById(
             @PageableDefault(sort = {"id"}) Pageable pageable,
             @ApiParam(
                     name = "id",
@@ -98,7 +98,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Flight with this id not found")
     })
-    ResponseEntity<Set<FlightSeatDTO>> generateAllFlightSeatsByFlightId(
+    ResponseEntity<Set<FlightSeatDto>> generateAllFlightSeatsByFlightId(
             @ApiParam(
                     name = "flightId",
                     value = "Flight.id",
@@ -113,7 +113,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "FlightSeat edited"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    ResponseEntity<FlightSeatDTO> updateFlightSeatById(
+    ResponseEntity<FlightSeatDto> updateFlightSeatById(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id",
@@ -122,11 +122,11 @@ public interface FlightSeatRestApi {
             @PathVariable Long id,
             @ApiParam(
                     name = "flightSeat",
-                    value = "FlightSeat DTO",
+                    value = "FlightSeat",
                     required = true
             )
             @RequestBody
-            @Valid FlightSeatDTO flightSeatDTO);
+            @Valid FlightSeatDto flightSeatDto);
 
     @RequestMapping(value = "/api/flight-seats/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete FlightSeat by id")
@@ -148,18 +148,18 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 201, message = "Flight Seat created"),
             @ApiResponse(code = 400, message = "Flight Seat not created")
     })
-    ResponseEntity<FlightSeatDTO> createFlightSeat(
+    ResponseEntity<FlightSeatDto> createFlightSeat(
             @ApiParam(
                     name = "flightSeat",
-                    value = "FlightSeat DTO"
+                    value = "FlightSeat"
             )
-            @RequestBody @Valid FlightSeatDTO flightSeatDTO);
+            @RequestBody @Valid FlightSeatDto flightSeatDto);
 
     @RequestMapping(value = "/api/flight-seats/seats/all", method = RequestMethod.GET)
-    @ApiOperation(value = "Get all Seats DTO")
+    @ApiOperation(value = "Get all Seats")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Seat found"),
             @ApiResponse(code = 404, message = "Seat not found")
     })
-    ResponseEntity<List<SeatDTO>> getAllSeat();
+    ResponseEntity<List<SeatDto>> getAllSeat();
 }

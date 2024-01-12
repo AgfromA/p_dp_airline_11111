@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
+// FIXME Убрать обратно в airline-project
 /**
  * Паспортные данные пассажира.
  */

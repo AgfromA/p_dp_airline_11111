@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+// FIXME Убрать обратно в airline-project
 /**
  * Класс сиденья на рейс.
  */

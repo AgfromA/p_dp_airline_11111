@@ -1,7 +1,7 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.DestinationRestApi;
-import app.dto.DestinationDTO;
+import app.dto.DestinationDto;
 import app.entities.Destination;
 import app.services.interfaces.DestinationService;
 import app.util.LogsUtils;
@@ -22,7 +22,7 @@ public class DestinationRestController implements DestinationRestApi {
     private final DestinationService destinationService;
 
     @Override
-    public ResponseEntity<List<DestinationDTO>> getAllDestinations(Integer page, Integer size, String cityName,
+    public ResponseEntity<List<DestinationDto>> getAllDestinations(Integer page, Integer size, String cityName,
                                                                    String countryName, String timezone) {
         log.info("get all Destinations");
         if (page == null || size == null) {
@@ -33,7 +33,7 @@ public class DestinationRestController implements DestinationRestApi {
             log.info("no correct data");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Page<DestinationDTO> destination;
+        Page<DestinationDto> destination;
         if (cityName == null && countryName == null && timezone == null) {
             destination = destinationService.getAllDestinations(page, size);
             log.info("get all Destinations: found {} Destination", destination.getNumberOfElements());
@@ -47,7 +47,7 @@ public class DestinationRestController implements DestinationRestApi {
                 : new ResponseEntity<>(destination.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<List<DestinationDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<DestinationDto>> createUnPagedResponse() {
         var destinations = destinationService.getAllDestinationDTO();
         if (destinations.isEmpty()) {
             log.info("Destinations not found");
@@ -59,14 +59,14 @@ public class DestinationRestController implements DestinationRestApi {
     }
 
     @Override
-    public ResponseEntity<DestinationDTO> createDestination(DestinationDTO destinationDTO) {
+    public ResponseEntity<DestinationDto> createDestination(DestinationDto destinationDTO) {
         Destination existingDestination = destinationService.getDestinationByAirportCode(destinationDTO.getAirportCode());
         log.info("create: new Destination - {}", LogsUtils.objectToJson(destinationDTO));
         return new ResponseEntity<>(destinationService.saveDestination(destinationDTO), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<DestinationDTO> updateDestinationById(Long id, DestinationDTO destinationDTO) {
+    public ResponseEntity<DestinationDto> updateDestinationById(Long id, DestinationDto destinationDTO) {
         log.info("update: Destination with id={}", id);
         destinationService.updateDestinationById(id, destinationDTO);
         var updatedDestinationDTO = destinationService.getDestinationById(id);

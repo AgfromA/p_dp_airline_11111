@@ -2,8 +2,8 @@ package app.controllers.view;
 
 
 import app.clients.AccountClient;
-import app.dto.AccountDTO;
-import app.dto.RoleDTO;
+import app.dto.AccountDto;
+import app.dto.RoleDto;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
@@ -37,12 +37,12 @@ import java.util.stream.Collectors;
 @PageTitle("Airline Account")
 @Route(value = "account", layout = MainLayout.class)
 public class AccountView extends VerticalLayout {
-    private final Grid<AccountDTO> grid = new Grid<>(AccountDTO.class, false);
-    private final Editor<AccountDTO> editor = grid.getEditor();
+    private final Grid<AccountDto> grid = new Grid<>(AccountDto.class, false);
+    private final Editor<AccountDto> editor = grid.getEditor();
 
     private final AccountClient accountClient;
 
-    private final List<AccountDTO> dataSource;
+    private final List<AccountDto> dataSource;
 
     private final Button updateButton;
     private final Button cancelButton;
@@ -66,20 +66,20 @@ public class AccountView extends VerticalLayout {
         ValidationMessage ansQuestionValidationMessage = new ValidationMessage();
 
 
-        Grid.Column<AccountDTO> idColumn = createIdColumn();
-        Grid.Column<AccountDTO> nameColumn = createNameColumn();
-        Grid.Column<AccountDTO> lastnameColumn = createLastnameColumn();
-        Grid.Column<AccountDTO> birthDateColumn = createBirthDateColumn();
-        Grid.Column<AccountDTO> emailColumn = createEmailColumn();
-        Grid.Column<AccountDTO> rolesColumn = createRolesColumn();
-        Grid.Column<AccountDTO> phoneNumberColumn = createphoneNumberColumn();
-        Grid.Column<AccountDTO> passwordColumn = createpasswordColumn();
-        Grid.Column<AccountDTO> secQuestionColumn = createSecQuestionColumn();
-        Grid.Column<AccountDTO> ansQuestionColumn = createAnsQuestionColumn();
-        Grid.Column<AccountDTO> updateColumn = createEditColumn();
+        Grid.Column<AccountDto> idColumn = createIdColumn();
+        Grid.Column<AccountDto> nameColumn = createNameColumn();
+        Grid.Column<AccountDto> lastnameColumn = createLastnameColumn();
+        Grid.Column<AccountDto> birthDateColumn = createBirthDateColumn();
+        Grid.Column<AccountDto> emailColumn = createEmailColumn();
+        Grid.Column<AccountDto> rolesColumn = createRolesColumn();
+        Grid.Column<AccountDto> phoneNumberColumn = createphoneNumberColumn();
+        Grid.Column<AccountDto> passwordColumn = createpasswordColumn();
+        Grid.Column<AccountDto> secQuestionColumn = createSecQuestionColumn();
+        Grid.Column<AccountDto> ansQuestionColumn = createAnsQuestionColumn();
+        Grid.Column<AccountDto> updateColumn = createEditColumn();
         createDeleteColumn();
 
-        Binder<AccountDTO> binder = createBinder();
+        Binder<AccountDto> binder = createBinder();
 
         createIdField(binder, idValidationMessage, idColumn);
         createNameField(binder, nameValidationMessage, nameColumn);
@@ -122,105 +122,105 @@ public class AccountView extends VerticalLayout {
                 phoneNumberValidationMessage);
     }
 
-    private void createLastnameField(Binder<AccountDTO> binder,
+    private void createLastnameField(Binder<AccountDto> binder,
                                      ValidationMessage lastnameValidationMessage,
-                                     Grid.Column<AccountDTO> lastnameColumn) {
+                                     Grid.Column<AccountDto> lastnameColumn) {
         TextField lastnameField = new TextField();
         lastnameField.setWidthFull();
         binder.forField(lastnameField).asRequired("Answer question must not be empty")
                 .withStatusLabel(lastnameValidationMessage)
-                .bind(AccountDTO::getLastName, AccountDTO::setLastName);
+                .bind(AccountDto::getLastName, AccountDto::setLastName);
         lastnameColumn.setEditorComponent(lastnameField);
 
     }
 
-    private Grid.Column<AccountDTO> createLastnameColumn() {
-        return grid.addColumn(AccountDTO::getLastName)
+    private Grid.Column<AccountDto> createLastnameColumn() {
+        return grid.addColumn(AccountDto::getLastName)
                 .setHeader("Lastname").setWidth("100px").setFlexGrow(0);
     }
 
-    private void createAnsQuestionField(Binder<AccountDTO> binder,
+    private void createAnsQuestionField(Binder<AccountDto> binder,
                                         ValidationMessage ansQuestionValidationMessage,
-                                        Grid.Column<AccountDTO> ansQuestionColumn) {
+                                        Grid.Column<AccountDto> ansQuestionColumn) {
 
         PasswordField ansQuestionField = new PasswordField();
         ansQuestionField.setWidthFull();
         binder.forField(ansQuestionField).asRequired("Answer question must not be empty")
                 .withStatusLabel(ansQuestionValidationMessage)
-                .bind(AccountDTO::getAnswerQuestion, AccountDTO::setAnswerQuestion);
+                .bind(AccountDto::getAnswerQuestion, AccountDto::setAnswerQuestion);
         ansQuestionColumn.setEditorComponent(ansQuestionField);
     }
 
-    private Grid.Column<AccountDTO> createAnsQuestionColumn() {
-        return grid.addColumn(AccountDTO::getAnswerQuestion).setHeader("Answer Question")
+    private Grid.Column<AccountDto> createAnsQuestionColumn() {
+        return grid.addColumn(AccountDto::getAnswerQuestion).setHeader("Answer Question")
                 .setWidth("100px")
                 .setFlexGrow(0);
     }
 
-    private void createSecQuestionField(Binder<AccountDTO> binder,
+    private void createSecQuestionField(Binder<AccountDto> binder,
                                         ValidationMessage secQuestionValidationMessage,
-                                        Grid.Column<AccountDTO> secQuestionColumn) {
+                                        Grid.Column<AccountDto> secQuestionColumn) {
         TextField secQuestionField = new TextField();
         secQuestionField.setWidthFull();
         binder.forField(secQuestionField).asRequired("Secret Question must not be empty")
                 .withStatusLabel(secQuestionValidationMessage)
-                .bind(AccountDTO::getSecurityQuestion, AccountDTO::setSecurityQuestion);
+                .bind(AccountDto::getSecurityQuestion, AccountDto::setSecurityQuestion);
         secQuestionColumn.setEditorComponent(secQuestionField);
     }
 
-    private Grid.Column<AccountDTO> createSecQuestionColumn() {
-        return grid.addColumn(AccountDTO::getSecurityQuestion).setHeader("Secret Question")
+    private Grid.Column<AccountDto> createSecQuestionColumn() {
+        return grid.addColumn(AccountDto::getSecurityQuestion).setHeader("Secret Question")
                 .setWidth("100px")
                 .setFlexGrow(0);
     }
 
-    private void createPasswordField(Binder<AccountDTO> binder,
+    private void createPasswordField(Binder<AccountDto> binder,
                                      ValidationMessage passwordValidationMessage,
-                                     Grid.Column<AccountDTO> passwordColumn) {
+                                     Grid.Column<AccountDto> passwordColumn) {
         PasswordField passwordField = new PasswordField();
         passwordField.setWidthFull();
         binder.forField(passwordField).asRequired("Password must not be empty")
                 .withStatusLabel(passwordValidationMessage)
-                .bind(AccountDTO::getPassword, AccountDTO::setPassword);
+                .bind(AccountDto::getPassword, AccountDto::setPassword);
         passwordColumn.setEditorComponent(passwordField);
     }
 
-    private Grid.Column<AccountDTO> createpasswordColumn() {
-        return grid.addColumn(AccountDTO::getPassword)
+    private Grid.Column<AccountDto> createpasswordColumn() {
+        return grid.addColumn(AccountDto::getPassword)
                 .setHeader("Password").setWidth("100px").setFlexGrow(1);
     }
 
-    private void createPhoneNumberField(Binder<AccountDTO> binder,
+    private void createPhoneNumberField(Binder<AccountDto> binder,
                                         ValidationMessage phoneNumberValidationMessage,
-                                        Grid.Column<AccountDTO> phoneNumberColumn) {
+                                        Grid.Column<AccountDto> phoneNumberColumn) {
         TextField phoneNumberField = new TextField();
         phoneNumberField.setWidthFull();
         binder.forField(phoneNumberField).asRequired("PhoneNumber must not be empty")
                 .withStatusLabel(phoneNumberValidationMessage)
-                .bind(AccountDTO::getPhoneNumber, AccountDTO::setPhoneNumber);
+                .bind(AccountDto::getPhoneNumber, AccountDto::setPhoneNumber);
         phoneNumberColumn.setEditorComponent(phoneNumberField);
     }
 
-    private Grid.Column<AccountDTO> createphoneNumberColumn() {
-        return grid.addColumn(AccountDTO::getPhoneNumber)
+    private Grid.Column<AccountDto> createphoneNumberColumn() {
+        return grid.addColumn(AccountDto::getPhoneNumber)
                 .setHeader("Phone Number").setWidth("100px").setFlexGrow(0);
     }
 
-    private void createRolesField(Binder<AccountDTO> binder,
+    private void createRolesField(Binder<AccountDto> binder,
                                   ValidationMessage rolesValidationMessage,
-                                  Grid.Column<AccountDTO> rolesColumn) {
-        MultiSelectComboBox<RoleDTO> comboBox = new MultiSelectComboBox<>();
+                                  Grid.Column<AccountDto> rolesColumn) {
+        MultiSelectComboBox<RoleDto> comboBox = new MultiSelectComboBox<>();
         comboBox.setWidthFull();
         binder.forField(comboBox).asRequired("Role must not be empty")
                 .withStatusLabel(rolesValidationMessage)
-                .bind(AccountDTO::getRoles, AccountDTO::setRoles);
-        Set<RoleDTO> roles = accountClient.getAllRoles().getBody();
+                .bind(AccountDto::getRoles, AccountDto::setRoles);
+        Set<RoleDto> roles = accountClient.getAllRoles().getBody();
         Iterator iterator = roles.iterator();
-        var list = new ArrayList<RoleDTO>();
+        var list = new ArrayList<RoleDto>();
         while (iterator.hasNext()) {
-            list.add((RoleDTO) iterator.next());
+            list.add((RoleDto) iterator.next());
         }
-        var roleArray = new RoleDTO[list.size()];
+        var roleArray = new RoleDto[list.size()];
         for (int i = 0; i < roleArray.length - 1; i++) {
             roleArray[i] = list.get(i);
         }
@@ -228,45 +228,45 @@ public class AccountView extends VerticalLayout {
         rolesColumn.setEditorComponent(comboBox);
     }
 
-    private void createEmailField(Binder<AccountDTO> binder,
+    private void createEmailField(Binder<AccountDto> binder,
                                   ValidationMessage emailValidationMessage,
-                                  Grid.Column<AccountDTO> emailColumn) {
+                                  Grid.Column<AccountDto> emailColumn) {
         TextField emailField = new TextField();
         emailField.setWidthFull();
         binder.forField(emailField).asRequired("Email must not be empty")
                 .withStatusLabel(emailValidationMessage)
-                .bind(AccountDTO::getEmail, AccountDTO::setEmail);
+                .bind(AccountDto::getEmail, AccountDto::setEmail);
         emailColumn.setEditorComponent(emailField);
     }
 
-    private void createBirthDateField(Binder<AccountDTO> binder,
+    private void createBirthDateField(Binder<AccountDto> binder,
                                       ValidationMessage bithDateValidationMessage,
-                                      Grid.Column<AccountDTO> birthDateColumn) {
+                                      Grid.Column<AccountDto> birthDateColumn) {
         DatePicker birthDateField = new DatePicker();
         birthDateField.setWidthFull();
         binder.forField(birthDateField).asRequired("BirthDate must not be empty")
                 .withStatusLabel(bithDateValidationMessage)
-                .bind(AccountDTO::getBirthDate, AccountDTO::setBirthDate);
+                .bind(AccountDto::getBirthDate, AccountDto::setBirthDate);
         birthDateColumn.setEditorComponent(birthDateField);
     }
 
 
-    private void createNameField(Binder<AccountDTO> binder,
+    private void createNameField(Binder<AccountDto> binder,
                                  ValidationMessage nameValidationMessage,
-                                 Grid.Column<AccountDTO> nameColumn) {
+                                 Grid.Column<AccountDto> nameColumn) {
         TextField nameField = new TextField();
         nameField.setWidthFull();
         binder.forField(nameField).asRequired("Name must not be empty")
                 .withStatusLabel(nameValidationMessage)
                 .withValidator(name -> name.length() >= 2 && name.length() <= 20,
                         "Name must be between 2 and 20 characters")
-                .bind(AccountDTO::getFirstName, AccountDTO::setFirstName);
+                .bind(AccountDto::getFirstName, AccountDto::setFirstName);
         nameColumn.setEditorComponent(nameField);
     }
 
-    private void createIdField(Binder<AccountDTO> binder,
+    private void createIdField(Binder<AccountDto> binder,
                                ValidationMessage idValidationMessage,
-                               Grid.Column<AccountDTO> idColumn) {
+                               Grid.Column<AccountDto> idColumn) {
         IntegerField idField = new IntegerField();
         idField.setWidthFull();
         binder.forField(idField)
@@ -277,14 +277,14 @@ public class AccountView extends VerticalLayout {
         idColumn.setEditorComponent(idField);
     }
 
-    private Binder<AccountDTO> createBinder() {
-        Binder<AccountDTO> binder = new Binder<>(AccountDTO.class);
+    private Binder<AccountDto> createBinder() {
+        Binder<AccountDto> binder = new Binder<>(AccountDto.class);
         editor.setBinder(binder);
         editor.setBuffered(true);
         return binder;
     }
 
-    private Grid.Column<AccountDTO> createDeleteColumn() {
+    private Grid.Column<AccountDto> createDeleteColumn() {
         return grid.addComponentColumn(account -> {
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
@@ -292,7 +292,7 @@ public class AccountView extends VerticalLayout {
                     editor.cancel();
                 }
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
-                    ListDataProvider<AccountDTO> dataProvider = (ListDataProvider<AccountDTO>) grid.getDataProvider();
+                    ListDataProvider<AccountDto> dataProvider = (ListDataProvider<AccountDto>) grid.getDataProvider();
                     accountClient.deleteAccountById(account.getId());
                     dataProvider.getItems().remove(account);
                 }
@@ -303,7 +303,7 @@ public class AccountView extends VerticalLayout {
     }
 
 
-    private Grid.Column<AccountDTO> createEditColumn() {
+    private Grid.Column<AccountDto> createEditColumn() {
         return grid.addComponentColumn(account -> {
 
             Button update = new Button("Update");
@@ -317,29 +317,29 @@ public class AccountView extends VerticalLayout {
         }).setWidth("150px");
     }
 
-    private Grid.Column<AccountDTO> createRolesColumn() {
-        return grid.addColumn(AccountDTO::getRoles).setHeader("AccountRoles")
+    private Grid.Column<AccountDto> createRolesColumn() {
+        return grid.addColumn(AccountDto::getRoles).setHeader("AccountRoles")
                 .setWidth("400px").setFlexGrow(0);
     }
 
-    private Grid.Column<AccountDTO> createEmailColumn() {
-        return grid.addColumn(AccountDTO::getEmail).setHeader("Email")
+    private Grid.Column<AccountDto> createEmailColumn() {
+        return grid.addColumn(AccountDto::getEmail).setHeader("Email")
                 .setWidth("150px").setFlexGrow(0);
     }
 
-    private Grid.Column<AccountDTO> createBirthDateColumn() {
-        return grid.addColumn(AccountDTO::getBirthDate).setHeader("BirthDate")
+    private Grid.Column<AccountDto> createBirthDateColumn() {
+        return grid.addColumn(AccountDto::getBirthDate).setHeader("BirthDate")
                 .setWidth("100px").setFlexGrow(0);
     }
 
 
-    private Grid.Column<AccountDTO> createNameColumn() {
-        return grid.addColumn(AccountDTO::getFirstName).setHeader("Name")
+    private Grid.Column<AccountDto> createNameColumn() {
+        return grid.addColumn(AccountDto::getFirstName).setHeader("Name")
                 .setWidth("100px").setFlexGrow(0);
     }
 
-    private Grid.Column<AccountDTO> createIdColumn() {
-        return grid.addColumn(AccountDTO::getId)
+    private Grid.Column<AccountDto> createIdColumn() {
+        return grid.addColumn(AccountDto::getId)
                 .setHeader("Id").setWidth("60px").setFlexGrow(0);
     }
 
@@ -391,12 +391,12 @@ public class AccountView extends VerticalLayout {
         TextField securityQuestionField = new TextField("Security Question");
         PasswordField answerQuestionField = new PasswordField("Answer Question");
 
-        MultiSelectComboBox<RoleDTO> rolesSelectBox = new MultiSelectComboBox<>("Roles");
-        Set<RoleDTO> roles = accountClient.getAllRoles().getBody()
+        MultiSelectComboBox<RoleDto> rolesSelectBox = new MultiSelectComboBox<>("Roles");
+        Set<RoleDto> roles = accountClient.getAllRoles().getBody()
                 .stream().collect(Collectors.toSet());
         Iterator iterator = roles.iterator();
         while (iterator.hasNext()) {
-            rolesSelectBox.setItems((RoleDTO) iterator.next(), (RoleDTO) iterator.next());
+            rolesSelectBox.setItems((RoleDto) iterator.next(), (RoleDto) iterator.next());
         }
 
 
@@ -414,17 +414,17 @@ public class AccountView extends VerticalLayout {
 
 
         createButton.addClickListener(event -> {
-            AccountDTO accountDTO = new AccountDTO();
-            accountDTO.setFirstName(nameTextField.getValue());
-            accountDTO.setLastName(lastnameTextField.getValue());
-            accountDTO.setBirthDate(birthDayDateField.getValue());
-            accountDTO.setPhoneNumber(phoneNumberTextField.getValue());
-            accountDTO.setEmail(emailTextField.getValue());
-            accountDTO.setRoles(rolesSelectBox.getValue());
-            accountDTO.setPassword(passwordField.getValue());
-            accountDTO.setSecurityQuestion(securityQuestionField.getValue());
-            accountDTO.setAnswerQuestion(answerQuestionField.getValue());
-            AccountDTO savedAccount = accountClient.createAccount(accountDTO).getBody();
+            AccountDto accountDto = new AccountDto();
+            accountDto.setFirstName(nameTextField.getValue());
+            accountDto.setLastName(lastnameTextField.getValue());
+            accountDto.setBirthDate(birthDayDateField.getValue());
+            accountDto.setPhoneNumber(phoneNumberTextField.getValue());
+            accountDto.setEmail(emailTextField.getValue());
+            accountDto.setRoles(rolesSelectBox.getValue());
+            accountDto.setPassword(passwordField.getValue());
+            accountDto.setSecurityQuestion(securityQuestionField.getValue());
+            accountDto.setAnswerQuestion(answerQuestionField.getValue());
+            AccountDto savedAccount = accountClient.createAccount(accountDto).getBody();
             dataSource.add(savedAccount);
             nameTextField.clear();
             lastnameTextField.clear();

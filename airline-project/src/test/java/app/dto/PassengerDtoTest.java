@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-public class PassengerDTOTest extends EntityTest {
+public class PassengerDtoTest extends EntityTest {
 
     private Validator validator;
-    private PassengerDTO passenger;
+    private PassengerDto passenger;
     private ObjectMapper mapper;
 
     @BeforeEach
@@ -27,7 +27,7 @@ public class PassengerDTOTest extends EntityTest {
         }
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        passenger = new PassengerDTO();
+        passenger = new PassengerDto();
     }
 
     private JSONObject initJSONObject() {
@@ -51,7 +51,7 @@ public class PassengerDTOTest extends EntityTest {
     @Test
     public void testRightPassenger() {
         try {
-            passenger = mapper.readValue(initJSONObject().toString(), PassengerDTO.class);
+            passenger = mapper.readValue(initJSONObject().toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +63,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("firstName", "");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -75,7 +75,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("firstName", "a");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -87,7 +87,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("lastName", "");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -99,7 +99,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("lastName", "a");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -111,7 +111,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("birthDate", null);
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -123,7 +123,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("birthDate", "2054-02-07");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -135,7 +135,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("phoneNumber", "");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -147,7 +147,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("phoneNumber", "4456");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -160,7 +160,7 @@ public class PassengerDTOTest extends EntityTest {
         jsonObject.replace("firstName", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -173,7 +173,7 @@ public class PassengerDTOTest extends EntityTest {
         jsonObject.replace("lastName", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -186,7 +186,7 @@ public class PassengerDTOTest extends EntityTest {
         jsonObject.replace("phoneNumber", "888888888888888888888888888888888888888888888888888888888888888888" +
                 "88888888888888888888888888888888888888888888888888888888888888888");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -198,7 +198,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("email", "");
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -210,7 +210,7 @@ public class PassengerDTOTest extends EntityTest {
         var jsonObject = initJSONObject();
         jsonObject.replace("passport", null);
         try {
-            passenger = mapper.readValue(jsonObject.toString(), PassengerDTO.class);
+            passenger = mapper.readValue(jsonObject.toString(), PassengerDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

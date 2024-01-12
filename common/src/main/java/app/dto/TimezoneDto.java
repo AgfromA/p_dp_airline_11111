@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimezoneDTO {
+public class TimezoneDto {
 
     @ReadOnlyProperty
     private Long id;

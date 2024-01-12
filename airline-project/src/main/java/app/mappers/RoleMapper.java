@@ -1,7 +1,6 @@
 package app.mappers;
 
-
-import app.dto.RoleDTO;
+import app.dto.RoleDto;
 import app.entities.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -11,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface RoleMapper {
 
-    RoleDTO convertToRoleDTO(Role role);
+    RoleDto convertToRoleDto(Role role);
 
-    Role convertToRole(RoleDTO roleDTO);
+    Role convertToRole(RoleDto roleDTO);
 
-    List<RoleDTO> convertToRoleDTOList(List<Role> roleList);
+    List<RoleDto> convertToRoleDtoList(List<Role> roleList);
 
-    List<Role> convertToRoleList(List<RoleDTO> roleDTOList);
+    List<Role> convertToRoleList(List<RoleDto> roleDtoList);
 }

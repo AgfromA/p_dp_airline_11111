@@ -10,6 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PaymentMapper {
+
     Payment convertToPaymentEntity(PaymentResponse paymentResponse);
 
     Payment convertToPaymentEntity(PaymentRequest paymentRequest);

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class BookingDTO {
+public class BookingDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;

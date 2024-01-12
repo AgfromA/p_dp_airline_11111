@@ -14,7 +14,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class FlightSeatDTO {
+public class FlightSeatDto {
     @ReadOnlyProperty
     private Long id;
 
@@ -33,7 +33,7 @@ public class FlightSeatDTO {
     private Long flightId;
 
     @NotNull(message = "seatNumber shouldn't be null")
-    private SeatDTO seat;
+    private SeatDto seat;
 
     @NotNull(message = "category cannot be null")
     private CategoryType category;

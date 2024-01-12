@@ -1,6 +1,6 @@
 package app.controllers.api.rest;
 
-import app.dto.BookingDTO;
+import app.dto.BookingDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,7 +31,7 @@ public interface BookingRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Bookings found"),
             @ApiResponse(code = 204, message = "Bookings not found")})
-    ResponseEntity<List<BookingDTO>> getAllBookings(
+    ResponseEntity<List<BookingDto>> getAllBookings(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size
     );
@@ -42,7 +42,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking found"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> getBookingById(
+    ResponseEntity<BookingDto> getBookingById(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"
@@ -55,7 +55,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking found"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> getBookingByBookingNumber(
+    ResponseEntity<BookingDto> getBookingByBookingNumber(
             @ApiParam(
                     value = "bookingNumber",
                     example = "SV-221122",
@@ -68,12 +68,12 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking created"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    ResponseEntity<BookingDTO> createBooking(
+    ResponseEntity<BookingDto> createBooking(
             @ApiParam(
                     name = "booking",
                     value = "Booking model"
             )
-            @RequestBody @Valid BookingDTO bookingDTO);
+            @RequestBody @Valid BookingDto bookingDTO);
 
     @PatchMapping("/{id}")
     @ApiOperation(value = "Update Booking by \"id\"")
@@ -82,7 +82,7 @@ public interface BookingRestApi {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDTO> updateBookingById(
+    ResponseEntity<BookingDto> updateBookingById(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"
@@ -92,7 +92,7 @@ public interface BookingRestApi {
                     name = "Booking",
                     value = "Booking model"
             )
-            @RequestBody @Valid BookingDTO bookingDTO);
+            @RequestBody @Valid BookingDto bookingDTO);
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete Booking by \"id\"")

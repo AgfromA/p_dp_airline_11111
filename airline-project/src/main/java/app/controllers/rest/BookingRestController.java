@@ -1,7 +1,7 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.BookingRestApi;
-import app.dto.BookingDTO;
+import app.dto.BookingDto;
 import app.enums.BookingStatus;
 import app.services.interfaces.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class BookingRestController implements BookingRestApi {
     private final BookingService bookingService;
 
     @Override
-    public ResponseEntity<List<BookingDTO>> getAllBookings(Integer page, Integer size) {
+    public ResponseEntity<List<BookingDto>> getAllBookings(Integer page, Integer size) {
         log.info("getAll: search all Bookings");
         if (page == null || size == null) {
             log.info("getAll: get all list Bookings");
@@ -36,7 +36,7 @@ public class BookingRestController implements BookingRestApi {
                 : new ResponseEntity<>(bookings.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<List<BookingDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<BookingDto>> createUnPagedResponse() {
         var bookings = bookingService.findAll();
         if (bookings.isEmpty()) {
             log.info("getAll: Bookings not found");
@@ -48,7 +48,7 @@ public class BookingRestController implements BookingRestApi {
     }
 
     @Override
-    public ResponseEntity<BookingDTO> getBookingById(Long id) {
+    public ResponseEntity<BookingDto> getBookingById(Long id) {
         log.info("getById: search Booking by id = {}", id);
         var booking = bookingService.getBookingById(id);
         if (booking == null) {
@@ -59,7 +59,7 @@ public class BookingRestController implements BookingRestApi {
     }
 
     @Override
-    public ResponseEntity<BookingDTO> getBookingByBookingNumber(String bookingNumber) {
+    public ResponseEntity<BookingDto> getBookingByBookingNumber(String bookingNumber) {
         log.info("getByNumber: search Booking by number = {}", bookingNumber);
         var booking = bookingService.getBookingByNumber(bookingNumber);
         if (booking == null) {
@@ -70,14 +70,14 @@ public class BookingRestController implements BookingRestApi {
     }
 
     @Override
-    public ResponseEntity<BookingDTO> createBooking(BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDto> createBooking(BookingDto bookingDTO) {
         log.info("create: creating a new Booking");
         bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
         return new ResponseEntity<>(bookingService.saveBooking(bookingDTO), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<BookingDTO> updateBookingById(Long id, BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDto> updateBookingById(Long id, BookingDto bookingDTO) {
         log.info("update: edit Booking with id = {}", id);
         var booking = bookingService.getBookingById(id);
         if (booking == null) {

@@ -1,7 +1,7 @@
 package app.controllers;
 
-import app.dto.FlightDTO;
-import app.dto.FlightSeatDTO;
+import app.dto.FlightDto;
+import app.dto.FlightSeatDto;
 import app.entities.Destination;
 import app.entities.Flight;
 import app.entities.FlightSeat;
@@ -24,11 +24,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -168,11 +165,11 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         flight.setFrom(from);
         flight.setTo(to);
         flight.setSeats(flightSeatService.findByFlightId(1L));
-        FlightDTO flightDTO = Mappers.getMapper(FlightMapper.class).flightToFlightDTO(flight, flightService);
+        FlightDto flightDTO = Mappers.getMapper(FlightMapper.class).flightToFlightDto(flight, flightService);
         flightService.updateFlight(1L, flightDTO);
         var flightId = "1";
-        Set<FlightSeatDTO> flightSeatSet = flightSeatService.getFlightSeatsByFlightId(1L);
-        for (FlightSeatDTO flightSeat : flightSeatSet) {
+        Set<FlightSeatDto> flightSeatSet = flightSeatService.getFlightSeatsByFlightId(1L);
+        for (FlightSeatDto flightSeat : flightSeatSet) {
             System.out.println(flightSeat.getId());
             flightSeatService.deleteFlightSeatById(flightSeat.getId());
         }
@@ -194,7 +191,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         long numberOfFlightSeat = flightSeatRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/flight-seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDTOEntity(flightSeat, flightService)))
+                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).convertToFlightSeatDtoEntity(flightSeat, flightService)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -206,13 +203,13 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         var category = CategoryType.FIRST;
         Long flightID = 1L;
         //List<FlightSeat> flightSeats = flightSeatService.getCheapestFlightSeatsByFlightIdAndSeatCategory(flightID, category);
-        List<FlightSeatDTO> flightSeatDTOS = flightSeatService.getCheapestFlightSeatsByFlightIdAndSeatCategory(flightID, category);
+        List<FlightSeatDto> flightSeatDtos = flightSeatService.getCheapestFlightSeatsByFlightIdAndSeatCategory(flightID, category);
         mockMvc.perform(get("http://localhost:8080/api/flight-seats/cheapest")
                         .param("category", category.toString())
                         .param("flightID", flightID.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(flightSeatDTOS)));
+                .andExpect(content().json(objectMapper.writeValueAsString(flightSeatDtos)));
     }
 
     @Test

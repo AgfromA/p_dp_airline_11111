@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.DestinationDTO;
+import app.dto.DestinationDto;
 import app.entities.Destination;
 import app.enums.Airport;
 import app.mappers.DestinationMapper;
@@ -22,47 +22,47 @@ public class DestinationServiceImpl implements DestinationService {
     private final DestinationMapper destinationMapper;
 
     @Override
-    public List<DestinationDTO> getAllDestinationDTO() {
-        return destinationMapper.convertToDestinationDTOList(destinationRepository.findAll());
+    public List<DestinationDto> getAllDestinationDTO() {
+        return destinationMapper.convertToDestinationDtoList(destinationRepository.findAll());
     }
 
     @Override
-    public Page<DestinationDTO> getAllDestinations(Integer page, Integer size) {
-        return destinationRepository.findAll(PageRequest.of(page, size)).map(destinationMapper::convertToDestinationDTOEntity);
+    public Page<DestinationDto> getAllDestinations(Integer page, Integer size) {
+        return destinationRepository.findAll(PageRequest.of(page, size)).map(destinationMapper::convertToDestinationDtoEntity);
     }
 
     @Override
-    public Page<DestinationDTO> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
+    public Page<DestinationDto> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
         if (cityName != null && !cityName.isEmpty()) {
             return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName)
-                    .map(destinationMapper::convertToDestinationDTOEntity);
+                    .map(destinationMapper::convertToDestinationDtoEntity);
         } else if (countryName != null && !countryName.isEmpty()) {
             return destinationRepository.findByCountryNameContainingIgnoreCase(PageRequest.of(page, size), countryName)
-                    .map(destinationMapper::convertToDestinationDTOEntity);
+                    .map(destinationMapper::convertToDestinationDtoEntity);
         } else {
             return destinationRepository.findByTimezoneContainingIgnoreCase(PageRequest.of(page, size), timezone)
-                    .map(destinationMapper::convertToDestinationDTOEntity);
+                    .map(destinationMapper::convertToDestinationDtoEntity);
         }
     }
 
     @Override
     @Transactional
-    public DestinationDTO saveDestination(DestinationDTO destinationDTO) {
+    public DestinationDto saveDestination(DestinationDto destinationDTO) {
         var destination = destinationMapper.convertToDestinationEntity(destinationDTO);
-        return destinationMapper.convertToDestinationDTOEntity(destinationRepository.save(destination));
+        return destinationMapper.convertToDestinationDtoEntity(destinationRepository.save(destination));
     }
 
     @Override
     @Transactional
-    public void updateDestinationById(Long id, DestinationDTO destinationDTO) {
+    public void updateDestinationById(Long id, DestinationDto destinationDTO) {
         var destination = destinationMapper.convertToDestinationEntity(destinationDTO);
         destination.setId(id);
         destinationRepository.save(destination);
     }
 
     @Override
-    public DestinationDTO getDestinationById(Long id) {
-        return destinationMapper.convertToDestinationDTOEntity(destinationRepository.findById(id).orElse(null));
+    public DestinationDto getDestinationById(Long id) {
+        return destinationMapper.convertToDestinationDtoEntity(destinationRepository.findById(id).orElse(null));
     }
 
     @Override

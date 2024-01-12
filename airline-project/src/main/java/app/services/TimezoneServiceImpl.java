@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.TimezoneDTO;
+import app.dto.TimezoneDto;
 import app.entities.Timezone;
 import app.repositories.TimezoneRepository;
 import app.services.interfaces.TimezoneService;
@@ -23,28 +23,28 @@ public class TimezoneServiceImpl implements TimezoneService {
     private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
 
     @Override
-    public List<TimezoneDTO> getAllTimeZone() {
-        return timezoneMapper.convertToTimezoneDTOList(timezoneRepository.findAll());
+    public List<TimezoneDto> getAllTimeZone() {
+        return timezoneMapper.convertToTimezoneDtoList(timezoneRepository.findAll());
     }
 
     @Transactional
     @Override
-    public Timezone saveTimezone(TimezoneDTO timezoneDTO) {
-        var timezone = timezoneMapper.convertToTimezone(timezoneDTO);
+    public Timezone saveTimezone(TimezoneDto timezoneDto) {
+        var timezone = timezoneMapper.convertToTimezone(timezoneDto);
         return timezoneRepository.save(timezone);
     }
 
     @Override
     @Transactional
-    public Timezone updateTimezone(TimezoneDTO timezoneDTO) {
-        var timezone = timezoneMapper.convertToTimezone(timezoneDTO);
+    public Timezone updateTimezone(TimezoneDto timezoneDto) {
+        var timezone = timezoneMapper.convertToTimezone(timezoneDto);
         return timezoneRepository.save(timezone);
     }
 
     @Override
-    public Page<TimezoneDTO> getAllPagesTimezones(int page, int size) {
+    public Page<TimezoneDto> getAllPagesTimezones(int page, int size) {
         return timezoneRepository.findAll(PageRequest.of(page, size))
-                .map(timezoneMapper::convertToTimezoneDTO);
+                .map(timezoneMapper::convertToTimezoneDto);
     }
 
     @Override

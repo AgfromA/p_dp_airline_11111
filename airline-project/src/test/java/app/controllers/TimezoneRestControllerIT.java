@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.dto.TimezoneDTO;
+import app.dto.TimezoneDto;
 import app.mappers.TimezoneMapper;
 import app.repositories.TimezoneRepository;
 import app.services.interfaces.TimezoneService;
@@ -88,13 +88,13 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Creating Timezone")
     void shouldCreateNewTimezone() throws Exception {
-        var timezoneDTO = new TimezoneDTO();
-        timezoneDTO.setCityName("New-York");
-        timezoneDTO.setCountryName("USA");
-        timezoneDTO.setGmt("GMT-5");
-        timezoneDTO.setGmtWinter("GMT-4");
+        var timezoneDto = new TimezoneDto();
+        timezoneDto.setCityName("New-York");
+        timezoneDto.setCountryName("USA");
+        timezoneDto.setGmt("GMT-5");
+        timezoneDto.setGmtWinter("GMT-4");
         mockMvc.perform(post("http://localhost:8080/api/timezones")
-                        .content(objectMapper.writeValueAsString(timezoneDTO))
+                        .content(objectMapper.writeValueAsString(timezoneDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -109,7 +109,7 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/timezones/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(new TimezoneDTO()))
+                .andExpect(content().json(objectMapper.writeValueAsString(new TimezoneDto()))
                 );
     }
 
@@ -129,12 +129,12 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
     @DisplayName("Update timezone")
     void shouldUpdateTimezone() throws Exception {
         long id = 5L;
-        var timezoneDTO = timezoneService.getTimezoneById(id).get();
-        timezoneDTO.setCountryName("Чехия");
+        var timezoneDto = timezoneService.getTimezoneById(id).get();
+        timezoneDto.setCountryName("Чехия");
         long numberOfTimezone = timezoneRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/timezones/{id}", id)
-                        .content(objectMapper.writeValueAsString(timezoneDTO))
+                        .content(objectMapper.writeValueAsString(timezoneDto))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())

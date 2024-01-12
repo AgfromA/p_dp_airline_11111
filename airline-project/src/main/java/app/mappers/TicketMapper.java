@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.TicketDTO;
+import app.dto.TicketDto;
 import app.entities.Ticket;
 import app.services.interfaces.FlightSeatService;
 import app.services.interfaces.FlightService;
@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TicketMapper {
+
     @Mapping(target = "passengerId", expression = "java(ticket.getPassenger().getId())")
     @Mapping(target = "firstName", expression = "java(ticket.getPassenger().getFirstName())")
     @Mapping(target = "lastName", expression = "java(ticket.getPassenger().getLastName())")
@@ -26,28 +27,28 @@ public interface TicketMapper {
     @Mapping(target = "arrivalDateTime", expression = "java(ticket.getFlight().getArrivalDateTime())")
     @Mapping(target = "flightSeatId", expression = "java(ticket.getFlightSeat().getId())")
     @Mapping(target = "seatNumber", expression = "java(ticket.getFlightSeat().getSeat().getSeatNumber())")
-    TicketDTO convertToTicketDTO(Ticket ticket);
+    TicketDto convertToTicketDto(Ticket ticket);
 
-
-    @Mapping(target = "passenger", expression = "java(passengerService.getPassengerById(ticketDTO.getPassengerId()).get())")
-    @Mapping(target = "flight", expression = "java(flightService.getFlightById(ticketDTO.getFlightId()).get())")
-    @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeatById(ticketDTO.getFlightSeatId()).get())")
-    Ticket convertToTicketEntity(TicketDTO ticketDTO, @Context PassengerService passengerService,
+    @Mapping(target = "passenger", expression = "java(passengerService.getPassengerById(ticketDto.getPassengerId()).get())")
+    @Mapping(target = "flight", expression = "java(flightService.getFlightById(ticketDto.getFlightId()).get())")
+    @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeatById(ticketDto.getFlightSeatId()).get())")
+    Ticket convertToTicketEntity(TicketDto ticketDto,
+                                 @Context PassengerService passengerService,
                                  @Context FlightService flightService,
                                  @Context FlightSeatService flightSeatService);
 
-    default List<TicketDTO> convertToTicketDTOList(List<Ticket> ticketList) {
+    default List<TicketDto> convertToTicketDtoList(List<Ticket> ticketList) {
         return ticketList.stream()
-                .map(this::convertToTicketDTO)
+                .map(this::convertToTicketDto)
                 .collect(Collectors.toList());
     }
 
-    default List<Ticket> convertToTicketEntityList(List<TicketDTO> ticketDTOList, PassengerService passengerService,
-                                                   FlightService flightService, FlightSeatService flightSeatService) {
-        return ticketDTOList.stream()
-                .map(ticketDTO -> convertToTicketEntity(ticketDTO, passengerService, flightService, flightSeatService))
+    default List<Ticket> convertToTicketEntityList(List<TicketDto> ticketDtoList,
+                                                   PassengerService passengerService,
+                                                   FlightService flightService,
+                                                   FlightSeatService flightSeatService) {
+        return ticketDtoList.stream()
+                .map(ticketDto -> convertToTicketEntity(ticketDto, passengerService, flightService, flightSeatService))
                 .collect(Collectors.toList());
-
     }
-
 }

@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.PassengerDTO;
+import app.dto.PassengerDto;
 import app.entities.Passenger;
 import app.mappers.PassengerMapper;
 import app.repositories.PassengerRepository;
@@ -39,13 +39,13 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public List<PassengerDTO> getAllPassengers() {
-        return passengerMapper.convertToPassengerDTOList(passengerRepository.findAll());
+    public List<PassengerDto> getAllPassengers() {
+        return passengerMapper.convertToPassengerDtoList(passengerRepository.findAll());
     }
 
     @Override
     @Transactional
-    public Passenger savePassenger(PassengerDTO passengerDTO) {
+    public Passenger savePassenger(PassengerDto passengerDTO) {
         var passenger = passengerMapper.convertToPassenger(passengerDTO);
         return passengerRepository.save(passenger);
     }
@@ -58,7 +58,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     @Transactional
-    public Passenger updatePassengerById(Long id, PassengerDTO passengerDTO) {
+    public Passenger updatePassengerById(Long id, PassengerDto passengerDTO) {
         var passenger = passengerMapper.convertToPassenger(passengerDTO);
         var editPassenger = new Passenger();
         editPassenger.setFirstName(passenger.getFirstName());
@@ -72,29 +72,29 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Page<PassengerDTO> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
+    public Page<PassengerDto> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
         if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
             return passengerRepository.findByFirstNameAndLastName(pageable, firstName, lastName)
-                    .map(passengerMapper::convertToPassengerDTO);
+                    .map(passengerMapper::convertToPassengerDto);
         }
         if (firstName != null && !firstName.isEmpty()) {
             return passengerRepository.findAllByFirstName(pageable, firstName)
-                    .map(passengerMapper::convertToPassengerDTO);
+                    .map(passengerMapper::convertToPassengerDto);
         }
         if (lastName != null && !lastName.isEmpty()) {
             return passengerRepository.findByLastName(pageable, lastName)
-                    .map(passengerMapper::convertToPassengerDTO);
+                    .map(passengerMapper::convertToPassengerDto);
         }
         if (email != null && !email.isEmpty()) {
             return passengerRepository.findByEmail(pageable, email)
-                    .map(passengerMapper::convertToPassengerDTO);
+                    .map(passengerMapper::convertToPassengerDto);
         }
         if (serialNumberPassport != null && !serialNumberPassport.isEmpty()) {
             return passengerRepository.findByPassportSerialNumber(pageable, serialNumberPassport)
-                    .map(passengerMapper::convertToPassengerDTO);
+                    .map(passengerMapper::convertToPassengerDto);
         }
         return passengerRepository.findAll(pageable)
-                .map(passengerMapper::convertToPassengerDTO);
+                .map(passengerMapper::convertToPassengerDto);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Page<PassengerDTO> getAllPagesPassengers(Pageable pageable) {
-        return passengerRepository.findAll(pageable).map(passengerMapper::convertToPassengerDTO);
+    public Page<PassengerDto> getAllPagesPassengers(Pageable pageable) {
+        return passengerRepository.findAll(pageable).map(passengerMapper::convertToPassengerDto);
     }
 }

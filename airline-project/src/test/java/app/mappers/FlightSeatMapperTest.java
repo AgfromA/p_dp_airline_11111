@@ -1,7 +1,7 @@
 package app.mappers;
 
-import app.dto.FlightSeatDTO;
-import app.dto.SeatDTO;
+import app.dto.FlightSeatDto;
+import app.dto.SeatDto;
 import app.entities.*;
 import app.services.interfaces.FlightService;
 import app.services.interfaces.SeatService;
@@ -55,7 +55,7 @@ class FlightSeatMapperTest {
         flightSeat.setFlight(flight);
         flightSeat.setSeat(seat);
 
-        FlightSeatDTO result = SUT.convertToFlightSeatDTOEntity(flightSeat, flightServiceMock);
+        FlightSeatDto result = SUT.convertToFlightSeatDtoEntity(flightSeat, flightServiceMock);
 
         Assertions.assertEquals(flightSeat.getId(), result.getId());
         Assertions.assertEquals(flightSeat.getFare(), result.getFare());
@@ -78,11 +78,11 @@ class FlightSeatMapperTest {
         seat.setSeatNumber("42L");
 
         when(seatService.getSeatById(42L)).thenReturn(seat);
-        SeatDTO seatDTO = new SeatDTO();
+        SeatDto seatDTO = new SeatDto();
         seatDTO.setId(42L);
         seatDTO.setSeatNumber("42L");
 
-        FlightSeatDTO flightSeatDTO = new FlightSeatDTO();
+        FlightSeatDto flightSeatDTO = new FlightSeatDto();
         flightSeatDTO.setId(1L);
         flightSeatDTO.setFare(100500);
         flightSeatDTO.setIsBooked(false);
@@ -133,21 +133,21 @@ class FlightSeatMapperTest {
 
         flightSeatList.add(flightSeat);
 
-        List<FlightSeatDTO> flightSeatDTOList = SUT.convertToFlightSeatDTOList(flightSeatList, flightServiceMock);
-        Assertions.assertEquals(flightSeatList.size(), flightSeatDTOList.size());
-        Assertions.assertEquals(flightSeatList.get(0).getId(), flightSeatDTOList.get(0).getId());
-        Assertions.assertEquals(flightSeatList.get(0).getFare(), flightSeatDTOList.get(0).getFare());
-        Assertions.assertEquals(flightSeatList.get(0).getIsBooked(), flightSeatDTOList.get(0).getIsBooked());
-        Assertions.assertEquals(flightSeatList.get(0).getIsRegistered(), flightSeatDTOList.get(0).getIsRegistered());
-        Assertions.assertEquals(flightSeatList.get(0).getIsSold(), flightSeatDTOList.get(0).getIsSold());
-        Assertions.assertEquals(flightSeatList.get(0).getFlight().getId(), flightSeatDTOList.get(0).getFlightId());
-        Assertions.assertEquals(flightSeatList.get(0).getSeat().getSeatNumber(), flightSeatDTOList.get(0).getSeat().getSeatNumber());
+        List<FlightSeatDto> flightSeatDtoList = SUT.convertToFlightSeatDtoList(flightSeatList, flightServiceMock);
+        Assertions.assertEquals(flightSeatList.size(), flightSeatDtoList.size());
+        Assertions.assertEquals(flightSeatList.get(0).getId(), flightSeatDtoList.get(0).getId());
+        Assertions.assertEquals(flightSeatList.get(0).getFare(), flightSeatDtoList.get(0).getFare());
+        Assertions.assertEquals(flightSeatList.get(0).getIsBooked(), flightSeatDtoList.get(0).getIsBooked());
+        Assertions.assertEquals(flightSeatList.get(0).getIsRegistered(), flightSeatDtoList.get(0).getIsRegistered());
+        Assertions.assertEquals(flightSeatList.get(0).getIsSold(), flightSeatDtoList.get(0).getIsSold());
+        Assertions.assertEquals(flightSeatList.get(0).getFlight().getId(), flightSeatDtoList.get(0).getFlightId());
+        Assertions.assertEquals(flightSeatList.get(0).getSeat().getSeatNumber(), flightSeatDtoList.get(0).getSeat().getSeatNumber());
     }
 
     @Test
     @DisplayName("Должен корректно конвертировать  коллекцию DTO в entity")
     public void shouldConvertFlightSeatDTOListToFlightSeatList() {
-        List<FlightSeatDTO> flightSeatDTOList = new ArrayList<>();
+        List<FlightSeatDto> flightSeatDtoList = new ArrayList<>();
         Flight flight = new Flight();
         flight.setId(4001L);
         when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
@@ -157,11 +157,11 @@ class FlightSeatMapperTest {
         seat.setSeatNumber("42L");
 
         when(seatService.getSeatById(42L)).thenReturn(seat);
-        SeatDTO seatDTO = new SeatDTO();
+        SeatDto seatDTO = new SeatDto();
         seatDTO.setId(42L);
         seatDTO.setSeatNumber("42L");
 
-        FlightSeatDTO flightSeatDTO = new FlightSeatDTO();
+        FlightSeatDto flightSeatDTO = new FlightSeatDto();
         flightSeatDTO.setId(1L);
         flightSeatDTO.setFare(100500);
         flightSeatDTO.setIsBooked(false);
@@ -171,15 +171,15 @@ class FlightSeatMapperTest {
         flightSeatDTO.setSeat(seatDTO);
 
         when(seatService.getSeatById(42L)).thenReturn(seat);
-        flightSeatDTOList.add(flightSeatDTO);
-        List<FlightSeat> flightSeatList = SUT.convertToFlightSeatEntityList(flightSeatDTOList, flightServiceMock, seatService);
+        flightSeatDtoList.add(flightSeatDTO);
+        List<FlightSeat> flightSeatList = SUT.convertToFlightSeatEntityList(flightSeatDtoList, flightServiceMock, seatService);
 
-        Assertions.assertEquals(flightSeatDTOList.get(0).getId(), flightSeatList.get(0).getId());
-        Assertions.assertEquals(flightSeatDTOList.get(0).getFare(), flightSeatList.get(0).getFare());
-        Assertions.assertEquals(flightSeatDTOList.get(0).getIsBooked(), flightSeatList.get(0).getIsBooked());
-        Assertions.assertEquals(flightSeatDTOList.get(0).getIsRegistered(), flightSeatList.get(0).getIsRegistered());
-        Assertions.assertEquals(flightSeatDTOList.get(0).getIsSold(), flightSeatList.get(0).getIsSold());
-        Assertions.assertEquals(flightSeatDTOList.get(0).getFlightId(), flightSeatList.get(0).getFlight().getId());
-        Assertions.assertEquals(flightSeatDTOList.get(0).getSeat().getSeatNumber(), flightSeatList.get(0).getSeat().getSeatNumber());
+        Assertions.assertEquals(flightSeatDtoList.get(0).getId(), flightSeatList.get(0).getId());
+        Assertions.assertEquals(flightSeatDtoList.get(0).getFare(), flightSeatList.get(0).getFare());
+        Assertions.assertEquals(flightSeatDtoList.get(0).getIsBooked(), flightSeatList.get(0).getIsBooked());
+        Assertions.assertEquals(flightSeatDtoList.get(0).getIsRegistered(), flightSeatList.get(0).getIsRegistered());
+        Assertions.assertEquals(flightSeatDtoList.get(0).getIsSold(), flightSeatList.get(0).getIsSold());
+        Assertions.assertEquals(flightSeatDtoList.get(0).getFlightId(), flightSeatList.get(0).getFlight().getId());
+        Assertions.assertEquals(flightSeatDtoList.get(0).getSeat().getSeatNumber(), flightSeatList.get(0).getSeat().getSeatNumber());
     }
 }

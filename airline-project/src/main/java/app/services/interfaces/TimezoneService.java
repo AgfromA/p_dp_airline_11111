@@ -1,6 +1,6 @@
 package app.services.interfaces;
 
-import app.dto.TimezoneDTO;
+import app.dto.TimezoneDto;
 import app.entities.Timezone;
 import org.springframework.data.domain.Page;
 
@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TimezoneService {
-    List<TimezoneDTO> getAllTimeZone();
+    List<TimezoneDto> getAllTimeZone();
 
-    Timezone saveTimezone(TimezoneDTO timezoneDTO);
+    Timezone saveTimezone(TimezoneDto timezoneDto);
 
-    Timezone updateTimezone(TimezoneDTO timezoneDTO);
+    Timezone updateTimezone(TimezoneDto timezoneDto);
 
-    Page<TimezoneDTO> getAllPagesTimezones(int page, int size);
+    Page<TimezoneDto> getAllPagesTimezones(int page, int size);
 
     Optional<Timezone> getTimezoneById(Long id);
 

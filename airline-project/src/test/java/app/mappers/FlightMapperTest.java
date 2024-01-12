@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.FlightDTO;
+import app.dto.FlightDto;
 import app.entities.*;
 import app.enums.Airport;
 import app.enums.FlightStatus;
@@ -36,7 +36,7 @@ class FlightMapperTest {
     private SeatService seatServiceMock = Mockito.mock(SeatService.class);
 
     @Test
-    void shouldConvertFlightToFlightDTOEntity() throws Exception {
+    void shouldConvertFlightToFlightDtoEntity() throws Exception {
         Category category = new Category();
         category.setCategoryType(BUSINESS);
         Aircraft aircraft = new Aircraft();
@@ -107,29 +107,29 @@ class FlightMapperTest {
 
         when(flightServiceMock.getFlightById(1L)).thenReturn(Optional.of(flight));
         when(seatServiceMock.getSeatById(anyLong())).thenReturn(flightSeat1.getSeat());
-        FlightDTO flightDTO = flightMapper.flightToFlightDTO(flight, flightServiceMock);
+        FlightDto flightDto = flightMapper.flightToFlightDto(flight, flightServiceMock);
 
-        Assertions.assertNotNull(flightDTO);
-        Assertions.assertEquals(flightDTO.getId(), flight.getId());
-        Assertions.assertEquals(flightDTO.getCode(), flight.getCode());
-        Assertions.assertEquals(flightDTO.getAirportFrom(), flight.getFrom().getAirportCode());
-        Assertions.assertEquals(flightDTO.getAirportTo(), flight.getTo().getAirportCode());
-        Assertions.assertEquals(flightDTO.getArrivalDateTime(), flight.getArrivalDateTime());
-        Assertions.assertEquals(flightDTO.getDepartureDateTime(), flight.getDepartureDateTime());
-        Assertions.assertEquals(flightDTO.getAircraftId(), flight.getAircraft().getId());
-        Assertions.assertEquals(flightDTO.getFlightStatus(), flight.getFlightStatus());
+        Assertions.assertNotNull(flightDto);
+        Assertions.assertEquals(flightDto.getId(), flight.getId());
+        Assertions.assertEquals(flightDto.getCode(), flight.getCode());
+        Assertions.assertEquals(flightDto.getAirportFrom(), flight.getFrom().getAirportCode());
+        Assertions.assertEquals(flightDto.getAirportTo(), flight.getTo().getAirportCode());
+        Assertions.assertEquals(flightDto.getArrivalDateTime(), flight.getArrivalDateTime());
+        Assertions.assertEquals(flightDto.getDepartureDateTime(), flight.getDepartureDateTime());
+        Assertions.assertEquals(flightDto.getAircraftId(), flight.getAircraft().getId());
+        Assertions.assertEquals(flightDto.getFlightStatus(), flight.getFlightStatus());
     }
 
     @Test
-    void shouldConvertFlightDTOtoFlightEntity() throws Exception {
-        FlightDTO flightDTO = new FlightDTO();
-        flightDTO.setId(1001L);
-        flightDTO.setAirportTo(Airport.AAQ);
-        flightDTO.setAirportFrom(Airport.ABA);
-        flightDTO.setArrivalDateTime(LocalDateTime.MAX);
-        flightDTO.setDepartureDateTime(LocalDateTime.MIN);
-        flightDTO.setAircraftId(6001L);
-        flightDTO.setFlightStatus(FlightStatus.CANCELED);
+    void shouldConvertFlightDtotoFlightEntity() throws Exception {
+        FlightDto flightDto = new FlightDto();
+        flightDto.setId(1001L);
+        flightDto.setAirportTo(Airport.AAQ);
+        flightDto.setAirportFrom(Airport.ABA);
+        flightDto.setArrivalDateTime(LocalDateTime.MAX);
+        flightDto.setDepartureDateTime(LocalDateTime.MIN);
+        flightDto.setAircraftId(6001L);
+        flightDto.setFlightStatus(FlightStatus.CANCELED);
 
         FlightSeat flightSeat1 = new FlightSeat();
         flightSeat1.setId(1001L);
@@ -141,7 +141,7 @@ class FlightMapperTest {
         flightSeatList.add(flightSeat1);
         flightSeatList.add(flightSeat2);
 
-        when(flightSeatServiceMock.findByFlightId(flightDTO.getId())).thenReturn(flightSeatList);
+        when(flightSeatServiceMock.findByFlightId(flightDto.getId())).thenReturn(flightSeatList);
 
         Ticket ticket1 = new Ticket();
         ticket1.setId(2001L);
@@ -153,7 +153,7 @@ class FlightMapperTest {
         ticketList.add(ticket1);
         ticketList.add(ticket2);
 
-        when(ticketServiceMock.findByFlightId(flightDTO.getId())).thenReturn(ticketList);
+        when(ticketServiceMock.findByFlightId(flightDto.getId())).thenReturn(ticketList);
 
         Booking booking1 = new Booking();
         booking1.setId(3001L);
@@ -165,37 +165,37 @@ class FlightMapperTest {
         destinationFrom.setId(4001L);
         destinationFrom.setAirportCode(Airport.ABA);
 
-        when(destinationServiceMock.getDestinationByAirportCode(flightDTO.getAirportFrom())).thenReturn(destinationFrom);
+        when(destinationServiceMock.getDestinationByAirportCode(flightDto.getAirportFrom())).thenReturn(destinationFrom);
 
         Destination destinationTo = new Destination();
         destinationTo.setId(5001L);
         destinationTo.setAirportCode(Airport.AAQ);
 
-        when(destinationServiceMock.getDestinationByAirportCode(flightDTO.getAirportTo())).thenReturn(destinationTo);
+        when(destinationServiceMock.getDestinationByAirportCode(flightDto.getAirportTo())).thenReturn(destinationTo);
 
         Aircraft aircraft = new Aircraft();
         aircraft.setId(6001L);
 
-        when(aircraftServiceMock.getAircraftById(flightDTO.getAircraftId())).thenReturn(aircraft);
+        when(aircraftServiceMock.getAircraftById(flightDto.getAircraftId())).thenReturn(aircraft);
 
-        Flight flight = flightMapper.flightDTOtoFlight(flightDTO, aircraftServiceMock, destinationServiceMock,
+        Flight flight = flightMapper.flightDtotoFlight(flightDto, aircraftServiceMock, destinationServiceMock,
                 ticketServiceMock, flightSeatServiceMock);
 
         Assertions.assertNotNull(flight);
-        Assertions.assertEquals(flight.getId(), flightDTO.getId());
+        Assertions.assertEquals(flight.getId(), flightDto.getId());
         Assertions.assertEquals(flight.getSeats(), flightSeatList);
         Assertions.assertEquals(flight.getTicket(), ticketList);
-        Assertions.assertEquals(flight.getCode(), flightDTO.getCode());
-        Assertions.assertEquals(flight.getFrom().getAirportCode(), flightDTO.getAirportFrom());
-        Assertions.assertEquals(flight.getTo().getAirportCode(), flightDTO.getAirportTo());
-        Assertions.assertEquals(flight.getArrivalDateTime(), flightDTO.getArrivalDateTime());
-        Assertions.assertEquals(flight.getDepartureDateTime(), flightDTO.getDepartureDateTime());
-        Assertions.assertEquals(flight.getAircraft().getId(), flightDTO.getAircraftId());
-        Assertions.assertEquals(flight.getFlightStatus(), flightDTO.getFlightStatus());
+        Assertions.assertEquals(flight.getCode(), flightDto.getCode());
+        Assertions.assertEquals(flight.getFrom().getAirportCode(), flightDto.getAirportFrom());
+        Assertions.assertEquals(flight.getTo().getAirportCode(), flightDto.getAirportTo());
+        Assertions.assertEquals(flight.getArrivalDateTime(), flightDto.getArrivalDateTime());
+        Assertions.assertEquals(flight.getDepartureDateTime(), flightDto.getDepartureDateTime());
+        Assertions.assertEquals(flight.getAircraft().getId(), flightDto.getAircraftId());
+        Assertions.assertEquals(flight.getFlightStatus(), flightDto.getFlightStatus());
     }
 
     @Test
-    void shouldConvertFlightListToFlightDTOList() throws Exception {
+    void shouldConvertFlightListToFlightDtoList() throws Exception {
         List<Flight> flightList = new ArrayList<>();
         Category category = new Category();
         category.setCategoryType(BUSINESS);
@@ -270,30 +270,30 @@ class FlightMapperTest {
 
         flightList.add(flight);
 
-        List<FlightDTO> flightDTOList = flightMapper.convertFlightListToFlighDTOtList(flightList, flightServiceMock);
+        List<FlightDto> flightDtoList = flightMapper.convertFlightListToFlighDtotList(flightList, flightServiceMock);
 
-        Assertions.assertEquals(flightList.size(), flightDTOList.size());
-        Assertions.assertEquals(flightDTOList.get(0).getId(), flightList.get(0).getId());
-        Assertions.assertEquals(flightDTOList.get(0).getCode(), flightList.get(0).getCode());
-        Assertions.assertEquals(flightDTOList.get(0).getAirportFrom(), flightList.get(0).getFrom().getAirportCode());
-        Assertions.assertEquals(flightDTOList.get(0).getAirportTo(), flightList.get(0).getTo().getAirportCode());
-        Assertions.assertEquals(flightDTOList.get(0).getArrivalDateTime(), flightList.get(0).getArrivalDateTime());
-        Assertions.assertEquals(flightDTOList.get(0).getDepartureDateTime(), flightList.get(0).getDepartureDateTime());
-        Assertions.assertEquals(flightDTOList.get(0).getAircraftId(), flightList.get(0).getAircraft().getId());
-        Assertions.assertEquals(flightDTOList.get(0).getFlightStatus(), flightList.get(0).getFlightStatus());
+        Assertions.assertEquals(flightList.size(), flightDtoList.size());
+        Assertions.assertEquals(flightDtoList.get(0).getId(), flightList.get(0).getId());
+        Assertions.assertEquals(flightDtoList.get(0).getCode(), flightList.get(0).getCode());
+        Assertions.assertEquals(flightDtoList.get(0).getAirportFrom(), flightList.get(0).getFrom().getAirportCode());
+        Assertions.assertEquals(flightDtoList.get(0).getAirportTo(), flightList.get(0).getTo().getAirportCode());
+        Assertions.assertEquals(flightDtoList.get(0).getArrivalDateTime(), flightList.get(0).getArrivalDateTime());
+        Assertions.assertEquals(flightDtoList.get(0).getDepartureDateTime(), flightList.get(0).getDepartureDateTime());
+        Assertions.assertEquals(flightDtoList.get(0).getAircraftId(), flightList.get(0).getAircraft().getId());
+        Assertions.assertEquals(flightDtoList.get(0).getFlightStatus(), flightList.get(0).getFlightStatus());
     }
 
     @Test
-    void shouldConvertFlightDTOListToFlightEntityList() throws Exception {
-        List<FlightDTO> flightDTOList = new ArrayList<>();
-        FlightDTO flightDTO = new FlightDTO();
-        flightDTO.setId(1001L);
-        flightDTO.setAirportTo(Airport.AAQ);
-        flightDTO.setAirportFrom(Airport.ABA);
-        flightDTO.setArrivalDateTime(LocalDateTime.MAX);
-        flightDTO.setDepartureDateTime(LocalDateTime.MIN);
-        flightDTO.setAircraftId(6001L);
-        flightDTO.setFlightStatus(FlightStatus.CANCELED);
+    void shouldConvertFlightDtoListToFlightEntityList() throws Exception {
+        List<FlightDto> flightDtoList = new ArrayList<>();
+        FlightDto flightDto = new FlightDto();
+        flightDto.setId(1001L);
+        flightDto.setAirportTo(Airport.AAQ);
+        flightDto.setAirportFrom(Airport.ABA);
+        flightDto.setArrivalDateTime(LocalDateTime.MAX);
+        flightDto.setDepartureDateTime(LocalDateTime.MIN);
+        flightDto.setAircraftId(6001L);
+        flightDto.setFlightStatus(FlightStatus.CANCELED);
 
         FlightSeat flightSeat1 = new FlightSeat();
         flightSeat1.setId(1001L);
@@ -305,7 +305,7 @@ class FlightMapperTest {
         flightSeatList.add(flightSeat1);
         flightSeatList.add(flightSeat2);
 
-        when(flightSeatServiceMock.findByFlightId(flightDTO.getId())).thenReturn(flightSeatList);
+        when(flightSeatServiceMock.findByFlightId(flightDto.getId())).thenReturn(flightSeatList);
 
         Ticket ticket1 = new Ticket();
         ticket1.setId(2001L);
@@ -317,7 +317,7 @@ class FlightMapperTest {
         ticketList.add(ticket1);
         ticketList.add(ticket2);
 
-        when(ticketServiceMock.findByFlightId(flightDTO.getId())).thenReturn(ticketList);
+        when(ticketServiceMock.findByFlightId(flightDto.getId())).thenReturn(ticketList);
 
         Booking booking1 = new Booking();
         booking1.setId(3001L);
@@ -329,34 +329,34 @@ class FlightMapperTest {
         destinationFrom.setId(4001L);
         destinationFrom.setAirportCode(Airport.ABA);
 
-        when(destinationServiceMock.getDestinationByAirportCode(flightDTO.getAirportFrom())).thenReturn(destinationFrom);
+        when(destinationServiceMock.getDestinationByAirportCode(flightDto.getAirportFrom())).thenReturn(destinationFrom);
 
         Destination destinationTo = new Destination();
         destinationTo.setId(5001L);
         destinationTo.setAirportCode(Airport.AAQ);
 
-        when(destinationServiceMock.getDestinationByAirportCode(flightDTO.getAirportTo())).thenReturn(destinationTo);
+        when(destinationServiceMock.getDestinationByAirportCode(flightDto.getAirportTo())).thenReturn(destinationTo);
 
         Aircraft aircraft = new Aircraft();
         aircraft.setId(6001L);
 
-        when(aircraftServiceMock.getAircraftById(flightDTO.getAircraftId())).thenReturn(aircraft);
+        when(aircraftServiceMock.getAircraftById(flightDto.getAircraftId())).thenReturn(aircraft);
 
-        flightDTOList.add(flightDTO);
+        flightDtoList.add(flightDto);
 
-        List<Flight> flightList = flightMapper.convertFlightDTOListToFlightList(flightDTOList, aircraftServiceMock, destinationServiceMock,
+        List<Flight> flightList = flightMapper.convertFlightDtoListToFlightList(flightDtoList, aircraftServiceMock, destinationServiceMock,
                 ticketServiceMock, flightSeatServiceMock);
 
-        Assertions.assertEquals(flightList.size(), flightDTOList.size());
-        Assertions.assertEquals(flightList.get(0).getId(), flightDTOList.get(0).getId());
+        Assertions.assertEquals(flightList.size(), flightDtoList.size());
+        Assertions.assertEquals(flightList.get(0).getId(), flightDtoList.get(0).getId());
         Assertions.assertEquals(flightList.get(0).getSeats(), flightSeatList);
         Assertions.assertEquals(flightList.get(0).getTicket(), ticketList);
-        Assertions.assertEquals(flightList.get(0).getCode(), flightDTOList.get(0).getCode());
-        Assertions.assertEquals(flightList.get(0).getFrom().getAirportCode(), flightDTOList.get(0).getAirportFrom());
-        Assertions.assertEquals(flightList.get(0).getTo().getAirportCode(), flightDTOList.get(0).getAirportTo());
-        Assertions.assertEquals(flightList.get(0).getArrivalDateTime(), flightDTOList.get(0).getArrivalDateTime());
-        Assertions.assertEquals(flightList.get(0).getDepartureDateTime(), flightDTOList.get(0).getDepartureDateTime());
-        Assertions.assertEquals(flightList.get(0).getAircraft().getId(), flightDTOList.get(0).getAircraftId());
-        Assertions.assertEquals(flightList.get(0).getFlightStatus(), flightDTOList.get(0).getFlightStatus());
+        Assertions.assertEquals(flightList.get(0).getCode(), flightDtoList.get(0).getCode());
+        Assertions.assertEquals(flightList.get(0).getFrom().getAirportCode(), flightDtoList.get(0).getAirportFrom());
+        Assertions.assertEquals(flightList.get(0).getTo().getAirportCode(), flightDtoList.get(0).getAirportTo());
+        Assertions.assertEquals(flightList.get(0).getArrivalDateTime(), flightDtoList.get(0).getArrivalDateTime());
+        Assertions.assertEquals(flightList.get(0).getDepartureDateTime(), flightDtoList.get(0).getDepartureDateTime());
+        Assertions.assertEquals(flightList.get(0).getAircraft().getId(), flightDtoList.get(0).getAircraftId());
+        Assertions.assertEquals(flightList.get(0).getFlightStatus(), flightDtoList.get(0).getFlightStatus());
     }
 }

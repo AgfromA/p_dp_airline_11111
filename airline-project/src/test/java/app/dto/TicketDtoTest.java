@@ -13,7 +13,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.IOException;
 
-public class TicketDTOTest extends EntityTest {
+public class TicketDtoTest extends EntityTest {
 
     private Validator validator;
     private ObjectMapper mapper;
@@ -47,10 +47,10 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void validTicketShouldValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -60,11 +60,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullTicketNumberFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("ticketNumber", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -74,11 +74,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullPassengerIdFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("passengerId", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -88,11 +88,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullPassengerFirstNameFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("firstName", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -102,11 +102,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void shortPassengerFirstNameFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         JSONObject ticketJson = initJsonObject();
         ticketJson.replace("firstName", "I");
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -116,11 +116,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullPassengerLastNameFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("lastName", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -130,11 +130,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void shortPassengerLastNameFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("lastName", "I");
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -144,11 +144,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullFlightIdFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("flightId", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -158,11 +158,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullCodeFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("code", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -172,11 +172,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void shortCodeFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("code", "1");
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -186,11 +186,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullFromFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("from", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -200,11 +200,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullToFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("to", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -214,11 +214,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullDepartureDateTimeFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("departureDateTime", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -228,11 +228,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullArrivalDateTimeFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("arrivalDateTime", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -242,11 +242,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullFlightSeatIdFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("flightSeatId", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -256,11 +256,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void nullSeatNumberFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("seatNumber", null);
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
@@ -270,11 +270,11 @@ public class TicketDTOTest extends EntityTest {
     @Test
     public void shortSeatNumberFieldShouldNotValidate() {
 
-        TicketDTO ticketDTO;
+        TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("seatNumber", "1");
         try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDTO.class);
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }

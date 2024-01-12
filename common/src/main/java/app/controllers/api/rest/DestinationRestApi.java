@@ -1,6 +1,6 @@
 package app.controllers.api.rest;
 
-import app.dto.DestinationDTO;
+import app.dto.DestinationDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.Api;
@@ -26,7 +26,7 @@ public interface DestinationRestApi {
             @ApiResponse(code = 200, message = "Destinations found"),
             @ApiResponse(code = 404, message = "Destinations not found")
     })
-    ResponseEntity<List<DestinationDTO>> getAllDestinations(
+    ResponseEntity<List<DestinationDto>> getAllDestinations(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
@@ -52,17 +52,17 @@ public interface DestinationRestApi {
     @ApiOperation(value = "Create new Destination")
     @ApiResponse(code = 201, message = "Destination created")
     @RequestMapping(value = "/api/destinations", method = RequestMethod.POST)
-    ResponseEntity<DestinationDTO> createDestination(
+    ResponseEntity<DestinationDto> createDestination(
             @ApiParam(
                     name = "Destination",
                     value = "Destination"
             )
-            @RequestBody DestinationDTO destinationDTO);
+            @RequestBody DestinationDto timezoneDto);
 
     @ApiOperation(value = "Edit Destination by id")
     @ApiResponse(code = 200, message = "Destination has been updated")
     @RequestMapping(value = "/api/destinations/{id}", method = RequestMethod.PATCH)
-    ResponseEntity<DestinationDTO> updateDestinationById(
+    ResponseEntity<DestinationDto> updateDestinationById(
             @ApiParam(
                     name = "id",
                     value = "Destination.id"
@@ -72,7 +72,7 @@ public interface DestinationRestApi {
                     value = "Destination"
             )
 
-            @RequestBody DestinationDTO destinationDTO);
+            @RequestBody DestinationDto timezoneDto);
 
     @ApiOperation("Delete Destination by id")
     @ApiResponses(value = {

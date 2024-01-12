@@ -1,7 +1,7 @@
 package app.services;
 
-import app.dto.AccountDTO;
-import app.dto.RoleDTO;
+import app.dto.AccountDto;
+import app.dto.RoleDto;
 import app.mappers.RoleMapper;
 import app.repositories.RoleRepository;
 import app.services.interfaces.RoleService;
@@ -23,13 +23,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(readOnly = true)
-    public RoleDTO getRoleByName(String name) {
-        return roleMapper.convertToRoleDTO(roleRepository.findByName(name));
+    public RoleDto getRoleByName(String name) {
+        return roleMapper.convertToRoleDto(roleRepository.findByName(name));
     }
 
     @Override
-    public Set<RoleDTO> saveRolesToUser(AccountDTO user) {
-        Set<RoleDTO> userRoles = new HashSet<>();
+    public Set<RoleDto> saveRolesToUser(AccountDto user) {
+        Set<RoleDto> userRoles = new HashSet<>();
         user.getRoles().stream().forEach(a -> {
             var roleFromDb = getRoleByName(a.getName());
             if (roleFromDb == null) {
@@ -40,14 +40,14 @@ public class RoleServiceImpl implements RoleService {
         return userRoles;
     }
     @Override
-    public void saveRole(RoleDTO role) {
+    public void saveRole(RoleDto role) {
         roleRepository.save(roleMapper.convertToRole(role));
     }
 
     @Override
-    public Set<RoleDTO> getAllRoles() {
+    public Set<RoleDto> getAllRoles() {
         return roleRepository.findAll().stream()
-                .map(roleMapper::convertToRoleDTO)
+                .map(roleMapper::convertToRoleDto)
                 .collect(Collectors.toSet());
     }
 }

@@ -1,17 +1,17 @@
 package app.services.interfaces;
 
-import app.dto.AircraftDTO;
+import app.dto.AircraftDto;
 import app.entities.Aircraft;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface AircraftService {
-    List<AircraftDTO> findAll();
+    List<AircraftDto> findAll();
 
-    AircraftDTO saveAircraft(AircraftDTO aircraftDTO);
+    AircraftDto saveAircraft(AircraftDto aircraftDTO);
 
-    Page<AircraftDTO> getPage(Integer page, Integer size);
+    Page<AircraftDto> getPage(Integer page, Integer size);
 
     Aircraft getAircraftById(Long id);
 

@@ -1,26 +1,34 @@
 package app.dto;
 
-import app.entities.Passport;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
+
 
 @Getter
 @Setter
-@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
-@JsonTypeName(value = "passenger")
-public class PassengerDTO {
+@ToString
+@JsonTypeName(value = "account")
+public class AccountDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotBlank(message = "Field should not be empty")
@@ -36,15 +44,24 @@ public class PassengerDTO {
     @Past(message = "Date of birth can not be a future time")
     private LocalDate birthDate;
 
+    @Email
+    @NotBlank(message = "The field cannot be empty")
+    private String email;
+
     @NotBlank(message = "Field should not be empty")
     @Size(min = 6, max = 64, message = "Size phone cannot be less than 6 and more than 64 characters")
     private String phoneNumber;
 
-    @NotNull(message = "Passport should not be empty")
-    @Valid
-    private Passport passport;
-
-    @Email
     @NotBlank(message = "The field cannot be empty")
-    private String email;
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,}", message = "min 8 characters, 1 uppercase latter" +
+            "1 lowercase latter, at least 1 number, 1 special character")
+    private String password;
+
+    @NotBlank(message = "The field cannot be empty")
+    private String securityQuestion;
+
+    @NotBlank(message = "The field cannot be empty")
+    private String answerQuestion;
+
+    private Set<RoleDto> roles;
 }

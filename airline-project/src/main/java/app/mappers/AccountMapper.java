@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.AccountDTO;
+import app.dto.AccountDto;
 import app.entities.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -9,11 +9,12 @@ import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AccountMapper {
-    AccountDTO convertToAccountDTO(Account account);
 
-    Account convertToAccount(AccountDTO accountDTO);
+    AccountDto convertToAccountDto(Account account);
 
-    List<AccountDTO> convertToAccountDTOList(List<Account> accounts);
+    Account convertToAccount(AccountDto accountDto);
 
-    List<Account> convertToAccountList(List<AccountDTO> accountDTOs);
+    List<AccountDto> convertToAccountDtoList(List<Account> accounts);
+
+    List<Account> convertToAccountList(List<AccountDto> accountDtos);
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static app.enums.CategoryType.ECONOMY;
 
-class FlightSeatDTOTest extends EntityTest {
+class FlightSeatDtoTest extends EntityTest {
 
     private Validator validator;
     private ObjectMapper mapper;
@@ -25,7 +25,7 @@ class FlightSeatDTOTest extends EntityTest {
 
     private JSONObject initJSONObject() {
         var flightSeatJson = new JSONObject();
-        SeatDTO seat = new SeatDTO();
+        SeatDto seat = new SeatDto();
         seat.setSeatNumber("1");
         seat.setId(1L);
         flightSeatJson.put("id", 1L);
@@ -43,11 +43,11 @@ class FlightSeatDTOTest extends EntityTest {
 
     @Test
     void validFlightSeatShouldValidate() {
-        FlightSeatDTO testFlightSeat;
+        FlightSeatDto testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
 
         try {
-            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDTO.class);
+            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }
@@ -56,11 +56,11 @@ class FlightSeatDTOTest extends EntityTest {
 
     @Test
     void negativeFareShouldNotValidate() {
-        FlightSeatDTO testFlightSeat;
+        FlightSeatDto testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("fare", -100);
         try {
-            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDTO.class);
+            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }
@@ -69,11 +69,11 @@ class FlightSeatDTOTest extends EntityTest {
 
     @Test
     void nullIsRegisteredShouldNotValidate() {
-        FlightSeatDTO testFlightSeat;
+        FlightSeatDto testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("isRegistered", null);
         try {
-            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDTO.class);
+            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }
@@ -81,11 +81,11 @@ class FlightSeatDTOTest extends EntityTest {
     }
     @Test
     void nullIsSoldShouldNotValidate() {
-        FlightSeatDTO testFlightSeat;
+        FlightSeatDto testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("isSold", null);
         try {
-            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDTO.class);
+            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }
@@ -94,11 +94,11 @@ class FlightSeatDTOTest extends EntityTest {
 
     @Test
     void nullFlightShouldNotValidate() {
-        FlightSeatDTO testFlightSeat;
+        FlightSeatDto testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("flightId", null);
         try {
-            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDTO.class);
+            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }
@@ -107,11 +107,11 @@ class FlightSeatDTOTest extends EntityTest {
 
     @Test
     void nullSeatShouldNotValidate() {
-        FlightSeatDTO testFlightSeat;
+        FlightSeatDto testFlightSeat;
         JSONObject flightSeatJson = initJSONObject();
         flightSeatJson.replace("seat", null);
         try {
-            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDTO.class);
+            testFlightSeat = mapper.readValue(flightSeatJson.toString(), FlightSeatDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }

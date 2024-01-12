@@ -1,8 +1,7 @@
 package app.dto.search;
 
-import app.dto.FlightDTO;
+import app.dto.FlightDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -26,11 +25,11 @@ public class SearchResult {
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @ToString.Exclude
-    private List<FlightDTO> departFlights;
+    private List<FlightDto> departFlights;
 
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @ToString.Exclude
-    private List<FlightDTO> returnFlights;
+    private List<FlightDto> returnFlights;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Search search;

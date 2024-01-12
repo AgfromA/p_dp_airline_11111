@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-public class DestinationDTOTest extends EntityTest {
+public class DestinationDtoTest extends EntityTest {
 
     private Validator validator;
 
@@ -20,24 +20,24 @@ public class DestinationDTOTest extends EntityTest {
 
     @Test
     public void airportNullShouldValidate() {
-        var testDestination = new DestinationDTO(1L, null, "GMT +99999");
+        var testDestination = new DestinationDto(1L, null, "GMT +99999");
         Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testDestination));
     }
     @Test
     public void between2And9CharTimezoneSizeShouldValidate() {
-        var testDestination = new DestinationDTO(1L, Airport.AER, "GMT + 3");
+        var testDestination = new DestinationDto(1L, Airport.AER, "GMT + 3");
         Assertions.assertTrue(isSetWithViolationIsEmpty(validator, testDestination));
     }
 
     @Test
     public void leesThan2CharTimezoneSizeShouldValidate() {
-        var testDestination = new DestinationDTO(1L, Airport.AER, "3");
+        var testDestination = new DestinationDto(1L, Airport.AER, "3");
         Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testDestination));
     }
 
     @Test
     public void moreThan9CharTimezoneSizeShouldValidate() {
-        var testDestination = new DestinationDTO(1L, Airport.AER, "GMT +99999");
+        var testDestination = new DestinationDto(1L, Airport.AER, "GMT +99999");
         Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testDestination));
     }
 

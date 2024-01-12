@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.DestinationDTO;
+import app.dto.DestinationDto;
 import app.entities.Destination;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,20 +13,19 @@ import java.util.stream.Collectors;
 @Component
 public interface DestinationMapper {
 
-    DestinationDTO convertToDestinationDTOEntity(Destination destination);
+    DestinationDto convertToDestinationDtoEntity(Destination destination);
 
-    @Mapping(target = "airportName", expression = "java(dto.getAirportCode().getAirportName())")
-    @Mapping(target = "cityName", expression = "java(dto.getAirportCode().getCity())")
-    @Mapping(target = "countryName", expression = "java(dto.getAirportCode().getCountry())")
-    Destination convertToDestinationEntity(DestinationDTO dto);
+    @Mapping(target = "airportName", expression = "java(destinationDto.getAirportCode().getAirportName())")
+    @Mapping(target = "cityName", expression = "java(destinationDto.getAirportCode().getCity())")
+    @Mapping(target = "countryName", expression = "java(destinationDto.getAirportCode().getCountry())")
+    Destination convertToDestinationEntity(DestinationDto destinationDto);
 
-    List<DestinationDTO> convertToDestinationDTOList(List<Destination> destinations);
+    List<DestinationDto> convertToDestinationDtoList(List<Destination> destinations);
 
-    default List<Destination> convertToDestinationEntityList(List<DestinationDTO> destinationDTOS) {
-        return destinationDTOS.stream()
+    default List<Destination> convertToDestinationEntityList(List<DestinationDto> destinationDtos) {
+        return destinationDtos.stream()
                 .map(this::convertToDestinationEntity)
                 .collect(Collectors.toList());
 
     }
-
 }

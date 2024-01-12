@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.BookingDTO;
+import app.dto.BookingDto;
 import app.entities.Booking;
 import app.enums.BookingStatus;
 import app.exceptions.FlightSeatIsBookedException;
@@ -27,15 +27,15 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
 
     @Override
-    public List<BookingDTO> findAll() {
-        return bookingMapper.convertToBookingDTOEntityList(bookingRepository.findAll());
+    public List<BookingDto> findAll() {
+        return bookingMapper.convertToBookingDtoEntityList(bookingRepository.findAll());
     }
 
     @Transactional
     @Override
-    public BookingDTO saveBooking(BookingDTO bookingDTO) {
+    public BookingDto saveBooking(BookingDto bookingDto) {
         var booking = bookingMapper
-                .convertToBookingEntity(bookingDTO, passengerService, flightSeatService);
+                .convertToBookingEntity(bookingDto, passengerService, flightSeatService);
         if (booking.getFlightSeat().getIsBooked()) {
             throw new FlightSeatIsBookedException("FlightSeat is already booked.");
         } else {
@@ -52,17 +52,17 @@ public class BookingServiceImpl implements BookingService {
             booking.setBookingNumber(bookingRepository.findById(booking.getId()).get().getBookingNumber());
         }
 
-        return bookingMapper.convertToBookingDTOEntity(bookingRepository.save(booking));
+        return bookingMapper.convertToBookingDtoEntity(bookingRepository.save(booking));
     }
 
     @Override
-    public Page<BookingDTO> getAllBookings(Integer page, Integer size) {
-        return bookingRepository.findAll(PageRequest.of(page, size)).map(bookingMapper::convertToBookingDTOEntity);
+    public Page<BookingDto> getAllBookings(Integer page, Integer size) {
+        return bookingRepository.findAll(PageRequest.of(page, size)).map(bookingMapper::convertToBookingDtoEntity);
     }
 
     @Override
-    public BookingDTO getBookingById(Long id) {
-        return bookingMapper.convertToBookingDTOEntity(bookingRepository.findById(id).orElse(null));
+    public BookingDto getBookingById(Long id) {
+        return bookingMapper.convertToBookingDtoEntity(bookingRepository.findById(id).orElse(null));
     }
 
     @Transactional
@@ -77,8 +77,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDTO getBookingByNumber(String number) {
-        return bookingMapper.convertToBookingDTOEntity(bookingRepository.findByBookingNumber(number).orElse(null));
+    public BookingDto getBookingByNumber(String number) {
+        return bookingMapper.convertToBookingDtoEntity(bookingRepository.findByBookingNumber(number).orElse(null));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.AircraftRestApi;
-import app.dto.AircraftDTO;
+import app.dto.AircraftDto;
 import app.mappers.AircraftMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.transaction.TransactionSystemException;
@@ -24,7 +24,7 @@ public class AircraftRestController implements AircraftRestApi {
     private final AircraftMapper aircraftMapper = Mappers.getMapper(AircraftMapper.class);
 
     @Override
-    public ResponseEntity<List<AircraftDTO>> getAllAircrafts(Integer page, Integer size) {
+    public ResponseEntity<List<AircraftDto>> getAllAircrafts(Integer page, Integer size) {
         log.info("getAll: get all Aircrafts");
         if (page == null || size == null) {
             log.info("getAll: get all List Aircrafts");
@@ -40,7 +40,7 @@ public class AircraftRestController implements AircraftRestApi {
                 : new ResponseEntity<>(aircraft.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<List<AircraftDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<AircraftDto>> createUnPagedResponse() {
         var aircraft = aircraftService.findAll();
         if (aircraft.isEmpty()) {
             log.info("getAll: Aircrafts not found");
@@ -52,7 +52,7 @@ public class AircraftRestController implements AircraftRestApi {
     }
 
     @Override
-    public ResponseEntity<AircraftDTO> getAircraftById(Long id) {
+    public ResponseEntity<AircraftDto> getAircraftById(Long id) {
         var aircraft = aircraftService.getAircraftById(id);
         if (aircraft == null) {
             log.error("getById: Aircraft with id={} doesn't exist.", id);
@@ -63,13 +63,13 @@ public class AircraftRestController implements AircraftRestApi {
     }
 
     @Override
-    public ResponseEntity<AircraftDTO> createAircraft(AircraftDTO aircraftDTO) {
+    public ResponseEntity<AircraftDto> createAircraft(AircraftDto aircraftDTO) {
         log.info("create: new Aircraft saved.");
         return new ResponseEntity<>(aircraftService.saveAircraft(aircraftDTO), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<AircraftDTO> updateAircraftById(Long id, AircraftDTO aircraftDTO) {
+    public ResponseEntity<AircraftDto> updateAircraftById(Long id, AircraftDto aircraftDTO) {
         if (aircraftService.getAircraftById(id) == null) {
             log.error("update: Aircraft with id={} doesn't exist.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

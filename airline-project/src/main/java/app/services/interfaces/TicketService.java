@@ -1,23 +1,23 @@
 package app.services.interfaces;
 
-import app.dto.TicketDTO;
+import app.dto.TicketDto;
 import app.entities.Ticket;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface TicketService {
-    List<TicketDTO> getAllTickets();
+    List<TicketDto> getAllTickets();
 
-    Page<TicketDTO> getAllTickets(int page, int size);
+    Page<TicketDto> getAllTickets(int page, int size);
 
     Ticket getTicketByTicketNumber(String bookingNumber);
 
     void deleteTicketById(Long id);
 
-    Ticket saveTicket(TicketDTO ticketDTO);
+    Ticket saveTicket(TicketDto ticketDTO);
 
-    Ticket updateTicketById(Long id, TicketDTO ticketDTO);
+    Ticket updateTicketById(Long id, TicketDto ticketDTO);
 
 
     long[] getArrayOfFlightSeatIdByPassengerId(long passengerId);

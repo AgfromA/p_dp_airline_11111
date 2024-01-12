@@ -1,7 +1,7 @@
 package app.mappers;
 
-import app.dto.AccountDTO;
-import app.dto.RoleDTO;
+import app.dto.AccountDto;
+import app.dto.RoleDto;
 import app.entities.Account;
 import app.entities.Role;
 import app.services.interfaces.RoleService;
@@ -47,7 +47,7 @@ class AccountMapperTest {
         account.setSecurityQuestion("Test");
         account.setRoles(roles);
 
-        AccountDTO accountDTO = accountMapper.convertToAccountDTO(account);
+        AccountDto accountDTO = accountMapper.convertToAccountDto(account);
 
         Assertions.assertEquals(account.getId(), accountDTO.getId());
         Assertions.assertEquals(account.getFirstName(), accountDTO.getFirstName());
@@ -64,13 +64,13 @@ class AccountMapperTest {
 
     @Test
     public void shouldConvertAccountDTOToAccount() throws Exception {
-        RoleDTO role = new RoleDTO();
+        RoleDto role = new RoleDto();
         role.setId(1L);
         role.setName("ROLE_MANAGER");
 
         when(roleServiceMock.getRoleByName("ROLE_MANAGER")).thenReturn(role);
 
-        AccountDTO accountDTO = new AccountDTO();
+        AccountDto accountDTO = new AccountDto();
 
         accountDTO.setId(1L);
         accountDTO.setFirstName("Ivan");
@@ -136,94 +136,94 @@ class AccountMapperTest {
         accountList.add(accountOne);
         accountList.add(accountTwo);
 
-        List<AccountDTO> accountDTOList = accountMapper.convertToAccountDTOList(accountList);
-        Assertions.assertEquals(accountList.size(), accountDTOList.size());
+        List<AccountDto> accountDtoList = accountMapper.convertToAccountDtoList(accountList);
+        Assertions.assertEquals(accountList.size(), accountDtoList.size());
 
-        Assertions.assertEquals(accountList.get(0).getId(), accountDTOList.get(0).getId());
-        Assertions.assertEquals(accountList.get(0).getFirstName(), accountDTOList.get(0).getFirstName());
-        Assertions.assertEquals(accountList.get(0).getLastName(), accountDTOList.get(0).getLastName());
-        Assertions.assertEquals(accountList.get(0).getBirthDate(), accountDTOList.get(0).getBirthDate());
-        Assertions.assertEquals(accountList.get(0).getPhoneNumber(), accountDTOList.get(0).getPhoneNumber());
-        Assertions.assertEquals(accountList.get(0).getEmail(), accountDTOList.get(0).getEmail());
-        Assertions.assertEquals(accountList.get(0).getPassword(), accountDTOList.get(0).getPassword());
-        Assertions.assertEquals(accountList.get(0).getAnswerQuestion(), accountDTOList.get(0).getAnswerQuestion());
-        Assertions.assertEquals(accountList.get(0).getSecurityQuestion(), accountDTOList.get(0).getSecurityQuestion());
-        Assertions.assertEquals(accountList.get(0).getRoles().iterator().next().getName(), accountDTOList.get(0).getRoles().iterator().next().getName());
+        Assertions.assertEquals(accountList.get(0).getId(), accountDtoList.get(0).getId());
+        Assertions.assertEquals(accountList.get(0).getFirstName(), accountDtoList.get(0).getFirstName());
+        Assertions.assertEquals(accountList.get(0).getLastName(), accountDtoList.get(0).getLastName());
+        Assertions.assertEquals(accountList.get(0).getBirthDate(), accountDtoList.get(0).getBirthDate());
+        Assertions.assertEquals(accountList.get(0).getPhoneNumber(), accountDtoList.get(0).getPhoneNumber());
+        Assertions.assertEquals(accountList.get(0).getEmail(), accountDtoList.get(0).getEmail());
+        Assertions.assertEquals(accountList.get(0).getPassword(), accountDtoList.get(0).getPassword());
+        Assertions.assertEquals(accountList.get(0).getAnswerQuestion(), accountDtoList.get(0).getAnswerQuestion());
+        Assertions.assertEquals(accountList.get(0).getSecurityQuestion(), accountDtoList.get(0).getSecurityQuestion());
+        Assertions.assertEquals(accountList.get(0).getRoles().iterator().next().getName(), accountDtoList.get(0).getRoles().iterator().next().getName());
 
-        Assertions.assertEquals(accountList.get(1).getId(), accountDTOList.get(1).getId());
-        Assertions.assertEquals(accountList.get(1).getFirstName(), accountDTOList.get(1).getFirstName());
-        Assertions.assertEquals(accountList.get(1).getLastName(), accountDTOList.get(1).getLastName());
-        Assertions.assertEquals(accountList.get(1).getBirthDate(), accountDTOList.get(1).getBirthDate());
-        Assertions.assertEquals(accountList.get(1).getPhoneNumber(), accountDTOList.get(1).getPhoneNumber());
-        Assertions.assertEquals(accountList.get(1).getEmail(), accountDTOList.get(1).getEmail());
-        Assertions.assertEquals(accountList.get(1).getPassword(), accountDTOList.get(1).getPassword());
-        Assertions.assertEquals(accountList.get(1).getAnswerQuestion(), accountDTOList.get(1).getAnswerQuestion());
-        Assertions.assertEquals(accountList.get(1).getSecurityQuestion(), accountDTOList.get(1).getSecurityQuestion());
-        Assertions.assertEquals(accountList.get(1).getRoles().iterator().next().getName(), accountDTOList.get(1).getRoles().iterator().next().getName());
+        Assertions.assertEquals(accountList.get(1).getId(), accountDtoList.get(1).getId());
+        Assertions.assertEquals(accountList.get(1).getFirstName(), accountDtoList.get(1).getFirstName());
+        Assertions.assertEquals(accountList.get(1).getLastName(), accountDtoList.get(1).getLastName());
+        Assertions.assertEquals(accountList.get(1).getBirthDate(), accountDtoList.get(1).getBirthDate());
+        Assertions.assertEquals(accountList.get(1).getPhoneNumber(), accountDtoList.get(1).getPhoneNumber());
+        Assertions.assertEquals(accountList.get(1).getEmail(), accountDtoList.get(1).getEmail());
+        Assertions.assertEquals(accountList.get(1).getPassword(), accountDtoList.get(1).getPassword());
+        Assertions.assertEquals(accountList.get(1).getAnswerQuestion(), accountDtoList.get(1).getAnswerQuestion());
+        Assertions.assertEquals(accountList.get(1).getSecurityQuestion(), accountDtoList.get(1).getSecurityQuestion());
+        Assertions.assertEquals(accountList.get(1).getRoles().iterator().next().getName(), accountDtoList.get(1).getRoles().iterator().next().getName());
     }
 
     @Test
     public void shouldConvertAccountDTOListToAccountList() throws Exception {
-        List<AccountDTO> accountDTOList = new ArrayList<>();
-        RoleDTO role = new RoleDTO();
+        List<AccountDto> accountDtoList = new ArrayList<>();
+        RoleDto role = new RoleDto();
         role.setId(1L);
         role.setName("ROLE_MANAGER");
 
         when(roleServiceMock.getRoleByName("ROLE_MANAGER")).thenReturn(role);
 
-        AccountDTO accountDTOOne = new AccountDTO();
+        AccountDto accountDtoOne = new AccountDto();
 
-        accountDTOOne.setId(1L);
-        accountDTOOne.setFirstName("Ivan");
-        accountDTOOne.setLastName("Ivanov");
-        accountDTOOne.setBirthDate(LocalDate.of(2023, 8, 3));
-        accountDTOOne.setPhoneNumber("7933333333");
-        accountDTOOne.setEmail("manager2@mail.ru");
-        accountDTOOne.setPassword("Test123@");
-        accountDTOOne.setAnswerQuestion("Test");
-        accountDTOOne.setSecurityQuestion("Test");
-        accountDTOOne.setRoles(Set.of(roleServiceMock.getRoleByName("ROLE_MANAGER")));
+        accountDtoOne.setId(1L);
+        accountDtoOne.setFirstName("Ivan");
+        accountDtoOne.setLastName("Ivanov");
+        accountDtoOne.setBirthDate(LocalDate.of(2023, 8, 3));
+        accountDtoOne.setPhoneNumber("7933333333");
+        accountDtoOne.setEmail("manager2@mail.ru");
+        accountDtoOne.setPassword("Test123@");
+        accountDtoOne.setAnswerQuestion("Test");
+        accountDtoOne.setSecurityQuestion("Test");
+        accountDtoOne.setRoles(Set.of(roleServiceMock.getRoleByName("ROLE_MANAGER")));
 
-        AccountDTO accountDTOTwo = new AccountDTO();
+        AccountDto accountDtoTwo = new AccountDto();
 
-        accountDTOTwo.setId(2L);
-        accountDTOTwo.setFirstName("Petr");
-        accountDTOTwo.setLastName("Petrov");
-        accountDTOTwo.setBirthDate(LocalDate.of(2022, 10, 4));
-        accountDTOTwo.setPhoneNumber("7933333335");
-        accountDTOTwo.setEmail("manager5@mail.ru");
-        accountDTOTwo.setPassword("Test125@");
-        accountDTOTwo.setAnswerQuestion("Test5");
-        accountDTOTwo.setSecurityQuestion("Test5");
-        accountDTOTwo.setRoles(Set.of(roleServiceMock.getRoleByName("ROLE_MANAGER")));
+        accountDtoTwo.setId(2L);
+        accountDtoTwo.setFirstName("Petr");
+        accountDtoTwo.setLastName("Petrov");
+        accountDtoTwo.setBirthDate(LocalDate.of(2022, 10, 4));
+        accountDtoTwo.setPhoneNumber("7933333335");
+        accountDtoTwo.setEmail("manager5@mail.ru");
+        accountDtoTwo.setPassword("Test125@");
+        accountDtoTwo.setAnswerQuestion("Test5");
+        accountDtoTwo.setSecurityQuestion("Test5");
+        accountDtoTwo.setRoles(Set.of(roleServiceMock.getRoleByName("ROLE_MANAGER")));
 
-        accountDTOList.add(accountDTOOne);
-        accountDTOList.add(accountDTOTwo);
+        accountDtoList.add(accountDtoOne);
+        accountDtoList.add(accountDtoTwo);
 
-        List<Account> accountList = accountMapper.convertToAccountList(accountDTOList);
-        Assertions.assertEquals(accountList.size(), accountDTOList.size());
+        List<Account> accountList = accountMapper.convertToAccountList(accountDtoList);
+        Assertions.assertEquals(accountList.size(), accountDtoList.size());
 
-        Assertions.assertEquals(accountDTOList.get(0).getId(), accountList.get(0).getId());
-        Assertions.assertEquals(accountDTOList.get(0).getFirstName(), accountList.get(0).getFirstName());
-        Assertions.assertEquals(accountDTOList.get(0).getLastName(), accountList.get(0).getLastName());
-        Assertions.assertEquals(accountDTOList.get(0).getBirthDate(), accountList.get(0).getBirthDate());
-        Assertions.assertEquals(accountDTOList.get(0).getPhoneNumber(), accountList.get(0).getPhoneNumber());
-        Assertions.assertEquals(accountDTOList.get(0).getEmail(), accountList.get(0).getEmail());
-        Assertions.assertEquals(accountDTOList.get(0).getPassword(), accountList.get(0).getPassword());
-        Assertions.assertEquals(accountDTOList.get(0).getAnswerQuestion(), accountList.get(0).getAnswerQuestion());
-        Assertions.assertEquals(accountDTOList.get(0).getSecurityQuestion(), accountList.get(0).getSecurityQuestion());
-        Assertions.assertEquals(accountDTOList.get(0).getRoles().iterator().next().getName(), accountList.get(0).getRoles().iterator().next().getName());
+        Assertions.assertEquals(accountDtoList.get(0).getId(), accountList.get(0).getId());
+        Assertions.assertEquals(accountDtoList.get(0).getFirstName(), accountList.get(0).getFirstName());
+        Assertions.assertEquals(accountDtoList.get(0).getLastName(), accountList.get(0).getLastName());
+        Assertions.assertEquals(accountDtoList.get(0).getBirthDate(), accountList.get(0).getBirthDate());
+        Assertions.assertEquals(accountDtoList.get(0).getPhoneNumber(), accountList.get(0).getPhoneNumber());
+        Assertions.assertEquals(accountDtoList.get(0).getEmail(), accountList.get(0).getEmail());
+        Assertions.assertEquals(accountDtoList.get(0).getPassword(), accountList.get(0).getPassword());
+        Assertions.assertEquals(accountDtoList.get(0).getAnswerQuestion(), accountList.get(0).getAnswerQuestion());
+        Assertions.assertEquals(accountDtoList.get(0).getSecurityQuestion(), accountList.get(0).getSecurityQuestion());
+        Assertions.assertEquals(accountDtoList.get(0).getRoles().iterator().next().getName(), accountList.get(0).getRoles().iterator().next().getName());
 
-        Assertions.assertEquals(accountDTOList.get(1).getId(), accountList.get(1).getId());
-        Assertions.assertEquals(accountDTOList.get(1).getFirstName(), accountList.get(1).getFirstName());
-        Assertions.assertEquals(accountDTOList.get(1).getLastName(), accountList.get(1).getLastName());
-        Assertions.assertEquals(accountDTOList.get(1).getBirthDate(), accountList.get(1).getBirthDate());
-        Assertions.assertEquals(accountDTOList.get(1).getPhoneNumber(), accountList.get(1).getPhoneNumber());
-        Assertions.assertEquals(accountDTOList.get(1).getEmail(), accountList.get(1).getEmail());
-        Assertions.assertEquals(accountDTOList.get(1).getPassword(), accountList.get(1).getPassword());
-        Assertions.assertEquals(accountDTOList.get(1).getAnswerQuestion(), accountList.get(1).getAnswerQuestion());
-        Assertions.assertEquals(accountDTOList.get(1).getSecurityQuestion(), accountList.get(1).getSecurityQuestion());
-        Assertions.assertEquals(accountDTOList.get(1).getRoles().iterator().next().getName(), accountList.get(1).getRoles().iterator().next().getName());
+        Assertions.assertEquals(accountDtoList.get(1).getId(), accountList.get(1).getId());
+        Assertions.assertEquals(accountDtoList.get(1).getFirstName(), accountList.get(1).getFirstName());
+        Assertions.assertEquals(accountDtoList.get(1).getLastName(), accountList.get(1).getLastName());
+        Assertions.assertEquals(accountDtoList.get(1).getBirthDate(), accountList.get(1).getBirthDate());
+        Assertions.assertEquals(accountDtoList.get(1).getPhoneNumber(), accountList.get(1).getPhoneNumber());
+        Assertions.assertEquals(accountDtoList.get(1).getEmail(), accountList.get(1).getEmail());
+        Assertions.assertEquals(accountDtoList.get(1).getPassword(), accountList.get(1).getPassword());
+        Assertions.assertEquals(accountDtoList.get(1).getAnswerQuestion(), accountList.get(1).getAnswerQuestion());
+        Assertions.assertEquals(accountDtoList.get(1).getSecurityQuestion(), accountList.get(1).getSecurityQuestion());
+        Assertions.assertEquals(accountDtoList.get(1).getRoles().iterator().next().getName(), accountList.get(1).getRoles().iterator().next().getName());
 
 
     }

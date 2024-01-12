@@ -1,7 +1,7 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.SeatRestApi;
-import app.dto.SeatDTO;
+import app.dto.SeatDto;
 
 import app.exceptions.ViolationOfForeignKeyConstraintException;
 import app.mappers.SeatMapper;
@@ -26,7 +26,7 @@ public class SeatRestController implements SeatRestApi {
     private final AircraftService aircraftService;
 
     @Override
-    public ResponseEntity<List<SeatDTO>> getAllSeats(Integer page, Integer size) {
+    public ResponseEntity<List<SeatDto>> getAllSeats(Integer page, Integer size) {
         log.info("getAll: get all Seats");
         if (page == null || size == null) {
             log.info("getAll: get all list Seats");
@@ -43,7 +43,7 @@ public class SeatRestController implements SeatRestApi {
                 : new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<List<SeatDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<SeatDto>> createUnPagedResponse() {
         var seats = seatService.getAllSeats();
         if (seats.isEmpty()) {
             log.info("getAll: Seats not found");
@@ -55,7 +55,7 @@ public class SeatRestController implements SeatRestApi {
     }
 
     @Override
-    public ResponseEntity<List<SeatDTO>> getAllSeatsByAircraftId(Pageable pageable, Long aircraftId) {
+    public ResponseEntity<List<SeatDto>> getAllSeatsByAircraftId(Pageable pageable, Long aircraftId) {
         var seats = seatService.getPagesSeatsByAircraftId(aircraftId, pageable);
         if (!seats.isEmpty()) {
             log.info("getAllByAircraftId: found {} Seats with aircraftId = {}", seats.getSize(), aircraftId);
@@ -67,11 +67,11 @@ public class SeatRestController implements SeatRestApi {
     }
 
     @Override
-    public ResponseEntity<SeatDTO> getSeatById(Long id) {
+    public ResponseEntity<SeatDto> getSeatById(Long id) {
         var seat = seatService.getSeatById(id);
         if (seat != null) {
             log.info("getById: Seat with id = {}", id);
-            return new ResponseEntity<>(SeatMapper.INSTANCE.convertToSeatDTOEntity(seat), HttpStatus.OK);
+            return new ResponseEntity<>(SeatMapper.INSTANCE.convertToSeatDtoEntity(seat), HttpStatus.OK);
         } else {
             log.info("getById: Seat not found. id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -79,17 +79,17 @@ public class SeatRestController implements SeatRestApi {
     }
 
     @Override
-    public ResponseEntity<SeatDTO> createSeat(SeatDTO seatDTO) {
+    public ResponseEntity<SeatDto> createSeat(SeatDto seatDTO) {
         if (aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
             log.error("Aircraft with id = {} not found", seatDTO.getAircraftId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.info("create: Seat saved with id= {}", seatDTO.getId());
-        return ResponseEntity.ok(SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.saveSeat(seatDTO)));
+        return ResponseEntity.ok(SeatMapper.INSTANCE.convertToSeatDtoEntity(seatService.saveSeat(seatDTO)));
     }
 
     @Override
-    public ResponseEntity<List<SeatDTO>> generateSeatsByAircraftId(Long aircraftId) {
+    public ResponseEntity<List<SeatDto>> generateSeatsByAircraftId(Long aircraftId) {
         if (aircraftService.getAircraftById(aircraftId) == null) {
             log.error("generate: Aircraft with id = {} not found", aircraftId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -105,7 +105,7 @@ public class SeatRestController implements SeatRestApi {
     }
 
     @Override
-    public ResponseEntity<SeatDTO> updateSeatById(Long id, SeatDTO seatDTO) {
+    public ResponseEntity<SeatDto> updateSeatById(Long id, SeatDto seatDTO) {
         if (seatService.getSeatById(id) == null) {
             log.error("Seat not found id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -117,7 +117,7 @@ public class SeatRestController implements SeatRestApi {
         seatService.editSeatById(id, seatDTO);
         log.info("update: Seat with id = {} has been edited.", id);
 
-        return new ResponseEntity<>(SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.getSeatById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(SeatMapper.INSTANCE.convertToSeatDtoEntity(seatService.getSeatById(id)), HttpStatus.OK);
     }
 
     @Override

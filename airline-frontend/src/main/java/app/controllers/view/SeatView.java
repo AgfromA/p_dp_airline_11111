@@ -1,7 +1,7 @@
 package app.controllers.view;
 
 import app.clients.SeatClient;
-import app.dto.SeatDTO;
+import app.dto.SeatDto;
 import app.enums.CategoryType;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -34,11 +34,11 @@ import java.util.List;
 @Route(value = "seats", layout = MainLayout.class)
 public class SeatView extends VerticalLayout {
 
-    private final Grid<SeatDTO> grid = new Grid<>(SeatDTO.class, false);
-    private final Editor<SeatDTO> editor = grid.getEditor();
-    private ResponseEntity<List<SeatDTO>> response;
+    private final Grid<SeatDto> grid = new Grid<>(SeatDto.class, false);
+    private final Editor<SeatDto> editor = grid.getEditor();
+    private ResponseEntity<List<SeatDto>> response;
     private final SeatClient seatClient;
-    private final List<SeatDTO> dataSource;
+    private final List<SeatDto> dataSource;
     private final Button updateButton;
     private final Button cancelButton;
     private final Button nextButton;
@@ -58,8 +58,8 @@ public class SeatView extends VerticalLayout {
         this.seatClient = seatClient;
         currentPage = 0;
         response = seatClient.getAllSeats(currentPage, 10);
-        List<SeatDTO> seatDTOList = seatClient.getAllSeats(null, null).getBody();
-        maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
+        List<SeatDto> seatDtoList = seatClient.getAllSeats(null, null).getBody();
+        maxPages = (int) Math.ceil((double) seatDtoList.size() / 10);
         isSearchById = false;
         isSearchByAircraftId = false;
         dataSource = response.getBody();
@@ -71,16 +71,16 @@ public class SeatView extends VerticalLayout {
         ValidationMessage categoryValidationMessage = new ValidationMessage();
         ValidationMessage aircraftIdValidationMessage = new ValidationMessage();
 
-        Grid.Column<SeatDTO> idColumn = createIdColumn();
-        Grid.Column<SeatDTO> seatNumberColumn = createSeatNumberColumn();
-        Grid.Column<SeatDTO> isNearEmergencyExitColumn = createIsNearEmergencyExitColumn();
-        Grid.Column<SeatDTO> isLockedBackColumn = createIsLockedBackColumn();
-        Grid.Column<SeatDTO> categoryColumn = createCategoryColumn();
-        Grid.Column<SeatDTO> aircraftIdColumn = createAircraftIdColumn();
-        Grid.Column<SeatDTO> updateColumn = createEditColumn();
+        Grid.Column<SeatDto> idColumn = createIdColumn();
+        Grid.Column<SeatDto> seatNumberColumn = createSeatNumberColumn();
+        Grid.Column<SeatDto> isNearEmergencyExitColumn = createIsNearEmergencyExitColumn();
+        Grid.Column<SeatDto> isLockedBackColumn = createIsLockedBackColumn();
+        Grid.Column<SeatDto> categoryColumn = createCategoryColumn();
+        Grid.Column<SeatDto> aircraftIdColumn = createAircraftIdColumn();
+        Grid.Column<SeatDto> updateColumn = createEditColumn();
         createDeleteColumn();
 
-        Binder<SeatDTO> binder = createBinder();
+        Binder<SeatDto> binder = createBinder();
 
         createIdField(binder, idValidationMessage, idColumn);
         createSeatNumberField(binder, seatNumberValidationMessage, seatNumberColumn);
@@ -212,8 +212,8 @@ public class SeatView extends VerticalLayout {
         dataSource.clear();
         response = seatClient.getAllSeats(currentPage, 10);
         dataSource.addAll(response.getBody());
-        List<SeatDTO> seatDTOList = seatClient.getAllSeats(null, null).getBody();
-        maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
+        List<SeatDto> seatDtoList = seatClient.getAllSeats(null, null).getBody();
+        maxPages = (int) Math.ceil((double) seatDtoList.size() / 10);
         grid.getDataProvider().refreshAll();
     }
 
@@ -247,8 +247,8 @@ public class SeatView extends VerticalLayout {
             dataSource.clear();
             dataSource.addAll(response.getBody());
             grid.getDataProvider().refreshAll();
-            List<SeatDTO> seatDTOList = seatClient.getAllSeats(null, null).getBody();
-            maxPages = (int) Math.ceil((double) seatDTOList.size() / 10);
+            List<SeatDto> seatDtoList = seatClient.getAllSeats(null, null).getBody();
+            maxPages = (int) Math.ceil((double) seatDtoList.size() / 10);
         }
     }
 
@@ -263,32 +263,32 @@ public class SeatView extends VerticalLayout {
         return false;
     }
 
-    private Grid.Column<SeatDTO> createIdColumn() {
-        return grid.addColumn(seatDTO -> seatDTO.getId()
+    private Grid.Column<SeatDto> createIdColumn() {
+        return grid.addColumn(seatDto -> seatDto.getId()
                 .intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
     }
 
-    private Grid.Column<SeatDTO> createSeatNumberColumn() {
-        return grid.addColumn(SeatDTO::getSeatNumber).setHeader("Seat Number").setWidth("120px");
+    private Grid.Column<SeatDto> createSeatNumberColumn() {
+        return grid.addColumn(SeatDto::getSeatNumber).setHeader("Seat Number").setWidth("120px");
     }
 
-    private Grid.Column<SeatDTO> createIsNearEmergencyExitColumn() {
-        return grid.addColumn(SeatDTO::getIsNearEmergencyExit).setHeader("Is Near Emergency Exit").setWidth("120px");
+    private Grid.Column<SeatDto> createIsNearEmergencyExitColumn() {
+        return grid.addColumn(SeatDto::getIsNearEmergencyExit).setHeader("Is Near Emergency Exit").setWidth("120px");
     }
 
-    private Grid.Column<SeatDTO> createIsLockedBackColumn() {
-        return grid.addColumn(SeatDTO::getIsLockedBack).setHeader("Is Locked Back").setWidth("120px");
+    private Grid.Column<SeatDto> createIsLockedBackColumn() {
+        return grid.addColumn(SeatDto::getIsLockedBack).setHeader("Is Locked Back").setWidth("120px");
     }
 
-    private Grid.Column<SeatDTO> createCategoryColumn() {
-        return grid.addColumn(SeatDTO::getCategory).setHeader("Category").setWidth("240px");
+    private Grid.Column<SeatDto> createCategoryColumn() {
+        return grid.addColumn(SeatDto::getCategory).setHeader("Category").setWidth("240px");
     }
 
-    private Grid.Column<SeatDTO> createAircraftIdColumn() {
-        return grid.addColumn(SeatDTO::getAircraftId).setHeader("Aircraft Id").setWidth("120px");
+    private Grid.Column<SeatDto> createAircraftIdColumn() {
+        return grid.addColumn(SeatDto::getAircraftId).setHeader("Aircraft Id").setWidth("120px");
     }
 
-    private Grid.Column<SeatDTO> createEditColumn() {
+    private Grid.Column<SeatDto> createEditColumn() {
         return grid.addComponentColumn(seat -> {
             Button updateButton = new Button("Update");
             updateButton.addClickListener(e -> {
@@ -311,28 +311,28 @@ public class SeatView extends VerticalLayout {
         });
     }
 
-    private boolean isEditedSeat(Long id, SeatDTO seatDTO) {
+    private boolean isEditedSeat(Long id, SeatDto seatDto) {
         try {
-            seatClient.updateSeatById(id, seatDTO);
+            seatClient.updateSeatById(id, seatDto);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
-            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.", 3000, Notification.Position.TOP_CENTER);
+            Notification.show("Aircraft with id = " + seatDto.getAircraftId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
-            Notification.show("Seat with id = " + seatDTO.getId() + " not found.", 3000, Notification.Position.TOP_CENTER);
+            Notification.show("Seat with id = " + seatDto.getId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;
     }
 
-    private Grid.Column<SeatDTO> createDeleteColumn() {
+    private Grid.Column<SeatDto> createDeleteColumn() {
         return grid.addComponentColumn(seat -> {
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
-                    ListDataProvider<SeatDTO> dataProvider = (ListDataProvider<SeatDTO>) grid.getDataProvider();
+                    ListDataProvider<SeatDto> dataProvider = (ListDataProvider<SeatDto>) grid.getDataProvider();
                     if (isDeletedSeat(seat)) {
                         Notification.show("Seat deleted successfully.", 3000, Notification.Position.TOP_CENTER);
                         dataProvider.getItems().remove(seat);
@@ -344,7 +344,7 @@ public class SeatView extends VerticalLayout {
         }).setWidth("150px").setFlexGrow(0);
     }
 
-    private boolean isDeletedSeat(SeatDTO seat) {
+    private boolean isDeletedSeat(SeatDto seat) {
         try {
             seatClient.deleteSeatById(seat.getId());
             return true;
@@ -355,82 +355,82 @@ public class SeatView extends VerticalLayout {
         }
     }
 
-    private Binder<SeatDTO> createBinder() {
-        Binder<SeatDTO> binder = new Binder<>(SeatDTO.class);
+    private Binder<SeatDto> createBinder() {
+        Binder<SeatDto> binder = new Binder<>(SeatDto.class);
         editor.setBinder(binder);
         editor.setBuffered(true);
         return binder;
     }
 
-    private void createIdField(Binder<SeatDTO> binder,
+    private void createIdField(Binder<SeatDto> binder,
                                ValidationMessage idValidationMessage,
-                               Grid.Column<SeatDTO> idColumn) {
+                               Grid.Column<SeatDto> idColumn) {
         IntegerField idField = new IntegerField();
         idField.setWidthFull();
         binder.forField(idField)
                 .asRequired("Id must not be empty")
                 .withStatusLabel(idValidationMessage)
-                .bind(seatDTO -> seatDTO.getId().intValue(),
-                        (seatDTO, Integer) -> seatDTO.setId(Integer.longValue()));
+                .bind(seatDto -> seatDto.getId().intValue(),
+                        (seatDto, Integer) -> seatDto.setId(Integer.longValue()));
         idColumn.setEditorComponent(idField);
     }
 
-    private void createSeatNumberField(Binder<SeatDTO> binder,
+    private void createSeatNumberField(Binder<SeatDto> binder,
                                        ValidationMessage seatNumberValidationMessage,
-                                       Grid.Column<SeatDTO> seatNumberColumn) {
+                                       Grid.Column<SeatDto> seatNumberColumn) {
         TextField seatNumberField = new TextField();
         seatNumberField.setWidthFull();
         binder.forField(seatNumberField).asRequired("Seat number must not be empty")
                 .withStatusLabel(seatNumberValidationMessage)
                 .withValidator(number -> number.length() >= 2 && number.length() <= 5,
                         "Seat number must be between 2 and 5 characters")
-                .bind(SeatDTO::getSeatNumber, SeatDTO::setSeatNumber);
+                .bind(SeatDto::getSeatNumber, SeatDto::setSeatNumber);
         seatNumberColumn.setEditorComponent(seatNumberField);
     }
 
-    private void createIsNearEmergencyExitField(Binder<SeatDTO> binder,
+    private void createIsNearEmergencyExitField(Binder<SeatDto> binder,
                                                 ValidationMessage isNearEmergencyExitValidationMessage,
-                                                Grid.Column<SeatDTO> isNearEmergencyExitColumn) {
+                                                Grid.Column<SeatDto> isNearEmergencyExitColumn) {
         ComboBox<Boolean> isNearEmergencyExitField = new ComboBox<>();
         isNearEmergencyExitField.setItems(true, false);
         binder.forField(isNearEmergencyExitField).asRequired("Is Near Emergency Exit must be true or false")
                 .withStatusLabel(isNearEmergencyExitValidationMessage)
-                .bind(SeatDTO::getIsNearEmergencyExit, SeatDTO::setIsNearEmergencyExit);
+                .bind(SeatDto::getIsNearEmergencyExit, SeatDto::setIsNearEmergencyExit);
         isNearEmergencyExitColumn.setEditorComponent(isNearEmergencyExitField);
     }
 
-    private void createIsLockedBackField(Binder<SeatDTO> binder,
+    private void createIsLockedBackField(Binder<SeatDto> binder,
                                          ValidationMessage isLockedBackValidationMessage,
-                                         Grid.Column<SeatDTO> isLockedBackColumn) {
+                                         Grid.Column<SeatDto> isLockedBackColumn) {
         ComboBox<Boolean> isLockedBackField = new ComboBox<>();
         isLockedBackField.setItems(true, false);
         binder.forField(isLockedBackField).asRequired("Is Locked Back must be true or false")
                 .withStatusLabel(isLockedBackValidationMessage)
-                .bind(SeatDTO::getIsLockedBack, SeatDTO::setIsLockedBack);
+                .bind(SeatDto::getIsLockedBack, SeatDto::setIsLockedBack);
         isLockedBackColumn.setEditorComponent(isLockedBackField);
     }
 
-    private void createCategoryField(Binder<SeatDTO> binder,
+    private void createCategoryField(Binder<SeatDto> binder,
                                      ValidationMessage categoryValidationMessage,
-                                     Grid.Column<SeatDTO> categoryColumn) {
+                                     Grid.Column<SeatDto> categoryColumn) {
         ComboBox<CategoryType> categoryField = new ComboBox<>();
         categoryField.setItems(CategoryType.values());
         categoryField.setWidthFull();
         binder.forField(categoryField).asRequired("Category must not be empty")
                 .withStatusLabel(categoryValidationMessage)
-                .bind(SeatDTO::getCategory, SeatDTO::setCategory);
+                .bind(SeatDto::getCategory, SeatDto::setCategory);
         categoryColumn.setEditorComponent(categoryField);
     }
 
-    private void createAircraftIdField(Binder<SeatDTO> binder,
+    private void createAircraftIdField(Binder<SeatDto> binder,
                                        ValidationMessage aircraftIdValidationMessage,
-                                       Grid.Column<SeatDTO> aircraftIdColumn) {
+                                       Grid.Column<SeatDto> aircraftIdColumn) {
         IntegerField aircraftIdField = new IntegerField();
         aircraftIdField.setWidthFull();
         binder.forField(aircraftIdField).asRequired("Aircraft Id must not be empty")
                 .withStatusLabel(aircraftIdValidationMessage)
-                .bind(seatDTO -> seatDTO.getAircraftId().intValue(),
-                        (seatDTO, Integer) -> seatDTO.setAircraftId(Integer.longValue()));
+                .bind(seatDto -> seatDto.getAircraftId().intValue(),
+                        (seatDto, Integer) -> seatDto.setAircraftId(Integer.longValue()));
         aircraftIdColumn.setEditorComponent(aircraftIdField);
     }
 
@@ -505,13 +505,13 @@ public class SeatView extends VerticalLayout {
                 return;
 
             }
-            SeatDTO seatDTO = new SeatDTO();
-            seatDTO.setSeatNumber(seatNumber.getValue());
-            seatDTO.setIsNearEmergencyExit(isNearEmergencyExit.getValue());
-            seatDTO.setIsLockedBack(isLockedBack.getValue());
-            seatDTO.setCategory(category.getValue());
-            seatDTO.setAircraftId(aircraftIdField.getValue().longValue());
-            if (isCreatedSeat(seatDTO)) {
+            SeatDto seatDto = new SeatDto();
+            seatDto.setSeatNumber(seatNumber.getValue());
+            seatDto.setIsNearEmergencyExit(isNearEmergencyExit.getValue());
+            seatDto.setIsLockedBack(isLockedBack.getValue());
+            seatDto.setCategory(category.getValue());
+            seatDto.setAircraftId(aircraftIdField.getValue().longValue());
+            if (isCreatedSeat(seatDto)) {
                 seatNumber.clear();
                 isNearEmergencyExit.clear();
                 isLockedBack.clear();
@@ -524,14 +524,14 @@ public class SeatView extends VerticalLayout {
         return createTab;
     }
 
-    private boolean isCreatedSeat(SeatDTO seatDTO) {
+    private boolean isCreatedSeat(SeatDto seatDto) {
         try {
-            SeatDTO savedSeat = seatClient.createSeat(seatDTO).getBody();
+            SeatDto savedSeat = seatClient.createSeat(seatDto).getBody();
             dataSource.add(savedSeat);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
-            Notification.show("Aircraft with id = " + seatDTO.getAircraftId() + " not found.", 3000, Notification.Position.TOP_CENTER);
+            Notification.show("Aircraft with id = " + seatDto.getAircraftId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;
     }

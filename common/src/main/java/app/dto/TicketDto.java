@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class TicketDTO {
+public class TicketDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;

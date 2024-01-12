@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class DestinationDTO {
+public class DestinationDto {
 
     @ReadOnlyProperty
     private Long id;

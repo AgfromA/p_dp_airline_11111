@@ -12,7 +12,7 @@ import javax.validation.Validator;
 import java.io.IOException;
 
 
-class FlightDTOTest extends EntityTest {
+class FlightDtoTest extends EntityTest {
     private Validator validator;
     private ObjectMapper mapper;
 
@@ -31,12 +31,12 @@ class FlightDTOTest extends EntityTest {
 
     @Test
     void emptyFlightCodeFieldShouldNotValidate() {
-        FlightDTO testFlight;
+        FlightDto testFlight;
         var flightJSON = initJSONObject();
         flightJSON.replace("code", "");
         try {
             testFlight = mapper.readValue(flightJSON.toString(),
-                    FlightDTO.class);
+                    FlightDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }
@@ -45,12 +45,12 @@ class FlightDTOTest extends EntityTest {
 
     @Test
     void lessThan2CharCodeSizeShouldNotValidate() {
-        FlightDTO testFlight;
+        FlightDto testFlight;
         var flightJSON = initJSONObject();
         flightJSON.replace("code", "1");
         try {
             testFlight = mapper.readValue(flightJSON.toString(),
-                    FlightDTO.class);
+                    FlightDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }
@@ -59,11 +59,11 @@ class FlightDTOTest extends EntityTest {
 
     @Test
     void between2And15CodeSizeShouldValidate() {
-        FlightDTO testFlight;
+        FlightDto testFlight;
         var flightJSON = initJSONObject();
         try {
             testFlight = mapper.readValue(flightJSON.toString(),
-                    FlightDTO.class);
+                    FlightDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }
@@ -72,12 +72,12 @@ class FlightDTOTest extends EntityTest {
 
     @Test
     void moreThan15CharCodeSizeShouldNotValidate() {
-        FlightDTO testFlight;
+        FlightDto testFlight;
         var flightJSON = initJSONObject();
         flightJSON.replace("code", "123456789101112131415");
         try {
             testFlight = mapper.readValue(flightJSON.toString(),
-                    FlightDTO.class);
+                    FlightDto.class);
         } catch (IOException e) {
             throw new RuntimeException("Exception during mapping from JSON");
         }

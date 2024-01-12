@@ -16,13 +16,13 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class FlightDTO {
+public class FlightDto {
 
     private Long id;
     @NotBlank(message = "Code cannot be empty")
     @Size(min = 2, max = 15, message = "Length of Flight code should be between 2 and 15 characters")
     private String code;
-    private List<FlightSeatDTO> seats;
+    private List<FlightSeatDto> seats;
     private Airport airportFrom;
     private Airport airportTo;
     private LocalDateTime departureDateTime;

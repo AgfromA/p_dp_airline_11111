@@ -1,7 +1,7 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.PassengerRestApi;
-import app.dto.PassengerDTO;
+import app.dto.PassengerDto;
 import app.mappers.PassengerMapper;
 import app.services.interfaces.PassengerService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class PassengerRestController implements PassengerRestApi {
     private final PassengerMapper passengerMapper;
 
     @Override
-    public ResponseEntity<List<PassengerDTO>> getAllPassengers(Integer page, Integer size, String firstName, String lastName,
+    public ResponseEntity<List<PassengerDto>> getAllPassengers(Integer page, Integer size, String firstName, String lastName,
                                                                String email, String serialNumberPassport) {
         log.info("getAll: get all Passenger");
         if (page == null || size == null) {
@@ -36,7 +36,7 @@ public class PassengerRestController implements PassengerRestApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Page<PassengerDTO> passengers;
+        Page<PassengerDto> passengers;
         Pageable pageable = PageRequest.of(page, size);
 
         if (firstName == null && lastName == null && email == null && serialNumberPassport == null) {
@@ -53,7 +53,7 @@ public class PassengerRestController implements PassengerRestApi {
                 : new ResponseEntity<>(passengers.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<List<PassengerDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<PassengerDto>> createUnPagedResponse() {
         var passengers = passengerService.getAllPassengers();
         if (passengers.isEmpty()) {
             log.info("getAll:  Passengers not found ");
@@ -65,7 +65,7 @@ public class PassengerRestController implements PassengerRestApi {
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> getById(Long id) {
+    public ResponseEntity<PassengerDto> getById(Long id) {
         log.info("getById: get passenger by ID = {}", id);
         var passenger = passengerService.getPassengerById(id);
 
@@ -74,27 +74,27 @@ public class PassengerRestController implements PassengerRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         }
-        return new ResponseEntity<>(passengerMapper.convertToPassengerDTO(passenger.get()), HttpStatus.OK);
+        return new ResponseEntity<>(passengerMapper.convertToPassengerDto(passenger.get()), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> create(PassengerDTO passengerDTO) {
+    public ResponseEntity<PassengerDto> create(PassengerDto passengerDTO) {
         if (passengerDTO.getId() != null) {
             log.error("create: passenger already exist in database");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.info("create: new passenger added");
         return new ResponseEntity<>(
-                passengerMapper.convertToPassengerDTO(passengerService.savePassenger(passengerDTO)),
+                passengerMapper.convertToPassengerDto(passengerService.savePassenger(passengerDTO)),
                 HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<PassengerDTO> updateById(Long id, PassengerDTO passengerDTO) {
+    public ResponseEntity<PassengerDto> updateById(Long id, PassengerDto passengerDTO) {
         passengerDTO.setId(id);
         log.info("update: update Passenger with id = {}", id);
         return new ResponseEntity<>(
-                passengerMapper.convertToPassengerDTO(passengerService.updatePassengerById(id, passengerDTO)),
+                passengerMapper.convertToPassengerDto(passengerService.updatePassengerById(id, passengerDTO)),
                 HttpStatus.OK);
     }
 

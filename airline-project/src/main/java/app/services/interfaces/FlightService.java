@@ -1,6 +1,6 @@
 package app.services.interfaces;
 
-import app.dto.FlightDTO;
+import app.dto.FlightDto;
 import app.entities.Destination;
 import app.entities.Flight;
 import app.enums.Airport;
@@ -14,24 +14,24 @@ import java.util.Optional;
 
 public interface FlightService {
 
-    List<FlightDTO> getAllListFlights();
+    List<FlightDto> getAllListFlights();
 
-    Page<FlightDTO> getAllFlights(Pageable pageable);
+    Page<FlightDto> getAllFlights(Pageable pageable);
 
     Flight getFlightByCode(String code);
 
-    Page<FlightDTO> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo, String dateStart,
+    Page<FlightDto> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo, String dateStart,
                                                         String dateFinish, Pageable pageable);
 
     List<Flight> getFlightsByDestinationsAndDepartureDate(Destination fromId, Destination toId, LocalDate departureDate);
 
-    FlightDTO getFlightByIdAndDates(Long id, String start, String finish);
+    FlightDto getFlightByIdAndDates(Long id, String start, String finish);
 
     Optional<Flight> getFlightById(Long id);
 
-    FlightDTO saveFlight(FlightDTO flightDTO);
+    FlightDto saveFlight(FlightDto flightDTO);
 
-    FlightDTO updateFlight(Long id, FlightDTO flightDTO);
+    FlightDto updateFlight(Long id, FlightDto flightDTO);
 
     List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo,
                                                                  Date departureDate);

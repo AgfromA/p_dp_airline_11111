@@ -1,7 +1,7 @@
 package app.controllers.view;
 
 import app.clients.AircraftClient;
-import app.dto.AircraftDTO;
+import app.dto.AircraftDto;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -31,11 +31,11 @@ import java.util.List;
 @Route(value = "aircrafts", layout = MainLayout.class)
 @CssImport(value = "grid.css")
 public class AircraftView extends VerticalLayout {
-    private final Grid<AircraftDTO> grid = new Grid<>(AircraftDTO.class, false);
-    private final Editor<AircraftDTO> editor = grid.getEditor();
-    private final Binder<AircraftDTO> binder = createBinder();
+    private final Grid<AircraftDto> grid = new Grid<>(AircraftDto.class, false);
+    private final Editor<AircraftDto> editor = grid.getEditor();
+    private final Binder<AircraftDto> binder = createBinder();
     private final AircraftClient aircraftClient;
-    private final List<AircraftDTO> dataSource;
+    private final List<AircraftDto> dataSource;
 
     private final Tabs tabs = new Tabs();
     private final Div contentTabContainer = new Div();
@@ -45,7 +45,7 @@ public class AircraftView extends VerticalLayout {
 
     public AircraftView(AircraftClient aircraftClient) {
         this.aircraftClient = aircraftClient;
-        List<AircraftDTO> aircrafts = aircraftClient.getAllAircrafts(null, null).getBody();
+        List<AircraftDto> aircrafts = aircraftClient.getAllAircrafts(null, null).getBody();
         int pageSize = 10;
         this.maxPages = (int) Math.ceil((double) aircrafts.size() / pageSize);
         this.dataSource = aircraftClient.getAllAircrafts(0, 10).getBody();
@@ -124,7 +124,7 @@ public class AircraftView extends VerticalLayout {
 
     private void refreshGrid() {
         dataSource.clear();
-        List<AircraftDTO> newData = aircraftClient.getAllAircrafts(currentPage, 10).getBody();
+        List<AircraftDto> newData = aircraftClient.getAllAircrafts(currentPage, 10).getBody();
         dataSource.addAll(newData);
         grid.getListDataView().refreshAll();
     }
@@ -176,14 +176,14 @@ public class AircraftView extends VerticalLayout {
                 return;
             }
 
-            AircraftDTO aircraftDTO = new AircraftDTO();
-            aircraftDTO.setAircraftNumber(aircraftNumber.getValue());
-            aircraftDTO.setModel(model.getValue());
-            aircraftDTO.setModelYear(modelYear.getValue());
-            aircraftDTO.setFlightRange(flightRange.getValue());
+            AircraftDto aircraftDto = new AircraftDto();
+            aircraftDto.setAircraftNumber(aircraftNumber.getValue());
+            aircraftDto.setModel(model.getValue());
+            aircraftDto.setModelYear(modelYear.getValue());
+            aircraftDto.setFlightRange(flightRange.getValue());
 
-            AircraftDTO savedAircraftDTO = aircraftClient.createAircraft(aircraftDTO).getBody();
-            dataSource.add(savedAircraftDTO);
+            AircraftDto savedAircraftDto = aircraftClient.createAircraft(aircraftDto).getBody();
+            dataSource.add(savedAircraftDto);
             aircraftNumber.clear();
             model.clear();
             modelYear.clear();
@@ -200,26 +200,26 @@ public class AircraftView extends VerticalLayout {
         return createTab;
     }
 
-    private Binder<AircraftDTO> createBinder() {
-        Binder<AircraftDTO> binder = new Binder<>(AircraftDTO.class);
+    private Binder<AircraftDto> createBinder() {
+        Binder<AircraftDto> binder = new Binder<>(AircraftDto.class);
         editor.setBinder(binder);
         editor.setBuffered(true);
         return binder;
     }
 
     private void createDeleteColumn() {
-        grid.addComponentColumn(aircraftDTO -> new Button("Delete", e -> {
+        grid.addComponentColumn(aircraftDto -> new Button("Delete", e -> {
             HttpStatus statusCode = null;
             if (editor.isOpen()) editor.cancel();
             try {
-                statusCode = aircraftClient.deleteAircraftById(aircraftDTO.getId()).getStatusCode();
+                statusCode = aircraftClient.deleteAircraftById(aircraftDto.getId()).getStatusCode();
             } catch (FeignException.MethodNotAllowed except) {
                 Notification.show("You can't delete an aircraft because it has seats assigned to it", 3000, Notification.Position.TOP_CENTER)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
             }
             if (statusCode != null && statusCode.is2xxSuccessful()) {
-                dataSource.remove(aircraftDTO);
+                dataSource.remove(aircraftDto);
                 grid.getListDataView().refreshAll();
             } else {
                 Notification.show("ERROR.  Something went wrong", 3000, Notification.Position.TOP_CENTER)
@@ -230,11 +230,11 @@ public class AircraftView extends VerticalLayout {
 
     private void createEditColumn() {
         // Кнопка при закрытом editor (внешняя)
-        var updateColumn = grid.addComponentColumn(aircraftDTO -> new Button("Update", e -> {
+        var updateColumn = grid.addComponentColumn(aircraftDto -> new Button("Update", e -> {
             if (editor.isOpen()) {
                 editor.cancel();
             } else {
-                editor.editItem(aircraftDTO);
+                editor.editItem(aircraftDto);
             }
         }));
 
@@ -254,55 +254,55 @@ public class AircraftView extends VerticalLayout {
     }
 
     private void createFlightRangeColumn() {
-        Grid.Column<AircraftDTO> flightRangeColumn = grid.addColumn(AircraftDTO::getFlightRange).setHeader("Flight Range").setWidth("120px");
+        Grid.Column<AircraftDto> flightRangeColumn = grid.addColumn(AircraftDto::getFlightRange).setHeader("Flight Range").setWidth("120px");
         IntegerField flightRangeField = new IntegerField();
         flightRangeField.setWidthFull();
         binder.forField(flightRangeField)
                 .asRequired("Flight range must not be empty")
-                .bind(AircraftDTO::getFlightRange, AircraftDTO::setFlightRange);
+                .bind(AircraftDto::getFlightRange, AircraftDto::setFlightRange);
         flightRangeColumn.setEditorComponent(flightRangeField);
     }
 
     private void createModelYearColumn() {
-        Grid.Column<AircraftDTO> modelYearColumn = grid.addColumn(AircraftDTO::getModelYear).setHeader("Model Year").setWidth("120px");
+        Grid.Column<AircraftDto> modelYearColumn = grid.addColumn(AircraftDto::getModelYear).setHeader("Model Year").setWidth("120px");
         IntegerField modelYearField = new IntegerField();
         modelYearField.setWidthFull();
         binder.forField(modelYearField)
                 .asRequired("Model year must not be empty")
                 .withValidator(year -> year >= 2000,
                         "Model Year should be later than 2000")
-                .bind(AircraftDTO::getModelYear, AircraftDTO::setModelYear);
+                .bind(AircraftDto::getModelYear, AircraftDto::setModelYear);
         modelYearColumn.setEditorComponent(modelYearField);
     }
 
     private void createModelColumn() {
-        Grid.Column<AircraftDTO> modelColumn = grid.addColumn(AircraftDTO::getModel).setHeader("Model").setWidth("120px");
+        Grid.Column<AircraftDto> modelColumn = grid.addColumn(AircraftDto::getModel).setHeader("Model").setWidth("120px");
         TextField modelField = new TextField();
         modelField.setWidthFull();
         binder.forField(modelField)
                 .asRequired("Model must not be empty")
-                .bind(AircraftDTO::getModel, AircraftDTO::setModel);
+                .bind(AircraftDto::getModel, AircraftDto::setModel);
         modelColumn.setEditorComponent(modelField);
     }
 
     private void createAircraftNumberColumn() {
-        Grid.Column<AircraftDTO> aircraftNumberColumn = grid.addColumn(AircraftDTO::getAircraftNumber).setHeader("Aircraft Number").setWidth("120px");
+        Grid.Column<AircraftDto> aircraftNumberColumn = grid.addColumn(AircraftDto::getAircraftNumber).setHeader("Aircraft Number").setWidth("120px");
         TextField aircraftNumberField = new TextField();
         aircraftNumberField.setWidthFull();
         binder.forField(aircraftNumberField)
                 .asRequired("Aircraft number must not be empty")
                 .withValidator(string -> string.length() >= 4 && string.length() <= 15,
                         "Length of Aircraft Number should be between 4 and 15 characters")
-                .bind(AircraftDTO::getAircraftNumber, AircraftDTO::setAircraftNumber);
+                .bind(AircraftDto::getAircraftNumber, AircraftDto::setAircraftNumber);
         aircraftNumberColumn.setEditorComponent(aircraftNumberField);
     }
 
     private void createIdColumn() {
-        Grid.Column<AircraftDTO> idColumn = grid.addColumn(aircraftDTO -> aircraftDTO.getId().intValue()).setHeader("ID").setWidth("120px").setFlexGrow(0);
+        Grid.Column<AircraftDto> idColumn = grid.addColumn(aircraftDto -> aircraftDto.getId().intValue()).setHeader("ID").setWidth("120px").setFlexGrow(0);
         IntegerField idField = new IntegerField();
         idField.setWidthFull();
         binder.forField(idField)
-                .bindReadOnly(aircraftDTO -> aircraftDTO.getId().intValue());
+                .bindReadOnly(aircraftDto -> aircraftDto.getId().intValue());
         idColumn.setEditorComponent(idField);
     }
 }

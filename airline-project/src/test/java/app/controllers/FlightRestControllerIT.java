@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.dto.FlightDTO;
+import app.dto.FlightDto;
 import app.enums.Airport;
 import app.enums.FlightStatus;
 import app.services.interfaces.FlightService;
@@ -234,7 +234,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
             FlightStatus flightStatus = FlightStatus.CANCELED;
 
 
-            FlightDTO flightDTO = new FlightDTO();
+            FlightDto flightDTO = new FlightDto();
             flightDTO.setCode(code);
             flightDTO.setAirportFrom(airportFrom);
             flightDTO.setAirportTo(airportTo);
@@ -267,7 +267,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
 
         @Test
         void shouldNotUpdateFlightIfIdNotExist() throws Exception {
-            FlightDTO flightDTO = new FlightDTO();
+            FlightDto flightDTO = new FlightDto();
             flightDTO.setCode("VKOVOG");
             flightDTO.setAirportTo(Airport.VKO);
             flightDTO.setAirportFrom(Airport.VOG);

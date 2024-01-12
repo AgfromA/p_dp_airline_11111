@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.TicketDTO;
+import app.dto.TicketDto;
 import app.entities.*;
 import app.enums.Airport;
 import app.services.interfaces.FlightSeatService;
@@ -66,7 +66,7 @@ class TicketMapperTest {
         ticket.setFlight(flight);
         ticket.setFlightSeat(flightSeat);
 
-        TicketDTO ticketDTO = ticketMapper.convertToTicketDTO(ticket);
+        TicketDto ticketDTO = ticketMapper.convertToTicketDto(ticket);
 
         Assertions.assertNotNull(ticketDTO);
         Assertions.assertEquals(ticket.getId(), ticketDTO.getId());
@@ -117,7 +117,7 @@ class TicketMapperTest {
         flightSeat.setSeat(seat);
         when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
 
-        TicketDTO ticketDTO = new TicketDTO();
+        TicketDto ticketDTO = new TicketDto();
         ticketDTO.setId(1L);
         ticketDTO.setTicketNumber("OX-2010");
         ticketDTO.setPassengerId(1001L);
@@ -195,30 +195,30 @@ class TicketMapperTest {
 
         ticketList.add(ticket);
 
-        List<TicketDTO> ticketDTOList = ticketMapper.convertToTicketDTOList(ticketList);
+        List<TicketDto> ticketDtoList = ticketMapper.convertToTicketDtoList(ticketList);
 
-        Assertions.assertEquals(ticketList.size(), ticketDTOList.size());
-        Assertions.assertEquals(ticketList.get(0).getId(), ticketDTOList.get(0).getId());
-        Assertions.assertEquals(ticketList.get(0).getTicketNumber(), ticketDTOList.get(0).getTicketNumber());
-        Assertions.assertEquals(ticketList.get(0).getPassenger().getId(), ticketDTOList.get(0).getPassengerId());
-        Assertions.assertEquals(ticketList.get(0).getPassenger().getFirstName(), ticketDTOList.get(0).getFirstName());
-        Assertions.assertEquals(ticketList.get(0).getPassenger().getLastName(), ticketDTOList.get(0).getLastName());
+        Assertions.assertEquals(ticketList.size(), ticketDtoList.size());
+        Assertions.assertEquals(ticketList.get(0).getId(), ticketDtoList.get(0).getId());
+        Assertions.assertEquals(ticketList.get(0).getTicketNumber(), ticketDtoList.get(0).getTicketNumber());
+        Assertions.assertEquals(ticketList.get(0).getPassenger().getId(), ticketDtoList.get(0).getPassengerId());
+        Assertions.assertEquals(ticketList.get(0).getPassenger().getFirstName(), ticketDtoList.get(0).getFirstName());
+        Assertions.assertEquals(ticketList.get(0).getPassenger().getLastName(), ticketDtoList.get(0).getLastName());
 
-        Assertions.assertEquals(ticketList.get(0).getFlight().getId(), ticketDTOList.get(0).getFlightId());
-        Assertions.assertEquals(ticketList.get(0).getFlight().getCode(), ticketDTOList.get(0).getCode());
-        Assertions.assertEquals(ticketList.get(0).getFlight().getFrom().getAirportCode(), ticketDTOList.get(0).getFrom());
-        Assertions.assertEquals(ticketList.get(0).getFlight().getTo().getAirportCode(), ticketDTOList.get(0).getTo());
-        Assertions.assertEquals(ticketList.get(0).getFlight().getDepartureDateTime(), ticketDTOList.get(0).getDepartureDateTime());
-        Assertions.assertEquals(ticketList.get(0).getFlight().getArrivalDateTime(), ticketDTOList.get(0).getArrivalDateTime());
+        Assertions.assertEquals(ticketList.get(0).getFlight().getId(), ticketDtoList.get(0).getFlightId());
+        Assertions.assertEquals(ticketList.get(0).getFlight().getCode(), ticketDtoList.get(0).getCode());
+        Assertions.assertEquals(ticketList.get(0).getFlight().getFrom().getAirportCode(), ticketDtoList.get(0).getFrom());
+        Assertions.assertEquals(ticketList.get(0).getFlight().getTo().getAirportCode(), ticketDtoList.get(0).getTo());
+        Assertions.assertEquals(ticketList.get(0).getFlight().getDepartureDateTime(), ticketDtoList.get(0).getDepartureDateTime());
+        Assertions.assertEquals(ticketList.get(0).getFlight().getArrivalDateTime(), ticketDtoList.get(0).getArrivalDateTime());
 
-        Assertions.assertEquals(ticketList.get(0).getFlightSeat().getId(), ticketDTOList.get(0).getFlightSeatId());
-        Assertions.assertEquals(ticketList.get(0).getFlightSeat().getSeat().getSeatNumber(), ticketDTOList.get(0).getSeatNumber());
+        Assertions.assertEquals(ticketList.get(0).getFlightSeat().getId(), ticketDtoList.get(0).getFlightSeatId());
+        Assertions.assertEquals(ticketList.get(0).getFlightSeat().getSeat().getSeatNumber(), ticketDtoList.get(0).getSeatNumber());
     }
 
     @Test
     @DisplayName("Должен корректно конвертировать коллекцию ДТО в сущности")
     void shouldConvertTicketDTOLisToTicketEntityList() throws Exception {
-        List<TicketDTO> ticketDTOList = new ArrayList<>();
+        List<TicketDto> ticketDtoList = new ArrayList<>();
         Passenger passenger = new Passenger();
         passenger.setId(1001L);
         passenger.setFirstName("Test");
@@ -247,7 +247,7 @@ class TicketMapperTest {
         flightSeat.setSeat(seat);
         when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
 
-        TicketDTO ticketDTO = new TicketDTO();
+        TicketDto ticketDTO = new TicketDto();
         ticketDTO.setId(1L);
         ticketDTO.setTicketNumber("OX-2010");
         ticketDTO.setPassengerId(1001L);
@@ -264,27 +264,27 @@ class TicketMapperTest {
         ticketDTO.setFlightSeatId(3001L);
         ticketDTO.setSeatNumber("42L");
 
-        ticketDTOList.add(ticketDTO);
+        ticketDtoList.add(ticketDTO);
 
-        List<Ticket> ticketList = ticketMapper.convertToTicketEntityList(ticketDTOList, passengerServiceMock,
+        List<Ticket> ticketList = ticketMapper.convertToTicketEntityList(ticketDtoList, passengerServiceMock,
                 flightServiceMock, flightSeatServiceMock);
 
-        Assertions.assertEquals(ticketDTOList.size(), ticketList.size());
-        Assertions.assertEquals(ticketDTOList.get(0).getId(), ticketList.get(0).getId());
-        Assertions.assertEquals(ticketDTOList.get(0).getTicketNumber(), ticketList.get(0).getTicketNumber());
-        Assertions.assertEquals(ticketDTOList.get(0).getPassengerId(), ticketList.get(0).getPassenger().getId());
-        Assertions.assertEquals(ticketDTOList.get(0).getFirstName(), ticketList.get(0).getPassenger().getFirstName());
-        Assertions.assertEquals(ticketDTOList.get(0).getLastName(), ticketList.get(0).getPassenger().getLastName());
+        Assertions.assertEquals(ticketDtoList.size(), ticketList.size());
+        Assertions.assertEquals(ticketDtoList.get(0).getId(), ticketList.get(0).getId());
+        Assertions.assertEquals(ticketDtoList.get(0).getTicketNumber(), ticketList.get(0).getTicketNumber());
+        Assertions.assertEquals(ticketDtoList.get(0).getPassengerId(), ticketList.get(0).getPassenger().getId());
+        Assertions.assertEquals(ticketDtoList.get(0).getFirstName(), ticketList.get(0).getPassenger().getFirstName());
+        Assertions.assertEquals(ticketDtoList.get(0).getLastName(), ticketList.get(0).getPassenger().getLastName());
 
-        Assertions.assertEquals(ticketDTOList.get(0).getFlightId(), ticketList.get(0).getFlight().getId());
-        Assertions.assertEquals(ticketDTOList.get(0).getCode(), ticketList.get(0).getFlight().getCode());
-        Assertions.assertEquals(ticketDTOList.get(0).getFrom(), ticketList.get(0).getFlight().getFrom().getAirportCode());
-        Assertions.assertEquals(ticketDTOList.get(0).getTo(), ticketList.get(0).getFlight().getTo().getAirportCode());
-        Assertions.assertEquals(ticketDTOList.get(0).getDepartureDateTime(), ticketList.get(0).getFlight().getDepartureDateTime());
-        Assertions.assertEquals(ticketDTOList.get(0).getArrivalDateTime(), ticketList.get(0).getFlight().getArrivalDateTime());
+        Assertions.assertEquals(ticketDtoList.get(0).getFlightId(), ticketList.get(0).getFlight().getId());
+        Assertions.assertEquals(ticketDtoList.get(0).getCode(), ticketList.get(0).getFlight().getCode());
+        Assertions.assertEquals(ticketDtoList.get(0).getFrom(), ticketList.get(0).getFlight().getFrom().getAirportCode());
+        Assertions.assertEquals(ticketDtoList.get(0).getTo(), ticketList.get(0).getFlight().getTo().getAirportCode());
+        Assertions.assertEquals(ticketDtoList.get(0).getDepartureDateTime(), ticketList.get(0).getFlight().getDepartureDateTime());
+        Assertions.assertEquals(ticketDtoList.get(0).getArrivalDateTime(), ticketList.get(0).getFlight().getArrivalDateTime());
 
-        Assertions.assertEquals(ticketDTOList.get(0).getFlightSeatId(), ticketList.get(0).getFlightSeat().getId());
-        Assertions.assertEquals(ticketDTOList.get(0).getSeatNumber(), ticketList.get(0).getFlightSeat().getSeat().getSeatNumber());
+        Assertions.assertEquals(ticketDtoList.get(0).getFlightSeatId(), ticketList.get(0).getFlightSeat().getId());
+        Assertions.assertEquals(ticketDtoList.get(0).getSeatNumber(), ticketList.get(0).getFlightSeat().getSeat().getSeatNumber());
     }
 
 }

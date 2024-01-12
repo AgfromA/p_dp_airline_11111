@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.SeatDTO;
+import app.dto.SeatDto;
 import app.entities.Seat;
 import app.services.interfaces.AircraftService;
 import app.services.interfaces.CategoryService;
@@ -19,23 +19,25 @@ public interface SeatMapper {
 
     @Mapping(target = "category", expression = "java(seat.getCategory().getCategoryType())")
     @Mapping(target = "aircraftId", expression = "java(seat.getAircraft().getId())")
-    SeatDTO convertToSeatDTOEntity(Seat seat);
+    SeatDto convertToSeatDtoEntity(Seat seat);
 
-    @Mapping(target = "category", expression = "java(categoryService.getCategoryByType(dto.getCategory()))")
-    @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraftById(dto.getAircraftId()))")
-    Seat convertToSeatEntity(SeatDTO dto, @Context CategoryService categoryService, @Context AircraftService aircraftService);
+    @Mapping(target = "category", expression = "java(categoryService.getCategoryByType(seatDto.getCategory()))")
+    @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraftById(seatDto.getAircraftId()))")
+    Seat convertToSeatEntity(SeatDto seatDto,
+                             @Context CategoryService categoryService,
+                             @Context AircraftService aircraftService);
 
-    default List<SeatDTO> convertToSeatDTOList(List<Seat> seatList) {
+    default List<SeatDto> convertToSeatList(List<Seat> seatList) {
         return seatList.stream()
-                .map(this::convertToSeatDTOEntity)
+                .map(this::convertToSeatDtoEntity)
                 .collect(Collectors.toList());
     }
 
-    default List<Seat> convertToSeatEntityList(List<SeatDTO> seatDTOList, CategoryService categoryService,
+    default List<Seat> convertToSeatEntityList(List<SeatDto> seatDtoList,
+                                               CategoryService categoryService,
                                                AircraftService aircraftService) {
-        return seatDTOList.stream()
+        return seatDtoList.stream()
                 .map(seatDTO -> convertToSeatEntity(seatDTO, categoryService, aircraftService))
                 .collect(Collectors.toList());
     }
-
 }

@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @Setter
-public class SeatDTO {
+public class SeatDto {
 
     @ReadOnlyProperty
     private Long id;

@@ -1,4 +1,5 @@
 package app.entities;
+
 import app.enums.Currency;
 import app.enums.State;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-
+// FIXME Убрать обратно в airline-project
 /**
  * Оплата забронированных сидений.
  */

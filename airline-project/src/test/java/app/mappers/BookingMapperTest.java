@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.BookingDTO;
+import app.dto.BookingDto;
 import app.entities.*;
 import app.enums.BookingStatus;
 import app.services.interfaces.*;
@@ -47,7 +47,7 @@ class BookingMapperTest {
         booking.setCreateTime(createTime);
         booking.setBookingStatus(BookingStatus.NOT_PAID);
 
-        BookingDTO bookingDTO = bookingMapper.convertToBookingDTOEntity(booking);
+        BookingDto bookingDTO = bookingMapper.convertToBookingDtoEntity(booking);
 
         Assertions.assertNotNull(bookingDTO);
         Assertions.assertEquals(booking.getId(), bookingDTO.getId());
@@ -73,7 +73,7 @@ class BookingMapperTest {
         Long flightSeatId = 2L;
         flightSeat.setId(flightSeatId);
 
-        BookingDTO bookingDTO = new BookingDTO();
+        BookingDto bookingDTO = new BookingDto();
         bookingDTO.setId(1L);
         bookingDTO.setBookingNumber("BK-111111");
         bookingDTO.setBookingDate(LocalDateTime.now());
@@ -135,30 +135,30 @@ class BookingMapperTest {
         bookingList.add(bookingOne);
         bookingList.add(bookingTwo);
 
-        List<BookingDTO> bookingDTOList = bookingMapper.convertToBookingDTOEntityList(bookingList);
+        List<BookingDto> bookingDtoList = bookingMapper.convertToBookingDtoEntityList(bookingList);
 
-        Assertions.assertEquals(bookingList.size(), bookingDTOList.size());
+        Assertions.assertEquals(bookingList.size(), bookingDtoList.size());
 
-        Assertions.assertEquals(bookingList.get(0).getId(), bookingDTOList.get(0).getId());
-        Assertions.assertEquals(bookingList.get(0).getBookingNumber(), bookingDTOList.get(0).getBookingNumber());
-        Assertions.assertEquals(bookingList.get(0).getBookingDate(), bookingDTOList.get(0).getBookingDate());
-        Assertions.assertEquals(bookingList.get(0).getPassenger().getId(), bookingDTOList.get(0).getPassengerId());
-        Assertions.assertEquals(bookingList.get(0).getFlightSeat().getId(), bookingDTOList.get(0).getFlightSeatId());
-        Assertions.assertEquals(bookingList.get(0).getCreateTime(), bookingDTOList.get(0).getCreateTime());
-        Assertions.assertEquals(bookingList.get(0).getBookingStatus(), bookingDTOList.get(0).getBookingStatus());
+        Assertions.assertEquals(bookingList.get(0).getId(), bookingDtoList.get(0).getId());
+        Assertions.assertEquals(bookingList.get(0).getBookingNumber(), bookingDtoList.get(0).getBookingNumber());
+        Assertions.assertEquals(bookingList.get(0).getBookingDate(), bookingDtoList.get(0).getBookingDate());
+        Assertions.assertEquals(bookingList.get(0).getPassenger().getId(), bookingDtoList.get(0).getPassengerId());
+        Assertions.assertEquals(bookingList.get(0).getFlightSeat().getId(), bookingDtoList.get(0).getFlightSeatId());
+        Assertions.assertEquals(bookingList.get(0).getCreateTime(), bookingDtoList.get(0).getCreateTime());
+        Assertions.assertEquals(bookingList.get(0).getBookingStatus(), bookingDtoList.get(0).getBookingStatus());
 
-        Assertions.assertEquals(bookingList.get(1).getId(), bookingDTOList.get(1).getId());
-        Assertions.assertEquals(bookingList.get(1).getBookingNumber(), bookingDTOList.get(1).getBookingNumber());
-        Assertions.assertEquals(bookingList.get(1).getBookingDate(), bookingDTOList.get(1).getBookingDate());
-        Assertions.assertEquals(bookingList.get(1).getPassenger().getId(), bookingDTOList.get(1).getPassengerId());
-        Assertions.assertEquals(bookingList.get(1).getFlightSeat().getId(), bookingDTOList.get(1).getFlightSeatId());
-        Assertions.assertEquals(bookingList.get(1).getCreateTime(), bookingDTOList.get(1).getCreateTime());
-        Assertions.assertEquals(bookingList.get(1).getBookingStatus(), bookingDTOList.get(1).getBookingStatus());
+        Assertions.assertEquals(bookingList.get(1).getId(), bookingDtoList.get(1).getId());
+        Assertions.assertEquals(bookingList.get(1).getBookingNumber(), bookingDtoList.get(1).getBookingNumber());
+        Assertions.assertEquals(bookingList.get(1).getBookingDate(), bookingDtoList.get(1).getBookingDate());
+        Assertions.assertEquals(bookingList.get(1).getPassenger().getId(), bookingDtoList.get(1).getPassengerId());
+        Assertions.assertEquals(bookingList.get(1).getFlightSeat().getId(), bookingDtoList.get(1).getFlightSeatId());
+        Assertions.assertEquals(bookingList.get(1).getCreateTime(), bookingDtoList.get(1).getCreateTime());
+        Assertions.assertEquals(bookingList.get(1).getBookingStatus(), bookingDtoList.get(1).getBookingStatus());
     }
 
     @Test
     void shouldConvertBookingDTOListToBookingList() throws Exception {
-        List<BookingDTO> bookingDTOList = new ArrayList<>();
+        List<BookingDto> bookingDtoList = new ArrayList<>();
 
         Passenger passenger1 = new Passenger();
         passenger1.setId(1001L);
@@ -178,46 +178,46 @@ class BookingMapperTest {
 
         LocalDateTime createTime = LocalDateTime.MIN;
 
-        BookingDTO bookingDTOOne = new BookingDTO();
-        bookingDTOOne.setId(1L);
-        bookingDTOOne.setBookingNumber("BK-111111");
-        bookingDTOOne.setBookingDate(LocalDateTime.now());
-        bookingDTOOne.setPassengerId(passengerServiceMock.getPassengerById(1001L).get().getId());
-        bookingDTOOne.setCreateTime(createTime);
-        bookingDTOOne.setFlightSeatId(flightSeatId1);
-        bookingDTOOne.setBookingStatus(BookingStatus.NOT_PAID);
+        BookingDto bookingDtoOne = new BookingDto();
+        bookingDtoOne.setId(1L);
+        bookingDtoOne.setBookingNumber("BK-111111");
+        bookingDtoOne.setBookingDate(LocalDateTime.now());
+        bookingDtoOne.setPassengerId(passengerServiceMock.getPassengerById(1001L).get().getId());
+        bookingDtoOne.setCreateTime(createTime);
+        bookingDtoOne.setFlightSeatId(flightSeatId1);
+        bookingDtoOne.setBookingStatus(BookingStatus.NOT_PAID);
 
-        BookingDTO bookingDTOTwo = new BookingDTO();
-        bookingDTOTwo.setId(2L);
-        bookingDTOTwo.setBookingNumber("BK-211112");
-        bookingDTOTwo.setBookingDate(LocalDateTime.now());
-        bookingDTOTwo.setPassengerId(passengerServiceMock.getPassengerById(1002L).get().getId());
-        bookingDTOTwo.setCreateTime(createTime);
-        bookingDTOTwo.setFlightSeatId(flightSeatId2);
-        bookingDTOTwo.setBookingStatus(BookingStatus.PAID);
+        BookingDto bookingDtoTwo = new BookingDto();
+        bookingDtoTwo.setId(2L);
+        bookingDtoTwo.setBookingNumber("BK-211112");
+        bookingDtoTwo.setBookingDate(LocalDateTime.now());
+        bookingDtoTwo.setPassengerId(passengerServiceMock.getPassengerById(1002L).get().getId());
+        bookingDtoTwo.setCreateTime(createTime);
+        bookingDtoTwo.setFlightSeatId(flightSeatId2);
+        bookingDtoTwo.setBookingStatus(BookingStatus.PAID);
 
-        bookingDTOList.add(bookingDTOOne);
-        bookingDTOList.add(bookingDTOTwo);
+        bookingDtoList.add(bookingDtoOne);
+        bookingDtoList.add(bookingDtoTwo);
 
-        List<Booking> bookingList = bookingMapper.convertToBookingEntityList(bookingDTOList, passengerServiceMock,
+        List<Booking> bookingList = bookingMapper.convertToBookingEntityList(bookingDtoList, passengerServiceMock,
                 flightSeatServiceMock);
 
-        Assertions.assertEquals(bookingList.size(), bookingDTOList.size());
+        Assertions.assertEquals(bookingList.size(), bookingDtoList.size());
 
-        Assertions.assertEquals(bookingDTOList.get(0).getId(), bookingList.get(0).getId());
-        Assertions.assertEquals(bookingDTOList.get(0).getBookingNumber(), bookingList.get(0).getBookingNumber());
-        Assertions.assertEquals(bookingDTOList.get(0).getBookingDate(), bookingList.get(0).getBookingDate());
-        Assertions.assertEquals(bookingDTOList.get(0).getPassengerId(), bookingList.get(0).getPassenger().getId());
-        Assertions.assertEquals(bookingDTOList.get(0).getFlightSeatId(), bookingList.get(0).getFlightSeat().getId());
-        Assertions.assertEquals(bookingDTOList.get(0).getCreateTime(), bookingList.get(0).getCreateTime());
-        Assertions.assertEquals(bookingDTOList.get(0).getBookingStatus(), bookingList.get(0).getBookingStatus());
+        Assertions.assertEquals(bookingDtoList.get(0).getId(), bookingList.get(0).getId());
+        Assertions.assertEquals(bookingDtoList.get(0).getBookingNumber(), bookingList.get(0).getBookingNumber());
+        Assertions.assertEquals(bookingDtoList.get(0).getBookingDate(), bookingList.get(0).getBookingDate());
+        Assertions.assertEquals(bookingDtoList.get(0).getPassengerId(), bookingList.get(0).getPassenger().getId());
+        Assertions.assertEquals(bookingDtoList.get(0).getFlightSeatId(), bookingList.get(0).getFlightSeat().getId());
+        Assertions.assertEquals(bookingDtoList.get(0).getCreateTime(), bookingList.get(0).getCreateTime());
+        Assertions.assertEquals(bookingDtoList.get(0).getBookingStatus(), bookingList.get(0).getBookingStatus());
 
-        Assertions.assertEquals(bookingDTOList.get(1).getId(), bookingList.get(1).getId());
-        Assertions.assertEquals(bookingDTOList.get(1).getBookingNumber(), bookingList.get(1).getBookingNumber());
-        Assertions.assertEquals(bookingDTOList.get(1).getBookingDate(), bookingList.get(1).getBookingDate());
-        Assertions.assertEquals(bookingDTOList.get(1).getPassengerId(), bookingList.get(1).getPassenger().getId());
-        Assertions.assertEquals(bookingDTOList.get(1).getFlightSeatId(), bookingList.get(1).getFlightSeat().getId());
-        Assertions.assertEquals(bookingDTOList.get(1).getCreateTime(), bookingList.get(1).getCreateTime());
-        Assertions.assertEquals(bookingDTOList.get(1).getBookingStatus(), bookingList.get(1).getBookingStatus());
+        Assertions.assertEquals(bookingDtoList.get(1).getId(), bookingList.get(1).getId());
+        Assertions.assertEquals(bookingDtoList.get(1).getBookingNumber(), bookingList.get(1).getBookingNumber());
+        Assertions.assertEquals(bookingDtoList.get(1).getBookingDate(), bookingList.get(1).getBookingDate());
+        Assertions.assertEquals(bookingDtoList.get(1).getPassengerId(), bookingList.get(1).getPassenger().getId());
+        Assertions.assertEquals(bookingDtoList.get(1).getFlightSeatId(), bookingList.get(1).getFlightSeat().getId());
+        Assertions.assertEquals(bookingDtoList.get(1).getCreateTime(), bookingList.get(1).getCreateTime());
+        Assertions.assertEquals(bookingDtoList.get(1).getBookingStatus(), bookingList.get(1).getBookingStatus());
     }
 }

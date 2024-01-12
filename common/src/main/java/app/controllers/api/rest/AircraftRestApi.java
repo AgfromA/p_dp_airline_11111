@@ -1,6 +1,6 @@
 package app.controllers.api.rest;
 
-import app.dto.AircraftDTO;
+import app.dto.AircraftDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,7 +29,7 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircrafts found"),
             @ApiResponse(code = 204, message = "Aircrafts not found")})
-    ResponseEntity<List<AircraftDTO>> getAllAircrafts(
+    ResponseEntity<List<AircraftDto>> getAllAircrafts(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size);
 
@@ -38,26 +38,26 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft found"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDTO> getAircraftById(
+    ResponseEntity<AircraftDto> getAircraftById(
             @ApiParam(name = "id", value = "Aircraft.id")
             @PathVariable("id") Long id);
 
     @PostMapping("/api/aircrafts")
     @ApiOperation(value = "Create new Aircraft")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Aircraft created")})
-    ResponseEntity<AircraftDTO> createAircraft(
+    ResponseEntity<AircraftDto> createAircraft(
             @ApiParam(
                     name = "Aircraft",
                     value = "Aircraft model"
             )
-            @RequestBody @Valid AircraftDTO aircraftDTO);
+            @RequestBody @Valid AircraftDto timezoneDto);
 
     @PatchMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Update Aircraft by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft updated"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDTO> updateAircraftById(
+    ResponseEntity<AircraftDto> updateAircraftById(
             @ApiParam(
                     name = "id",
                     value = "Aircraft.id"
@@ -67,7 +67,7 @@ public interface AircraftRestApi {
                     name = "Aircraft",
                     value = "Aircraft model"
             )
-            @RequestBody @Valid AircraftDTO aircraftDTO);
+            @RequestBody @Valid AircraftDto timezoneDto);
 
     @DeleteMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Delete Aircraft by \"id\"")

@@ -1,7 +1,7 @@
 package app.controllers;
 
-import app.dto.AircraftDTO;
-import app.dto.SeatDTO;
+import app.dto.AircraftDto;
+import app.dto.SeatDto;
 import app.enums.CategoryType;
 import app.mappers.SeatMapper;
 import app.repositories.SeatRepository;
@@ -88,7 +88,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldSaveSeat() throws Exception {
-        var seatDTO = new SeatDTO();
+        var seatDTO = new SeatDto();
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(true);
         seatDTO.setIsNearEmergencyExit(false);
@@ -111,7 +111,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
 
-                .andExpect(content().json(objectMapper.writeValueAsString(SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.getSeatById(id)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(SeatMapper.INSTANCE.convertToSeatDtoEntity(seatService.getSeatById(id)))));
     }
 
     @Test
@@ -124,7 +124,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldEditSeat() throws Exception {
-        var seatDTO = SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.getSeatById(1));
+        var seatDTO = SeatMapper.INSTANCE.convertToSeatDtoEntity(seatService.getSeatById(1));
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(false);
         seatDTO.setIsNearEmergencyExit(true);
@@ -154,7 +154,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldGetValidError() throws Exception {
-        var seatDTO = new SeatDTO();
+        var seatDTO = new SeatDto();
         seatDTO.setSeatNumber("1");
 
         mockMvc.perform(post("http://localhost:8080/api/seats")
@@ -177,7 +177,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldCreateManySeats() throws Exception {
-        var aircraft = new AircraftDTO();
+        var aircraft = new AircraftDto();
         aircraft.setAircraftNumber("17000010");
         aircraft.setModel("Airbus A319");
         aircraft.setModelYear(2002);

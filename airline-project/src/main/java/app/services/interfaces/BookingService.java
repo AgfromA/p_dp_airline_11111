@@ -1,6 +1,6 @@
 package app.services.interfaces;
 
-import app.dto.BookingDTO;
+import app.dto.BookingDto;
 import app.entities.Booking;
 import org.springframework.data.domain.Page;
 
@@ -8,19 +8,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingService {
-    List<BookingDTO> findAll();
+    List<BookingDto> findAll();
 
-    BookingDTO saveBooking(BookingDTO bookingDTO);
+    BookingDto saveBooking(BookingDto bookingDTO);
 
-    Page<BookingDTO> getAllBookings(Integer page, Integer size);
+    Page<BookingDto> getAllBookings(Integer page, Integer size);
 
-    BookingDTO getBookingById(Long id);
+    BookingDto getBookingById(Long id);
 
     List<Booking> getAllBookingsForEmailNotification(LocalDateTime departureIn, LocalDateTime gap);
 
     void deleteBookingById(Long id);
 
-    BookingDTO getBookingByNumber(String number);
+    BookingDto getBookingByNumber(String number);
 
     void deleteBookingByPassengerId(long passengerId);
 

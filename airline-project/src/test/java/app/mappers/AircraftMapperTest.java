@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.AircraftDTO;
+import app.dto.AircraftDto;
 import app.entities.Aircraft;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -17,7 +17,7 @@ public class AircraftMapperTest {
 
     @Test
     public void testConvertToAircraftEntityWhenGivenAircraftDTOThenReturnsAircraft() {
-        AircraftDTO aircraftDTO = new AircraftDTO();
+        AircraftDto aircraftDTO = new AircraftDto();
         aircraftDTO.setId(1L);
         aircraftDTO.setAircraftNumber("1234");
         aircraftDTO.setModel("Boeing");
@@ -41,7 +41,7 @@ public class AircraftMapperTest {
 
     @Test
     public void testConvertToAircraftEntityWhenGivenEmptyAircraftDTOThenReturnsEmptyAircraft() {
-        AircraftDTO aircraftDTO = new AircraftDTO();
+        AircraftDto aircraftDTO = new AircraftDto();
         Aircraft aircraft = aircraftMapper.convertToAircraftEntity(aircraftDTO);
 
         assertNull(aircraft.getId());
@@ -53,37 +53,37 @@ public class AircraftMapperTest {
 
     @Test
     public void shouldConvertToAircraftEntityList() {
-        List<AircraftDTO> aircraftDTOList = new ArrayList<>();
-        AircraftDTO aircraftDTOOne = new AircraftDTO();
-        aircraftDTOOne.setId(1L);
-        aircraftDTOOne.setAircraftNumber("1234");
-        aircraftDTOOne.setModel("Boeing");
-        aircraftDTOOne.setModelYear(2020);
-        aircraftDTOOne.setFlightRange(10000);
-        AircraftDTO aircraftDTOTwo = new AircraftDTO();
-        aircraftDTOTwo.setId(2L);
-        aircraftDTOTwo.setAircraftNumber("1235");
-        aircraftDTOTwo.setModel("Airbus");
-        aircraftDTOTwo.setModelYear(2022);
-        aircraftDTOTwo.setFlightRange(20000);
+        List<AircraftDto> aircraftDtoList = new ArrayList<>();
+        AircraftDto aircraftDtoOne = new AircraftDto();
+        aircraftDtoOne.setId(1L);
+        aircraftDtoOne.setAircraftNumber("1234");
+        aircraftDtoOne.setModel("Boeing");
+        aircraftDtoOne.setModelYear(2020);
+        aircraftDtoOne.setFlightRange(10000);
+        AircraftDto aircraftDtoTwo = new AircraftDto();
+        aircraftDtoTwo.setId(2L);
+        aircraftDtoTwo.setAircraftNumber("1235");
+        aircraftDtoTwo.setModel("Airbus");
+        aircraftDtoTwo.setModelYear(2022);
+        aircraftDtoTwo.setFlightRange(20000);
 
-        aircraftDTOList.add(aircraftDTOOne);
-        aircraftDTOList.add(aircraftDTOTwo);
+        aircraftDtoList.add(aircraftDtoOne);
+        aircraftDtoList.add(aircraftDtoTwo);
 
-        List<Aircraft> aircraftList = aircraftMapper.convertToAircraftEntityList(aircraftDTOList);
+        List<Aircraft> aircraftList = aircraftMapper.convertToAircraftEntityList(aircraftDtoList);
 
-        assertEquals(aircraftDTOList.size(), aircraftList.size());
-        assertEquals(aircraftDTOList.get(0).getId(), aircraftList.get(0).getId());
-        assertEquals(aircraftDTOList.get(0).getAircraftNumber(), aircraftList.get(0).getAircraftNumber());
-        assertEquals(aircraftDTOList.get(0).getModel(), aircraftList.get(0).getModel());
-        assertEquals(aircraftDTOList.get(0).getModelYear(), aircraftList.get(0).getModelYear());
-        assertEquals(aircraftDTOList.get(0).getFlightRange(), aircraftList.get(0).getFlightRange());
+        assertEquals(aircraftDtoList.size(), aircraftList.size());
+        assertEquals(aircraftDtoList.get(0).getId(), aircraftList.get(0).getId());
+        assertEquals(aircraftDtoList.get(0).getAircraftNumber(), aircraftList.get(0).getAircraftNumber());
+        assertEquals(aircraftDtoList.get(0).getModel(), aircraftList.get(0).getModel());
+        assertEquals(aircraftDtoList.get(0).getModelYear(), aircraftList.get(0).getModelYear());
+        assertEquals(aircraftDtoList.get(0).getFlightRange(), aircraftList.get(0).getFlightRange());
 
-        assertEquals(aircraftDTOList.get(1).getId(), aircraftList.get(1).getId());
-        assertEquals(aircraftDTOList.get(1).getAircraftNumber(), aircraftList.get(1).getAircraftNumber());
-        assertEquals(aircraftDTOList.get(1).getModel(), aircraftList.get(1).getModel());
-        assertEquals(aircraftDTOList.get(1).getModelYear(), aircraftList.get(1).getModelYear());
-        assertEquals(aircraftDTOList.get(1).getFlightRange(), aircraftList.get(1).getFlightRange());
+        assertEquals(aircraftDtoList.get(1).getId(), aircraftList.get(1).getId());
+        assertEquals(aircraftDtoList.get(1).getAircraftNumber(), aircraftList.get(1).getAircraftNumber());
+        assertEquals(aircraftDtoList.get(1).getModel(), aircraftList.get(1).getModel());
+        assertEquals(aircraftDtoList.get(1).getModelYear(), aircraftList.get(1).getModelYear());
+        assertEquals(aircraftDtoList.get(1).getFlightRange(), aircraftList.get(1).getFlightRange());
     }
 
     @Test
@@ -106,19 +106,19 @@ public class AircraftMapperTest {
         aircraftList.add(aircraftOne);
         aircraftList.add(aircraftTwo);
 
-        List<AircraftDTO> aircraftDTOList = aircraftMapper.convertToAircarftDTOList(aircraftList);
+        List<AircraftDto> aircraftDtoList = aircraftMapper.convertToAircarftDTOList(aircraftList);
 
-        assertEquals(aircraftList.size(), aircraftDTOList.size());
-        assertEquals(aircraftList.get(0).getId(), aircraftDTOList.get(0).getId());
-        assertEquals(aircraftList.get(0).getAircraftNumber(), aircraftDTOList.get(0).getAircraftNumber());
-        assertEquals(aircraftList.get(0).getModel(), aircraftDTOList.get(0).getModel());
-        assertEquals(aircraftList.get(0).getModelYear(), aircraftDTOList.get(0).getModelYear());
-        assertEquals(aircraftList.get(0).getFlightRange(), aircraftDTOList.get(0).getFlightRange());
+        assertEquals(aircraftList.size(), aircraftDtoList.size());
+        assertEquals(aircraftList.get(0).getId(), aircraftDtoList.get(0).getId());
+        assertEquals(aircraftList.get(0).getAircraftNumber(), aircraftDtoList.get(0).getAircraftNumber());
+        assertEquals(aircraftList.get(0).getModel(), aircraftDtoList.get(0).getModel());
+        assertEquals(aircraftList.get(0).getModelYear(), aircraftDtoList.get(0).getModelYear());
+        assertEquals(aircraftList.get(0).getFlightRange(), aircraftDtoList.get(0).getFlightRange());
 
-        assertEquals(aircraftList.get(1).getId(), aircraftDTOList.get(1).getId());
-        assertEquals(aircraftList.get(1).getAircraftNumber(), aircraftDTOList.get(1).getAircraftNumber());
-        assertEquals(aircraftList.get(1).getModel(), aircraftDTOList.get(1).getModel());
-        assertEquals(aircraftList.get(1).getModelYear(), aircraftDTOList.get(1).getModelYear());
-        assertEquals(aircraftList.get(1).getFlightRange(), aircraftDTOList.get(1).getFlightRange());
+        assertEquals(aircraftList.get(1).getId(), aircraftDtoList.get(1).getId());
+        assertEquals(aircraftList.get(1).getAircraftNumber(), aircraftDtoList.get(1).getAircraftNumber());
+        assertEquals(aircraftList.get(1).getModel(), aircraftDtoList.get(1).getModel());
+        assertEquals(aircraftList.get(1).getModelYear(), aircraftDtoList.get(1).getModelYear());
+        assertEquals(aircraftList.get(1).getFlightRange(), aircraftDtoList.get(1).getFlightRange());
     }
 }

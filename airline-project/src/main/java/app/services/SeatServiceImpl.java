@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.SeatDTO;
+import app.dto.SeatDto;
 import app.entities.Seat;
 import app.enums.CategoryType;
 import app.enums.seats.SeatsNumbersByAircraft;
@@ -34,13 +34,13 @@ public class SeatServiceImpl implements SeatService {
     private final FlightSeatRepository flightSeatRepository;
 
     @Override
-    public List<SeatDTO> getAllSeats() {
-        return SeatMapper.INSTANCE.convertToSeatDTOList(seatRepository.findAll());
+    public List<SeatDto> getAllSeats() {
+        return SeatMapper.INSTANCE.convertToSeatList(seatRepository.findAll());
     }
 
     @Transactional
     @Override
-    public Seat saveSeat(SeatDTO seatDTO) {
+    public Seat saveSeat(SeatDto seatDTO) {
         var seat = SeatMapper.INSTANCE.convertToSeatEntity(seatDTO, categoryService, aircraftService);
         if (seat.getId() != 0) {
             Seat aldSeat = getSeatById(seat.getId());
@@ -59,7 +59,7 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     @Transactional
-    public Seat editSeatById(Long id, SeatDTO seatDTO) {
+    public Seat editSeatById(Long id, SeatDto seatDTO) {
         var seat = SeatMapper.INSTANCE.convertToSeatEntity(seatDTO, categoryService, aircraftService);
         var targetSeat = seatRepository.findById(id).orElse(null);
         if (seat.getCategory() != null && seat.getCategory().getCategoryType() != targetSeat.getCategory().getCategoryType()) {
@@ -85,21 +85,21 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Page<SeatDTO> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
+    public Page<SeatDto> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
         return seatRepository.findByAircraftId(id, pageable)
-                .map(SeatMapper.INSTANCE::convertToSeatDTOEntity);
+                .map(SeatMapper.INSTANCE::convertToSeatDtoEntity);
     }
 
     @Override
     @Transactional
-    public List<SeatDTO> generateSeatsDTOByAircraftId(long aircraftId) {
+    public List<SeatDto> generateSeatsDTOByAircraftId(long aircraftId) {
 
-        List<SeatDTO> savedSeatsDTO = new ArrayList<>(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats());
+        List<SeatDto> savedSeatsDTO = new ArrayList<>(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats());
         if (getPagesSeatsByAircraftId(aircraftId, Pageable.unpaged()).getTotalElements() > 0) {
             return savedSeatsDTO;
         }
         int enumSeatsCounter = 0;
-        for (SeatDTO seatDTO : getSeatsDTOByAircraftId(aircraftId)) {
+        for (SeatDto seatDTO : getSeatsDTOByAircraftId(aircraftId)) {
             seatDTO.setSeatNumber(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].getNumber());
             seatDTO.setAircraftId(aircraftId);
             if (enumSeatsCounter < getNumbersOfSeatsByAircraftId(aircraftId).getNumberOfBusinessClassSeats()) { //Назначаем категории
@@ -113,7 +113,7 @@ public class SeatServiceImpl implements SeatService {
 
             var savedSeat = saveSeat(seatDTO);
 
-            savedSeatsDTO.add(SeatMapper.INSTANCE.convertToSeatDTOEntity(savedSeat));
+            savedSeatsDTO.add(SeatMapper.INSTANCE.convertToSeatDtoEntity(savedSeat));
         }
         return savedSeatsDTO;
     }
@@ -128,15 +128,15 @@ public class SeatServiceImpl implements SeatService {
         return getNumbersOfSeatsByAircraftId(aircraftId).getAircraftSeats();
     }
 
-    private List<SeatDTO> getSeatsDTOByAircraftId(long aircraftId) {
-        return Stream.generate(SeatDTO::new)
+    private List<SeatDto> getSeatsDTOByAircraftId(long aircraftId) {
+        return Stream.generate(SeatDto::new)
                 .limit(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Page<SeatDTO> getAllPagesSeats(Integer page, Integer size) {
+    public Page<SeatDto> getAllPagesSeats(Integer page, Integer size) {
         return seatRepository.findAll(PageRequest.of(page, size))
-                .map(SeatMapper.INSTANCE::convertToSeatDTOEntity);
+                .map(SeatMapper.INSTANCE::convertToSeatDtoEntity);
     }
 }

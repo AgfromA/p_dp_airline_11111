@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.dto.BookingDTO;
+import app.dto.BookingDto;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import app.services.interfaces.BookingService;
@@ -93,7 +93,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Save Booking")
     void shouldSaveBooking() throws Exception {
-        var booking = new BookingDTO();
+        var booking = new BookingDto();
         booking.setBookingNumber("BK-111111");
         booking.setBookingDate(LocalDateTime.now());
         booking.setPassengerId(passengerService.getPassengerById(1001L).get().getId());

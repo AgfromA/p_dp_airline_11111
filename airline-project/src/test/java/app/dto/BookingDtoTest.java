@@ -13,7 +13,7 @@ import javax.validation.Validator;
 import java.io.IOException;
 
 
-class BookingDTOTest extends EntityTest {
+class BookingDtoTest extends EntityTest {
 
     private Validator validator;
     private ObjectMapper mapper;
@@ -39,11 +39,11 @@ class BookingDTOTest extends EntityTest {
 
     @Test
     void validBookingShouldValidate() {
-        BookingDTO testBooking;
+        BookingDto testBooking;
         var bookingJson = initJSONObject();
 
         try {
-            testBooking = mapper.readValue(bookingJson.toString(), BookingDTO.class);
+            testBooking = mapper.readValue(bookingJson.toString(), BookingDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,11 +52,11 @@ class BookingDTOTest extends EntityTest {
 
     @Test
     void nullFlightSeatIdShouldNotValidate() {
-        BookingDTO testBooking;
+        BookingDto testBooking;
         var bookingJson = initJSONObject();
         bookingJson.replace("flightSeatId", null);
         try {
-            testBooking = mapper.readValue(bookingJson.toString(), BookingDTO.class);
+            testBooking = mapper.readValue(bookingJson.toString(), BookingDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -65,11 +65,11 @@ class BookingDTOTest extends EntityTest {
 
     @Test
     void nullIdPassengerShouldNotValidate() {
-        BookingDTO testBooking;
+        BookingDto testBooking;
         var bookingJson = initJSONObject();
         bookingJson.replace("passengerId", null);
         try {
-            testBooking = mapper.readValue(bookingJson.toString(), BookingDTO.class);
+            testBooking = mapper.readValue(bookingJson.toString(), BookingDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.FlightDTO;
+import app.dto.FlightDto;
 import app.entities.Destination;
 import app.entities.Flight;
 import app.mappers.FlightMapper;
@@ -50,15 +50,15 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public List<FlightDTO> getAllListFlights() {
-        return flightMapper.convertFlightListToFlighDTOtList(flightRepository.findAll(), this);
+    public List<FlightDto> getAllListFlights() {
+        return flightMapper.convertFlightListToFlighDtotList(flightRepository.findAll(), this);
     }
 
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public Page<FlightDTO> getAllFlights(Pageable pageable) {
-        return flightRepository.findAll(pageable).map(flight -> flightMapper.flightToFlightDTO(flight, this));
+    public Page<FlightDto> getAllFlights(Pageable pageable) {
+        return flightRepository.findAll(pageable).map(flight -> flightMapper.flightToFlightDto(flight, this));
     }
 
     @Override
@@ -71,11 +71,11 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public Page<FlightDTO> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo,
+    public Page<FlightDto> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo,
                                                                String dateStart, String dateFinish,
                                                                Pageable pageable) {
         return flightRepository.getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable)
-                .map(flight -> flightMapper.flightToFlightDTO(flight, this));
+                .map(flight -> flightMapper.flightToFlightDto(flight, this));
     }
 
     @Override
@@ -105,11 +105,11 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     @Loggable
-    public FlightDTO getFlightByIdAndDates(Long id, String start, String finish) {
+    public FlightDto getFlightByIdAndDates(Long id, String start, String finish) {
         var flight = flightRepository.findById(id);
         if (flight.isPresent() && (flight.get().getDepartureDateTime().isEqual(LocalDateTime.parse(start))
                 && flight.get().getArrivalDateTime().isEqual(LocalDateTime.parse(finish)))) {
-            return flightMapper.flightToFlightDTO(flight.get(), this);
+            return flightMapper.flightToFlightDto(flight.get(), this);
         }
         return null;
     }
@@ -122,18 +122,18 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public FlightDTO saveFlight(FlightDTO flightDTO) {
-        var savedFlight = flightRepository.save(flightMapper.flightDTOtoFlight(flightDTO, aircraftService,
+    public FlightDto saveFlight(FlightDto flightDto) {
+        var savedFlight = flightRepository.save(flightMapper.flightDtotoFlight(flightDto, aircraftService,
                 destinationService, ticketService, flightSeatService));
-        return flightMapper.flightToFlightDTO(savedFlight, this);
+        return flightMapper.flightToFlightDto(savedFlight, this);
     }
 
     @Override
     @Loggable
-    public FlightDTO updateFlight(Long id, FlightDTO flightDTO) {
-        var updatedFlight = flightRepository.saveAndFlush(flightMapper.flightDTOtoFlight(flightDTO, aircraftService,
+    public FlightDto updateFlight(Long id, FlightDto flightDto) {
+        var updatedFlight = flightRepository.saveAndFlush(flightMapper.flightDtotoFlight(flightDto, aircraftService,
                 destinationService, ticketService, flightSeatService));
-        return flightMapper.flightToFlightDTO(updatedFlight, this);
+        return flightMapper.flightToFlightDto(updatedFlight, this);
     }
 
     @Override

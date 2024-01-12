@@ -1,7 +1,7 @@
 package app.services.interfaces;
 
-import app.dto.FlightSeatDTO;
-import app.dto.SeatDTO;
+import app.dto.FlightSeatDto;
+import app.dto.SeatDto;
 import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.entities.Seat;
@@ -17,18 +17,18 @@ public interface FlightSeatService {
 
     Set<FlightSeat> getAllFlightSeats();
 
-    Page<FlightSeatDTO> getAllFlightSeats(Integer page, Integer size);
+    Page<FlightSeatDto> getAllFlightSeats(Integer page, Integer size);
 
     Optional<FlightSeat> getFlightSeatById(Long id);
 
-    Set<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId);
+    Set<FlightSeatDto> getFlightSeatsByFlightId(Long flightId);
 
 
-    List<FlightSeatDTO> getAllListFlightSeats();
+    List<FlightSeatDto> getAllListFlightSeats();
 
-    Page<FlightSeatDTO> getFreeSeatsById(Pageable pageable, Long id);
+    Page<FlightSeatDto> getFreeSeatsById(Pageable pageable, Long id);
 
-    Page<FlightSeatDTO> getFlightSeatsByFlightId(Long flightId, Pageable pageable);
+    Page<FlightSeatDto> getFlightSeatsByFlightId(Long flightId, Pageable pageable);
 
     Set<FlightSeat> getFlightSeatsByFlightNumber(String flightNumber);
 
@@ -38,13 +38,13 @@ public interface FlightSeatService {
 
     FlightSeat saveFlightSeat(FlightSeat flightSeat);
 
-    FlightSeatDTO saveFlightSeatDTO(FlightSeatDTO flightSeatDTO);
+    FlightSeatDto saveFlightSeat(FlightSeatDto flightSeatDTO);
 
     int getNumberOfFreeSeatOnFlight(Flight flight);
 
     Set<Seat> getSetOfFreeSeatsOnFlightByFlightId(Long id);
 
-    List<SeatDTO> getAllSeatDTO();
+    List<SeatDto> getAllSeats();
 
     Set<FlightSeat> getFlightSeatsBySeat(Seat seat);
 
@@ -52,11 +52,11 @@ public interface FlightSeatService {
 
     Set<FlightSeat> getNotSoldFlightSeatsById(Long id);
 
-    List<FlightSeatDTO> getCheapestFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type);
+    List<FlightSeatDto> getCheapestFlightSeatsByFlightIdAndSeatCategory(Long id, CategoryType type);
 
-    Page<FlightSeatDTO> getNotSoldFlightSeatsById(Long id, Pageable pageable);
+    Page<FlightSeatDto> getNotSoldFlightSeatsById(Long id, Pageable pageable);
 
-    Page<FlightSeatDTO> findNotRegisteredFlightSeatsById(Long id, Pageable pageable);
+    Page<FlightSeatDto> findNotRegisteredFlightSeatsById(Long id, Pageable pageable);
 
     void editFlightSeatIsSoldToFalseByFlightSeatId(long[] flightSeatId);
 

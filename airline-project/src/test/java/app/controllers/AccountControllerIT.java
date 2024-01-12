@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.dto.AccountDTO;
+import app.dto.AccountDto;
 import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;
 import app.services.interfaces.RoleService;
@@ -106,7 +106,7 @@ class AccountControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldPostNewAccount() throws Exception {
-        var accountDTO = new AccountDTO();
+        var accountDTO = new AccountDto();
         accountDTO.setFirstName("Ivan");
         accountDTO.setLastName("Ivanov");
         accountDTO.setBirthDate(LocalDate.of(2023, 3, 23));

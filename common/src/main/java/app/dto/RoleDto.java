@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleDTO {
+public class RoleDto {
     @ReadOnlyProperty
     private Long id;
     @NotBlank(message = "The field can not be empty")

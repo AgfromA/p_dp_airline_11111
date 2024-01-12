@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.AccountDTO;
+import app.dto.AccountDto;
 import app.mappers.AccountMapper;
 import app.repositories.AccountRepository;
 import app.services.interfaces.AccountService;
@@ -26,25 +26,25 @@ public class AccountServiceImpl implements AccountService {
     private final AccountMapper accountMapper;
 
     @Override
-    public List<AccountDTO> findAll() {
-        return accountMapper.convertToAccountDTOList(accountRepository.findAll());
+    public List<AccountDto> findAll() {
+        return accountMapper.convertToAccountDtoList(accountRepository.findAll());
     }
 
     @Override
-    public AccountDTO saveAccount(AccountDTO accountDTO) {
+    public AccountDto saveAccount(AccountDto accountDTO) {
         accountDTO.setPassword(encoder.encode(accountDTO.getPassword()));
         accountDTO.setRoles(roleService.saveRolesToUser(accountDTO));
         if (accountDTO.getAnswerQuestion() != null) {
             accountDTO.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
         var account = accountMapper.convertToAccount(accountDTO);
-        return accountMapper.convertToAccountDTO(accountRepository.saveAndFlush(account));
+        return accountMapper.convertToAccountDto(accountRepository.saveAndFlush(account));
     }
 
     @Override
-    public Optional<AccountDTO> updateAccount(Long id, AccountDTO accountDTO) {
-        Optional<AccountDTO> optionalSavedAccount = getAccountById(id);
-        AccountDTO savedAccount;
+    public Optional<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
+        Optional<AccountDto> optionalSavedAccount = getAccountById(id);
+        AccountDto savedAccount;
         if (optionalSavedAccount.isEmpty()) {
             return optionalSavedAccount;
         } else {
@@ -64,33 +64,33 @@ public class AccountServiceImpl implements AccountService {
             savedAccount.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
         return Optional.of(accountMapper
-                .convertToAccountDTO(accountRepository
+                .convertToAccountDto(accountRepository
                         .save(accountMapper.convertToAccount(savedAccount))));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Page<AccountDTO> getPage(Integer page, Integer size) {
+    public Page<AccountDto> getPage(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return accountRepository.findAll(pageRequest).map(accountMapper::convertToAccountDTO);
+        return accountRepository.findAll(pageRequest).map(accountMapper::convertToAccountDto);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<AccountDTO> getAccountById(Long id) {
-        return accountRepository.findById(id).map(accountMapper::convertToAccountDTO);
+    public Optional<AccountDto> getAccountById(Long id) {
+        return accountRepository.findById(id).map(accountMapper::convertToAccountDto);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public AccountDTO getAccountByEmail(String email) {
-        return accountMapper.convertToAccountDTO(accountRepository.getAccountByEmail(email));
+    public AccountDto getAccountByEmail(String email) {
+        return accountMapper.convertToAccountDto(accountRepository.getAccountByEmail(email));
     }
 
     @Override
-    public Optional<AccountDTO> deleteAccountById(Long id) {
+    public Optional<AccountDto> deleteAccountById(Long id) {
 
-        Optional<AccountDTO> optionalSavedAccount = getAccountById(id);
+        Optional<AccountDto> optionalSavedAccount = getAccountById(id);
         if (optionalSavedAccount.isEmpty()) {
             return optionalSavedAccount;
         } else {

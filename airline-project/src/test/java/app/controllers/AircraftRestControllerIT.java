@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.dto.AircraftDTO;
+import app.dto.AircraftDto;
 import app.mappers.AircraftMapper;
 import app.repositories.AircraftRepository;
 import app.services.interfaces.AircraftService;
@@ -82,7 +82,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldSaveAircraft() throws Exception {
-        var aircraft = new AircraftDTO();
+        var aircraft = new AircraftDto();
         aircraft.setAircraftNumber("412584");
         aircraft.setModel("Boeing 777");
         aircraft.setModelYear(2005);

@@ -1,6 +1,6 @@
 package app.controllers.api.rest;
 
-import app.dto.PassengerDTO;
+import app.dto.PassengerDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,7 +26,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 400, message = "Passenger not found")
     })
     @GetMapping
-    ResponseEntity<List<PassengerDTO>> getAllPassengers(
+    ResponseEntity<List<PassengerDto>> getAllPassengers(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
@@ -42,7 +42,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @GetMapping("/{id}")
-    ResponseEntity<PassengerDTO> getById(
+    ResponseEntity<PassengerDto> getById(
             @ApiParam(
                     name = "id",
                     value = "User.id",
@@ -56,13 +56,13 @@ public interface PassengerRestApi {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping
-    ResponseEntity<PassengerDTO> create(
+    ResponseEntity<PassengerDto> create(
             @ApiParam(
                     name = "Passenger",
                     value = "Passenger model",
                     required = true
             )
-            @RequestBody @Valid PassengerDTO passengerDTO);
+            @RequestBody @Valid PassengerDto passengerDTO);
 
     @ApiOperation(value = "Edit Passenger", notes = "Update method requires in model field \"@type\": \"Passenger\"")
     @ApiResponses(value = {
@@ -70,7 +70,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @PatchMapping(value = "/{id}")
-    ResponseEntity<PassengerDTO> updateById(
+    ResponseEntity<PassengerDto> updateById(
             @ApiParam(
                     name = "id",
                     value = "User.id",
@@ -82,7 +82,7 @@ public interface PassengerRestApi {
                     value = "Passenger model"
             )
             @RequestBody
-            @Valid PassengerDTO passengerDTO);
+            @Valid PassengerDto passengerDTO);
 
     @ApiOperation(value = "Delete Passenger by \"id\"")
     @ApiResponses(value = {

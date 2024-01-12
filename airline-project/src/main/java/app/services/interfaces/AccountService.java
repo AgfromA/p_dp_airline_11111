@@ -1,6 +1,6 @@
 package app.services.interfaces;
 
-import app.dto.AccountDTO;
+import app.dto.AccountDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -8,17 +8,17 @@ import java.util.Optional;
 
 public interface AccountService {
 
-    List<AccountDTO> findAll();
+    List<AccountDto> findAll();
 
-    AccountDTO saveAccount(AccountDTO accountDTO);
+    AccountDto saveAccount(AccountDto accountDTO);
 
-    Optional<AccountDTO> updateAccount(Long id, AccountDTO accountDTO);
+    Optional<AccountDto> updateAccount(Long id, AccountDto accountDTO);
 
-    Page<AccountDTO> getPage(Integer page, Integer size);
+    Page<AccountDto> getPage(Integer page, Integer size);
 
-    Optional<AccountDTO> getAccountById(Long id);
+    Optional<AccountDto> getAccountById(Long id);
 
-    AccountDTO getAccountByEmail(String email);
+    AccountDto getAccountByEmail(String email);
 
-    Optional<AccountDTO> deleteAccountById(Long id);
+    Optional<AccountDto> deleteAccountById(Long id);
 }

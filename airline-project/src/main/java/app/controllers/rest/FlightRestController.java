@@ -1,7 +1,7 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.FlightRestApi;
-import app.dto.FlightDTO;
+import app.dto.FlightDto;
 import app.enums.FlightStatus;
 import app.mappers.FlightMapper;
 import app.services.interfaces.FlightService;
@@ -26,7 +26,7 @@ public class FlightRestController implements FlightRestApi {
     private final FlightMapper flightMapper;
 
     @Override
-    public ResponseEntity<List<FlightDTO>> getAllFlightsByDestinationsAndDates(Integer page, Integer size,
+    public ResponseEntity<List<FlightDto>> getAllFlightsByDestinationsAndDates(Integer page, Integer size,
                                                                                String cityFrom, String cityTo,
                                                                                String dateStart, String dateFinish) {
         log.info("get all Flights");
@@ -38,23 +38,23 @@ public class FlightRestController implements FlightRestApi {
             log.info("no correct data");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Page<FlightDTO> flightDTOPage;
+        Page<FlightDto> flightDtoPage;
         Pageable pageable = PageRequest.of(page, size);
 
         if (cityFrom == null && cityTo == null && dateStart == null && dateFinish == null) {
-            flightDTOPage = flightService.getAllFlights(pageable);
+            flightDtoPage = flightService.getAllFlights(pageable);
             log.info("get all Flights by page");
         } else {
-            flightDTOPage = flightService
+            flightDtoPage = flightService
                     .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable);
             log.info("getAllFlightsByDestinationsAndDates: get all Flights or Flights by params");
         }
-        return flightDTOPage.isEmpty()
+        return flightDtoPage.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(flightDTOPage.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(flightDtoPage.getContent(), HttpStatus.OK);
     }
 
-    private ResponseEntity<List<FlightDTO>> createUnPagedResponse() {
+    private ResponseEntity<List<FlightDto>> createUnPagedResponse() {
         var flights = flightService.getAllListFlights();
         if (flights.isEmpty()) {
             log.info("Flights not found");
@@ -66,16 +66,16 @@ public class FlightRestController implements FlightRestApi {
     }
 
     @Override
-    public ResponseEntity<FlightDTO> getFlightById(Long id) {
+    public ResponseEntity<FlightDto> getFlightById(Long id) {
         log.info("getById: get Flight by id. id = {}", id);
         var flight = flightService.getFlightById(id);
         return flight.isPresent()
-                ? new ResponseEntity<>(flightMapper.flightToFlightDTO(flight.get(), flightService), HttpStatus.OK)
+                ? new ResponseEntity<>(flightMapper.flightToFlightDto(flight.get(), flightService), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Override
-    public ResponseEntity<FlightDTO> getFlightByIdAndDates(Long id, String start, String finish) {
+    public ResponseEntity<FlightDto> getFlightByIdAndDates(Long id, String start, String finish) {
         log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
         var flight = flightService.getFlightByIdAndDates(id, start, finish);
         return flight != null
@@ -87,26 +87,26 @@ public class FlightRestController implements FlightRestApi {
     public ResponseEntity<FlightStatus[]> getAllFlightStatus() {
         log.info("getAllFlightStatus: get all Flight Statuses");
         return new ResponseEntity<>(flightService.getAllListFlights().stream()
-                .map(FlightDTO::getFlightStatus)
+                .map(FlightDto::getFlightStatus)
                 .distinct().collect(Collectors.toList()).toArray(FlightStatus[]::new), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<FlightDTO> createFlight(FlightDTO flightDTO) {
+    public ResponseEntity<FlightDto> createFlight(FlightDto flightDto) {
         log.info("create: create new Flight");
-        return new ResponseEntity<>(flightService.saveFlight(flightDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(flightService.saveFlight(flightDto), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<FlightDTO> updateFlightById(Long id, FlightDTO flightDTO) {
+    public ResponseEntity<FlightDto> updateFlightById(Long id, FlightDto flightDto) {
         var flight = flightService.getFlightById(id);
         if (flight.isEmpty()) {
             log.error("update: Flight with id={} doesn't exist.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        flightDTO.setId(id);
+        flightDto.setId(id);
         log.info("update: Flight with id = {} updated", id);
-        return new ResponseEntity<>(flightService.updateFlight(id, flightDTO), HttpStatus.OK);
+        return new ResponseEntity<>(flightService.updateFlight(id, flightDto), HttpStatus.OK);
     }
 
     @Override

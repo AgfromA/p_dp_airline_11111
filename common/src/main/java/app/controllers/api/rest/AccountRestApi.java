@@ -1,7 +1,7 @@
 package app.controllers.api.rest;
 
-import app.dto.AccountDTO;
-import app.dto.RoleDTO;
+import app.dto.AccountDto;
+import app.dto.RoleDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,7 +28,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Accounts found"),
             @ApiResponse(code = 204, message = "Accounts not found")})
-    ResponseEntity<List<AccountDTO>> getAllAccounts(@ApiParam(name = "page")
+    ResponseEntity<List<AccountDto>> getAllAccounts(@ApiParam(name = "page")
                                              @RequestParam(value = "page", required = false) Integer page,
                                                     @ApiParam(name = "size")
                                              @RequestParam(value = "size", required = false) Integer size);
@@ -38,7 +38,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account found"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<AccountDTO> getAccountById(
+    ResponseEntity<AccountDto> getAccountById(
             @ApiParam(
                     name = "id",
                     value = "Account.id"
@@ -48,27 +48,27 @@ public interface AccountRestApi {
     @RequestMapping(value = "/api/accounts/auth", method = RequestMethod.GET)
     @ApiOperation(value = "Get authenticated Account")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Account found")})
-    ResponseEntity<AccountDTO> getAuthenticatedAccount(HttpServletRequest request);
+    ResponseEntity<AccountDto> getAuthenticatedAccount(HttpServletRequest request);
 
     @RequestMapping(value = "/api/accounts", method = RequestMethod.POST)
     @ApiOperation(value = "Create Account")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Account created"),
             @ApiResponse(code = 500, message = "Server error")})
-    ResponseEntity<AccountDTO> createAccount(
+    ResponseEntity<AccountDto> createAccount(
             @ApiParam(
                     name = "account",
                     value = "Account model"
             )
             @RequestBody
             //@Valid fix it
-            AccountDTO accountDTO);
+            AccountDto accountDTO);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Update Account by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account updated"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<AccountDTO> updateAccountById(
+    ResponseEntity<AccountDto> updateAccountById(
             @ApiParam(
                     name = "id",
                     value = "Account.id"
@@ -80,7 +80,7 @@ public interface AccountRestApi {
             )
             @RequestBody
             //@Valid
-            AccountDTO accountDTO);
+            AccountDto accountDTO);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete Account by \"id\"")
@@ -99,5 +99,5 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Roles found"),
             @ApiResponse(code = 204, message = "No Role saved")})
-    ResponseEntity<Set<RoleDTO>> getAllRoles();
+    ResponseEntity<Set<RoleDto>> getAllRoles();
 }

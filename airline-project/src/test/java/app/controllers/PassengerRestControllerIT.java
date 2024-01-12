@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.dto.PassengerDTO;
+import app.dto.PassengerDto;
 import app.entities.Passport;
 import app.enums.Gender;
 import app.mappers.PassengerMapper;
@@ -94,14 +94,14 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
-                        content().json(objectMapper.writeValueAsString(passengerMapper.convertToPassengerDTO(
+                        content().json(objectMapper.writeValueAsString(passengerMapper.convertToPassengerDto(
                                 passengerService.getPassengerById(id).get()))));
     }
 
     @Test
     @DisplayName("Post new passenger")
     void shouldAddNewPassenger() throws Exception {
-        var passengerDTO = new PassengerDTO();
+        var passengerDTO = new PassengerDto();
         passengerDTO.setFirstName("Petr");
         passengerDTO.setLastName("Petrov");
         passengerDTO.setBirthDate(LocalDate.of(2023, 3, 23));
@@ -122,7 +122,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Post exist passenger")
     void shouldAddExistPassenger() throws Exception {
-        var passengerDTO = new PassengerDTO();
+        var passengerDTO = new PassengerDto();
         passengerDTO.setId(4L);
         mockMvc.perform(
                         post("http://localhost:8080/api/passengers")
@@ -151,7 +151,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @DisplayName("Update passenger")
     void shouldUpdatePassenger() throws Exception {
         var id = 4L;
-        var passengerDTO = passengerMapper.convertToPassengerDTO(passengerService.getPassengerById(id).get());
+        var passengerDTO = passengerMapper.convertToPassengerDto(passengerService.getPassengerById(id).get());
         passengerDTO.setFirstName("Klark");
         long numberOfPassenger = passengerRepository.count();
 

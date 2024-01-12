@@ -45,12 +45,12 @@ public class SearchServiceImpl implements SearchService {
         addDirectDepartFlightsToSearchDepartFlight(search, searchDepartFlight);
         addNonDirectDepartFlightsToSearchDepartFlight(search, searchDepartFlight);
 
-        var searchDepartFlightDTO = searchDepartFlight.stream()
+        var searchDepartFlightDto = searchDepartFlight.stream()
                 .map(departFlight -> Mappers.getMapper(FlightMapper.class)
-                        .flightToFlightDTO(departFlight, flightService))
+                        .flightToFlightDto(departFlight, flightService))
                 .collect(Collectors.toList());
 
-        searchResult.setDepartFlights(searchDepartFlightDTO);
+        searchResult.setDepartFlights(searchDepartFlightDto);
 
         if (search.getReturnDate() == null) {
             searchResult.setReturnFlights(new ArrayList<>());
@@ -59,12 +59,12 @@ public class SearchServiceImpl implements SearchService {
             addNonDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
 
 
-            var searchReturnFlightDTO = searchReturnFlight.stream()
+            var searchReturnFlightDto = searchReturnFlight.stream()
                     .map(returnFlight -> Mappers.getMapper(FlightMapper.class)
-                            .flightToFlightDTO(returnFlight, flightService))
+                            .flightToFlightDto(returnFlight, flightService))
                     .collect(Collectors.toList());
 
-            searchResult.setReturnFlights(searchReturnFlightDTO);
+            searchResult.setReturnFlights(searchReturnFlightDto);
         }
         return searchResult;
     }

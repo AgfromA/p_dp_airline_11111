@@ -1,6 +1,6 @@
 package app.mappers;
 
-import app.dto.BookingDTO;
+import app.dto.BookingDto;
 import app.entities.Booking;
 
 import app.services.interfaces.*;
@@ -14,24 +14,27 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookingMapper {
+
     @Mapping(target = "passengerId", expression = "java(booking.getPassenger().getId())")
     @Mapping(target = "flightSeatId", expression = "java(booking.getFlightSeat().getId())")
-    BookingDTO convertToBookingDTOEntity(Booking booking);
+    BookingDto convertToBookingDtoEntity(Booking booking);
 
-    @Mapping(target = "passenger", expression = "java(passengerService.getPassengerById(bookingDTO.getPassengerId()).get())")
-    @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeatById(bookingDTO.getFlightSeatId()).get())")
-    Booking convertToBookingEntity(BookingDTO bookingDTO, @Context PassengerService passengerService,
+    @Mapping(target = "passenger", expression = "java(passengerService.getPassengerById(bookingDto.getPassengerId()).get())")
+    @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeatById(bookingDto.getFlightSeatId()).get())")
+    Booking convertToBookingEntity(BookingDto bookingDto,
+                                   @Context PassengerService passengerService,
                                    @Context FlightSeatService flightSeatService);
 
-    default List<BookingDTO> convertToBookingDTOEntityList(List<Booking> bookings) {
+    default List<BookingDto> convertToBookingDtoEntityList(List<Booking> bookings) {
         return bookings.stream()
-                .map(this::convertToBookingDTOEntity)
+                .map(this::convertToBookingDtoEntity)
                 .collect(Collectors.toList());
     }
 
-    default List<Booking> convertToBookingEntityList(List<BookingDTO> bookingDTOs, PassengerService passengerService,
+    default List<Booking> convertToBookingEntityList(List<BookingDto> bookingDtos,
+                                                     PassengerService passengerService,
                                                      FlightSeatService flightSeatService) {
-        return bookingDTOs.stream()
+        return bookingDtos.stream()
                 .map(bookingDTO -> convertToBookingEntity(bookingDTO, passengerService, flightSeatService))
                 .collect(Collectors.toList());
     }
