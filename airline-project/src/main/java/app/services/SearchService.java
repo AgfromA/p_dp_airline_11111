@@ -5,7 +5,7 @@ import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.mappers.FlightMapper;
-import app.util.aop.Loggable;
+import app.utils.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;

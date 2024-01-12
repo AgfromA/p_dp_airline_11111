@@ -1,4 +1,4 @@
-package app.config;
+package app.configs;
 
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.OAuthTokenCredential;

@@ -1,4 +1,4 @@
-package app.config;
+package app.configs;
 
 import app.security.JwtProviderLite;
 import org.springframework.beans.factory.annotation.Value;

@@ -11,7 +11,7 @@ import app.mappers.SeatMapper;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
-import app.util.aop.Loggable;
+import app.utils.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,4 +1,4 @@
-package app.util.aop;
+package app.utils.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class LoggingAspect {
-    @Pointcut("@annotation(app.util.aop.Loggable)")
+
+    @Pointcut("@annotation(app.utils.aop.Loggable)")
     public void loggable() {}
 
     @Around("loggable()")

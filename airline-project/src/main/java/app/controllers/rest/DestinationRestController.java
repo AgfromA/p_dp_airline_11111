@@ -4,7 +4,7 @@ import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDto;
 import app.entities.Destination;
 import app.services.DestinationService;
-import app.util.LogsUtils;
+import app.utils.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

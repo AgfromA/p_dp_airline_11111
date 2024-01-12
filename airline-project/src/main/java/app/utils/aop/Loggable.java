@@ -1,4 +1,4 @@
-package app.util.aop;
+package app.utils.aop;
 
 public @interface Loggable {
 }

@@ -1,4 +1,4 @@
-package app.config;
+package app.configs;
 
 import app.account.Account;
 import lombok.RequiredArgsConstructor;

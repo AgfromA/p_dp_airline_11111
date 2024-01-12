@@ -1,6 +1,6 @@
-package app.config;
+package app.configs;
 
-import app.config.util.LoginSuccessHandler;
+import app.configs.util.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

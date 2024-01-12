@@ -1,4 +1,4 @@
-package app.config;
+package app.configs;
 
 import app.exeptions.CustomErrorDecoder;
 import feign.codec.ErrorDecoder;

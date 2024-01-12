@@ -6,7 +6,7 @@ import app.entities.Flight;
 import app.mappers.FlightMapper;
 import app.repositories.*;
 import app.enums.Airport;
-import app.util.aop.Loggable;
+import app.utils.aop.Loggable;
 import net.sf.geographiclib.Geodesic;
 import net.sf.geographiclib.GeodesicData;
 import org.springframework.context.annotation.Lazy;

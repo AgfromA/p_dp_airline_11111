@@ -1,4 +1,4 @@
-package app.config.util;
+package app.configs.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
