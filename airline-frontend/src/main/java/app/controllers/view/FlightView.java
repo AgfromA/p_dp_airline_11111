@@ -3,9 +3,9 @@ package app.controllers.view;
 import app.clients.AircraftClient;
 import app.clients.DestinationClient;
 import app.clients.FlightClient;
-import app.dto.DestinationDTO;
-import app.dto.FlightDTO;
-import app.dto.FlightSeatDTO;
+import app.dto.DestinationDto;
+import app.dto.FlightDto;
+import app.dto.FlightSeatDto;
 import app.enums.Airport;
 import app.enums.FlightStatus;
 import com.vaadin.flow.component.Key;
@@ -40,7 +40,6 @@ import org.springframework.http.HttpStatus;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,10 +50,10 @@ public class FlightView extends VerticalLayout {
     private final FlightClient flightClient;
     private final DestinationClient destinationClient;
     private final AircraftClient aircraftClient;
-    private List<FlightDTO> dataSource;
-    private final Grid<FlightDTO> grid = new Grid<>(FlightDTO.class, false);
-    private final Grid<FlightSeatDTO> flightSeatGrid = new Grid<>(FlightSeatDTO.class, false);
-    private final Editor<FlightDTO> editor = grid.getEditor();
+    private List<FlightDto> dataSource;
+    private final Grid<FlightDto> grid = new Grid<>(FlightDto.class, false);
+    private final Grid<FlightSeatDto> flightSeatGrid = new Grid<>(FlightSeatDto.class, false);
+    private final Editor<FlightDto> editor = grid.getEditor();
     private final Button updateButton;
     private final Button cancelButton;
     private final Button nextButton;
@@ -80,10 +79,12 @@ public class FlightView extends VerticalLayout {
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         isSearchById = false;
         isSearchByDestinationsAndDates = false;
-        var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null, null, null, null, pageable);
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource = response.getBody().stream().collect(Collectors.toList());
+        var response = flightClient.getAllFlightsByDestinationsAndDates(
+                pageable.getPageNumber(), pageable.getPageSize(), null, null, null, null);
+        dataSource = response.getBody();
+        List<FlightDto> flightDtoList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
+                null, null, null).getBody();
+        maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage codeValidationMessage = new ValidationMessage();
@@ -94,23 +95,23 @@ public class FlightView extends VerticalLayout {
         ValidationMessage aircraftIdValidationMessage = new ValidationMessage();
         ValidationMessage flightStatusValidationMessage = new ValidationMessage();
 
-        Grid.Column<FlightDTO> idColumn = createIdColumn();
-        Grid.Column<FlightDTO> codeColumn = createCodeColumn();
-        Grid.Column<FlightDTO> airportFromColumn = createAirportFromColumn();
-        Grid.Column<FlightDTO> airportToColumn = createAirportToColumn();
-        Grid.Column<FlightDTO> departureDateTimeColumn = createDepartureDateTimeColumn();
-        Grid.Column<FlightDTO> arrivalDateTimeColumn = createArrivalDateTimeColumn();
-        Grid.Column<FlightDTO> aircraftIdColumn = createAircraftIdColumn();
-        Grid.Column<FlightDTO> flightStatusColumn = createFlightStatusColumn();
+        Grid.Column<FlightDto> idColumn = createIdColumn();
+        Grid.Column<FlightDto> codeColumn = createCodeColumn();
+        Grid.Column<FlightDto> airportFromColumn = createAirportFromColumn();
+        Grid.Column<FlightDto> airportToColumn = createAirportToColumn();
+        Grid.Column<FlightDto> departureDateTimeColumn = createDepartureDateTimeColumn();
+        Grid.Column<FlightDto> arrivalDateTimeColumn = createArrivalDateTimeColumn();
+        Grid.Column<FlightDto> aircraftIdColumn = createAircraftIdColumn();
+        Grid.Column<FlightDto> flightStatusColumn = createFlightStatusColumn();
         createViewSeatsColumn();
-        Grid.Column<FlightDTO> updateColumn = createEditColumn();
+        Grid.Column<FlightDto> updateColumn = createEditColumn();
         createDeleteColumn();
 
         createCategorySeatColumn();
         createNumberSeatColumn();
         createFareColumn();
 
-        Binder<FlightDTO> binder = createBinder();
+        Binder<FlightDto> binder = createBinder();
 
         createIdField(binder, idValidationMessage, idColumn);
         createCodeField(binder, codeValidationMessage, codeColumn);
@@ -215,21 +216,24 @@ public class FlightView extends VerticalLayout {
             dataSource.clear();
             grid.getDataProvider().refreshAll();
             PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-            var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
+            var response = flightClient.getAllFlightsByDestinationsAndDates(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
                     cityFrom,
                     cityTo,
                     dateStartString,
-                    dateFinishString,
-                    pageable
+                    dateFinishString
             );
             if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
                 Notification.show("Flights with these parameters not found.", 3000, Notification.Position.TOP_CENTER);
                 maxPages = 0;
-                List<FlightDTO> emptyList = Collections.emptyList();
+                List<FlightDto> emptyList = Collections.emptyList();
                 grid.setItems(emptyList);
             } else {
-                maxPages = response.getBody().getTotalPages() - 1;
-                dataSource = response.getBody().stream().collect(Collectors.toList());
+                List<FlightDto> flightDtoList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
+                        null, null, null).getBody();
+                maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
+                dataSource = response.getBody();
                 grid.setItems(dataSource);
             }
         } else {
@@ -375,9 +379,9 @@ public class FlightView extends VerticalLayout {
     private void searchById() {
         dataSource.clear();
         grid.getDataProvider().refreshAll();
-        var a = flightClient.getFlightDTOById(idSearchField.getValue().longValue());
+        var a = flightClient.getFlightById(idSearchField.getValue().longValue());
         if (a.getStatusCode() == HttpStatus.NOT_FOUND) {
-            List<FlightDTO> emptyList = Collections.emptyList();
+            List<FlightDto> emptyList = Collections.emptyList();
             grid.setItems(emptyList);
         }
         dataSource.add(a.getBody());
@@ -387,52 +391,54 @@ public class FlightView extends VerticalLayout {
     private void defaultCurrentPageOfFlights() {
         dataSource.clear();
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-        var response = flightClient.getAllPagesFlightsByDestinationsAndDates(
-                null, null, null, null, pageable);
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource = response.getBody().stream().collect(Collectors.toList());
+        var response = flightClient.getAllFlightsByDestinationsAndDates(
+                pageable.getPageNumber(), pageable.getPageSize(), null, null, null, null);
+        List<FlightDto> flightDtoList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
+                null, null, null).getBody();
+        maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
+        dataSource = response.getBody();
 
 
         grid.getDataProvider().refreshAll();
         grid.setItems(dataSource);
     }
 
-    private Grid.Column<FlightDTO> createIdColumn() {
-        return grid.addColumn(FlightDTO -> FlightDTO.getId()
+    private Grid.Column<FlightDto> createIdColumn() {
+        return grid.addColumn(flightDto -> flightDto.getId()
                 .intValue()).setHeader("Id").setWidth("80px").setFlexGrow(0);
     }
 
-    private Grid.Column<FlightDTO> createCodeColumn() {
-        return grid.addColumn(FlightDTO::getCode).setHeader("Flight code").setWidth("70px");
+    private Grid.Column<FlightDto> createCodeColumn() {
+        return grid.addColumn(FlightDto::getCode).setHeader("Flight code").setWidth("70px");
     }
 
-    private Grid.Column<FlightDTO> createAirportFromColumn() {
-        return grid.addColumn(FlightDTO::getAirportFrom).setHeader("Airport From Id").setWidth("50px");
+    private Grid.Column<FlightDto> createAirportFromColumn() {
+        return grid.addColumn(FlightDto::getAirportFrom).setHeader("Airport From Id").setWidth("50px");
     }
 
-    private Grid.Column<FlightDTO> createAirportToColumn() {
-        return grid.addColumn(FlightDTO::getAirportTo).setHeader("Airport To Id").setWidth("50px");
+    private Grid.Column<FlightDto> createAirportToColumn() {
+        return grid.addColumn(FlightDto::getAirportTo).setHeader("Airport To Id").setWidth("50px");
     }
 
-    private Grid.Column<FlightDTO> createDepartureDateTimeColumn() {
-        return grid.addColumn(FlightDTO::getDepartureDateTime).setHeader("Departure Date And Time").setWidth("190px");
+    private Grid.Column<FlightDto> createDepartureDateTimeColumn() {
+        return grid.addColumn(FlightDto::getDepartureDateTime).setHeader("Departure Date And Time").setWidth("190px");
     }
 
-    private Grid.Column<FlightDTO> createArrivalDateTimeColumn() {
-        return grid.addColumn(FlightDTO::getArrivalDateTime).setHeader("Arrival Date And Time").setWidth("190px");
+    private Grid.Column<FlightDto> createArrivalDateTimeColumn() {
+        return grid.addColumn(FlightDto::getArrivalDateTime).setHeader("Arrival Date And Time").setWidth("190px");
     }
 
-    private Grid.Column<FlightDTO> createAircraftIdColumn() {
-        return grid.addColumn(FlightDTO::getAircraftId).setHeader("Aircraft Id").setWidth("50px");
+    private Grid.Column<FlightDto> createAircraftIdColumn() {
+        return grid.addColumn(FlightDto::getAircraftId).setHeader("Aircraft Id").setWidth("50px");
     }
 
-    private Grid.Column<FlightDTO> createFlightStatusColumn() {
-        return grid.addColumn(FlightDTO::getFlightStatus).setHeader("Flight Status").setWidth("120px");
+    private Grid.Column<FlightDto> createFlightStatusColumn() {
+        return grid.addColumn(FlightDto::getFlightStatus).setHeader("Flight Status").setWidth("120px");
     }
 
-    private Grid.Column<FlightDTO> createViewSeatsColumn() {
+    private Grid.Column<FlightDto> createViewSeatsColumn() {
         return grid.addComponentColumn(flight -> {
-            List<FlightSeatDTO> seatList = flight.getSeats();
+            List<FlightSeatDto> seatList = flight.getSeats();
             Button viewSeatsButton = new Button("View seats");
             viewSeatsButton.addClickListener(e -> {
                 openFlightSeatsTable(seatList);
@@ -441,7 +447,7 @@ public class FlightView extends VerticalLayout {
         });
     }
 
-    private void openFlightSeatsTable(List<FlightSeatDTO> seatList) {
+    private void openFlightSeatsTable(List<FlightSeatDto> seatList) {
         Dialog flightSeatsDialog = new Dialog();
         flightSeatsDialog.setWidth("40%");
         if (!seatList.isEmpty()) {
@@ -459,20 +465,20 @@ public class FlightView extends VerticalLayout {
         }
     }
 
-    private Grid.Column<FlightSeatDTO> createFareColumn() {
-        return flightSeatGrid.addColumn(FlightSeatDTO::getFare).setHeader("fare");
+    private Grid.Column<FlightSeatDto> createFareColumn() {
+        return flightSeatGrid.addColumn(FlightSeatDto::getFare).setHeader("fare");
     }
 
-    private Grid.Column<FlightSeatDTO> createNumberSeatColumn() {
+    private Grid.Column<FlightSeatDto> createNumberSeatColumn() {
         return flightSeatGrid.addColumn(e -> e.getSeat().getSeatNumber()).setHeader("seat number");
     }
 
-    private Grid.Column<FlightSeatDTO> createCategorySeatColumn() {
-        return flightSeatGrid.addColumn(FlightSeatDTO::getCategory).setHeader("category");
+    private Grid.Column<FlightSeatDto> createCategorySeatColumn() {
+        return flightSeatGrid.addColumn(FlightSeatDto::getCategory).setHeader("category");
     }
 
 
-    private Grid.Column<FlightDTO> createEditColumn() {
+    private Grid.Column<FlightDto> createEditColumn() {
         return grid.addComponentColumn(flight -> {
             Button updateButton = new Button("Update");
             updateButton.addClickListener(e -> {
@@ -488,14 +494,14 @@ public class FlightView extends VerticalLayout {
         });
     }
 
-    private Grid.Column<FlightDTO> createDeleteColumn() {
+    private Grid.Column<FlightDto> createDeleteColumn() {
         return grid.addComponentColumn(flight -> {
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
-                    ListDataProvider<FlightDTO> dataProvider = (ListDataProvider<FlightDTO>) grid.getDataProvider();
+                    ListDataProvider<FlightDto> dataProvider = (ListDataProvider<FlightDto>) grid.getDataProvider();
                     try {
                         flightClient.deleteFlightById(flight.getId());
                     } catch (Exception exception) {
@@ -511,90 +517,90 @@ public class FlightView extends VerticalLayout {
         }).setWidth("80px").setFlexGrow(0);
     }
 
-    private Binder<FlightDTO> createBinder() {
-        Binder<FlightDTO> binder = new Binder<>(FlightDTO.class);
+    private Binder<FlightDto> createBinder() {
+        Binder<FlightDto> binder = new Binder<>(FlightDto.class);
         editor.setBinder(binder);
         editor.setBuffered(true);
         return binder;
     }
 
-    private void createIdField(Binder<FlightDTO> binder,
+    private void createIdField(Binder<FlightDto> binder,
                                ValidationMessage idValidationMessage,
-                               Grid.Column<FlightDTO> idColumn) {
+                               Grid.Column<FlightDto> idColumn) {
         IntegerField idField = new IntegerField();
         idField.setWidthFull();
         idField.setReadOnly(true);
         binder.forField(idField)
                 .asRequired("Id must not be empty")
                 .withStatusLabel(idValidationMessage)
-                .bind(FlightDTO -> FlightDTO.getId().intValue(),
-                        (FlightDTO, Integer) -> FlightDTO.setId(Integer.longValue()));
+                .bind(flightDto -> flightDto.getId().intValue(),
+                        (flightDto, value) -> flightDto.setId(value.longValue()));
         idColumn.setEditorComponent(idField);
     }
 
-    private void createCodeField(Binder<FlightDTO> binder,
+    private void createCodeField(Binder<FlightDto> binder,
                                  ValidationMessage codeValidationMessage,
-                                 Grid.Column<FlightDTO> codeColumn) {
+                                 Grid.Column<FlightDto> codeColumn) {
         TextField codeField = new TextField();
         binder.forField(codeField).asRequired("Flight code must not be empty")
                 .withStatusLabel(codeValidationMessage)
                 .withValidator(number -> number.length() >= 2 && number.length() <= 15,
                         "Length of Flight code should be between 2 and 15 characters")
-                .bind(FlightDTO::getCode, FlightDTO::setCode);
+                .bind(FlightDto::getCode, FlightDto::setCode);
         codeColumn.setEditorComponent(codeField);
     }
 
-    private void createAirportFromField(Binder<FlightDTO> binder,
+    private void createAirportFromField(Binder<FlightDto> binder,
                                         ValidationMessage airportFromValidationMessage,
-                                        Grid.Column<FlightDTO> airportFromColumn) {
+                                        Grid.Column<FlightDto> airportFromColumn) {
         ComboBox<Airport> airportFromField = new ComboBox<>();
         airportFromField.setItems(Airport.values());
         airportFromField.setWidthFull();
         binder.forField(airportFromField).asRequired("Airport must not be empty")
                 .withStatusLabel(airportFromValidationMessage)
-                .bind(FlightDTO::getAirportFrom, FlightDTO::setAirportFrom);
+                .bind(FlightDto::getAirportFrom, FlightDto::setAirportFrom);
         airportFromColumn.setEditorComponent(airportFromField);
     }
 
-    private void createAirportToField(Binder<FlightDTO> binder,
+    private void createAirportToField(Binder<FlightDto> binder,
                                       ValidationMessage airportToValidationMessage,
-                                      Grid.Column<FlightDTO> airportToColumn) {
+                                      Grid.Column<FlightDto> airportToColumn) {
         ComboBox<Airport> airportToField = new ComboBox<>();
         airportToField.setItems(Airport.values());
         airportToField.setWidthFull();
         binder.forField(airportToField).asRequired("Airport must not be empty")
                 .withStatusLabel(airportToValidationMessage)
-                .bind(FlightDTO::getAirportFrom, FlightDTO::setAirportFrom);
+                .bind(FlightDto::getAirportFrom, FlightDto::setAirportFrom);
         airportToColumn.setEditorComponent(airportToField);
     }
 
-    private void createDepartureDateTimeField(Binder<FlightDTO> binder,
+    private void createDepartureDateTimeField(Binder<FlightDto> binder,
                                               ValidationMessage departureDateTimeValidationMessage,
-                                              Grid.Column<FlightDTO> departureDateTimeColumn) {
+                                              Grid.Column<FlightDto> departureDateTimeColumn) {
         DateTimePicker departureDateTimeField = new DateTimePicker();
         departureDateTimeField.setWidthFull();
         binder.forField(departureDateTimeField)
                 .asRequired("Field must not be empty")
                 .withStatusLabel(departureDateTimeValidationMessage)
-                .bind(FlightDTO::getDepartureDateTime, FlightDTO::setDepartureDateTime);
+                .bind(FlightDto::getDepartureDateTime, FlightDto::setDepartureDateTime);
         departureDateTimeColumn.setEditorComponent(departureDateTimeField);
     }
 
-    private void createArrivalDateTimeField(Binder<FlightDTO> binder,
+    private void createArrivalDateTimeField(Binder<FlightDto> binder,
                                             ValidationMessage arrivalDateTimeValidationMessage,
-                                            Grid.Column<FlightDTO> arrivalDateTimeColumn) {
+                                            Grid.Column<FlightDto> arrivalDateTimeColumn) {
         DateTimePicker arrivalDateTimeField = new DateTimePicker();
         arrivalDateTimeField.setWidthFull();
         binder.forField(arrivalDateTimeField)
                 .asRequired("Field must not be empty")
                 .withStatusLabel(arrivalDateTimeValidationMessage)
-                .bind(FlightDTO::getArrivalDateTime, FlightDTO::setArrivalDateTime);
+                .bind(FlightDto::getArrivalDateTime, FlightDto::setArrivalDateTime);
         arrivalDateTimeColumn.setEditorComponent(arrivalDateTimeField);
     }
 
-    private void createAircraftIdField(Binder<FlightDTO> binder,
+    private void createAircraftIdField(Binder<FlightDto> binder,
                                        ValidationMessage aircraftIdValidationMessage,
-                                       Grid.Column<FlightDTO> aircraftIdColumn) {
+                                       Grid.Column<FlightDto> aircraftIdColumn) {
         IntegerField aircraftIdField = new IntegerField();
         aircraftIdField.setWidthFull();
         binder.forField(aircraftIdField)
@@ -605,15 +611,15 @@ public class FlightView extends VerticalLayout {
         aircraftIdColumn.setEditorComponent(aircraftIdField);
     }
 
-    private void createFlightStatusField(Binder<FlightDTO> binder,
+    private void createFlightStatusField(Binder<FlightDto> binder,
                                          ValidationMessage flightStatusValidationMessage,
-                                         Grid.Column<FlightDTO> flightStatusColumn) {
+                                         Grid.Column<FlightDto> flightStatusColumn) {
         ComboBox<FlightStatus> flightStatusField = new ComboBox<>();
         flightStatusField.setItems(FlightStatus.values());
         flightStatusField.setWidthFull();
         binder.forField(flightStatusField).asRequired("Flight Status must not be empty")
                 .withStatusLabel(flightStatusValidationMessage)
-                .bind(FlightDTO::getFlightStatus, FlightDTO::setFlightStatus);
+                .bind(FlightDto::getFlightStatus, FlightDto::setFlightStatus);
         flightStatusColumn.setEditorComponent(flightStatusField);
     }
 
@@ -650,7 +656,7 @@ public class FlightView extends VerticalLayout {
 
 
             try {
-                var a = aircraftClient.getAircraftDTOById(e.getItem().getAircraftId());
+                var a = aircraftClient.getAircraftById(e.getItem().getAircraftId());
             } catch (FeignException.NotFound ex) {
                 Notification.show("Aircraft with id = " + e.getItem().getAircraftId() + " not exists, ",
                         3000, Notification.Position.TOP_CENTER);
@@ -721,8 +727,11 @@ public class FlightView extends VerticalLayout {
         TextField code = new TextField("Flight code");
         code.setWidth("200px");
 
-        List<Airport> airports = destinationClient.getAllDestinationDTO().getBody()
-                .stream().map(DestinationDTO::getAirportCode).collect(Collectors.toList());
+        List<Airport> airports = destinationClient.getAllDestinations(null, null, null, null, null)
+                .getBody()
+                .stream()
+                .map(DestinationDto::getAirportCode)
+                .collect(Collectors.toList());
 
         ComboBox<Airport> airportFrom = new ComboBox<>("Airport from");
         airportFrom.setWidth("200px");
@@ -789,22 +798,22 @@ public class FlightView extends VerticalLayout {
                 return;
             }
             try {
-                var a = aircraftClient.getAircraftDTOById(aircraftId.getValue().longValue());
+                var a = aircraftClient.getAircraftById(aircraftId.getValue().longValue());
             } catch (FeignException.NotFound ex) {
                 Notification.show("Aircraft with id = " + aircraftId.getValue().toString() + " not exists, ",
                         3000, Notification.Position.TOP_CENTER);
                 return;
             }
-            FlightDTO flightDTO = new FlightDTO();
-            flightDTO.setId(0L);
-            flightDTO.setCode(code.getValue());
-            flightDTO.setAirportFrom(airportFrom.getValue());
-            flightDTO.setAirportTo(airportTo.getValue());
-            flightDTO.setDepartureDateTime(departureDateTime.getValue());
-            flightDTO.setArrivalDateTime(arrivalDateTime.getValue());
-            flightDTO.setAircraftId(aircraftId.getValue().longValue());
-            flightDTO.setFlightStatus(flightStatus.getValue());
-            FlightDTO savedFlight = flightClient.createFlight(flightDTO).getBody();
+            FlightDto flightDto = new FlightDto();
+            flightDto.setId(0L);
+            flightDto.setCode(code.getValue());
+            flightDto.setAirportFrom(airportFrom.getValue());
+            flightDto.setAirportTo(airportTo.getValue());
+            flightDto.setDepartureDateTime(departureDateTime.getValue());
+            flightDto.setArrivalDateTime(arrivalDateTime.getValue());
+            flightDto.setAircraftId(aircraftId.getValue().longValue());
+            flightDto.setFlightStatus(flightStatus.getValue());
+            FlightDto savedFlight = flightClient.createFlight(flightDto).getBody();
             dataSource.add(savedFlight);
             code.clear();
             airportFrom.clear();

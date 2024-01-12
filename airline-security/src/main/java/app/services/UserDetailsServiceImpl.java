@@ -1,6 +1,6 @@
 package app.services;
 
-import app.config.AccountDetailsImpl;
+import app.configs.AccountDetailsImpl;
 import app.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

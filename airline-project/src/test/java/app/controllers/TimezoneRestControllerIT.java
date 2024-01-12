@@ -1,23 +1,18 @@
 package app.controllers;
 
-import app.dto.TimezoneDTO;
-import app.entities.Timezone;
+import app.dto.TimezoneDto;
 import app.mappers.TimezoneMapper;
 import app.repositories.TimezoneRepository;
-import app.services.interfaces.TimezoneService;
+import app.services.TimezoneService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,44 +37,70 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
 
     private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
 
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllTimezones() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/timezones"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllTimezonesByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/timezones?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllTimezonesByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/timezones?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/timezones?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/timezones?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetPageTickets() throws Exception {
+        var pageable = PageRequest.of(0, 4);
+        mockMvc.perform(get("http://localhost:8080/api/timezones?page=0&size=4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(timezoneService
+                        .getAllPagesTimezones(pageable.getPageNumber(), pageable.getPageSize())
+                        .getContent())));
+    }
+    // Пагинация 2.0
 
     @Test
     @DisplayName("Creating Timezone")
     void shouldCreateNewTimezone() throws Exception {
-        var timezoneDTO = new TimezoneDTO();
-        timezoneDTO.setCityName("New-York");
-        timezoneDTO.setCountryName("USA");
-        timezoneDTO.setGmt("GMT-5");
-        timezoneDTO.setGmtWinter("GMT-4");
+        var timezoneDto = new TimezoneDto();
+        timezoneDto.setCityName("New-York");
+        timezoneDto.setCountryName("USA");
+        timezoneDto.setGmt("GMT-5");
+        timezoneDto.setGmtWinter("GMT-4");
         mockMvc.perform(post("http://localhost:8080/api/timezones")
-                        .content(objectMapper.writeValueAsString(timezoneDTO))
+                        .content(objectMapper.writeValueAsString(timezoneDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
 
-    @Test
-    @DisplayName("Get all Timezones")
-    void shouldGetAllTimezones() throws Exception {
-        int page = 0;
-        int size = 10;
-        Page<Timezone> timezonePage = timezoneService.getAllPagesTimezones(page, size);
-
-        List<TimezoneDTO> timezoneDTOList = timezonePage.stream()
-                .map(timezoneMapper::convertToTimezoneDTO) // Используем маппер для преобразования Timezone в TimezoneDTO
-                .collect(Collectors.toList());
-
-        mockMvc.perform(get("http://localhost:8080/api/timezones"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        new PageImpl<>(
-                                timezoneDTOList,
-                                PageRequest.of(page, size),
-                                timezonePage.getTotalElements())
-                )));
-    }
 
     @Test
     @DisplayName("Get Timezone by ID")
@@ -88,7 +109,7 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/timezones/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(new TimezoneDTO()))
+                .andExpect(content().json(objectMapper.writeValueAsString(new TimezoneDto()))
                 );
     }
 
@@ -108,12 +129,12 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
     @DisplayName("Update timezone")
     void shouldUpdateTimezone() throws Exception {
         long id = 5L;
-        var timezoneDTO = timezoneService.getTimezoneById(id).get();
-        timezoneDTO.setCountryName("Чехия");
+        var timezoneDto = timezoneService.getTimezoneById(id).get();
+        timezoneDto.setCountryName("Чехия");
         long numberOfTimezone = timezoneRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/timezones/{id}", id)
-                        .content(objectMapper.writeValueAsString(timezoneDTO))
+                        .content(objectMapper.writeValueAsString(timezoneDto))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())

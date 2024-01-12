@@ -1,21 +1,18 @@
 package app.controllers.api.rest;
 
-import app.dto.SeatDTO;
+import app.dto.SeatDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Api(tags = "Seat REST")
@@ -28,9 +25,9 @@ public interface SeatRestApi {
             @ApiResponse(code = 200, message = "Seats found"),
             @ApiResponse(code = 404, message = "Seats not found")
     })
-    ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTO(@PageableDefault()
-                                         @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-                                         @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size);
+    ResponseEntity<List<SeatDto>> getAllSeats(@PageableDefault()
+                                                      @RequestParam(value = "page", required = false) Integer page,
+                                              @RequestParam(value = "size", required = false) Integer size);
 
     @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Seats by \"aircraftId\"")
@@ -38,7 +35,7 @@ public interface SeatRestApi {
             @ApiResponse(code = 200, message = "Seats found"),
             @ApiResponse(code = 404, message = "Seats not found")
     })
-    ResponseEntity<Page<SeatDTO>> getAllPagesSeatsDTOByAircraftId(
+    ResponseEntity<List<SeatDto>> getAllSeatsByAircraftId(
             @PageableDefault(sort = {"id"}, value = 30) Pageable pageable,
             @ApiParam(
                     name = "aircraftId",
@@ -52,7 +49,7 @@ public interface SeatRestApi {
             @ApiResponse(code = 200, message = "seat found"),
             @ApiResponse(code = 404, message = "seat not found")
     })
-    ResponseEntity<SeatDTO> getSeatDTOById(
+    ResponseEntity<SeatDto> getSeatById(
             @ApiParam(
                     name = "id",
                     value = "Seat.id"
@@ -65,12 +62,12 @@ public interface SeatRestApi {
             @ApiResponse(code = 201, message = "seat created"),
             @ApiResponse(code = 400, message = "seat not created")
     })
-    ResponseEntity<SeatDTO> createSeatDTO(
+    ResponseEntity<SeatDto> createSeat(
             @ApiParam(
                     name = "seat",
                     value = "Seat model"
             )
-            @RequestBody @Valid SeatDTO seatDTO);
+            @RequestBody @Valid SeatDto seatDto);
 
     @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.POST)
     @ApiOperation(value = "Generate Seats for provided Aircraft based on Aircraft's model")
@@ -80,7 +77,7 @@ public interface SeatRestApi {
             @ApiResponse(code = 400, message = "Seats not created"),
             @ApiResponse(code = 404, message = "Aircraft with this id not found")
     })
-    ResponseEntity<List<SeatDTO>> generateSeatsDTOByAircraftId(@PathVariable("aircraftId") Long aircraftId);
+    ResponseEntity<List<SeatDto>> generateSeatsByAircraftId(@PathVariable("aircraftId") Long aircraftId);
 
     @RequestMapping(value = "/api/seats/{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Edit Seat by \"id\"")
@@ -89,7 +86,7 @@ public interface SeatRestApi {
             @ApiResponse(code = 400, message = "seat failed to edit"),
             @ApiResponse(code = 404, message = "seat not found")
     })
-    ResponseEntity<SeatDTO> updateSeatDTOById(
+    ResponseEntity<SeatDto> updateSeatById(
             @ApiParam(
                     name = "id",
                     value = "Seat.id"
@@ -99,7 +96,7 @@ public interface SeatRestApi {
                     name = "seat",
                     value = "Seat model"
             )
-            @RequestBody @Valid SeatDTO seatDTO);
+            @RequestBody @Valid SeatDto seatDto);
 
     @RequestMapping(value = "/api/seats/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete Seat by \"id\"")

@@ -1,7 +1,7 @@
 package app.controllers.view;
 
 import app.clients.DestinationClient;
-import app.dto.DestinationDTO;
+import app.dto.DestinationDto;
 import app.enums.Airport;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,22 +24,20 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.Route;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Route(value = "destination", layout = MainLayout.class)
 public class DestinationView extends VerticalLayout {
 
-    private final Grid<DestinationDTO> grid = new Grid<>(DestinationDTO.class, false);
-    private final Editor<DestinationDTO> editor = grid.getEditor();
+    private final Grid<DestinationDto> grid = new Grid<>(DestinationDto.class, false);
+    private final Editor<DestinationDto> editor = grid.getEditor();
     private final DestinationClient destinationClient;
-    private final List<DestinationDTO> dataSource;
-    private ResponseEntity<Page<DestinationDTO>> response;
+    private final List<DestinationDto> dataSource;
+    private ResponseEntity<List<DestinationDto>> response;
     private final Button updateButton;
     private final Button cancelButton;
     private final Button nextButton;
@@ -59,29 +57,31 @@ public class DestinationView extends VerticalLayout {
     public DestinationView(DestinationClient destinationClient) {
 
         this.destinationClient = destinationClient;
-        this.response = destinationClient.getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
-        city = null;
-        country = null;
-        timezone = null;
-        isFilteredSearch = false;
-        currentPage = 0;
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource = response.getBody().stream().collect(Collectors.toList());
+        this.currentPage = 0; // сначала инициализация страницы иначе вытаскивает весь список
+        this.response = destinationClient.getAllDestinations(currentPage, 10, city, country, timezone);
+        this.city = null;
+        this.country = null;
+        this.timezone = null;
+        this.isFilteredSearch = false;
+        List<DestinationDto> dtos = destinationClient.getAllDestinations(null, null, null, null, null).getBody();
+        int pageSize = 10;
+        this.maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
+        this.dataSource = response.getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage airportCodeValidationMessage = new ValidationMessage();
         ValidationMessage timezoneValidationMessage = new ValidationMessage();
 
-        Grid.Column<DestinationDTO> idColumn = createIdColumn();
-        Grid.Column<DestinationDTO> airportCodeColumn = createAirportCodeColumn();
-        Grid.Column<DestinationDTO> airportNameColumn = createAirportNameColumn();
-        Grid.Column<DestinationDTO> cityColumn = createCityColumn();
-        Grid.Column<DestinationDTO> countryColumn = createCountryColumn();
-        Grid.Column<DestinationDTO> timezoneColumn = createTimezoneColumn();
-        Grid.Column<DestinationDTO> updateColumn = createEditColumn();
+        Grid.Column<DestinationDto> idColumn = createIdColumn();
+        Grid.Column<DestinationDto> airportCodeColumn = createAirportCodeColumn();
+        Grid.Column<DestinationDto> airportNameColumn = createAirportNameColumn();
+        Grid.Column<DestinationDto> cityColumn = createCityColumn();
+        Grid.Column<DestinationDto> countryColumn = createCountryColumn();
+        Grid.Column<DestinationDto> timezoneColumn = createTimezoneColumn();
+        Grid.Column<DestinationDto> updateColumn = createEditColumn();
         createDeleteColumn();
 
-        Binder<DestinationDTO> binder = createBinder();
+        Binder<DestinationDto> binder = createBinder();
 
         createIdField(binder, idValidationMessage, idColumn);
         createAirportCodeField(binder, airportCodeValidationMessage, airportCodeColumn);
@@ -179,10 +179,13 @@ public class DestinationView extends VerticalLayout {
 
     private boolean isFoundDestinations(String city, String country, String timezone) {
         try {
-            ResponseEntity<Page<DestinationDTO>> filteredResponse = destinationClient
-                    .getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
-            maxPages = filteredResponse.getBody().getTotalPages() - 1;
-            dataSource.addAll(filteredResponse.getBody().stream().collect(Collectors.toList()));
+            ResponseEntity<List<DestinationDto>> filteredResponse = destinationClient
+                    .getAllDestinations(currentPage, 10, city, country, timezone);
+            List<DestinationDto> dtos = destinationClient.getAllDestinations(null, null,
+                    null, null, null).getBody();
+            int pageSize = 10;
+            maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
+            dataSource.addAll(filteredResponse.getBody());
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -201,9 +204,12 @@ public class DestinationView extends VerticalLayout {
 
     private void updateGridData() {
         dataSource.clear();
-        response = destinationClient.getAllPagesDestinationsDTO(currentPage, 10, city, country, timezone);
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
+        response = destinationClient.getAllDestinations(currentPage, 10, city, country, timezone);
+        List<DestinationDto> dtos = destinationClient.getAllDestinations(null, null,
+                null, null, null).getBody();
+        int pageSize = 10;
+        maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
+        dataSource.addAll(response.getBody());
         grid.getDataProvider().refreshAll();
     }
 
@@ -225,32 +231,32 @@ public class DestinationView extends VerticalLayout {
         return timezoneField;
     }
 
-    private Grid.Column<DestinationDTO> createIdColumn() {
-        return grid.addColumn(destinationDTO -> destinationDTO.getId()
+    private Grid.Column<DestinationDto> createIdColumn() {
+        return grid.addColumn(destinationDto -> destinationDto.getId()
                 .intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
     }
 
-    private Grid.Column<DestinationDTO> createAirportCodeColumn() {
-        return grid.addColumn(DestinationDTO::getAirportCode).setHeader("Airport Code").setWidth("120px");
+    private Grid.Column<DestinationDto> createAirportCodeColumn() {
+        return grid.addColumn(DestinationDto::getAirportCode).setHeader("Airport Code").setWidth("120px");
     }
 
-    private Grid.Column<DestinationDTO> createAirportNameColumn() {
+    private Grid.Column<DestinationDto> createAirportNameColumn() {
         return grid.addColumn(dto -> dto.getAirportCode().getAirportName()).setHeader("Airport name").setWidth("120px");
     }
 
-    private Grid.Column<DestinationDTO> createCityColumn() {
+    private Grid.Column<DestinationDto> createCityColumn() {
         return grid.addColumn(dto -> dto.getAirportCode().getCity()).setHeader("City").setWidth("120px");
     }
 
-    private Grid.Column<DestinationDTO> createCountryColumn() {
+    private Grid.Column<DestinationDto> createCountryColumn() {
         return grid.addColumn(dto -> dto.getAirportCode().getCountry()).setHeader("Country").setWidth("120px");
     }
 
-    private Grid.Column<DestinationDTO> createTimezoneColumn() {
-        return grid.addColumn(DestinationDTO::getTimezone).setHeader("Timezone").setWidth("240px");
+    private Grid.Column<DestinationDto> createTimezoneColumn() {
+        return grid.addColumn(DestinationDto::getTimezone).setHeader("Timezone").setWidth("240px");
     }
 
-    private Grid.Column<DestinationDTO> createEditColumn() {
+    private Grid.Column<DestinationDto> createEditColumn() {
         return grid.addComponentColumn(destination -> {
             Button updateButton = new Button("Update");
             updateButton.addClickListener(e -> {
@@ -262,14 +268,14 @@ public class DestinationView extends VerticalLayout {
         });
     }
 
-    private Grid.Column<DestinationDTO> createDeleteColumn() {
+    private Grid.Column<DestinationDto> createDeleteColumn() {
         return grid.addComponentColumn(destination -> {
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
-                    ListDataProvider<DestinationDTO> dataProvider = (ListDataProvider<DestinationDTO>) grid.getDataProvider();
+                    ListDataProvider<DestinationDto> dataProvider = (ListDataProvider<DestinationDto>) grid.getDataProvider();
                     destinationClient.deleteDestinationById(destination.getId());
                     Notification.show("Destination deleted successfully.", 3000, Notification.Position.TOP_CENTER);
                     dataProvider.getItems().remove(destination);
@@ -280,29 +286,29 @@ public class DestinationView extends VerticalLayout {
         }).setWidth("150px").setFlexGrow(0);
     }
 
-    private Binder<DestinationDTO> createBinder() {
-        Binder<DestinationDTO> binder = new Binder<>(DestinationDTO.class);
+    private Binder<DestinationDto> createBinder() {
+        Binder<DestinationDto> binder = new Binder<>(DestinationDto.class);
         editor.setBinder(binder);
         editor.setBuffered(true);
         return binder;
     }
 
-    private void createIdField(Binder<DestinationDTO> binder,
+    private void createIdField(Binder<DestinationDto> binder,
                                ValidationMessage idValidationMessage,
-                               Grid.Column<DestinationDTO> idColumn) {
+                               Grid.Column<DestinationDto> idColumn) {
         IntegerField idField = new IntegerField();
         idField.setWidthFull();
         binder.forField(idField)
                 .asRequired("Id must not be empty")
                 .withStatusLabel(idValidationMessage)
-                .bind(destinationDTO -> destinationDTO.getId().intValue(),
-                        (destinationDTO, Integer) -> destinationDTO.setId(Integer.longValue()));
+                .bind(destinationDto -> destinationDto.getId().intValue(),
+                        (destinationDto, Integer) -> destinationDto.setId(Integer.longValue()));
         idColumn.setEditorComponent(idField);
     }
 
-    private void createAirportCodeField(Binder<DestinationDTO> binder,
+    private void createAirportCodeField(Binder<DestinationDto> binder,
                                         ValidationMessage airportCodeValidationMessage,
-                                        Grid.Column<DestinationDTO> airportCodeColumn) {
+                                        Grid.Column<DestinationDto> airportCodeColumn) {
         ComboBox<Airport> airportCodeField = new ComboBox<>();
         airportCodeField.setItems(Airport.values());
         airportCodeField.setRenderer(new TextRenderer<>(airport ->
@@ -311,19 +317,19 @@ public class DestinationView extends VerticalLayout {
         airportCodeField.setWidthFull();
         binder.forField(airportCodeField).asRequired("Airport code must not be empty")
                 .withStatusLabel(airportCodeValidationMessage)
-                .bind(DestinationDTO::getAirportCode, DestinationDTO::setAirportCode);
+                .bind(DestinationDto::getAirportCode, DestinationDto::setAirportCode);
         airportCodeColumn.setEditorComponent(airportCodeField);
     }
 
-    private void createTimezoneField(Binder<DestinationDTO> binder,
+    private void createTimezoneField(Binder<DestinationDto> binder,
                                      ValidationMessage timezoneValidationMessage,
-                                     Grid.Column<DestinationDTO> timezoneColumn) {
+                                     Grid.Column<DestinationDto> timezoneColumn) {
         TextField timezoneField = new TextField();
         binder.forField(timezoneField).asRequired("Field should not be empty")
                 .withStatusLabel(timezoneValidationMessage)
                 .withValidator(gmt -> gmt.length() >= 2 && gmt.length() <= 9
                         , "Timezone must be between 2 and 9 characters")
-                .bind(DestinationDTO::getTimezone, DestinationDTO::setTimezone);
+                .bind(DestinationDto::getTimezone, DestinationDto::setTimezone);
         timezoneColumn.setEditorComponent(timezoneField);
     }
 
@@ -338,17 +344,17 @@ public class DestinationView extends VerticalLayout {
         });
     }
 
-    private boolean isEditedDestination(Long id, DestinationDTO destinationDTO) {
+    private boolean isEditedDestination(Long id, DestinationDto destinationDto) {
         try {
-            destinationClient.updateDestinationDTOById(id, destinationDTO);
+            destinationClient.updateDestinationById(id, destinationDto);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
-            Notification.show("Destination with airport code " + destinationDTO.getAirportCode() +
+            Notification.show("Destination with airport code " + destinationDto.getAirportCode() +
                     " already exists.", 3000, Notification.Position.TOP_CENTER);
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
-            Notification.show("Destination with id " + destinationDTO.getId() + " not found."
+            Notification.show("Destination with id " + destinationDto.getId() + " not found."
                     , 3000, Notification.Position.TOP_CENTER);
         }
         return false;
@@ -421,10 +427,10 @@ public class DestinationView extends VerticalLayout {
                 Notification.show("Please fill in all required fields correctly.", 3000, Notification.Position.TOP_CENTER);
                 return;
             }
-            DestinationDTO destinationDTO = new DestinationDTO();
-            destinationDTO.setAirportCode(airportCodeField.getValue());
-            destinationDTO.setTimezone(timezoneField.getValue());
-            if (isCreatedDestination(destinationDTO)) {
+            DestinationDto destinationDto = new DestinationDto();
+            destinationDto.setAirportCode(airportCodeField.getValue());
+            destinationDto.setTimezone(timezoneField.getValue());
+            if (isCreatedDestination(destinationDto)) {
                 grid.getDataProvider().refreshAll();
                 airportCodeField.clear();
                 timezoneField.clear();
@@ -434,17 +440,17 @@ public class DestinationView extends VerticalLayout {
         return createTab;
     }
 
-    private boolean isCreatedDestination(DestinationDTO destinationDTO) {
+    private boolean isCreatedDestination(DestinationDto destinationDto) {
         try {
-            ResponseEntity<DestinationDTO> responseCreated = destinationClient.createDestinationDTO(destinationDTO);
+            ResponseEntity<DestinationDto> responseCreated = destinationClient.createDestination(destinationDto);
             if (responseCreated.getStatusCode() == HttpStatus.CREATED) {
-                DestinationDTO savedDestination = responseCreated.getBody();
+                DestinationDto savedDestination = responseCreated.getBody();
                 dataSource.add(savedDestination);
                 return true;
             }
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
-            Notification.show("Destination with airport code " + destinationDTO.getAirportCode() +
+            Notification.show("Destination with airport code " + destinationDto.getAirportCode() +
                     " already exists.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;

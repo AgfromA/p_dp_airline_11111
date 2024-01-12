@@ -1,14 +1,20 @@
 package app.mappers;
 
-import app.dto.TimezoneDTO;
+import app.dto.TimezoneDto;
 import app.entities.Timezone;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TimezoneMapper {
 
-    TimezoneDTO convertToTimezoneDTO(Timezone timezone);
+    TimezoneDto toDto(Timezone timezone);
 
-    Timezone convertToTimezone(TimezoneDTO timezoneDTO);
+    Timezone toEntity(TimezoneDto timezoneDto);
+
+    List<TimezoneDto> toDtoList(List<Timezone> timezoneList);
+
+    List<Timezone> toEntityList(List<TimezoneDto> timezoneDtoList);
 }

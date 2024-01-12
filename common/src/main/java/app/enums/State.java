@@ -7,5 +7,4 @@ public enum State {
     ERROR,
     REJECTED,
     SUCCESS
-
 }

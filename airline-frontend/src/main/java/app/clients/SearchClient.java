@@ -1,6 +1,6 @@
 package app.clients;
 
-import app.controllers.api.rest.SearchControllerApi;
+import app.controllers.api.SearchControllerApi;
 import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(value = "SearchResult", url = "${app.feign.config.url}")

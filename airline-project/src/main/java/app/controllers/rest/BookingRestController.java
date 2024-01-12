@@ -1,18 +1,16 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.BookingRestApi;
-import app.dto.BookingDTO;
-import app.entities.Booking;
+import app.dto.BookingDto;
 import app.enums.BookingStatus;
-import app.mappers.BookingMapper;
-import app.services.interfaces.BookingService;
+import app.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -20,63 +18,75 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingRestController implements BookingRestApi {
 
     private final BookingService bookingService;
-    private final BookingMapper bookingMapper;
 
     @Override
-    public ResponseEntity<Page<BookingDTO>> getAllPagesBookingsDTO(Integer page, Integer size) {
+    public ResponseEntity<List<BookingDto>> getAllBookings(Integer page, Integer size) {
         log.info("getAll: search all Bookings");
-        Page<BookingDTO> bookings = bookingService.getAllBookings(page, size);
-        if (bookings == null) {
-            log.info("getAll: Bookings not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (page == null || size == null) {
+            log.info("getAll: get all list Bookings");
+            return createUnPagedResponse();
         }
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
+        if (page < 0 || size < 1) {
+            log.info("getAll: no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        var bookings = bookingService.getAllBookings(page, size);
+        return bookings.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(bookings.getContent(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<BookingDto>> createUnPagedResponse() {
+        var bookings = bookingService.findAll();
+        if (bookings.isEmpty()) {
+            log.info("getAll: Bookings not found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll:found {} Bookings", bookings.size());
+            return new ResponseEntity<>(bookings, HttpStatus.OK);
+        }
     }
 
     @Override
-    public ResponseEntity<BookingDTO> getBookingDTOById(Long id) {
+    public ResponseEntity<BookingDto> getBookingById(Long id) {
         log.info("getById: search Booking by id = {}", id);
         var booking = bookingService.getBookingById(id);
         if (booking == null) {
             log.info("getById: not found Booking with id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(booking), HttpStatus.OK);
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<BookingDTO> getBookingDTOByBookingNumber(String bookingNumber) {
+    public ResponseEntity<BookingDto> getBookingByBookingNumber(String bookingNumber) {
         log.info("getByNumber: search Booking by number = {}", bookingNumber);
         var booking = bookingService.getBookingByNumber(bookingNumber);
         if (booking == null) {
             log.info("getByNumber: not found Booking with number = {}", bookingNumber);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(booking), HttpStatus.OK);
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<BookingDTO> createBookingDTO(BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDto> createBooking(BookingDto bookingDTO) {
         log.info("create: creating a new Booking");
         bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
-        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(
-                bookingService.saveBooking(bookingDTO)),
-                HttpStatus.CREATED);
+        return new ResponseEntity<>(bookingService.saveBooking(bookingDTO), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<BookingDTO> updateBookingDTOById(Long id, BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDto> updateBookingById(Long id, BookingDto bookingDTO) {
         log.info("update: edit Booking with id = {}", id);
-        Booking booking = bookingService.getBookingById(id);
+        var booking = bookingService.getBookingById(id);
         if (booking == null) {
             log.info("update: not found Booking with id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         bookingDTO.setBookingStatus(booking.getBookingStatus());
         bookingDTO.setId(id);
-        return new ResponseEntity<>(bookingMapper.convertToBookingDTOEntity(
-                bookingService.saveBooking(bookingDTO)),
-                HttpStatus.OK);
+        return new ResponseEntity<>(bookingService.saveBooking(bookingDTO), HttpStatus.OK);
     }
 
     @Override

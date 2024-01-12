@@ -1,9 +1,9 @@
 package app.controllers;
 
-import app.dto.FlightDTO;
+import app.dto.FlightDto;
 import app.enums.Airport;
 import app.enums.FlightStatus;
-import app.services.interfaces.FlightService;
+import app.services.FlightService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +32,58 @@ class FlightRestControllerIT extends IntegrationTestBase {
     @Nested
     class GetAllFlightsOrFlightsByParamsTest {
 
+        // Пагинация 2.0
+        @Test
+        void shouldGetAllFlights() throws Exception {
+            mockMvc.perform(get("http://localhost:8080/api/flights/all"))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void shouldGetAllFlightsByNullPage() throws Exception {
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?size=2"))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void shouldGetAllFlightsByNullSize() throws Exception {
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0"))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void shouldGetBadRequestByPage() throws Exception {
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=-1&size=2"))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void shouldGetBadRequestBySize() throws Exception {
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=0"))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void shouldGetPageFlights() throws Exception {
+            var pageable = PageRequest.of(0, 4);
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=4"))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(objectMapper.writeValueAsString(flightService
+                            .getAllFlights(pageable)
+                            .getContent())));
+        }
+        // Пагинация 2.0
+
         @Test
         void showAllFlights_test() throws Exception {
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().isOk());
         }
@@ -44,7 +92,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
         @Sql(value = {"/sqlQuery/delete-from-tables.sql"})
         void showAllFlights_testError() throws Exception {
             mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().is(204));
         }
@@ -53,48 +101,48 @@ class FlightRestControllerIT extends IntegrationTestBase {
         void showFlightsByCityFrom() throws Exception {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String cityFrom = "Волгоград";
-            mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .param("cityFrom", cityFrom))
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=10")
+                            .param("cityFrom", cityFrom))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlightsByDestinationsAndDates(cityFrom, null, null, null, pageable))));
+                            .getAllFlightsByDestinationsAndDates(cityFrom, null, null, null, pageable).getContent())));
         }
 
         @Test
         void showFlightsByCityTo() throws Exception {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String cityTo = "Омск";
-            mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .param("cityTo", cityTo))
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=10")
+                            .param("cityTo", cityTo))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlightsByDestinationsAndDates(null, cityTo, null, null, pageable))));
+                            .getAllFlightsByDestinationsAndDates(null, cityTo, null, null, pageable).getContent())));
         }
 
         @Test
         void showFlightsByDateStart() throws Exception {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String dateStart = "2022-11-23T04:30:00";
-            mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .param("dateStart", dateStart))
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=10")
+                            .param("dateStart", dateStart))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlightsByDestinationsAndDates(null, null, dateStart, null, pageable))));
+                            .getAllFlightsByDestinationsAndDates(null, null, dateStart, null, pageable).getContent())));
         }
 
         @Test
         void showFlightsByDateFinish() throws Exception {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String dateFinish = "2022-11-23T07:30:00";
-            mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .param("dateFinish", dateFinish))
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=10")
+                            .param("dateFinish", dateFinish))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlightsByDestinationsAndDates(null, null, null, dateFinish, pageable))));
+                            .getAllFlightsByDestinationsAndDates(null, null, null, dateFinish, pageable).getContent())));
         }
 
         @Test
@@ -102,13 +150,13 @@ class FlightRestControllerIT extends IntegrationTestBase {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String cityFrom = "Волгоград";
             String cityTo = "Омск";
-            mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .param("cityFrom", cityFrom)
-                    .param("cityTo", cityTo))
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=10")
+                            .param("cityFrom", cityFrom)
+                            .param("cityTo", cityTo))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, null, null, pageable))));
+                            .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, null, null, pageable).getContent())));
         }
 
         @Test
@@ -116,13 +164,13 @@ class FlightRestControllerIT extends IntegrationTestBase {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String dateStart = "2022-11-23T04:30:00";
             String dateFinish = "2022-11-23T07:30:00";
-            mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .param("dateStart", dateStart)
-                    .param("dateFinish", dateFinish))
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=10")
+                            .param("dateStart", dateStart)
+                            .param("dateFinish", dateFinish))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlightsByDestinationsAndDates(null, null, dateStart, dateFinish, pageable))));
+                            .getAllFlightsByDestinationsAndDates(null, null, dateStart, dateFinish, pageable).getContent())));
         }
 
         @Test
@@ -130,13 +178,13 @@ class FlightRestControllerIT extends IntegrationTestBase {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
             String cityFrom = "Волгоград";
             String dateStart = "2022-11-23T04:30:00";
-            mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .param("cityFrom", cityFrom)
-                    .param("dateStart", dateStart))
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=10")
+                            .param("cityFrom", cityFrom)
+                            .param("dateStart", dateStart))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlightsByDestinationsAndDates(cityFrom, null, dateStart, null, pageable))));
+                            .getAllFlightsByDestinationsAndDates(cityFrom, null, dateStart, null, pageable).getContent())));
         }
 
         @Test
@@ -146,15 +194,15 @@ class FlightRestControllerIT extends IntegrationTestBase {
             String cityTo = "Омск";
             String dateStart = "2022-11-23T04:30:00";
             String dateFinish = "2022-11-23T07:30:00";
-            mockMvc.perform(get("http://localhost:8080/api/flights/all")
-                    .param("cityFrom", cityFrom)
-                    .param("cityTo", cityTo)
-                    .param("dateStart", dateStart)
-                    .param("dateFinish", dateFinish))
+            mockMvc.perform(get("http://localhost:8080/api/flights/all?page=0&size=10")
+                            .param("cityFrom", cityFrom)
+                            .param("cityTo", cityTo)
+                            .param("dateStart", dateStart)
+                            .param("dateFinish", dateFinish))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable))));
+                            .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable).getContent())));
         }
     }
 
@@ -186,7 +234,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
             FlightStatus flightStatus = FlightStatus.CANCELED;
 
 
-            FlightDTO flightDTO = new FlightDTO();
+            FlightDto flightDTO = new FlightDto();
             flightDTO.setCode(code);
             flightDTO.setAirportFrom(airportFrom);
             flightDTO.setAirportTo(airportTo);
@@ -196,8 +244,8 @@ class FlightRestControllerIT extends IntegrationTestBase {
             flightDTO.setFlightStatus(flightStatus);
 
             mockMvc.perform(patch("http://localhost:8080/api/flights/2")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(flightDTO)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(flightDTO)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").exists())
                     .andExpect(jsonPath("$.id").value(2))
@@ -219,7 +267,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
 
         @Test
         void shouldNotUpdateFlightIfIdNotExist() throws Exception {
-            FlightDTO flightDTO = new FlightDTO();
+            FlightDto flightDTO = new FlightDto();
             flightDTO.setCode("VKOVOG");
             flightDTO.setAirportTo(Airport.VKO);
             flightDTO.setAirportFrom(Airport.VOG);
@@ -229,8 +277,8 @@ class FlightRestControllerIT extends IntegrationTestBase {
             flightDTO.setFlightStatus(FlightStatus.DELAYED);
 
             mockMvc.perform(patch("http://localhost:8080/api/flights/100")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(flightDTO)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(flightDTO)))
                     .andExpect(status().isNotFound());
         }
     }

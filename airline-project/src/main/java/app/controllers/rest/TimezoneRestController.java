@@ -1,21 +1,18 @@
 package app.controllers.rest;
 
 import app.controllers.api.rest.TimezoneRestApi;
-import app.dto.TimezoneDTO;
+import app.dto.TimezoneDto;
 import app.entities.Timezone;
 import app.mappers.TimezoneMapper;
-import app.services.interfaces.TimezoneService;
+import app.services.TimezoneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -26,30 +23,36 @@ public class TimezoneRestController implements TimezoneRestApi {
     private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
 
     @Override
-    public ResponseEntity<Page<TimezoneDTO>> getAllPagesTimezonesDTO(Integer page, Integer size) {
-        var timezone = timezoneService.getAllPagesTimezones(page, size);
-        if (timezone == null) {
-            log.error("getAll: Timezones not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<List<TimezoneDto>> getAllTimezones(Integer page, Integer size) {
+        log.info("getAll: get all Timezones");
+        if (page == null || size == null) {
+            log.info("getAll: get all List Timezones");
+            return createUnPagedResponse();
         }
-        log.info("getAll: Find all timezones");
+        if (page < 0 || size < 1) {
+            log.info("no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        var timezone = timezoneService.getAllPagesTimezones(page, size);
 
-        var timezoneDTOS = timezone.stream().map(tz -> {
-            TimezoneDTO dto = new TimezoneDTO();
-            dto.setId(tz.getId());
-            dto.setCountryName(tz.getCountryName());
-            dto.setCityName(tz.getCityName());
-            dto.setGmt(tz.getGmt());
-            dto.setGmtWinter(tz.getGmtWinter());
-            return dto;
-        }).collect(Collectors.toList());
-
-        return new ResponseEntity<>(new PageImpl<>(timezoneDTOS, PageRequest.of(page, size), timezone.getTotalElements()), HttpStatus.OK);
+        return timezone.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(timezone.getContent(), HttpStatus.OK);
     }
 
+    private ResponseEntity<List<TimezoneDto>> createUnPagedResponse() {
+        var timezone = timezoneService.getAllTimeZone();
+        if (timezone.isEmpty()) {
+            log.error("getAll: Timezones not found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Timezones", timezone.size());
+            return new ResponseEntity<>(timezone, HttpStatus.OK);
+        }
+    }
 
     @Override
-    public ResponseEntity<TimezoneDTO> getTimezoneDTOById(Long id) {
+    public ResponseEntity<TimezoneDto> getTimezoneById(Long id) {
         log.info("getById: search Timezone by id = {}", id);
         var timezone = timezoneService.getTimezoneById(id);
 
@@ -58,28 +61,28 @@ public class TimezoneRestController implements TimezoneRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new TimezoneDTO(), HttpStatus.OK);
+        return new ResponseEntity<>(new TimezoneDto(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<TimezoneDTO> createTimezoneDTO(TimezoneDTO timezoneDTO) {
-        timezoneService.saveTimezone(timezoneDTO);
+    public ResponseEntity<TimezoneDto> createTimezone(TimezoneDto timezoneDto) {
+        timezoneService.saveTimezone(timezoneDto);
         log.info("create: new Timezone");
-        return new ResponseEntity<>(new TimezoneDTO(),
+        return new ResponseEntity<>(new TimezoneDto(),
                 HttpStatus.CREATED);
     }
+
     @Override
-    public ResponseEntity<TimezoneDTO> updateTimezoneDTOById(Long id, TimezoneDTO timezoneDTO) {
-        timezoneDTO.setId(id);
-        log.info("update: timezone = {}", timezoneDTO);
+    public ResponseEntity<TimezoneDto> updateTimezoneById(Long id, TimezoneDto timezoneDto) {
+        timezoneDto.setId(id);
+        log.info("update: timezone = {}", timezoneDto);
 
-        Timezone updatedTimezone = timezoneService.updateTimezone(timezoneDTO);
+        Timezone updatedTimezone = timezoneService.updateTimezone(timezoneDto);
 
-        TimezoneDTO updatedTimezoneDTO = timezoneMapper.convertToTimezoneDTO(updatedTimezone);
+        TimezoneDto updatedTimezoneDto = timezoneMapper.toDto(updatedTimezone);
 
-        return new ResponseEntity<>(updatedTimezoneDTO, HttpStatus.OK);
+        return new ResponseEntity<>(updatedTimezoneDto, HttpStatus.OK);
     }
-
 
     @Override
     public ResponseEntity<HttpStatus> deleteTimezoneById(Long id) {

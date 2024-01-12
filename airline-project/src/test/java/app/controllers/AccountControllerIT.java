@@ -1,13 +1,12 @@
 package app.controllers;
 
-import app.dto.AccountDTO;
-import app.mappers.AccountMapper;
+import app.dto.AccountDto;
 import app.repositories.AccountRepository;
-import app.services.interfaces.AccountService;
-import app.services.interfaces.RoleService;
+import app.services.AccountService;
+import app.services.RoleService;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,13 +36,53 @@ class AccountControllerIT extends IntegrationTestBase {
     @Autowired
     private AccountRepository accountRepository;
 
+    // Пагинация 2.0
     @Test
     void shouldGetAllAccounts() throws Exception {
-        mockMvc.perform(
-                        get("http://localhost:8080/api/accounts"))
+        mockMvc.perform(get("http://localhost:8080/api/accounts"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void shouldGetAllAccountsByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/accounts?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllAccountsByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/accounts?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetPageAccounts() throws Exception {
+        var pageable = PageRequest.of(0, 2);
+        mockMvc.perform(get("http://localhost:8080/api/accounts?page=0&size=2"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(accountService
+                        .getPage(pageable.getPageNumber(), pageable.getPageSize()).getContent())));
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/accounts?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/accounts?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    // Пагинация 2.0
 
     @Test
     void shouldGetAccountById() throws Exception {
@@ -67,7 +106,7 @@ class AccountControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldPostNewAccount() throws Exception {
-        var accountDTO = new AccountDTO();
+        var accountDTO = new AccountDto();
         accountDTO.setFirstName("Ivan");
         accountDTO.setLastName("Ivanov");
         accountDTO.setBirthDate(LocalDate.of(2023, 3, 23));
@@ -112,5 +151,4 @@ class AccountControllerIT extends IntegrationTestBase {
                 .andExpect(jsonPath("$.email").value("test@mail.ru"))
                 .andExpect(result -> assertThat(accountRepository.count(), equalTo(numberOfAccounts)));
     }
-
 }

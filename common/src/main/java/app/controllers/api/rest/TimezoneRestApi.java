@@ -1,17 +1,15 @@
 package app.controllers.api.rest;
 
 
-import app.dto.TimezoneDTO;
+import app.dto.TimezoneDto;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import java.util.List;
 
 
 @Api(tags = "Timezone REST")
@@ -24,9 +22,9 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 200, message = "Timezones found"),
             @ApiResponse(code = 404, message = "Timezones not found")
     })
-    ResponseEntity<Page<TimezoneDTO>> getAllPagesTimezonesDTO(
-            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-            @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size
+    ResponseEntity<List<TimezoneDto>> getAllTimezones(
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size
     );
 
     @ApiOperation(value = "Get Timezone by \"id\"")
@@ -35,7 +33,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 404, message = "Timezone not found")
     })
     @RequestMapping(value = "/api/timezones/{id}", method = RequestMethod.GET)
-    ResponseEntity<TimezoneDTO> getTimezoneDTOById(
+    ResponseEntity<TimezoneDto> getTimezoneById(
             @ApiParam(
                     name = "id",
                     value = "Timezone.id",
@@ -49,12 +47,12 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 405, message = "Bad request")
     })
     @RequestMapping(value = "/api/timezones", method = RequestMethod.POST)
-    ResponseEntity<TimezoneDTO> createTimezoneDTO(
+    ResponseEntity<TimezoneDto> createTimezone(
             @ApiParam(
                     name = "timezone",
                     value = "Timezone model"
             )
-            @RequestBody @Valid TimezoneDTO timezoneDTO);
+            @RequestBody @Valid TimezoneDto timezoneDto);
 
     @ApiOperation(value = "Edit Timezone")
     @ApiResponses(value = {
@@ -62,7 +60,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 404, message = "Timezone not found")
     })
     @RequestMapping(value = "/api/timezones/{id}", method = RequestMethod.PATCH)
-    ResponseEntity<TimezoneDTO> updateTimezoneDTOById(
+    ResponseEntity<TimezoneDto> updateTimezoneById(
             @ApiParam(
                     name = "id",
                     value = "Timezone.id",
@@ -72,7 +70,7 @@ public interface TimezoneRestApi {
                     name = "Timezone",
                     value = "Timezone model"
             )
-            @RequestBody @Valid TimezoneDTO timezoneDTO);
+            @RequestBody @Valid TimezoneDto timezoneDto);
 
     @ApiOperation(value = "Delete Timezone by \"id\"")
     @ApiResponses(value = {
@@ -86,5 +84,5 @@ public interface TimezoneRestApi {
                     value = "Timezone.id",
                     required = true
             )
-            @PathVariable ("id") Long id);
+            @PathVariable("id") Long id);
 }

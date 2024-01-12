@@ -1,13 +1,12 @@
 package app.controllers.api.rest;
 
-import app.dto.AircraftDTO;
+import app.dto.AircraftDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import java.util.List;
 
 @Api(tags = "Aircraft REST")
 @Tag(name = "Aircraft REST", description = "API для операций с самолётом")
@@ -31,35 +29,35 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircrafts found"),
             @ApiResponse(code = 204, message = "Aircrafts not found")})
-    ResponseEntity<Page<AircraftDTO>> getAllPagesAircraftsDTO(
-            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-            @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size);
+    ResponseEntity<List<AircraftDto>> getAllAircrafts(
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size);
 
     @GetMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Get Aircraft by it's \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft found"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDTO> getAircraftDTOById(
+    ResponseEntity<AircraftDto> getAircraftById(
             @ApiParam(name = "id", value = "Aircraft.id")
             @PathVariable("id") Long id);
 
     @PostMapping("/api/aircrafts")
     @ApiOperation(value = "Create new Aircraft")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Aircraft created")})
-    ResponseEntity<AircraftDTO> createAircraft(
+    ResponseEntity<AircraftDto> createAircraft(
             @ApiParam(
                     name = "Aircraft",
                     value = "Aircraft model"
             )
-            @RequestBody @Valid AircraftDTO aircraftDTO);
+            @RequestBody @Valid AircraftDto timezoneDto);
 
     @PatchMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Update Aircraft by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft updated"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDTO> updateAircraftById(
+    ResponseEntity<AircraftDto> updateAircraftById(
             @ApiParam(
                     name = "id",
                     value = "Aircraft.id"
@@ -69,7 +67,7 @@ public interface AircraftRestApi {
                     name = "Aircraft",
                     value = "Aircraft model"
             )
-            @RequestBody @Valid AircraftDTO aircraftDTO);
+            @RequestBody @Valid AircraftDto timezoneDto);
 
     @DeleteMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Delete Aircraft by \"id\"")

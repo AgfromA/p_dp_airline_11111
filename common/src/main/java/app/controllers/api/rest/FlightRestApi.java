@@ -1,6 +1,6 @@
 package app.controllers.api.rest;
 
-import app.dto.FlightDTO;
+import app.dto.FlightDto;
 import app.enums.FlightStatus;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -8,12 +8,12 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Api(tags = "Flight REST")
 @Tag(name = "Flight REST", description = "API для операций с рейсами")
@@ -25,16 +25,22 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flights found"),
             @ApiResponse(code = 204, message = "Flights not found")
     })
-    ResponseEntity<Page<FlightDTO>> getAllPagesFlightsByDestinationsAndDates(
+    ResponseEntity<List<FlightDto>> getAllFlightsByDestinationsAndDates(
+            @PageableDefault(sort = {"id"})
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
+
             @ApiParam(value = "Departure cityName", example = "Москва")
             @RequestParam(name = "cityFrom", required = false) String cityFrom,
+
             @ApiParam(value = "Arrival cityName", example = "Омск")
             @RequestParam(name = "cityTo", required = false) String cityTo,
+
             @ApiParam(value = "Departure Data-Time", example = "2022-12-10T15:56:49")
             @RequestParam(name = "dateStart", required = false) String dateStart,
+
             @ApiParam(value = "Arrival Data-Time", example = "2022-12-10T15:57:49")
-            @RequestParam(name = "dateFinish", required = false) String dateFinish,
-            @PageableDefault(sort = {"id"}) Pageable pageable);
+            @RequestParam(name = "dateFinish", required = false) String dateFinish);
 
     @RequestMapping(value = "/api/flights/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Flight by \"id\"")
@@ -42,7 +48,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flight found"),
             @ApiResponse(code = 404, message = "Flight not found")
     })
-    ResponseEntity<FlightDTO> getFlightDTOById(
+    ResponseEntity<FlightDto> getFlightById(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
@@ -55,7 +61,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "flight found"),
             @ApiResponse(code = 404, message = "flight not found")
     })
-    ResponseEntity<FlightDTO> getFlightDTOByIdAndDates(
+    ResponseEntity<FlightDto> getFlightByIdAndDates(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
@@ -80,12 +86,12 @@ public interface FlightRestApi {
     @RequestMapping(value = "/api/flights", method = RequestMethod.POST)
     @ApiOperation(value = "Create Flight")
     @ApiResponse(code = 201, message = "Flight created")
-    ResponseEntity<FlightDTO> createFlight(
+    ResponseEntity<FlightDto> createFlight(
             @ApiParam(
                     name = "flight",
                     value = "Flight model"
             )
-            @RequestBody FlightDTO flightDTO);
+            @RequestBody FlightDto flightDto);
 
     @RequestMapping(value = "/api/flights/{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Edit Flight")
@@ -93,7 +99,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flight updated"),
             @ApiResponse(code = 404, message = "Flight not found")
     })
-    ResponseEntity<FlightDTO> updateFlightById(
+    ResponseEntity<FlightDto> updateFlightById(
             @ApiParam(
                     name = "id",
                     value = "Flight.id"
@@ -103,7 +109,7 @@ public interface FlightRestApi {
                     name = "flight",
                     value = "Flight model"
             )
-            @RequestBody FlightDTO flightDTO);
+            @RequestBody FlightDto flightDto);
 
     @RequestMapping(value = "/api/flights/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete Flight by \"id\"")

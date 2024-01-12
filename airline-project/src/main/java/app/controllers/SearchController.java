@@ -4,8 +4,8 @@ import app.controllers.api.SearchControllerApi;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.exceptions.controller.SearchControllerException;
-import app.services.interfaces.SearchService;
-import app.util.LogsUtils;
+import app.services.SearchService;
+import app.utils.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,7 +39,7 @@ public class SearchController implements SearchControllerApi {
         }
         log.debug("incoming numberOfPassengers = {}", LogsUtils.objectToJson(numberOfPassengers));
         if (numberOfPassengers == null || numberOfPassengers < 1) {
-            errorMessage ="NumberOfPassengers is incorrect";
+            errorMessage = "NumberOfPassengers is incorrect";
             log.info(errorMessage);
             throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
         }
@@ -65,7 +65,3 @@ public class SearchController implements SearchControllerApi {
         }
     }
 }
-
-
-
-

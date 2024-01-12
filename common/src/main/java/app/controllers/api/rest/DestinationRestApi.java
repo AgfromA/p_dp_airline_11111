@@ -1,20 +1,18 @@
 package app.controllers.api.rest;
 
-import app.dto.DestinationDTO;
+import app.dto.DestinationDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
+
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 
@@ -22,24 +20,16 @@ import java.util.List;
 @Tag(name = "Destination REST", description = "API для операций с пунктами назначения (прилет/вылет)")
 public interface DestinationRestApi {
 
-    @RequestMapping(value = "/api/destinations/all", method = RequestMethod.GET)
-    @ApiOperation(value = "Get list of all existing Destinations")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Destinations found"),
-            @ApiResponse(code = 404, message = "Destinations not found")
-    })
-    ResponseEntity<List<DestinationDTO>> getAllDestinationDTO();
-
     @RequestMapping(value = "/api/destinations", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of all Destinations")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Destinations found"),
             @ApiResponse(code = 404, message = "Destinations not found")
     })
-    ResponseEntity<Page<DestinationDTO>> getAllPagesDestinationsDTO(
+    ResponseEntity<List<DestinationDto>> getAllDestinations(
             @PageableDefault(sort = {"id"})
-            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-            @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
 
             @ApiParam(
                     name = "cityName",
@@ -62,17 +52,17 @@ public interface DestinationRestApi {
     @ApiOperation(value = "Create new Destination")
     @ApiResponse(code = 201, message = "Destination created")
     @RequestMapping(value = "/api/destinations", method = RequestMethod.POST)
-    ResponseEntity<DestinationDTO> createDestinationDTO(
+    ResponseEntity<DestinationDto> createDestination(
             @ApiParam(
                     name = "Destination",
                     value = "Destination"
             )
-            @RequestBody DestinationDTO destinationDTO);
+            @RequestBody DestinationDto timezoneDto);
 
     @ApiOperation(value = "Edit Destination by id")
     @ApiResponse(code = 200, message = "Destination has been updated")
     @RequestMapping(value = "/api/destinations/{id}", method = RequestMethod.PATCH)
-    ResponseEntity<DestinationDTO> updateDestinationDTOById(
+    ResponseEntity<DestinationDto> updateDestinationById(
             @ApiParam(
                     name = "id",
                     value = "Destination.id"
@@ -82,7 +72,7 @@ public interface DestinationRestApi {
                     value = "Destination"
             )
 
-            @RequestBody DestinationDTO destinationDTO);
+            @RequestBody DestinationDto timezoneDto);
 
     @ApiOperation("Delete Destination by id")
     @ApiResponses(value = {
@@ -96,5 +86,4 @@ public interface DestinationRestApi {
                     required = true
             )
             @PathVariable("id") Long id);
-
 }

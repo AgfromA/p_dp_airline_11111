@@ -1,10 +1,10 @@
 package app.controllers;
 
-import app.dto.DestinationDTO;
+import app.dto.DestinationDto;
 import app.enums.Airport;
 import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
-import app.services.interfaces.DestinationService;
+import app.services.DestinationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,9 +37,57 @@ class DestinationControllerIT extends IntegrationTestBase {
     @Autowired
     private DestinationMapper destinationMapper;
 
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllDestination() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/destinations"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllDestinationsByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/destinations?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllDestinationsByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/destinations?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/destinations?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetPageDestinations() throws Exception {
+        var pageable = PageRequest.of(0, 4);
+        mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(destinationService
+                        .getAllDestinations(pageable.getPageNumber(), pageable.getPageSize())
+                        .getContent())));
+    }
+    // Пагинация 2.0
+
     @Test
     void shouldCreateDestination() throws Exception {
-        var destination = new DestinationDTO(4L, Airport.VKO, "GMT +3");
+        var destination = new DestinationDto(4L, Airport.VKO, "GMT +3");
         System.out.println(objectMapper.writeValueAsString(destination));
         mockMvc.perform(post("http://localhost:8080/api/destinations")
                         .content(objectMapper.writeValueAsString(destination))
@@ -55,14 +103,14 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "Абакан";
         var country = "";
         var timezone = "";
-        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
-        mockMvc.perform(get("http://localhost:8080/api/destinations")
+        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=10")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination.getContent())));
     }
 
     @Test
@@ -71,14 +119,14 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination.getContent())));
     }
 
     @Test
@@ -87,14 +135,14 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=3")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination.getContent())));
     }
 
     @Test
@@ -103,14 +151,14 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "";
         var timezone = "+3";
-        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination.getContent())));
     }
 
     @Test
@@ -119,13 +167,13 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "";
         var timezone = "gmt +3";
-        Page<DestinationDTO> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
-        mockMvc.perform(get("http://localhost:8080/api/destinations")
+        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=10")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 
     @Transactional
@@ -133,16 +181,16 @@ class DestinationControllerIT extends IntegrationTestBase {
     void shouldUpdateDestination() throws Exception {
         Long id = 3L;
         long numberOfDestination = destinationRepository.count();
-        DestinationDTO rat = new DestinationDTO();
+        DestinationDto rat = new DestinationDto();
         rat.setId(3L);
         rat.setAirportCode(RAT);
         rat.setTimezone("+3");
         mockMvc.perform(patch("http://localhost:8080/api/destinations/{id}", id)
-                        .content(objectMapper.writeValueAsString(destinationMapper.convertToDestinationEntity(rat)))
+                        .content(objectMapper.writeValueAsString(destinationMapper.toEntity(rat)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                        .andExpect(status().isOk())
-                        .andExpect(result -> assertThat(destinationRepository.count(), equalTo(numberOfDestination)));
+                .andExpect(status().isOk())
+                .andExpect(result -> assertThat(destinationRepository.count(), equalTo(numberOfDestination)));
     }
 
     @Test
@@ -152,5 +200,4 @@ class DestinationControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
-
 }

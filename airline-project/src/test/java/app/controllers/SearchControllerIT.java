@@ -5,7 +5,7 @@ import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.exceptions.controller.SearchControllerException;
-import app.services.interfaces.SearchService;
+import app.services.SearchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -10,7 +10,6 @@ import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @Hidden
 @RestController
 @RequiredArgsConstructor

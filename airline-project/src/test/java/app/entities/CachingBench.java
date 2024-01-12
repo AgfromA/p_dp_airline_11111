@@ -3,7 +3,7 @@ package app.entities;
 import app.controllers.IntegrationTestBase;
 import app.repositories.AccountRepository;
 import app.repositories.RoleRepository;
-import app.services.AccountServiceImpl;
+import app.services.AccountService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -20,7 +20,7 @@ import java.util.Set;
 public class CachingBench extends IntegrationTestBase {
 
     @Autowired
-    AccountServiceImpl accountService;
+    AccountService accountService;
 
     @Autowired
     RoleRepository roleRepository;

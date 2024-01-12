@@ -1,8 +1,8 @@
 package app.controllers.view;
 
 import app.clients.FlightSeatClient;
-import app.dto.FlightSeatDTO;
-import app.dto.SeatDTO;
+import app.dto.FlightSeatDto;
+import app.dto.SeatDto;
 import app.enums.CategoryType;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -24,23 +24,22 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Slf4j
 @Route(value = "flightSeats", layout = MainLayout.class)
 public class FlightSeatView extends VerticalLayout {
-    private final Grid<FlightSeatDTO> grid = new Grid<>(FlightSeatDTO.class, false);
-    private final Editor<FlightSeatDTO> editor = grid.getEditor();
-    private ResponseEntity<Page<FlightSeatDTO>> response;
-    private final List<SeatDTO> dataSourceAll;
+    private final Grid<FlightSeatDto> grid = new Grid<>(FlightSeatDto.class, false);
+    private final Editor<FlightSeatDto> editor = grid.getEditor();
+    private ResponseEntity<List<FlightSeatDto>> response;
+    private final List<SeatDto> dataSourceAll;
     private final FlightSeatClient flightSeatClient;
-    private final List<FlightSeatDTO> dataSource;
+    private final List<FlightSeatDto> dataSource;
     private final Button updateButton;
     private final Button cancelButton;
     private final Button nextButton;
@@ -60,13 +59,16 @@ public class FlightSeatView extends VerticalLayout {
 
     public FlightSeatView(FlightSeatClient flightSeatClient) {
         this.flightSeatClient = flightSeatClient;
-        this.response = flightSeatClient.getAllFlightSeatDTO(currentPage, 10);
-        this.dataSourceAll = flightSeatClient.getAllSeatDTO().getBody();
         this.currentPage = 0;
+        Optional<Long> id = null;
+        this.response = flightSeatClient.getAllFlightSeats(currentPage, 10, id, null, null);
+        this.dataSourceAll = flightSeatClient.getAllSeat().getBody();
         this.isSearchByFare = false;
         this.isSearchById = false;
-        this.maxPages = response.getBody().getTotalPages() - 1;
-        this.dataSource = response.getBody().stream().collect(Collectors.toList());
+
+        List<FlightSeatDto> flightSeatDtoList = flightSeatClient.getAllFlightSeats(null, null, id, null, null).getBody();
+        this.maxPages = (int) Math.ceil((double) flightSeatDtoList.size() / 10);
+        this.dataSource = response.getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage fareValidationMessage = new ValidationMessage();
@@ -77,18 +79,18 @@ public class FlightSeatView extends VerticalLayout {
         ValidationMessage seatValidationMessage = new ValidationMessage();
         ValidationMessage categoryValidationMessage = new ValidationMessage();
 
-        Grid.Column<FlightSeatDTO> idColumn = createIdColumn();
-        Grid.Column<FlightSeatDTO> fareColumn = createFareColumn();
-        Grid.Column<FlightSeatDTO> isRegisteredColumn = createIsRegisteredColumn();
-        Grid.Column<FlightSeatDTO> isSoldColumn = createIsSoldColumn();
-        Grid.Column<FlightSeatDTO> isBookedColumn = createIsBookedColumn();
-        Grid.Column<FlightSeatDTO> flightIdColumn = createFlightIdColumn();
-        Grid.Column<FlightSeatDTO> seatColumn = createSeatColumn();
-        Grid.Column<FlightSeatDTO> categoryColumn = createCategoryColumn();
-        Grid.Column<FlightSeatDTO> updateColumn = createEditColumn();
+        Grid.Column<FlightSeatDto> idColumn = createIdColumn();
+        Grid.Column<FlightSeatDto> fareColumn = createFareColumn();
+        Grid.Column<FlightSeatDto> isRegisteredColumn = createIsRegisteredColumn();
+        Grid.Column<FlightSeatDto> isSoldColumn = createIsSoldColumn();
+        Grid.Column<FlightSeatDto> isBookedColumn = createIsBookedColumn();
+        Grid.Column<FlightSeatDto> flightIdColumn = createFlightIdColumn();
+        Grid.Column<FlightSeatDto> seatColumn = createSeatColumn();
+        Grid.Column<FlightSeatDto> categoryColumn = createCategoryColumn();
+        Grid.Column<FlightSeatDto> updateColumn = createEditColumn();
         createDeleteColumn();
 
-        Binder<FlightSeatDTO> binder = createBinder();
+        Binder<FlightSeatDto> binder = createBinder();
 
         createIdField(binder, idValidationMessage, idColumn);
         createFareField(binder, fareValidationMessage, fareColumn);
@@ -229,14 +231,14 @@ public class FlightSeatView extends VerticalLayout {
             isSearchById = true;
             currentPage = 0;
             maxPages = 1;
-            dataSource.add(flightSeatClient.getFlightSeatDTOById(idSearchField.getValue().longValue()).getBody());
+            dataSource.add(flightSeatClient.getFlightSeatById(idSearchField.getValue().longValue()).getBody());
             grid.getDataProvider().refreshAll();
         }
     }
 
     private boolean isFoundSeatById(Long id) {
         try {
-            dataSource.add(flightSeatClient.getFlightSeatDTOById(id).getBody());
+            dataSource.add(flightSeatClient.getFlightSeatById(id).getBody());
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -274,11 +276,13 @@ public class FlightSeatView extends VerticalLayout {
     }
 
     private void searchByFare() {
-        List<FlightSeatDTO> allFlightSeatDTO = flightSeatClient.getAllListFlightSeatDTO().getBody();
+        Optional<Long> id = null; //работает только так
+        List<FlightSeatDto> allFlightSeatDto = flightSeatClient.getAllFlightSeats(null, null,
+                id, null, null).getBody();
         Integer min = minFareSearchField.getValue();
         Integer max = maxFareSearchField.getValue();
-        List<FlightSeatDTO> filteredListSeats = new ArrayList<>();
-        for (FlightSeatDTO seat : allFlightSeatDTO) {
+        List<FlightSeatDto> filteredListSeats = new ArrayList<>();
+        for (FlightSeatDto seat : allFlightSeatDto) {
             Integer fare = seat.getFare();
             if (fare >= min && fare <= max) {
                 filteredListSeats.add(seat);
@@ -288,7 +292,7 @@ public class FlightSeatView extends VerticalLayout {
             Notification.show(" Flight Seat with this cost not found.", 3000, Notification.Position.TOP_CENTER);
             return;
         }
-        filteredListSeats.sort(Comparator.comparing(FlightSeatDTO::getFare));
+        filteredListSeats.sort(Comparator.comparing(FlightSeatDto::getFare));
         dataSource.clear();
         dataSource.addAll(filteredListSeats);
         isSearchByFare = true;
@@ -296,40 +300,40 @@ public class FlightSeatView extends VerticalLayout {
     }
 
 
-    private Grid.Column<FlightSeatDTO> createIdColumn() {
-        return grid.addColumn(flightSeatDTO -> flightSeatDTO.getId()
+    private Grid.Column<FlightSeatDto> createIdColumn() {
+        return grid.addColumn(flightSeatDto -> flightSeatDto.getId()
                 .intValue()).setHeader("Id").setWidth("120px").setFlexGrow(0);
     }
 
-    private Grid.Column<FlightSeatDTO> createFareColumn() {
-        return grid.addColumn(FlightSeatDTO::getFare).setHeader("Fare").setWidth("120px").setFlexGrow(0);
+    private Grid.Column<FlightSeatDto> createFareColumn() {
+        return grid.addColumn(FlightSeatDto::getFare).setHeader("Fare").setWidth("120px").setFlexGrow(0);
     }
 
-    private Grid.Column<FlightSeatDTO> createIsRegisteredColumn() {
-        return grid.addColumn(FlightSeatDTO::getIsRegistered).setHeader("Is Registered").setWidth("120px");
+    private Grid.Column<FlightSeatDto> createIsRegisteredColumn() {
+        return grid.addColumn(FlightSeatDto::getIsRegistered).setHeader("Is Registered").setWidth("120px");
     }
 
-    private Grid.Column<FlightSeatDTO> createIsSoldColumn() {
-        return grid.addColumn(FlightSeatDTO::getIsSold).setHeader("Is Sold").setWidth("120px");
+    private Grid.Column<FlightSeatDto> createIsSoldColumn() {
+        return grid.addColumn(FlightSeatDto::getIsSold).setHeader("Is Sold").setWidth("120px");
     }
 
-    private Grid.Column<FlightSeatDTO> createIsBookedColumn() {
-        return grid.addColumn(FlightSeatDTO::getIsBooked).setHeader("Is Booked").setWidth("120px");
+    private Grid.Column<FlightSeatDto> createIsBookedColumn() {
+        return grid.addColumn(FlightSeatDto::getIsBooked).setHeader("Is Booked").setWidth("120px");
     }
 
-    private Grid.Column<FlightSeatDTO> createFlightIdColumn() {
-        return grid.addColumn(FlightSeatDTO::getFlightId).setHeader("Flight Id").setWidth("120px");
+    private Grid.Column<FlightSeatDto> createFlightIdColumn() {
+        return grid.addColumn(FlightSeatDto::getFlightId).setHeader("Flight Id").setWidth("120px");
     }
 
-    private Grid.Column<FlightSeatDTO> createSeatColumn() {
-        return grid.addColumn(flightSeatDTO -> flightSeatDTO.getSeat().getSeatNumber()).setHeader("Seat").setWidth("240px");
+    private Grid.Column<FlightSeatDto> createSeatColumn() {
+        return grid.addColumn(flightSeatDto -> flightSeatDto.getSeat().getSeatNumber()).setHeader("Seat").setWidth("240px");
     }
 
-    private Grid.Column<FlightSeatDTO> createCategoryColumn() {
-        return grid.addColumn(FlightSeatDTO::getCategory).setHeader("Category").setWidth("240px");
+    private Grid.Column<FlightSeatDto> createCategoryColumn() {
+        return grid.addColumn(FlightSeatDto::getCategory).setHeader("Category").setWidth("240px");
     }
 
-    private Grid.Column<FlightSeatDTO> createEditColumn() {
+    private Grid.Column<FlightSeatDto> createEditColumn() {
         return grid.addComponentColumn(flightSeat -> {
             Button updateButton = new Button("Update");
             updateButton.addClickListener(e -> {
@@ -341,14 +345,14 @@ public class FlightSeatView extends VerticalLayout {
         });
     }
 
-    private Grid.Column<FlightSeatDTO> createDeleteColumn() {
+    private Grid.Column<FlightSeatDto> createDeleteColumn() {
         return grid.addComponentColumn(flightSeat -> {
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
-                    ListDataProvider<FlightSeatDTO> dataProvider = (ListDataProvider<FlightSeatDTO>) grid.getDataProvider();
+                    ListDataProvider<FlightSeatDto> dataProvider = (ListDataProvider<FlightSeatDto>) grid.getDataProvider();
                     if (isDeletedSeat(flightSeat)) {
                         Notification.show("Flight Seat deleted successfully.", 3000, Notification.Position.TOP_CENTER);
                         dataProvider.getItems().remove(flightSeat);
@@ -360,7 +364,7 @@ public class FlightSeatView extends VerticalLayout {
         }).setWidth("150px").setFlexGrow(0);
     }
 
-    private boolean isDeletedSeat(FlightSeatDTO flightSeat) {
+    private boolean isDeletedSeat(FlightSeatDto flightSeat) {
         try {
             flightSeatClient.deleteFlightSeatById(flightSeat.getId());
             return true;
@@ -371,98 +375,98 @@ public class FlightSeatView extends VerticalLayout {
         }
     }
 
-    private Binder<FlightSeatDTO> createBinder() {
-        Binder<FlightSeatDTO> binder = new Binder<>(FlightSeatDTO.class);
+    private Binder<FlightSeatDto> createBinder() {
+        Binder<FlightSeatDto> binder = new Binder<>(FlightSeatDto.class);
         editor.setBinder(binder);
         editor.setBuffered(true);
         return binder;
     }
 
-    private void createIdField(Binder<FlightSeatDTO> binder,
+    private void createIdField(Binder<FlightSeatDto> binder,
                                ValidationMessage idValidationMessage,
-                               Grid.Column<FlightSeatDTO> idColumn) {
+                               Grid.Column<FlightSeatDto> idColumn) {
         IntegerField idField = new IntegerField();
         idField.setWidthFull();
         binder.forField(idField)
                 .asRequired("Id must not be empty")
                 .withStatusLabel(idValidationMessage)
-                .bind(flightSeatDTO -> flightSeatDTO.getId().intValue(),
-                        (flightSeatDTO, integer) -> flightSeatDTO.setId(integer.longValue()));
+                .bind(flightSeatDto -> flightSeatDto.getId().intValue(),
+                        (flightSeatDto, integer) -> flightSeatDto.setId(integer.longValue()));
         idColumn.setEditorComponent(idField);
     }
 
-    private void createFareField(Binder<FlightSeatDTO> binder,
+    private void createFareField(Binder<FlightSeatDto> binder,
                                  ValidationMessage fareValidationMessage,
-                                 Grid.Column<FlightSeatDTO> fareColumn) {
+                                 Grid.Column<FlightSeatDto> fareColumn) {
         IntegerField fareField = new IntegerField();
         fareField.setWidthFull();
         binder.forField(fareField)
                 .asRequired("Fare must be positive")
                 .withStatusLabel(fareValidationMessage)
-                .bind(FlightSeatDTO::getFare, FlightSeatDTO::setFare);
+                .bind(FlightSeatDto::getFare, FlightSeatDto::setFare);
         fareColumn.setEditorComponent(fareField);
     }
 
-    private void createIsRegisteredField(Binder<FlightSeatDTO> binder,
+    private void createIsRegisteredField(Binder<FlightSeatDto> binder,
                                          ValidationMessage isRegisteredValidationMessage,
-                                         Grid.Column<FlightSeatDTO> isRegisteredColumn) {
+                                         Grid.Column<FlightSeatDto> isRegisteredColumn) {
         ComboBox<Boolean> isRegisteredField = new ComboBox<>();
         isRegisteredField.setItems(true, false);
         binder.forField(isRegisteredField).asRequired("Is Registered Field must be true or false")
                 .withStatusLabel(isRegisteredValidationMessage)
-                .bind(FlightSeatDTO::getIsRegistered, FlightSeatDTO::setIsRegistered);
+                .bind(FlightSeatDto::getIsRegistered, FlightSeatDto::setIsRegistered);
         isRegisteredColumn.setEditorComponent(isRegisteredField);
     }
 
-    private void createIsSoldField(Binder<FlightSeatDTO> binder,
+    private void createIsSoldField(Binder<FlightSeatDto> binder,
                                    ValidationMessage isSoldValidationMessage,
-                                   Grid.Column<FlightSeatDTO> isSoldColumn) {
+                                   Grid.Column<FlightSeatDto> isSoldColumn) {
         ComboBox<Boolean> isSoldField = new ComboBox<>();
         isSoldField.setItems(true, false);
         binder.forField(isSoldField).asRequired("Is Sold Field must be true or false")
                 .withStatusLabel(isSoldValidationMessage)
-                .bind(FlightSeatDTO::getIsSold, FlightSeatDTO::setIsSold);
+                .bind(FlightSeatDto::getIsSold, FlightSeatDto::setIsSold);
         isSoldColumn.setEditorComponent(isSoldField);
     }
 
-    private void createIsBookedField(Binder<FlightSeatDTO> binder,
+    private void createIsBookedField(Binder<FlightSeatDto> binder,
                                      ValidationMessage isBookedValidationMessage,
-                                     Grid.Column<FlightSeatDTO> isBookedColumn) {
+                                     Grid.Column<FlightSeatDto> isBookedColumn) {
         ComboBox<Boolean> isBookedField = new ComboBox<>();
         isBookedField.setItems(true, false);
         binder.forField(isBookedField).asRequired("Is Booked Field must be true or false")
                 .withStatusLabel(isBookedValidationMessage)
-                .bind(FlightSeatDTO::getIsBooked, FlightSeatDTO::setIsBooked);
+                .bind(FlightSeatDto::getIsBooked, FlightSeatDto::setIsBooked);
         isBookedColumn.setEditorComponent(isBookedField);
     }
 
-    private void createFlightIdField(Binder<FlightSeatDTO> binder,
+    private void createFlightIdField(Binder<FlightSeatDto> binder,
                                      ValidationMessage flightIdValidationMessage,
-                                     Grid.Column<FlightSeatDTO> flightIdColumn) {
+                                     Grid.Column<FlightSeatDto> flightIdColumn) {
         IntegerField flightIdField = new IntegerField();
         flightIdField.setWidthFull();
         binder.forField(flightIdField)
                 .asRequired("Flight Id must not be empty")
                 .withStatusLabel(flightIdValidationMessage)
-                .bind(flightSeatDTO -> flightSeatDTO.getFlightId().intValue(),
-                        (flightSeatDTO, integer) -> flightSeatDTO.setFlightId(integer.longValue()));
+                .bind(flightSeatDto -> flightSeatDto.getFlightId().intValue(),
+                        (flightSeatDto, integer) -> flightSeatDto.setFlightId(integer.longValue()));
         flightIdColumn.setEditorComponent(flightIdField);
     }
 
-    private void createSeatField(Binder<FlightSeatDTO> binder,
+    private void createSeatField(Binder<FlightSeatDto> binder,
                                  ValidationMessage seatValidationMessage,
-                                 Grid.Column<FlightSeatDTO> seatColumn) {
-        ComboBox<SeatDTO> seatField = new ComboBox<>();
+                                 Grid.Column<FlightSeatDto> seatColumn) {
+        ComboBox<SeatDto> seatField = new ComboBox<>();
         seatField.setItems(dataSourceAll);
-        seatField.setItemLabelGenerator(seatDTO ->
-                "Seat id " + seatDTO.getId() + " - " + seatDTO.getSeatNumber() + " ("
-                        + "IsNearEmergencyExit - " + seatDTO.getIsNearEmergencyExit()
-                        + ", IsLockedBack - " + seatDTO.getIsLockedBack() + ") "
-                        + "Category - " + seatDTO.getCategory() + " Aircraft id " + seatDTO.getAircraftId());
+        seatField.setItemLabelGenerator(seatDto ->
+                "Seat id " + seatDto.getId() + " - " + seatDto.getSeatNumber() + " ("
+                        + "IsNearEmergencyExit - " + seatDto.getIsNearEmergencyExit()
+                        + ", IsLockedBack - " + seatDto.getIsLockedBack() + ") "
+                        + "Category - " + seatDto.getCategory() + " Aircraft id " + seatDto.getAircraftId());
         seatField.setWidthFull();
         binder.forField(seatField).asRequired("Seat number must not be empty")
                 .withStatusLabel(seatValidationMessage)
-                .bind(FlightSeatDTO::getSeat, FlightSeatDTO::setSeat);
+                .bind(FlightSeatDto::getSeat, FlightSeatDto::setSeat);
         seatColumn.setEditorComponent(seatField);
     }
 
@@ -477,16 +481,16 @@ public class FlightSeatView extends VerticalLayout {
         });
     }
 
-    private boolean isEditedFlightSeat(Long id, FlightSeatDTO flightSeatDTO) {
+    private boolean isEditedFlightSeat(Long id, FlightSeatDto flightSeatDto) {
         try {
-            flightSeatClient.updateFlightSeatDTOById(id, flightSeatDTO);
+            flightSeatClient.updateFlightSeatById(id, flightSeatDto);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
-            Notification.show("Aircraft with id = " + flightSeatDTO.getFlightId() + " not found.", 3000, Notification.Position.TOP_CENTER);
+            Notification.show("Aircraft with id = " + flightSeatDto.getFlightId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
-            Notification.show("Flight Seat with id = " + flightSeatDTO.getId() + " not found.", 3000, Notification.Position.TOP_CENTER);
+            Notification.show("Flight Seat with id = " + flightSeatDto.getId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;
     }
@@ -495,9 +499,11 @@ public class FlightSeatView extends VerticalLayout {
         dataSource.clear();
         isSearchById = false;
         isSearchByFare = false;
-        response = flightSeatClient.getAllFlightSeatDTO(currentPage, 10);
-        maxPages = response.getBody().getTotalPages() - 1;
-        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
+        Optional<Long> id = null;
+        response = flightSeatClient.getAllFlightSeats(currentPage, 10, id, null, null);
+        List<FlightSeatDto> flightSeatDtoList = flightSeatClient.getAllFlightSeats(null, null, id, null, null).getBody();
+        this.maxPages = (int) Math.ceil((double) flightSeatDtoList.size() / 10);
+        dataSource.addAll(response.getBody());
         grid.getDataProvider().refreshAll();
     }
 
@@ -563,18 +569,18 @@ public class FlightSeatView extends VerticalLayout {
         ComboBox<Boolean> isSoldField = new ComboBox<>("Is Sold");
         ComboBox<Boolean> isBookedField = new ComboBox<>("Is Booked");
         IntegerField flightIdField = new IntegerField("Flight Id");
-        ComboBox<SeatDTO> seatField = new ComboBox<>("Seat");
+        ComboBox<SeatDto> seatField = new ComboBox<>("Seat");
         ComboBox<CategoryType> categoryField = new ComboBox<>("Category");
 
         isRegisteredField.setItems(true, false);
         isSoldField.setItems(true, false);
         isBookedField.setItems(true, false);
         seatField.setItems(dataSourceAll);
-        seatField.setItemLabelGenerator(seatDTO ->
-                "Seat id " + seatDTO.getId() + " - " + seatDTO.getSeatNumber() + " ("
-                        + "IsNearEmergencyExit - " + seatDTO.getIsNearEmergencyExit()
-                        + ", IsLockedBack - " + seatDTO.getIsLockedBack() + ") "
-                        + "Category - " + seatDTO.getCategory() + " Aircraft id " + seatDTO.getAircraftId());
+        seatField.setItemLabelGenerator(seatDto ->
+                "Seat id " + seatDto.getId() + " - " + seatDto.getSeatNumber() + " ("
+                        + "IsNearEmergencyExit - " + seatDto.getIsNearEmergencyExit()
+                        + ", IsLockedBack - " + seatDto.getIsLockedBack() + ") "
+                        + "Category - " + seatDto.getCategory() + " Aircraft id " + seatDto.getAircraftId());
         categoryField.setItems(CategoryType.values());
 
         Button createButton = new Button("Create");
@@ -591,16 +597,16 @@ public class FlightSeatView extends VerticalLayout {
                 return;
             }
 
-            FlightSeatDTO flightSeatDTO = new FlightSeatDTO();
-            flightSeatDTO.setFare(fareField.getValue());
-            flightSeatDTO.setIsRegistered(isRegisteredField.getValue());
-            flightSeatDTO.setIsSold(isSoldField.getValue());
-            flightSeatDTO.setIsBooked(isBookedField.getValue());
-            flightSeatDTO.setFlightId(flightIdField.getValue().longValue());
-            flightSeatDTO.setSeat(seatField.getValue());
-            flightSeatDTO.setCategory(seatField.getValue().getCategory());
+            FlightSeatDto flightSeatDto = new FlightSeatDto();
+            flightSeatDto.setFare(fareField.getValue());
+            flightSeatDto.setIsRegistered(isRegisteredField.getValue());
+            flightSeatDto.setIsSold(isSoldField.getValue());
+            flightSeatDto.setIsBooked(isBookedField.getValue());
+            flightSeatDto.setFlightId(flightIdField.getValue().longValue());
+            flightSeatDto.setSeat(seatField.getValue());
+            flightSeatDto.setCategory(seatField.getValue().getCategory());
 
-            if (isCreatedSeat(flightSeatDTO)) {
+            if (isCreatedSeat(flightSeatDto)) {
                 fareField.clear();
                 isRegisteredField.clear();
                 isSoldField.clear();
@@ -615,14 +621,14 @@ public class FlightSeatView extends VerticalLayout {
         return createTab;
     }
 
-    private boolean isCreatedSeat(FlightSeatDTO flightSeatDTO) {
+    private boolean isCreatedSeat(FlightSeatDto flightSeatDto) {
         try {
-            FlightSeatDTO savedFlightSeat = flightSeatClient.createFlightSeatDTO(flightSeatDTO).getBody();
+            FlightSeatDto savedFlightSeat = flightSeatClient.createFlightSeat(flightSeatDto).getBody();
             dataSource.add(savedFlightSeat);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
-            Notification.show("Flight with id = " + flightSeatDTO.getFlightId() + " not found.", 3000, Notification.Position.TOP_CENTER);
+            Notification.show("Flight with id = " + flightSeatDto.getFlightId() + " not found.", 3000, Notification.Position.TOP_CENTER);
         }
         return false;
     }

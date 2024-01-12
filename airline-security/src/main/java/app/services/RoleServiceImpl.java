@@ -6,7 +6,6 @@ import app.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import app.services.interfaces.RoleService;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,11 +14,10 @@ import java.util.Set;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl {
 
     private final RoleRepository roleRepository;
 
-    @Override
     @Transactional(readOnly = true)
     public Role getRoleByName(String name) {
         return roleRepository.findByName(name);
@@ -37,12 +35,10 @@ public class RoleServiceImpl implements RoleService {
         return userRoles;
     }
 
-    @Override
     public void saveRole(Role role) {
         roleRepository.save(role);
     }
 
-    @Override
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }

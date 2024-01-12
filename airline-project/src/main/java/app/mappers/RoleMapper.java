@@ -1,15 +1,20 @@
 package app.mappers;
 
-
-import app.dto.RoleDTO;
+import app.dto.RoleDto;
 import app.entities.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface RoleMapper {
 
-    RoleDTO convertToRoleDTO(Role role);
+    RoleDto toDto(Role role);
 
-    Role convertToRole(RoleDTO roleDTO);
+    Role toEntity(RoleDto roleDTO);
+
+    List<RoleDto> toDtoList(List<Role> roleList);
+
+    List<Role> toEntityList(List<RoleDto> roleDtoList);
 }

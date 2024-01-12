@@ -2,7 +2,7 @@ package app.exceptions;
 
 import app.controllers.IntegrationTestBase;
 import app.mappers.TicketMapper;
-import app.services.interfaces.TicketService;
+import app.services.TicketService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,7 +25,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
     void shouldThrowExceptionIfPassengerIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = ticketMapper.convertToTicketDTO(newTicket);
+        var ticketDTO = ticketMapper.toDto(newTicket);
         ticketDTO.setPassengerId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
@@ -39,7 +39,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
     void shouldThrowExceptionIfFlightIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = ticketMapper.convertToTicketDTO(newTicket);
+        var ticketDTO = ticketMapper.toDto(newTicket);
         ticketDTO.setFlightId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
@@ -53,7 +53,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
     void shouldThrowExceptionIfIFlightSeatIdNotExistWhenCreatedTicket() throws Exception {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = ticketMapper.convertToTicketDTO(newTicket);
+        var ticketDTO = ticketMapper.toDto(newTicket);
         ticketDTO.setFlightSeatId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))

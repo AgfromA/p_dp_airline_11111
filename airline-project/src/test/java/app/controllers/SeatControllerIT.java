@@ -1,13 +1,13 @@
 package app.controllers;
 
-import app.dto.AircraftDTO;
-import app.dto.SeatDTO;
+import app.dto.AircraftDto;
+import app.dto.SeatDto;
 import app.enums.CategoryType;
 import app.mappers.SeatMapper;
 import app.repositories.SeatRepository;
-import app.services.interfaces.AircraftService;
-import app.services.interfaces.CategoryService;
-import app.services.interfaces.SeatService;
+import app.services.AircraftService;
+import app.services.CategoryService;
+import app.services.SeatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 
-
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-seat-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class SeatControllerIT extends IntegrationTestBase {
@@ -37,10 +36,60 @@ class SeatControllerIT extends IntegrationTestBase {
     private SeatRepository seatRepository;
     @Autowired
     private AircraftService aircraftService;
+    @Autowired
+    private SeatMapper seatMapper;
+
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllSeats() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllSeatsByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllSeatsByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetPageSeats() throws Exception {
+        var pageable = PageRequest.of(0, 4);
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(seatService
+                        .getAllPagesSeats(pageable.getPageNumber(), pageable.getPageSize())
+                        .getContent())));
+    }
+    // Пагинация 2.0
 
     @Test
     void shouldSaveSeat() throws Exception {
-        var seatDTO = new SeatDTO();
+        var seatDTO = new SeatDto();
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(true);
         seatDTO.setIsNearEmergencyExit(false);
@@ -63,7 +112,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
 
-                .andExpect(content().json(objectMapper.writeValueAsString(SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.getSeatById(id)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(seatMapper.toDto(seatService.getSeatById(id)))));
     }
 
     @Test
@@ -76,7 +125,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldEditSeat() throws Exception {
-        var seatDTO = SeatMapper.INSTANCE.convertToSeatDTOEntity(seatService.getSeatById(1));
+        var seatDTO = seatMapper.toDto(seatService.getSeatById(1));
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(false);
         seatDTO.setIsNearEmergencyExit(true);
@@ -106,7 +155,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldGetValidError() throws Exception {
-        var seatDTO = new SeatDTO();
+        var seatDTO = new SeatDto();
         seatDTO.setSeatNumber("1");
 
         mockMvc.perform(post("http://localhost:8080/api/seats")
@@ -126,17 +175,10 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void shouldGetAllSeats() throws Exception {
-        mockMvc.perform(get("http://localhost:8080/api/seats"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
 
     @Test
     void shouldCreateManySeats() throws Exception {
-        var aircraft = new AircraftDTO();
+        var aircraft = new AircraftDto();
         aircraft.setAircraftNumber("17000010");
         aircraft.setModel("Airbus A319");
         aircraft.setModelYear(2002);
@@ -181,6 +223,6 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(seatService.getPagesSeatsByAircraftId(aircraftId, pageable))));
+                        .writeValueAsString(seatService.getPagesSeatsByAircraftId(aircraftId, pageable).getContent())));
     }
 }

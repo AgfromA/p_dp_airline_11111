@@ -1,14 +1,20 @@
 package app.mappers;
 
-import app.dto.PassengerDTO;
+import app.dto.PassengerDto;
 import app.entities.Passenger;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PassengerMapper {
 
-    PassengerDTO convertToPassengerDTO(Passenger passenger);
+    PassengerDto toDto(Passenger passenger);
 
-    Passenger convertToPassenger(PassengerDTO passengerDTO);
+    Passenger toEntity(PassengerDto passengerDTO);
+
+    List<PassengerDto> toDtoList(List<Passenger> passengerList);
+
+    List<Passenger> toEntityList(List<PassengerDto> passengerDtoList);
 }

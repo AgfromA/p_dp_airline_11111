@@ -4,14 +4,14 @@ import app.controllers.api.rest.PaymentRestApi;
 import app.dto.PaymentRequest;
 import app.dto.PaymentResponse;
 import app.entities.Payment;
-import app.services.interfaces.PaymentService;
+import app.services.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -22,14 +22,31 @@ public class PaymentRestController implements PaymentRestApi {
     private final PaymentService paymentService;
 
     @Override
-    public ResponseEntity<Page<Payment>> getAllPagesPayments(Integer page, Integer count) {
-        var payments = paymentService.getAllPayments();
-        if (payments == null) {
-            log.info("getListOfAllPayments: not found any payments");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<List<Payment>> getAllPayments(Integer page, Integer count) {
+        log.info("getAll: get all Payments");
+        if (page == null || count == null) {
+            log.info("getAll: get all List Payments");
+            return createUnPagedResponse();
         }
-        log.info("getListOfAllPayments: found {} payments", payments.size());
-        return new ResponseEntity<>(paymentService.pagePagination(page, count), HttpStatus.OK);
+        if (page < 0 || count < 1) {
+            log.info("no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        var payments = paymentService.pagePagination(page, count);
+        return payments.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(payments.getContent(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<Payment>> createUnPagedResponse() {
+        var payments = paymentService.getAllPayments();
+        if (payments.isEmpty()) {
+            log.info("getListOfAllPayments: not found any payments");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            log.info("getAll: found {} Payments", payments.size());
+            return new ResponseEntity<>(payments, HttpStatus.OK);
+        }
     }
 
     @Override

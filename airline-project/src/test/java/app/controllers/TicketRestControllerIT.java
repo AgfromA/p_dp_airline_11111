@@ -3,9 +3,10 @@ package app.controllers;
 import app.entities.Ticket;
 import app.mappers.TicketMapper;
 import app.repositories.TicketRepository;
-import app.services.interfaces.TicketService;
+import app.services.TicketService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -31,12 +32,60 @@ class TicketRestControllerIT extends IntegrationTestBase {
     @Autowired
     private TicketMapper ticketMapper;
 
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllTickets() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllTicketsByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllTicketsByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/tickets?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetPageTickets() throws Exception {
+        var pageable = PageRequest.of(0, 4);
+        mockMvc.perform(get("http://localhost:8080/api/tickets?page=0&size=4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(ticketService
+                        .getAllTickets(pageable.getPageNumber(), pageable.getPageSize())
+                        .getContent())));
+    }
+    // Пагинация 2.0
+
     @Test
     void createTicket_test() throws Exception {
         Ticket newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
         newTicket.setId(null);
-        var ticketDTO = ticketMapper.convertToTicketDTO(newTicket);
+        var ticketDTO = ticketMapper.toDto(newTicket);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +106,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
 
     @Test
     void updateTicket_test() throws Exception {
-        var ticketDTO = ticketMapper.convertToTicketDTO(ticketService.getTicketByTicketNumber("ZX-3333"));
+        var ticketDTO = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
         ticketDTO.setTicketNumber("ZX-2222");
         long numberOfTicket = ticketRepository.count();
 

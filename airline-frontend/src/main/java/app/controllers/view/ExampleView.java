@@ -21,7 +21,6 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Тут страшно, но мы справимся
@@ -38,7 +37,7 @@ public class ExampleView extends VerticalLayout {
         this.exampleClient = exampleClient;
         int page = 0;
         int size = 100;
-        this.dataSource = exampleClient.getPage(page, size).getBody().stream().collect(Collectors.toList());
+        this.dataSource = exampleClient.getAllExamples(page, size).getBody();
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage exampleTextValidationMessage = new ValidationMessage();
 

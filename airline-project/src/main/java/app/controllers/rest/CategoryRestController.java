@@ -3,14 +3,13 @@ package app.controllers.rest;
 import app.controllers.api.rest.CategoryRestApi;
 import app.entities.Category;
 import app.enums.CategoryType;
-import app.services.interfaces.CategoryService;
+import app.services.CategoryService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import java.util.List;
 

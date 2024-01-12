@@ -1,10 +1,11 @@
 package app.controllers;
 
-import app.dto.PassengerDTO;
+import app.dto.PassengerDto;
 import app.entities.Passport;
 import app.enums.Gender;
+import app.mappers.PassengerMapper;
 import app.repositories.PassengerRepository;
-import app.services.interfaces.PassengerService;
+import app.services.PassengerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,59 @@ class PassengerRestControllerIT extends IntegrationTestBase {
 
     @Autowired
     private PassengerService passengerService;
+    @Autowired
+    private PassengerMapper passengerMapper;
 
     @Autowired
     private PassengerRepository passengerRepository;
+
+    // Пагинация 2.0
+    @Test
+    void shouldGetAllPassengers() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/passengers"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllPassengersByNullPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/passengers?size=2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetAllPassengersByNullSize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetBadRequestByPage() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=-1&size=2"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetBadRequestBySize() throws Exception {
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=0"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetPagePassengers() throws Exception {
+        var pageable = PageRequest.of(0, 4);
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(passengerService
+                        .getAllPagesPassengers(pageable)
+                        .getContent())));
+    }
+    // Пагинация 2.0
 
     @Test
     @DisplayName("Get passenger by ID")
@@ -43,15 +94,14 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
-                        content().json(objectMapper.writeValueAsString(new PassengerDTO(passengerService.getPassengerById(id).get())))
-                );
-
+                        content().json(objectMapper.writeValueAsString(passengerMapper.toDto(
+                                passengerService.getPassengerById(id).get()))));
     }
 
     @Test
     @DisplayName("Post new passenger")
     void shouldAddNewPassenger() throws Exception {
-        var passengerDTO = new PassengerDTO();
+        var passengerDTO = new PassengerDto();
         passengerDTO.setFirstName("Petr");
         passengerDTO.setLastName("Petrov");
         passengerDTO.setBirthDate(LocalDate.of(2023, 3, 23));
@@ -72,7 +122,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Post exist passenger")
     void shouldAddExistPassenger() throws Exception {
-        var passengerDTO = new PassengerDTO();
+        var passengerDTO = new PassengerDto();
         passengerDTO.setId(4L);
         mockMvc.perform(
                         post("http://localhost:8080/api/passengers")
@@ -101,7 +151,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @DisplayName("Update passenger")
     void shouldUpdatePassenger() throws Exception {
         var id = 4L;
-        var passengerDTO = new PassengerDTO(passengerService.getPassengerById(4L).get());
+        var passengerDTO = passengerMapper.toDto(passengerService.getPassengerById(id).get());
         passengerDTO.setFirstName("Klark");
         long numberOfPassenger = passengerRepository.count();
 
@@ -113,21 +163,6 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andExpect(result -> assertThat(passengerRepository.count(), equalTo(numberOfPassenger)));
     }
 
-    @Test
-    @DisplayName("Get all passengers with pagination")
-    void shouldGetAllPassengers() throws Exception {
-        var pageable = PageRequest.of(0, 10, Sort.by("id"));
-        var passengerPage = passengerService.getAllPagesPassengers(pageable);
-        this.mockMvc.perform(get("http://localhost:8080/api/passengers"))
-                .andDo(print())
-                .andExpectAll(
-                        status().isOk(),
-                        content().json(objectMapper.writeValueAsString(
-                                passengerPage)
-                        )
-
-                );
-    }
 
     @Test
     @DisplayName("Filter passenger by FirstName and LastName")
@@ -137,13 +172,13 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         var lastName = "Simons20";
         var email = "";
         var passportSerialNumber = "";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("firstName", firstName)
                         .param("lastName", lastName))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber))));
+                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
     }
 
     @Test
@@ -154,12 +189,12 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         var lastName = "";
         var email = "";
         var passportSerialNumber = "";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("firstName", firstName))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber))));
+                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
     }
 
     @Test
@@ -170,12 +205,12 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         var lastName = "Simons20";
         var email = "";
         var passportSerialNumber = "";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("lastName", lastName))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber))));
+                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
     }
 
     @Test
@@ -186,12 +221,12 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         var lastName = "";
         var email = "passenger20@mail.ru";
         var passportSerialNumber = "";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("email", email))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber))));
+                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
     }
 
     @Test
@@ -202,51 +237,51 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         var lastName = "";
         var email = "";
         var serialNumberPassport = "0011 001800";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("serialNumberPassport", serialNumberPassport))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, serialNumberPassport))));
+                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, serialNumberPassport).getContent())));
     }
 
     @Test
     @DisplayName("Filter passenger by FirstName not found in database")
     void shouldShowPassengerByFirstNameNotFoundInDatabase() throws Exception {
         var firstName = "aaa";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("firstName", firstName))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("Filter passenger by lastName not found in database")
     void shouldShowPassengerByLastNameNotFoundInDatabase() throws Exception {
         var lastName = "aaa";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("lastName", lastName))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("Filter passenger by email not found in database")
     void shouldShowPassengerByEmailNotFoundInDatabase() throws Exception {
         var email = "aaa@aaa.com";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("email", email))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("Filter passenger by serialNumberPassport not found in database")
     void shouldShowPassengerByPassportSerialNumberNotFoundInDatabase() throws Exception {
         var serialNumberPassport = "7777 777777";
-        mockMvc.perform(get("http://localhost:8080/api/passengers")
+        mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("serialNumberPassport", serialNumberPassport))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 }
