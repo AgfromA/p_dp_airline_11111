@@ -73,9 +73,6 @@ data:
       beforeDeparture:
         seconds: 86400
 
-    logging:
-      config: classpath:log4j2-prod.yaml
-
     app:
       feign:
         config:
