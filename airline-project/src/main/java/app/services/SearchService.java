@@ -1,5 +1,7 @@
 package app.services;
 
+import app.dto.search.SearchResultCard;
+import app.dto.search.SearchResultCardData;
 import app.entities.Flight;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,60 +41,18 @@ public class SearchService {
         var searchResult = new SearchResult();
         searchResult.setSearch(search);
 
-        List<Flight> searchDepartFlight = new ArrayList<>();
-        List<Flight> searchReturnFlight = new ArrayList<>();
+        List<SearchResultCard> directFlights = getDirectFlights(search);
 
-        addDirectDepartFlightsToSearchDepartFlight(search, searchDepartFlight);
-        addNonDirectDepartFlightsToSearchDepartFlight(search, searchDepartFlight);
+        searchResult.setFlights(directFlights);
+        searchResult.getFlights().addAll(getNonDirectFlights(search));
 
-        var searchDepartFlightDto = searchDepartFlight.stream()
-                .map(departFlight -> Mappers.getMapper(FlightMapper.class)
-                        .toDto(departFlight, flightService))
-                .collect(Collectors.toList());
-
-        searchResult.setDepartFlights(searchDepartFlightDto);
-
-        if (search.getReturnDate() == null) {
-            searchResult.setReturnFlights(new ArrayList<>());
-        } else {
-            addDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
-            addNonDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
-
-
-            var searchReturnFlightDto = searchReturnFlight.stream()
-                    .map(returnFlight -> Mappers.getMapper(FlightMapper.class)
-                            .toDto(returnFlight, flightService))
-                    .collect(Collectors.toList());
-
-            searchResult.setReturnFlights(searchReturnFlightDto);
-        }
         return searchResult;
     }
 
-    @Loggable
-    private void addDirectDepartFlightsToSearchDepartFlight(Search search, List<Flight> searchFlightList) {
-        var departFlight = getDirectDepartFlights(search);
-        //проверка рейсов на наличие мест. если места есть, то рейс добавлется в список рейсов
-        for (Flight f : departFlight) {
-            if (checkFlightForNumberSeats(f, search)) {
-                searchFlightList.add(f);
-            }
-        }
-    }
 
     @Loggable
-    private void addDirectReturnFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
-        var returnFlight = getDirectReturnFlights(search);
-        //проверка прямых рейсов на наличие мест. если места есть, то рейс добавлется в список рейсов
-        for (Flight f : returnFlight) {
-            if (checkFlightForNumberSeats(f, search)) {
-                searchFlightList.add(f);
-            }
-        }
-    }
-
-    @Loggable
-    private void addNonDirectDepartFlightsToSearchDepartFlight(Search search, List<Flight> searchFlightList) {
+    private List<Flight> addNonDirectDepartFlightsToSearchDepartFlight(Search search) {
+        List<Flight> searchFlightList = new ArrayList<>();
         var nonDirectDepartFlights = getNonDirectDepartFlights(search);
         //проверка непрямых рейсов на наличие мест. если места есть, то соответствующая пара добавляется в список рейсов
         for (Flight f : nonDirectDepartFlights) {
@@ -103,10 +65,12 @@ public class SearchService {
                 }
             }
         }
+        return searchFlightList;
     }
 
     @Loggable
-    private void addNonDirectReturnFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
+    private List<Flight> addNonDirectReturnFlightsToSearchReturnFlight(Search search) {
+        List<Flight> searchFlightList = new ArrayList<>();
         var nonDirectReturnFlights = getNonDirectReturnFlights(search);
         //проверка непрямых обратных рейсов на наличие мест: если места есть, то соответствующая пара добавляется в список рейсов
         for (Flight f : nonDirectReturnFlights) {
@@ -119,25 +83,117 @@ public class SearchService {
                 }
             }
         }
+        return searchFlightList;
+    }
+    @Loggable
+    private List <SearchResultCard> getNonDirectFlights(Search search) {
+        List<Flight> departFlights = addNonDirectDepartFlightsToSearchDepartFlight(search);
+        List<Flight> returnFlights = addNonDirectReturnFlightsToSearchReturnFlight(search);
+        List<SearchResultCard> nonDirectFlights = new ArrayList<>();
+        SearchResultCard searchResultCard = new SearchResultCard();
+        for (Flight flightD : departFlights) {
+            if (search.getReturnDate() != null) {
+                for (Flight flightR : returnFlights) {
+                    SearchResultCardData searchResultCardData = new SearchResultCardData();
+                    searchResultCardData.setAirportFrom(flightD.getFrom().getAirportCode());
+                    searchResultCardData.setAirportTo(flightD.getTo().getAirportCode());
+                    searchResultCardData.setFlightTime(LocalDateTime.of(0, 1, 1, 0, 0)
+                            .plus(Duration.between(flightD.getDepartureDateTime(),
+                                    flightD.getArrivalDateTime())));
+                    searchResultCardData.setDepartureDateTime(flightD.getDepartureDateTime());
+                    searchResultCardData.setArrivalDateTime(flightD.getArrivalDateTime());
+                    searchResultCard.setDataTo(searchResultCardData);
+
+                    SearchResultCardData searchResultCardDataBack = new SearchResultCardData();
+                    searchResultCardDataBack.setAirportFrom(flightR.getFrom().getAirportCode());
+                    searchResultCardDataBack.setAirportTo(flightR.getTo().getAirportCode());
+                    searchResultCardDataBack.setFlightTime(LocalDateTime.of(0, 1, 1, 0, 0)
+                            .plus(Duration.between(flightR.getDepartureDateTime(),
+                                    flightR.getArrivalDateTime())));
+                    searchResultCardDataBack.setDepartureDateTime(flightR.getDepartureDateTime());
+                    searchResultCardDataBack.setArrivalDateTime(flightR.getArrivalDateTime());
+                    searchResultCard.setDataBack(searchResultCardDataBack);
+
+                    nonDirectFlights.add(searchResultCard);
+                }
+            } else {
+                SearchResultCardData searchResultCardData = new SearchResultCardData();
+                searchResultCardData.setAirportFrom(flightD.getFrom().getAirportCode());
+                searchResultCardData.setAirportTo(flightD.getTo().getAirportCode());
+                searchResultCardData.setFlightTime(LocalDateTime.of(0, 1, 1, 0, 0)
+                        .plus(Duration.between(flightD.getDepartureDateTime(),
+                                flightD.getArrivalDateTime())));
+                searchResultCardData.setDepartureDateTime(flightD.getDepartureDateTime());
+                searchResultCardData.setArrivalDateTime(flightD.getArrivalDateTime());
+                searchResultCard.setDataTo(searchResultCardData);
+
+                nonDirectFlights.add(searchResultCard);
+            }
+        }
+        return nonDirectFlights;
     }
 
     @Loggable
-    private List<Flight> getDirectDepartFlights(Search search) {
-        return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
+    private List<SearchResultCard> getDirectFlights(Search search) {
+        List<SearchResultCard> searchResultCardList = new ArrayList<>();
+        List<Flight> returnFlights = new ArrayList<>();
+        SearchResultCard searchResultCard = new SearchResultCard();
+        List<Flight> flights = flightService.getListDirectFlightsByFromAndToAndDepartureDate(
                 search.getFrom(),
                 search.getTo(),
-                Date.valueOf(search.getDepartureDate())
-        );
+                Date.valueOf(search.getDepartureDate()));
+        if (search.getReturnDate() != null) {
+            returnFlights = flightService.getListDirectFlightsByFromAndToAndDepartureDate(
+                    search.getTo(),
+                    search.getFrom(),
+                    Date.valueOf(search.getReturnDate()));
+        }
+        for (Flight flight : flights) {
+            if (checkFlightForNumberSeats(flight, search)) {
+                if (search.getReturnDate() != null) {
+                    for (Flight returnFlight : returnFlights) {
+                        if (checkFlightForNumberSeats(flight, search)) {
+                            SearchResultCardData searchResultCardData = new SearchResultCardData();
+                            searchResultCardData.setAirportFrom(flight.getFrom().getAirportCode());
+                            searchResultCardData.setAirportTo(flight.getTo().getAirportCode());
+                            searchResultCardData.setFlightTime(LocalDateTime.of(0, 1, 1, 0, 0)
+                                    .plus(Duration.between(flight.getDepartureDateTime(),
+                                            flight.getArrivalDateTime())));
+                            searchResultCardData.setDepartureDateTime(flight.getDepartureDateTime());
+                            searchResultCardData.setArrivalDateTime(flight.getArrivalDateTime());
+                            searchResultCard.setDataTo(searchResultCardData);
+
+                            SearchResultCardData searchResultCardDataBack = new SearchResultCardData();
+                            searchResultCardDataBack.setAirportFrom(returnFlight.getFrom().getAirportCode());
+                            searchResultCardDataBack.setAirportTo(returnFlight.getTo().getAirportCode());
+                            searchResultCardDataBack.setFlightTime(LocalDateTime.of(0, 1, 1, 0, 0)
+                                    .plus(Duration.between(returnFlight.getDepartureDateTime(),
+                                            returnFlight.getArrivalDateTime())));
+                            searchResultCardDataBack.setDepartureDateTime(returnFlight.getDepartureDateTime());
+                            searchResultCardDataBack.setArrivalDateTime(returnFlight.getArrivalDateTime());
+                            searchResultCard.setDataBack(searchResultCardDataBack);
+
+                            searchResultCardList.add(searchResultCard);
+                        }
+                    }
+                } else {
+                    SearchResultCardData searchResultCardData = new SearchResultCardData();
+                    searchResultCardData.setAirportFrom(flight.getFrom().getAirportCode());
+                    searchResultCardData.setAirportTo(flight.getTo().getAirportCode());
+                    searchResultCardData.setFlightTime(LocalDateTime.of(0, 1, 1, 0, 0)
+                            .plus(Duration.between(flight.getDepartureDateTime(),
+                                    flight.getArrivalDateTime())));
+                    searchResultCardData.setDepartureDateTime(flight.getDepartureDateTime());
+                    searchResultCardData.setArrivalDateTime(flight.getArrivalDateTime());
+                    searchResultCard.setDataTo(searchResultCardData);
+
+                    searchResultCardList.add(searchResultCard);
+                }
+            }
+        }
+        return searchResultCardList;
     }
 
-    @Loggable
-    private List<Flight> getDirectReturnFlights(Search search) {
-        return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
-                search.getTo(),
-                search.getFrom(),
-                Date.valueOf(search.getReturnDate())
-        );
-    }
 
     @Loggable
     private List<Flight> getNonDirectDepartFlights(Search search) {

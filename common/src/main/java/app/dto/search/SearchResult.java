@@ -25,11 +25,7 @@ public class SearchResult {
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @ToString.Exclude
-    private List<FlightDto> departFlights;
-
-    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-    @ToString.Exclude
-    private List<FlightDto> returnFlights;
+    private List<SearchResultCard> flights;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Search search;
