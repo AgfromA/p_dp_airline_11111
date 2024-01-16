@@ -61,7 +61,7 @@ public class SeatServiceTest {
                 .thenReturn(aircraft);
         when(seatRepository.findByAircraftId(eq(AIRCRAFT_TEST_ID), any()))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
-        when(seatMapper.toEntity(any(), categoryService, aircraftService))
+        when(seatMapper.toEntity(any(), eq(categoryService), eq(aircraftService)))
                 .thenAnswer(ans -> {
                     SeatDto seatDTO = ans.getArgument(0);
                     var seat = new Seat();
@@ -76,17 +76,25 @@ public class SeatServiceTest {
                     seat.setId(1L);
                     return seat;
                 });
+        when(seatMapper.toDto(any()))
+                .thenAnswer(ans -> {
+                    Seat seat = ans.getArgument(0);
+                    var seatDto = new SeatDto();
+                    seatDto.setId(seat.getId());
+                    seatDto.setCategory(seat.getCategory().getCategoryType());
+                    seatDto.setAircraftId(seat.getAircraft().getId());
+                    return seatDto;
+                });
 
         List<SeatDto> seatDtos = seatService.generateSeatsDTOByAircraftId(AIRCRAFT_TEST_ID);
 
         long businessSeatsCount = seatDtos.stream()
-                .map(SeatDto::getCategory)
-                .filter(categoryType -> CategoryType.BUSINESS == categoryType)
+                .map(seatDto -> seatDto.getCategory())
+                .filter(categoryType -> CategoryType.BUSINESS.equals(categoryType))
                 .count();
 
         assertFalse(seatDtos.isEmpty());
         assertEquals(168, seatDtos.size());
         assertEquals(12, businessSeatsCount);
     }
-
 }
