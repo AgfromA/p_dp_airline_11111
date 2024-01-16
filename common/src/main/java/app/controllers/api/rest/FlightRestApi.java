@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "Flight REST", description = "API для операций с рейсами")
 public interface FlightRestApi {
 
-    @RequestMapping(value = "/api/flights/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/flights", method = RequestMethod.GET)
     @ApiOperation(value = "Get all Flights or Flights by params")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Flights found"),
@@ -55,28 +55,6 @@ public interface FlightRestApi {
             )
             @PathVariable("id") Long id);
 
-    @RequestMapping(value = "/api/flights/filter/dates", method = RequestMethod.GET)
-    @ApiOperation(value = "Get Flight by \"id\" and dates given as params")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "flight found"),
-            @ApiResponse(code = 404, message = "flight not found")
-    })
-    ResponseEntity<FlightDto> getFlightByIdAndDates(
-            @ApiParam(
-                    name = "id",
-                    value = "Flight.id"
-            )
-            @RequestParam(name = "id") Long id,
-            @ApiParam(
-                    value = "Departure Data-Time",
-                    example = "2022-12-10T15:56:49"
-            )
-            @RequestParam(name = "date_start") String start,
-            @ApiParam(
-                    value = "Arrival Data-Time",
-                    example = "2022-12-10T15:57:49"
-            )
-            @RequestParam(name = "date_finish") String finish);
 
     @RequestMapping(value = "/api/flights/status", method = RequestMethod.GET)
     @ApiOperation(value = "Get all flight statuses")

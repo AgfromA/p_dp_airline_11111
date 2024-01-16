@@ -74,14 +74,6 @@ public class FlightRestController implements FlightRestApi {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @Override
-    public ResponseEntity<FlightDto> getFlightByIdAndDates(Long id, String start, String finish) {
-        log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
-        var flight = flightService.getFlightByIdAndDates(id, start, finish);
-        return flight != null
-                ? new ResponseEntity<>(flight, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
 
     @Override
     public ResponseEntity<FlightStatus[]> getAllFlightStatus() {

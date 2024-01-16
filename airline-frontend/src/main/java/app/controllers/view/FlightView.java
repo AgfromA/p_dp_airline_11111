@@ -570,7 +570,7 @@ public class FlightView extends VerticalLayout {
         airportToField.setWidthFull();
         binder.forField(airportToField).asRequired("Airport must not be empty")
                 .withStatusLabel(airportToValidationMessage)
-                .bind(FlightDto::getAirportFrom, FlightDto::setAirportFrom);
+                .bind(FlightDto::getAirportTo, FlightDto::setAirportTo);
         airportToColumn.setEditorComponent(airportToField);
     }
 
