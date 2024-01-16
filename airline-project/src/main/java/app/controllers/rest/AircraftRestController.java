@@ -73,9 +73,8 @@ public class AircraftRestController implements AircraftRestApi {
             log.error("update: Aircraft with id={} doesn't exist.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        aircraftDTO.setId(id);
         log.info("update: the Aircraft with id={} has been edited.", id);
-        return ResponseEntity.ok(aircraftService.saveAircraft(aircraftDTO));
+        return ResponseEntity.ok(aircraftService.updateAircraft(id, aircraftDTO));
     }
 
     /*
