@@ -3,6 +3,7 @@ package app.services;
 import app.dto.AircraftDto;
 import app.entities.Aircraft;
 import app.entities.Flight;
+import app.exceptions.EntityNotFoundException;
 import app.mappers.AircraftMapper;
 import app.repositories.AircraftRepository;
 import app.repositories.FlightRepository;
@@ -38,7 +39,10 @@ public class AircraftService {
 
     @Transactional
     public AircraftDto updateAircraft(Long id, AircraftDto aircraftDTO) {
-        var existAircraft = aircraftRepository.findById(id).orElse(null);
+        var existAircraft = aircraftRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Operation was not finished because Aircraft was not found with id = " + id)
+                );
 
         if (aircraftDTO.getAircraftNumber() == null) {
             aircraftDTO.setAircraftNumber(existAircraft.getAircraftNumber());
