@@ -96,7 +96,7 @@ public class AircraftDtoTest extends EntityTest {
         aircraft.setModel("boeing435");
         aircraft.setModelYear(2005);
 
-        Assertions.assertTrue(isSetWithViolationIsEmpty(validator, aircraft));
+        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, aircraft));
     }
 
     @Test

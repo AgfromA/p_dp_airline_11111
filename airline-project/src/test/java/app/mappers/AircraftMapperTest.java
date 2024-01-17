@@ -47,8 +47,8 @@ public class AircraftMapperTest {
         assertNull(aircraft.getId());
         assertNull(aircraft.getAircraftNumber());
         assertNull(aircraft.getModel());
-        assertEquals(0, aircraft.getModelYear());
-        assertEquals(0, aircraft.getFlightRange());
+        assertNull(aircraft.getModelYear());
+        assertNull(aircraft.getFlightRange());
     }
 
     @Test

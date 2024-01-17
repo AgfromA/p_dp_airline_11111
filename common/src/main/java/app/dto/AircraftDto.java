@@ -28,9 +28,10 @@ public class AircraftDto {
 
     @NotNull(message = "field \"modelYear\" should not be empty!")
     @Min(value = 2000, message = "modelYear should be later than 2000")
-    private int modelYear;
+    private Integer modelYear;
 
     @NotNull(message = "field \"flightRange\" should not be empty!")
-    private int flightRange;
+    @Min(value = 0, message = "flightRange should be a positive value")
+    private Integer flightRange;
 
 }
