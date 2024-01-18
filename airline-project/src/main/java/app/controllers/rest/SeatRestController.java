@@ -111,6 +111,10 @@ public class SeatRestController implements SeatRestApi {
             log.error("Seat not found id = {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        if (!id.equals(seatDTO.getId())) {
+            log.error("Changing the id is not allowed");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         if (aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
             log.error("Aircraft with id = {} not found", seatDTO.getAircraftId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
