@@ -20,20 +20,15 @@ import java.util.List;
 @Tag(name = "FlightSeat REST", description = "API для операций с посадочными местами на рейс")
 public interface FlightSeatRestApi {
 
-    @RequestMapping(value = "/api/flight-seats/{id}", method = RequestMethod.GET)
-    @ApiOperation(value = "Get FlightSeat by id")
+    @RequestMapping(value = "/api/flight-seats", method = RequestMethod.GET)
+    @ApiOperation(value = "Get all FlightSeats with optional pagination")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "FlightSeat found"),
             @ApiResponse(code = 404, message = "FlightSeat not found")
     })
-    ResponseEntity<FlightSeatDto> getFlightSeatById(
-            @ApiParam(
-                    name = "id",
-                    value = "FlightSeat.id",
-                    required = true
-            )
-            @PathVariable Long id
-    );
+    ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(@PageableDefault()
+                                                          @RequestParam(value = "page", required = false) Integer page,
+                                                          @RequestParam(value = "size", required = false) Integer size);
 
     @RequestMapping(value = "/api/flight-seats/filtered", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of FlightSeats by code of Flight")
@@ -61,23 +56,35 @@ public interface FlightSeatRestApi {
             )
             @RequestParam(required = false) Boolean isRegistered);
 
-
-    @RequestMapping(value = "/api/generate", method = RequestMethod.POST)
-    @ApiOperation(value = "Generate FlightSeats for provided Flight based on Aircraft's Seats")
+    @RequestMapping(value = "/api/flight-seats/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "Get FlightSeat by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "FlightSeats existed"),
-            @ApiResponse(code = 201, message = "FlightSeats generated"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Flight with this id not found")
+            @ApiResponse(code = 200, message = "FlightSeat found"),
+            @ApiResponse(code = 404, message = "FlightSeat not found")
     })
-    ResponseEntity<List<FlightSeatDto>> generateAllFlightSeatsByFlightId(
+    ResponseEntity<FlightSeatDto> getFlightSeat(
             @ApiParam(
-                    name = "flightId",
-                    value = "Flight.id",
+                    name = "id",
+                    value = "FlightSeat.id",
                     required = true
             )
-            @RequestParam
-            Long flightId);
+            @PathVariable Long id
+    );
+
+    @RequestMapping(value = "/api/flight-seats", method = RequestMethod.POST)
+    @ApiOperation(value = "Create new Flight Seat")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "FlightSeat created"),
+            @ApiResponse(code = 400, message = "FlightSeat not created")
+    })
+    ResponseEntity<FlightSeatDto> createFlightSeat(
+            @ApiParam(
+                    name = "flightSeat",
+                    value = "FlightSeat"
+            )
+            @RequestBody
+            @Valid
+            FlightSeatDto flightSeat);
 
     @RequestMapping(value = "/api/flight-seats/{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Update FlightSeat by \"id\"")
@@ -85,7 +92,7 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 200, message = "FlightSeat edited"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    ResponseEntity<FlightSeatDto> updateFlightSeatById(
+    ResponseEntity<FlightSeatDto> updateFlightSeat(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id",
@@ -107,35 +114,27 @@ public interface FlightSeatRestApi {
             @ApiResponse(code = 204, message = "FlightSeat deleted"),
             @ApiResponse(code = 404, message = "FlightSeat not found")
     })
-    ResponseEntity<String> deleteFlightSeatById(
+    ResponseEntity<String> deleteFlightSeat(
             @ApiParam(
                     name = "id",
                     value = "FlightSeat.id"
             ) @PathVariable(value = "id") Long id
     );
 
-    @RequestMapping(value = "/api/flight-seats", method = RequestMethod.POST)
-    @ApiOperation(value = "Create new Flight Seat")
+    @RequestMapping(value = "/api/generate", method = RequestMethod.POST)
+    @ApiOperation(value = "Generate FlightSeats for provided Flight based on Aircraft's Seats")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "FlightSeat created"),
-            @ApiResponse(code = 400, message = "FlightSeat not created")
+            @ApiResponse(code = 200, message = "FlightSeats existed"),
+            @ApiResponse(code = 201, message = "FlightSeats generated"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Flight with this id not found")
     })
-    ResponseEntity<FlightSeatDto> createFlightSeat(
+    ResponseEntity<List<FlightSeatDto>> generateFlightSeats(
             @ApiParam(
-                    name = "flightSeat",
-                    value = "FlightSeat"
+                    name = "flightId",
+                    value = "Flight.id",
+                    required = true
             )
-            @RequestBody
-            @Valid
-            FlightSeatDto flightSeat);
-
-    @RequestMapping(value = "/api/flight-seats", method = RequestMethod.GET)
-    @ApiOperation(value = "Get all FlightSeats")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "FlightSeat found"),
-            @ApiResponse(code = 404, message = "FlightSeat not found")
-    })
-    ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(@PageableDefault()
-                                                          @RequestParam(value = "page", required = false) Integer page,
-                                                          @RequestParam(value = "size", required = false) Integer size);
+            @RequestParam
+            Long flightId);
 }

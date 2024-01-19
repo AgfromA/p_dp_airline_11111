@@ -231,14 +231,14 @@ public class FlightSeatView extends VerticalLayout {
             isSearchById = true;
             currentPage = 0;
             maxPages = 1;
-            dataSource.add(flightSeatClient.getFlightSeatById(idSearchField.getValue().longValue()).getBody());
+            dataSource.add(flightSeatClient.getFlightSeat(idSearchField.getValue().longValue()).getBody());
             grid.getDataProvider().refreshAll();
         }
     }
 
     private boolean isFoundSeatById(Long id) {
         try {
-            dataSource.add(flightSeatClient.getFlightSeatById(id).getBody());
+            dataSource.add(flightSeatClient.getFlightSeat(id).getBody());
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -364,7 +364,7 @@ public class FlightSeatView extends VerticalLayout {
 
     private boolean isDeletedSeat(FlightSeatDto flightSeat) {
         try {
-            flightSeatClient.deleteFlightSeatById(flightSeat.getId());
+            flightSeatClient.deleteFlightSeat(flightSeat.getId());
             return true;
         } catch (FeignException.MethodNotAllowed feignException) {
             log.error(feignException.getMessage());
@@ -481,7 +481,7 @@ public class FlightSeatView extends VerticalLayout {
 
     private boolean isEditedFlightSeat(Long id, FlightSeatDto flightSeatDto) {
         try {
-            flightSeatClient.updateFlightSeatById(id, flightSeatDto);
+            flightSeatClient.updateFlightSeat(id, flightSeatDto);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());

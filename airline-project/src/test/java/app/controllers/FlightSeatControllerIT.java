@@ -198,20 +198,6 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void shouldReturnExistingFlightSeatsByFlightId() throws Exception {
-        FlightSeat flightSeat = createFlightSeat();
-        var flightId = flightSeat.getId().toString();
-        Set<FlightSeat> flightSeatSet = flightSeatService.addFlightSeatsByFlightNumber(flightId);
-        mockMvc.perform(
-                        post("http://localhost:8080//api/generate?flightId={flightId}", flightId)
-                                .content(objectMapper.writeValueAsString(flightSeatSet))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void shouldAddFlightSeatsByFlightId() throws Exception {
         var flightId = createFlightSeat().getFlight().getId().toString();
         Set<FlightSeatDto> flightSeatSet =  flightSeatService.getFlightSeatsByFlightId(Long.valueOf(flightId));
