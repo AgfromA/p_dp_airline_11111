@@ -62,10 +62,10 @@ public class FlightSeatService {
         return flightSeatRepository.findById(id);
     }
 
-    public Set<FlightSeatDto> getFlightSeatsByFlightId(Long flightId) {
+    public List<FlightSeatDto> getFlightSeatsByFlightId(Long flightId) {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId).stream()
                 .map(flightSeat -> flightSeatMapper.toDto(flightSeat, flightService))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public Page<FlightSeatDto> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
@@ -75,33 +75,9 @@ public class FlightSeatService {
     }
 
     @Transactional
-    public Set<FlightSeat> addFlightSeatsByFlightId(Long flightId) {
-        Set<FlightSeat> newFlightSeats = new HashSet<>();
-        var flight = flightService.getFlightById(flightId).orElseThrow(
-                () -> new EntityNotFoundException("Operation was not finished because Flight was not found with id = " + flightId)
-        );
-        var seats = seatRepository.findByAircraftId(flight.getAircraft().getId());
-        for (Seat s : seats) {
-            var flightSeat = new FlightSeat();
-            flightSeat.setSeat(s);
-            flightSeat.setFlight(flight);
-            flightSeat.setIsBooked(false);
-            flightSeat.setIsSold(false);
-            flightSeat.setIsRegistered(false);
-            flightSeat.setFare(generateFareForFlightSeat(s, flight));
-            newFlightSeats.add(flightSeat);
-        }
-        flightSeatRepository.saveAll(newFlightSeats);
-        return newFlightSeats;
-    }
-
-    @Transactional
     public FlightSeatDto createFlightSeat(FlightSeatDto flightSeatDto) {
         var flightSeat = flightSeatMapper.toEntity(flightSeatDto, flightService, seatService);
-
-        var flight = flightService.getFlightById(flightSeatDto.getFlightId()).orElseThrow(
-                () -> new EntityNotFoundException("Operation was not finished because Flight was not found with id = " + flightSeatDto.getFlightId())
-        );
+        var flight = checkIfFlightExists(flightSeatDto.getFlightId());
         flightSeat.setFlight(flight);
 
         var seat = seatService.getSeatById(flightSeatDto.getSeat().getId());
@@ -152,7 +128,31 @@ public class FlightSeatService {
         return flightSeatRepository.findByFlightId(id);
     }
 
-    public int generateFareForFlightSeat(Seat seat, Flight flight) {
+    @Transactional
+    public List<FlightSeatDto> generateFlightSeats(Long flightId) {
+        var flight = checkIfFlightExists(flightId);
+        var flightSeats = getFlightSeatsByFlightId(flightId);
+        if (!flightSeats.isEmpty()) {
+            return flightSeats;
+        }
+
+        List<FlightSeat> newFlightSeats = new ArrayList<>();
+        var seats = seatRepository.findByAircraftId(flight.getAircraft().getId());
+        for (Seat seat : seats) {
+            var flightSeat = new FlightSeat();
+            flightSeat.setSeat(seat);
+            flightSeat.setFlight(flight);
+            flightSeat.setIsBooked(false);
+            flightSeat.setIsSold(false);
+            flightSeat.setIsRegistered(false);
+            flightSeat.setFare(generateFareForFlightSeat(seat, flight));
+            newFlightSeats.add(flightSeat);
+        }
+        flightSeatRepository.saveAll(newFlightSeats);
+        return flightSeatMapper.toDtoList(newFlightSeats, flightService);
+    }
+
+    private int generateFareForFlightSeat(Seat seat, Flight flight) {
         int baseFare = 5000;
         float emergencyExitRatio;
         float categoryRatio;
@@ -186,8 +186,8 @@ public class FlightSeatService {
         return Math.round(fare / 10) * 10;
     }
 
-    private void checkIfFlightExists(Long flightId) {
-        flightService.getFlightById(flightId).orElseThrow(
+    private Flight checkIfFlightExists(Long flightId) {
+        return flightService.getFlightById(flightId).orElseThrow(
                 () -> new EntityNotFoundException("Operation was not finished because Flight was not found with id = " + flightId)
         );
     }

@@ -1,7 +1,5 @@
 package app.controllers;
 
-
-
 import app.dto.FlightSeatDto;
 import app.entities.Aircraft;
 import app.entities.Flight;
@@ -26,7 +24,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -58,9 +55,6 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     private SeatRepository seatRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-
-
-
 
     public FlightSeat createFlightSeat() {
         var aircraft = new Aircraft();
@@ -151,7 +145,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
 
 
     @Test
-    void shouldGetFlightSeatDTOById() throws Exception{
+    void shouldGetFlightSeatDTOById() throws Exception {
         FlightSeat flightSeat = createFlightSeat();
         Long id = flightSeat.getId();
         mockMvc.perform(get("http://localhost:8080/api/flight-seats/{id}", id))
@@ -200,8 +194,8 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldAddFlightSeatsByFlightId() throws Exception {
         var flightId = createFlightSeat().getFlight().getId().toString();
-        Set<FlightSeatDto> flightSeatSet =  flightSeatService.getFlightSeatsByFlightId(Long.valueOf(flightId));
-        for (FlightSeatDto flightSeat : flightSeatSet) {
+        var flightSeats = flightSeatService.getFlightSeatsByFlightId(Long.valueOf(flightId));
+        for (FlightSeatDto flightSeat : flightSeats) {
             flightSeatService.deleteFlightSeatById(flightSeat.getId());
         }
         mockMvc.perform(
@@ -223,7 +217,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         long numberOfFlightSeat = flightSeatRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/flight-seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).toDto (flightSeatBD, flightService)))
+                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).toDto(flightSeatBD, flightService)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

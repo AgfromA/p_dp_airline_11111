@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -103,18 +102,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
 
     @Override
     public ResponseEntity<List<FlightSeatDto>> generateFlightSeats(Long flightId) {
-        if (flightService.getFlightById(flightId).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         log.info("generateFlightSeats: by flightId={}", flightId);
-        var flightSeats = flightSeatService.getFlightSeatsByFlightId(flightId);
-        if (!flightSeats.isEmpty()) {
-            return new ResponseEntity<>(new ArrayList<>(flightSeats), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(flightSeatService.addFlightSeatsByFlightId(flightId)
-                .stream()
-                .map(f -> flightSeatMapper.toDto(f, flightService))
-                .collect(Collectors.toList()),
-                HttpStatus.CREATED);
+        return new ResponseEntity<>(flightSeatService.generateFlightSeats(flightId), HttpStatus.CREATED);
     }
 }
