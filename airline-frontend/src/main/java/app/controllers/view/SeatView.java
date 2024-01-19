@@ -224,14 +224,14 @@ public class SeatView extends VerticalLayout {
             isSearchByAircraftId = false;
             currentPage = 0;
             maxPages = 1;
-            dataSource.add(seatClient.getSeatById(idSearchField.getValue().longValue()).getBody());
+            dataSource.add(seatClient.getSeat(idSearchField.getValue().longValue()).getBody());
             grid.getDataProvider().refreshAll();
         }
     }
 
     private boolean isFoundSeatById(Long id) {
         try {
-            dataSource.add(seatClient.getSeatById(id).getBody());
+            dataSource.add(seatClient.getSeat(id).getBody());
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -313,7 +313,7 @@ public class SeatView extends VerticalLayout {
 
     private boolean isEditedSeat(Long id, SeatDto seatDto) {
         try {
-            seatClient.updateSeatById(id, seatDto);
+            seatClient.updateSeat(id, seatDto);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());
@@ -346,7 +346,7 @@ public class SeatView extends VerticalLayout {
 
     private boolean isDeletedSeat(SeatDto seat) {
         try {
-            seatClient.deleteSeatById(seat.getId());
+            seatClient.deleteSeat(seat.getId());
             return true;
         } catch (FeignException.MethodNotAllowed feignException) {
             log.error(feignException.getMessage());

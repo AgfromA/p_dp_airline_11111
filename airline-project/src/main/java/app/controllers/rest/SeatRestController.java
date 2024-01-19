@@ -3,13 +3,9 @@ package app.controllers.rest;
 import app.controllers.api.rest.SeatRestApi;
 import app.dto.SeatDto;
 
-import app.exceptions.ViolationOfForeignKeyConstraintException;
-import app.mappers.SeatMapper;
-import app.services.AircraftService;
 import app.services.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Pageable;
@@ -23,22 +19,17 @@ import java.util.List;
 public class SeatRestController implements SeatRestApi {
 
     private final SeatService seatService;
-    private final AircraftService aircraftService;
-    private final SeatMapper seatMapper;
 
     @Override
     public ResponseEntity<List<SeatDto>> getAllSeats(Integer page, Integer size) {
-        log.info("getAll: get all Seats");
+        log.info("getAllSeats:");
         if (page == null || size == null) {
-            log.info("getAll: get all list Seats");
             return createUnPagedResponse();
         }
         if (page < 0 || size < 1) {
-            log.info("no correct data");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        var seats = seatService.getAllPagesSeats(page, size);
-
+        var seats = seatService.getAllSeats(page, size);
         return seats.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
@@ -47,96 +38,53 @@ public class SeatRestController implements SeatRestApi {
     private ResponseEntity<List<SeatDto>> createUnPagedResponse() {
         var seats = seatService.getAllSeats();
         if (seats.isEmpty()) {
-            log.info("getAll: Seats not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll: found {} Seats", seats.size());
+            log.info("getAllSeats: count {}", seats.size());
             return new ResponseEntity<>(seats, HttpStatus.OK);
         }
     }
 
     @Override
     public ResponseEntity<List<SeatDto>> getAllSeatsByAircraftId(Pageable pageable, Long aircraftId) {
-        var seats = seatService.getPagesSeatsByAircraftId(aircraftId, pageable);
-        if (!seats.isEmpty()) {
-            log.info("getAllByAircraftId: found {} Seats with aircraftId = {}", seats.getSize(), aircraftId);
-            return new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
+        var seats = seatService.getAllSeatsByAircraftId(aircraftId, pageable);
+        if (seats.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAllByAircraftId: Seats not found with aircraftId = {}", aircraftId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            log.info("getAllSeatsByAircraftId: count {}, aircraftId={}", seats.getContent().size(), aircraftId);
+            return new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
         }
     }
 
     @Override
-    public ResponseEntity<SeatDto> getSeatById(Long id) {
-        var seat = seatService.getSeatById(id);
-        if (seat != null) {
-            log.info("getById: Seat with id = {}", id);
-            return new ResponseEntity<>(seatMapper.toDto(seat), HttpStatus.OK);
-        } else {
-            log.info("getById: Seat not found. id = {}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<SeatDto> getSeat(Long id) {
+        log.info("getSeat: by id={}", id);
+        var seat = seatService.getSeatDto(id);
+        return seat.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<SeatDto> createSeat(SeatDto seatDTO) {
-        if (aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
-            log.error("Aircraft with id = {} not found", seatDTO.getAircraftId());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        log.info("create: Seat saved with id= {}", seatDTO.getId());
-        return ResponseEntity.ok(seatMapper.toDto(seatService.saveSeat(seatDTO)));
+        log.info("createSeat:");
+        return ResponseEntity.ok(seatService.saveSeat(seatDTO));
     }
 
     @Override
-    public ResponseEntity<List<SeatDto>> generateSeatsByAircraftId(Long aircraftId) {
-        if (aircraftService.getAircraftById(aircraftId) == null) {
-            log.error("generate: Aircraft with id = {} not found", aircraftId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        var savedSeats = seatService.generateSeatsDTOByAircraftId(aircraftId);
-
-        if (savedSeats.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            log.info("generate: saved {} new Seats with aircraft.id = {}", savedSeats.size(), aircraftId);
-            return new ResponseEntity<>(savedSeats, HttpStatus.CREATED);
-        }
+    public ResponseEntity<SeatDto> updateSeat(Long id, SeatDto seatDTO) {
+        log.info("updateSeat: by id={}", id);
+        return new ResponseEntity<>(seatService.editSeat(id, seatDTO), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<SeatDto> updateSeatById(Long id, SeatDto seatDTO) {
-        if (seatService.getSeatById(id) == null) {
-            log.error("Seat not found id = {}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if (!id.equals(seatDTO.getId())) {
-            log.error("Changing the id is not allowed");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        if (aircraftService.getAircraftById(seatDTO.getAircraftId()) == null) {
-            log.error("Aircraft with id = {} not found", seatDTO.getAircraftId());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        seatService.editSeatById(id, seatDTO);
-        log.info("update: Seat with id = {} has been edited.", id);
-
-        return new ResponseEntity<>(seatMapper.toDto(seatService.getSeatById(id)), HttpStatus.OK);
+    public ResponseEntity<String> deleteSeat(Long id) {
+        log.info("deleteSeat: by id={}", id);
+        seatService.deleteSeat(id);
+        return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity<String> deleteSeatById(Long id) {
-        try {
-            seatService.deleteSeatById(id);
-            log.info("deleteSeatById: Seat with id={} has been deleted.", id);
-            return new ResponseEntity<>("Deleted", HttpStatus.OK);
-        } catch (ViolationOfForeignKeyConstraintException e) {
-            log.error("deleteSeatById: error of deleting - Seat with id={} is locked by FlightSeat.", id);
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.METHOD_NOT_ALLOWED);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("deleteSeatById: error of deleting - Seat with id={} not found.", id);
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<List<SeatDto>> generateSeats(Long aircraftId) {
+        log.info("generateSeats: by aircraftId={}", aircraftId);
+        return new ResponseEntity<>(seatService.generateSeats(aircraftId), HttpStatus.CREATED);
     }
 }

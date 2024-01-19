@@ -26,7 +26,7 @@ public interface SeatRestApi {
             @ApiResponse(code = 404, message = "Seats not found")
     })
     ResponseEntity<List<SeatDto>> getAllSeats(@PageableDefault()
-                                                      @RequestParam(value = "page", required = false) Integer page,
+                                              @RequestParam(value = "page", required = false) Integer page,
                                               @RequestParam(value = "size", required = false) Integer size);
 
     @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.GET)
@@ -49,7 +49,7 @@ public interface SeatRestApi {
             @ApiResponse(code = 200, message = "seat found"),
             @ApiResponse(code = 404, message = "seat not found")
     })
-    ResponseEntity<SeatDto> getSeatById(
+    ResponseEntity<SeatDto> getSeat(
             @ApiParam(
                     name = "id",
                     value = "Seat.id"
@@ -69,16 +69,6 @@ public interface SeatRestApi {
             )
             @RequestBody @Valid SeatDto seatDto);
 
-    @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.POST)
-    @ApiOperation(value = "Generate Seats for provided Aircraft based on Aircraft's model")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Seats existed"),
-            @ApiResponse(code = 201, message = "Seats generated"),
-            @ApiResponse(code = 400, message = "Seats not created"),
-            @ApiResponse(code = 404, message = "Aircraft with this id not found")
-    })
-    ResponseEntity<List<SeatDto>> generateSeatsByAircraftId(@PathVariable("aircraftId") Long aircraftId);
-
     @RequestMapping(value = "/api/seats/{id}", method = RequestMethod.PATCH)
     @ApiOperation(value = "Edit Seat by \"id\"")
     @ApiResponses(value = {
@@ -86,7 +76,7 @@ public interface SeatRestApi {
             @ApiResponse(code = 400, message = "seat failed to edit"),
             @ApiResponse(code = 404, message = "seat not found")
     })
-    ResponseEntity<SeatDto> updateSeatById(
+    ResponseEntity<SeatDto> updateSeat(
             @ApiParam(
                     name = "id",
                     value = "Seat.id"
@@ -103,12 +93,21 @@ public interface SeatRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "seat deleted"),
             @ApiResponse(code = 404, message = "seat not found"),
-            @ApiResponse(code = 405, message = "seat is locked")
     })
-    ResponseEntity<String> deleteSeatById(
+    ResponseEntity<String> deleteSeat(
             @ApiParam(
                     name = "id",
                     value = "Seat.id"
             )
             @PathVariable("id") Long id);
+
+    @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.POST)
+    @ApiOperation(value = "Generate Seats for provided Aircraft based on Aircraft's model")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Seats existed"),
+            @ApiResponse(code = 201, message = "Seats generated"),
+            @ApiResponse(code = 400, message = "Seats not created"),
+            @ApiResponse(code = 404, message = "Aircraft with this id not found")
+    })
+    ResponseEntity<List<SeatDto>> generateSeats(@PathVariable("aircraftId") Long aircraftId);
 }

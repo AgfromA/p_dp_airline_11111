@@ -54,15 +54,14 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     @Override
     public ResponseEntity<FlightSeatDto> getFlightSeat(Long id) {
         log.info("getFlightSeatById: by id={}", id);
-        var flightSeat = flightSeatService.getFlightSeatDtoById(id);
+        var flightSeat = flightSeatService.getFlightSeatDto(id);
         return flightSeat.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<FlightSeatDto> createFlightSeat(FlightSeatDto flightSeat) {
-        var savedFlightSeat = flightSeatService.createFlightSeat(flightSeat);
         log.info("createFlightSeat:");
-        return ResponseEntity.ok(savedFlightSeat);
+        return ResponseEntity.ok(flightSeatService.createFlightSeat(flightSeat));
     }
 
     @Override

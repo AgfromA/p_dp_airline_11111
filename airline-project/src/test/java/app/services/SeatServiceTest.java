@@ -6,7 +6,6 @@ import app.entities.Category;
 import app.entities.Seat;
 import app.enums.CategoryType;
 import app.mappers.SeatMapper;
-import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
 import org.junit.Test;
 import org.springframework.data.domain.PageImpl;
@@ -30,13 +29,11 @@ public class SeatServiceTest {
     private final CategoryService categoryService = mock(CategoryService.class);
     private final AircraftService aircraftService = mock(AircraftService.class);
     private final SeatMapper seatMapper = mock(SeatMapper.class);
-    private final FlightSeatRepository flightSeatRepository = mock(FlightSeatRepository.class);
 
     private final SeatService seatService = new SeatService(
             seatRepository,
             categoryService,
             aircraftService,
-            flightSeatRepository,
             seatMapper
     );
 
@@ -86,7 +83,7 @@ public class SeatServiceTest {
                     return seatDto;
                 });
 
-        List<SeatDto> seatDtos = seatService.generateSeatsDTOByAircraftId(AIRCRAFT_TEST_ID);
+        List<SeatDto> seatDtos = seatService.generateSeats(AIRCRAFT_TEST_ID);
 
         long businessSeatsCount = seatDtos.stream()
                 .map(seatDto -> seatDto.getCategory())

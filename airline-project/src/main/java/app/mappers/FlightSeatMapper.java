@@ -26,7 +26,7 @@ public interface FlightSeatMapper {
     FlightSeatDto toDto(FlightSeat flightSeat, @Context FlightService flightService);
 
     @Mapping(target = "flight", expression = "java(flightService.getFlightById(flightSeatDto.getFlightId()).get())")
-    @Mapping(target = "seat", expression = "java(seatService.getSeatById(flightSeatDto.getSeat().getId()))")
+    @Mapping(target = "seat", expression = "java(seatService.getSeat(flightSeatDto.getSeat().getId()))")
     FlightSeat toEntity(FlightSeatDto flightSeatDto,
                         @Context FlightService flightService,
                         @Context SeatService seatService);

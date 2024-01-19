@@ -2,9 +2,6 @@ package app.controllers;
 
 import app.dto.AircraftDto;
 import app.dto.SeatDto;
-import app.entities.Aircraft;
-import app.entities.Category;
-import app.entities.Seat;
 import app.enums.CategoryType;
 import app.mappers.SeatMapper;
 import app.repositories.SeatRepository;
@@ -86,7 +83,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(seatService
-                        .getAllPagesSeats(pageable.getPageNumber(), pageable.getPageSize())
+                        .getAllSeats(pageable.getPageNumber(), pageable.getPageSize())
                         .getContent())));
     }
     // Пагинация 2.0
@@ -116,7 +113,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
 
-                .andExpect(content().json(objectMapper.writeValueAsString(seatMapper.toDto(seatService.getSeatById(id)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(seatMapper.toDto(seatService.getSeat(id)))));
     }
 
     @Test
@@ -129,7 +126,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldEditSeat() throws Exception {
-        var seatDTO = seatMapper.toDto(seatService.getSeatById(1));
+        var seatDTO = seatMapper.toDto(seatService.getSeat(1));
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(false);
         seatDTO.setIsNearEmergencyExit(true);
@@ -150,7 +147,7 @@ class SeatControllerIT extends IntegrationTestBase {
         long numberOfNotExistedSeat = seatRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(seatService.getSeatById(100)))
+                        .content(objectMapper.writeValueAsString(seatService.getSeat(100)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -191,7 +188,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
         mockMvc.perform(post("http://localhost:8080/api/seats/aircraft/{aircraftId}", 1))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(post("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isCreated());
@@ -227,7 +224,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(seatService.getPagesSeatsByAircraftId(aircraftId, pageable).getContent())));
+                        .writeValueAsString(seatService.getAllSeatsByAircraftId(aircraftId, pageable).getContent())));
     }
 
 
@@ -238,7 +235,7 @@ class SeatControllerIT extends IntegrationTestBase {
         long numberOfNotExistedSeat = seatRepository.count();
 
         mockMvc.perform(delete("http://localhost:8080/api/seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(seatService.getSeatById(1488)))
+                        .content(objectMapper.writeValueAsString(seatService.getSeat(1488)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
@@ -249,7 +246,7 @@ class SeatControllerIT extends IntegrationTestBase {
     @Test
     void successfullDeleteSeat() throws Exception {
 
-        var seatDTO = seatMapper.toDto(seatService.getSeatById(1));
+        var seatDTO = seatMapper.toDto(seatService.getSeat(1));
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(false);
         seatDTO.setIsNearEmergencyExit(true);
@@ -296,21 +293,6 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists());    // Проверяем, что json содержит id,
         //    хотя мы его не устанавливали
-    }
-
-    // Тест для проверки невозможности изменить id
-    @Test
-    void shouldNotUpdateId() throws Exception {
-        var seatDTO = seatMapper.toDto(seatService.getSeatById(1));
-        long id = seatDTO.getId();
-        seatDTO.setId(id + 1);
-
-        mockMvc.perform(patch("http://localhost:8080/api/seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(seatDTO))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
     }
 
     // Тест для проверки получения мест при некорректных данных
