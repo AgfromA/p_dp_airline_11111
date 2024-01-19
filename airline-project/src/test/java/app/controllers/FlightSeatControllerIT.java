@@ -210,7 +210,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     void shouldEditFlightSeatById() throws Exception {
         FlightSeat flightSeat = createFlightSeat();
         Long id = flightSeat.getId();
-        var flightSeatBD = flightSeatService.getFlightSeatById(id).get();
+        var flightSeatBD = flightSeatService.getFlightSeat(id).get();
         flightSeatBD.setFare(100);
         flightSeatBD.setIsSold(false);
         flightSeatBD.setIsRegistered(false);

@@ -82,7 +82,7 @@ class BookingMapperTest {
         bookingDTO.setFlightSeatId(flightSeatId);
         bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
 
-        when(flightSeatServiceMock.getFlightSeatById(flightSeatId)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(flightSeatId)).thenReturn(Optional.of(flightSeat));
 
         Booking booking = bookingMapper.toEntity(bookingDTO, passengerServiceMock, flightSeatServiceMock);
 
@@ -170,11 +170,11 @@ class BookingMapperTest {
         FlightSeat flightSeat1 = new FlightSeat();
         Long flightSeatId1 = 2L;
         flightSeat1.setId(flightSeatId1);
-        when(flightSeatServiceMock.getFlightSeatById(flightSeatId1)).thenReturn(Optional.of(flightSeat1));
+        when(flightSeatServiceMock.getFlightSeat(flightSeatId1)).thenReturn(Optional.of(flightSeat1));
         FlightSeat flightSeat2 = new FlightSeat();
         Long flightSeatId2 = 4L;
         flightSeat2.setId(flightSeatId2);
-        when(flightSeatServiceMock.getFlightSeatById(flightSeatId2)).thenReturn(Optional.of(flightSeat2));
+        when(flightSeatServiceMock.getFlightSeat(flightSeatId2)).thenReturn(Optional.of(flightSeat2));
 
         LocalDateTime createTime = LocalDateTime.MIN;
 

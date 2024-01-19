@@ -31,7 +31,7 @@ public interface TicketMapper {
 
     @Mapping(target = "passenger", expression = "java(passengerService.getPassengerById(ticketDto.getPassengerId()).get())")
     @Mapping(target = "flight", expression = "java(flightService.getFlightById(ticketDto.getFlightId()).get())")
-    @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeatById(ticketDto.getFlightSeatId()).get())")
+    @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeat(ticketDto.getFlightSeatId()).get())")
     Ticket toEntity(TicketDto ticketDto,
                     @Context PassengerService passengerService,
                     @Context FlightService flightService,

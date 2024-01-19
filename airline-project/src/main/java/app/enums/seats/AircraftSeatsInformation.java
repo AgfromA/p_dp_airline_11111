@@ -5,9 +5,10 @@ import app.enums.seats.interfaces.AircraftSeats;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+// FIXME превратить всю эту бадягу с енамом в нормальную сущность, обозвать AircraftModel
 @Getter
 @RequiredArgsConstructor
-public enum SeatsNumbersByAircraft {
+public enum AircraftSeatsInformation {
 
     AIRBUS_A320("Airbus A320", 158, 8, AirbusA320Seats.values()),
     AIRBUS_A320_NEO("Airbus A320 Neo", 164, 8, AirbusA320NeoSeats.values()),
