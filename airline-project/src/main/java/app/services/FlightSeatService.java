@@ -41,23 +41,17 @@ public class FlightSeatService {
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
-    public Page<FlightSeatDto> getFreeSeatsById(Pageable pageable, Long flightId) {
-        checkIfFlightExists(flightId);
-        return flightSeatRepository
-                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable)
-                .map(entity -> flightSeatMapper.toDto(entity, flightService));
-    }
-
-    public Page<FlightSeatDto> getNotSoldFlightSeatsById(Long flightId, Pageable pageable) {
-        checkIfFlightExists(flightId);
-        return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(flightId, pageable)
-                .map(entity -> flightSeatMapper.toDto(entity, flightService));
-    }
-
-    public Page<FlightSeatDto> findNotRegisteredFlightSeatsById(Long flightId, Pageable pageable) {
-        checkIfFlightExists(flightId);
-        return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(flightId, pageable)
-                .map(entity -> flightSeatMapper.toDto(entity, flightService));
+    public List<FlightSeatDto> getAllFlightSeatsFiltered(Integer page, Integer size, Long flightId, Boolean isSold, Boolean isRegistered) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (Boolean.FALSE.equals(isSold) && Boolean.FALSE.equals(isRegistered)) {
+            return getFreeSeatsById(pageable, flightId).getContent();
+        } else if (Boolean.FALSE.equals(isSold)) {
+            return getNotSoldFlightSeatsById(flightId, pageable).getContent();
+        } else if (Boolean.FALSE.equals(isRegistered)) {
+            return findNotRegisteredFlightSeatsById(flightId, pageable).getContent();
+        } else {
+            return getFlightSeatsByFlightId(flightId, pageable).getContent();
+        }
     }
 
     // FIXME удалить, оставить только getFlightSeatDtoById
@@ -73,12 +67,6 @@ public class FlightSeatService {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId).stream()
                 .map(flightSeat -> flightSeatMapper.toDto(flightSeat, flightService))
                 .collect(Collectors.toList());
-    }
-
-    public Page<FlightSeatDto> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
-        checkIfFlightExists(flightId);
-        return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
-                .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
     @Transactional
@@ -175,6 +163,31 @@ public class FlightSeatService {
             fare += fare * (distance / 10000);
         }
         return Math.round(fare / 10) * 10;
+    }
+
+    private Page<FlightSeatDto> getFreeSeatsById(Pageable pageable, Long flightId) {
+        checkIfFlightExists(flightId);
+        return flightSeatRepository
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable)
+                .map(entity -> flightSeatMapper.toDto(entity, flightService));
+    }
+
+    private Page<FlightSeatDto> getNotSoldFlightSeatsById(Long flightId, Pageable pageable) {
+        checkIfFlightExists(flightId);
+        return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(flightId, pageable)
+                .map(entity -> flightSeatMapper.toDto(entity, flightService));
+    }
+
+    private Page<FlightSeatDto> findNotRegisteredFlightSeatsById(Long flightId, Pageable pageable) {
+        checkIfFlightExists(flightId);
+        return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(flightId, pageable)
+                .map(entity -> flightSeatMapper.toDto(entity, flightService));
+    }
+
+    private Page<FlightSeatDto> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
+        checkIfFlightExists(flightId);
+        return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
+                .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
     private Flight checkIfFlightExists(Long flightId) {

@@ -5,8 +5,6 @@ import app.dto.FlightSeatDto;
 import app.services.FlightSeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,24 +46,9 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     @Override
     public ResponseEntity<List<FlightSeatDto>> getAllFlightSeatsFiltered(
             Integer page, Integer size, Long flightId, Boolean isSold, Boolean isRegistered) {
-        Pageable pageable = PageRequest.of(page, size);
-        List<FlightSeatDto> result = null;
-        if (Boolean.FALSE.equals(isSold) && Boolean.FALSE.equals(isRegistered)) {
-            log.info("getAllFlightSeatsFiltered: not sold and not registered by flightId={}", flightId);
-            result = flightSeatService.getFreeSeatsById(pageable, flightId).getContent();
-        } else if (Boolean.FALSE.equals(isSold)) {
-            log.info("getAllFlightSeatsFiltered: not sold by flightId={}", flightId);
-            result = flightSeatService.getNotSoldFlightSeatsById(flightId, pageable).getContent();
-        } else if (Boolean.FALSE.equals(isRegistered)) {
-            log.info("getAllFlightSeatsFiltered: not registered by flightId={}", flightId);
-            result = flightSeatService.findNotRegisteredFlightSeatsById(flightId, pageable).getContent();
-        } else {
-            log.info("getAllFlightSeatsFiltered: by flightId={}", flightId);
-            result = flightSeatService.getFlightSeatsByFlightId(flightId, pageable).getContent();
-        }
-        return (result.isEmpty()) ?
-                ResponseEntity.notFound().build() :
-                ResponseEntity.ok(result);
+        log.info("getAllFlightSeatsFiltered: flightId={}, isSold={}, isRegistered={}", flightId, isSold, isRegistered);
+        var flightSeats = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
+        return (flightSeats.isEmpty()) ? ResponseEntity.notFound().build() : ResponseEntity.ok(flightSeats);
     }
 
     @Override
