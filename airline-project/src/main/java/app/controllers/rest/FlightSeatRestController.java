@@ -2,9 +2,7 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.FlightSeatRestApi;
 import app.dto.FlightSeatDto;
-import app.mappers.FlightSeatMapper;
 import app.services.FlightSeatService;
-import app.services.FlightService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +19,6 @@ import java.util.*;
 public class FlightSeatRestController implements FlightSeatRestApi {
 
     private final FlightSeatService flightSeatService;
-    private final FlightService flightService;
-    private final FlightSeatMapper flightSeatMapper;
 
     @Override
     public ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(Integer page, Integer size) {
@@ -75,9 +71,8 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     @Override
     public ResponseEntity<FlightSeatDto> getFlightSeat(Long id) {
         log.info("getFlightSeatById: by id={}", id);
-        return flightSeatService.getFlightSeatById(id)
-                .map(flightSeat -> ResponseEntity.ok(flightSeatMapper.toDto(flightSeat, flightService)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        var flightSeat = flightSeatService.getFlightSeatDtoById(id);
+        return flightSeat.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override

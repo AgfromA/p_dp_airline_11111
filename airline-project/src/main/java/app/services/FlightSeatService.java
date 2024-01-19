@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static app.utils.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 public class FlightSeatService {
@@ -58,8 +60,13 @@ public class FlightSeatService {
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
+    // FIXME удалить, оставить только getFlightSeatDtoById
     public Optional<FlightSeat> getFlightSeatById(Long id) {
         return flightSeatRepository.findById(id);
+    }
+
+    public Optional<FlightSeatDto> getFlightSeatDtoById(Long id) {
+        return flightSeatRepository.findById(id).map(flightSeat -> flightSeatMapper.toDto(flightSeat, flightService));
     }
 
     public List<FlightSeatDto> getFlightSeatsByFlightId(Long flightId) {
@@ -135,51 +142,35 @@ public class FlightSeatService {
         if (!flightSeats.isEmpty()) {
             return flightSeats;
         }
-
         List<FlightSeat> newFlightSeats = new ArrayList<>();
         var seats = seatRepository.findByAircraftId(flight.getAircraft().getId());
         for (Seat seat : seats) {
-            var flightSeat = new FlightSeat();
-            flightSeat.setSeat(seat);
-            flightSeat.setFlight(flight);
-            flightSeat.setIsBooked(false);
-            flightSeat.setIsSold(false);
-            flightSeat.setIsRegistered(false);
-            flightSeat.setFare(generateFareForFlightSeat(seat, flight));
-            newFlightSeats.add(flightSeat);
+            newFlightSeats.add(generateFlightSeat(seat, flight));
         }
         flightSeatRepository.saveAll(newFlightSeats);
         return flightSeatMapper.toDtoList(newFlightSeats, flightService);
     }
 
+    private FlightSeat generateFlightSeat(Seat seat, Flight flight) {
+        var flightSeat = new FlightSeat();
+        flightSeat.setSeat(seat);
+        flightSeat.setFlight(flight);
+        flightSeat.setIsBooked(false);
+        flightSeat.setIsSold(false);
+        flightSeat.setIsRegistered(false);
+        flightSeat.setFare(generateFareForFlightSeat(seat, flight));
+        return flightSeat;
+    }
+
     private int generateFareForFlightSeat(Seat seat, Flight flight) {
-        int baseFare = 5000;
-        float emergencyExitRatio;
-        float categoryRatio;
-        float lockedBackRatio;
-        if (seat.getIsNearEmergencyExit()) {
-            emergencyExitRatio = 1.3f;
-        } else emergencyExitRatio = 1f;
-        if (seat.getIsLockedBack()) {
-            lockedBackRatio = 0.8f;
-        } else lockedBackRatio = 1f;
-        switch (seat.getCategory().getCategoryType()) {
-            case PREMIUM_ECONOMY:
-                categoryRatio = 1.2f;
-                break;
-            case BUSINESS:
-                categoryRatio = 2f;
-                break;
-            case FIRST:
-                categoryRatio = 2.5f;
-                break;
-            default:
-                categoryRatio = 1f;
+        float fare = BASE_FLIGHT_SEAT_FARE * seat.getCategory().getCategoryType().getCategoryRatio();
+        if (Boolean.TRUE.equals(seat.getIsNearEmergencyExit())) {
+            fare *= EMERGENCY_EXIT_SEAT_PRICE_RATIO;
         }
-
-        float fare = baseFare * emergencyExitRatio * categoryRatio * lockedBackRatio;
+        if (Boolean.TRUE.equals(seat.getIsLockedBack())) {
+            fare *= LOCK_BACK_SEAT_PRICE_RATIO;
+        }
         float distance = flightService.getDistance(flight);
-
         if (distance > 1000) {
             fare += fare * (distance / 10000);
         }

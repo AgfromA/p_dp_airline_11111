@@ -120,10 +120,10 @@ public class FlightService {
     public Long getDistance(Flight flight) {
         Geodesic geodesic = Geodesic.WGS84;
         GeodesicData calculate = geodesic.Inverse(
-                parseLatitude(flight.getFrom().getAirportCode())
-                , parseLongitude(flight.getFrom().getAirportCode())
-                , parseLatitude(flight.getTo().getAirportCode())
-                , parseLongitude(flight.getTo().getAirportCode())
+                parseLatitude(flight.getFrom().getAirportCode()),
+                parseLongitude(flight.getFrom().getAirportCode()),
+                parseLatitude(flight.getTo().getAirportCode()),
+                parseLongitude(flight.getTo().getAirportCode())
         );
         return (long) (calculate.s12 / 1000);
     }
