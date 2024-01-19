@@ -54,10 +54,10 @@ class TicketMapperTest {
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3001L);
         Seat seat = new Seat();
-        seat.setId(42);
+        seat.setId(42L);
         seat.setSeatNumber("42L");
         flightSeat.setSeat(seat);
-        when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(3001L)).thenReturn(Optional.of(flightSeat));
 
         Ticket ticket = new Ticket();
         ticket.setId(1L);
@@ -112,10 +112,10 @@ class TicketMapperTest {
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3001L);
         Seat seat = new Seat();
-        seat.setId(42);
+        seat.setId(42L);
         seat.setSeatNumber("42L");
         flightSeat.setSeat(seat);
-        when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(3001L)).thenReturn(Optional.of(flightSeat));
 
         TicketDto ticketDTO = new TicketDto();
         ticketDTO.setId(1L);
@@ -181,10 +181,10 @@ class TicketMapperTest {
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3001L);
         Seat seat = new Seat();
-        seat.setId(42);
+        seat.setId(42L);
         seat.setSeatNumber("42L");
         flightSeat.setSeat(seat);
-        when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(3001L)).thenReturn(Optional.of(flightSeat));
 
         Ticket ticket = new Ticket();
         ticket.setId(1L);
@@ -242,10 +242,10 @@ class TicketMapperTest {
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3001L);
         Seat seat = new Seat();
-        seat.setId(42);
+        seat.setId(42L);
         seat.setSeatNumber("42L");
         flightSeat.setSeat(seat);
-        when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(3001L)).thenReturn(Optional.of(flightSeat));
 
         TicketDto ticketDTO = new TicketDto();
         ticketDTO.setId(1L);

@@ -75,10 +75,6 @@ public class AircraftService {
         return aircraftRepository.findById(id).orElse(null);
     }
 
-    public Aircraft getAircraftByAircraftNumber(String aircraftNumber) {
-        return aircraftRepository.findByAircraftNumber(aircraftNumber);
-    }
-
     @Transactional
     public void deleteAircraftById(Long id) {
         List<Flight> flightSet = flightRepository.findByAircraft_Id(id);

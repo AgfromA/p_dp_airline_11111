@@ -54,12 +54,12 @@ public class FlightSeatService {
         }
     }
 
-    // FIXME удалить, оставить только getFlightSeatDtoById
-    public Optional<FlightSeat> getFlightSeatById(Long id) {
+    // FIXME удалить, оставить только getFlightSeatDto
+    public Optional<FlightSeat> getFlightSeat(Long id) {
         return flightSeatRepository.findById(id);
     }
 
-    public Optional<FlightSeatDto> getFlightSeatDtoById(Long id) {
+    public Optional<FlightSeatDto> getFlightSeatDto(Long id) {
         return flightSeatRepository.findById(id).map(flightSeat -> flightSeatMapper.toDto(flightSeat, flightService));
     }
 
@@ -75,7 +75,7 @@ public class FlightSeatService {
         var flight = checkIfFlightExists(flightSeatDto.getFlightId());
         flightSeat.setFlight(flight);
 
-        var seat = seatService.getSeatById(flightSeatDto.getSeat().getId());
+        var seat = seatService.getSeat(flightSeatDto.getSeat().getId());
         if (seat == null) {
             throw new EntityNotFoundException("Operation was not finished because Seat was not found with id = " + flightSeatDto.getFlightId());
         }
