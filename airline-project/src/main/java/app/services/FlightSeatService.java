@@ -6,12 +6,12 @@ import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.entities.Seat;
 import app.enums.CategoryType;
+import app.exceptions.EntityNotFoundException;
 import app.mappers.FlightSeatMapper;
 import app.mappers.SeatMapper;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
-import app.utils.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,14 +34,12 @@ public class FlightSeatService {
     private final FlightSeatMapper flightSeatMapper;
     private final SeatMapper seatMapper;
 
-    @Loggable
     public Set<FlightSeat> getAllFlightSeats() {
         Set<FlightSeat> flightSeatSet = new HashSet<>();
         flightSeatRepository.findAll().forEach(flightSeatSet::add);
         return flightSeatSet;
     }
 
-    @Loggable
     public List<FlightSeatDto> getAllListFlightSeats() {
         List<FlightSeat> flightSeatList = new ArrayList<>();
         flightSeatRepository.findAll().forEach(flightSeatList::add);
@@ -49,9 +47,9 @@ public class FlightSeatService {
     }
 
     @Transactional(readOnly = true)
-    @Loggable
-    public Page<FlightSeatDto> getFreeSeatsById(Pageable pageable, Long id) {
-        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id, pageable)
+    public Page<FlightSeatDto> getFreeSeatsById(Pageable pageable, Long flightId) {
+        return flightSeatRepository
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
@@ -65,7 +63,6 @@ public class FlightSeatService {
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public Set<FlightSeatDto> getFlightSeatsByFlightId(Long flightId) {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId).stream()
                 .map(flightSeat -> flightSeatMapper.toDto(flightSeat, flightService))
@@ -83,7 +80,6 @@ public class FlightSeatService {
     }
 
     @Transactional
-    @Loggable
     public Set<FlightSeat> addFlightSeatsByFlightId(Long flightId) {
         Set<FlightSeat> newFlightSeats = new HashSet<>();
         var flight = flightService.getFlightById(flightId).get();
@@ -105,14 +101,12 @@ public class FlightSeatService {
     }
 
     @Transactional
-    @Loggable
     public Set<FlightSeat> addFlightSeatsByFlightNumber(String flightNumber) {
         Set<FlightSeat> seatsForAdd = new HashSet<>();
         var allFlightSeats = getAllFlightSeats();
         var flight = flightRepository.getByCode(flightNumber);
         if (flight != null) {
             var seatsAircraft = flight.getAircraft().getSeatSet();
-
             for (Seat s : seatsAircraft) {
                 var flightSeat = new FlightSeat();
                 flightSeat.setSeat(s);
@@ -125,68 +119,60 @@ public class FlightSeatService {
                 flightSeat.setIsRegistered(false);
                 seatsForAdd.add(flightSeat);
             }
-            // todo коректнее сделать так
-            //      flightSeatRepository.saveAll(seatsForAdd);
-            for (FlightSeat f : seatsForAdd) {
-                f = flightSeatRepository.save(f);
-            }
+            flightSeatRepository.saveAll(seatsForAdd);
         }
         return seatsForAdd;
     }
 
     @Transactional
-    @Loggable
     public FlightSeat saveFlightSeat(FlightSeat flightSeat) {
         return flightSeatRepository.save(flightSeat);
     }
 
     @Transactional
-    @Loggable
     public FlightSeatDto saveFlightSeat(FlightSeatDto flightSeatDto) {
         var flightSeat = flightSeatMapper.toEntity(flightSeatDto, flightService, seatService);
-        if (flightSeat.getId() == null) {
-            return flightSeatMapper.toDto(flightSeatRepository.save(flightSeat), flightService);
-        } else {
-            var oldFlightSeat = getFlightSeatById(flightSeat.getId());
-            if (oldFlightSeat.isPresent() && oldFlightSeat.get().getSeat() != null) {
-                flightSeat.setSeat(oldFlightSeat.get().getSeat());
-            }
-            return flightSeatMapper.toDto(flightSeatRepository.save(flightSeat), flightService);
-        }
-    }
 
-    @Loggable
-    @Transactional
-    public FlightSeatDto editFlightSeat(Long id, FlightSeatDto flightSeatDto) {
-        var flightSeat = flightSeatMapper.toEntity(flightSeatDto, flightService, seatService);
-        var targetFlightSeat = flightSeatRepository.findById(id).orElse(null);
-        flightSeat.setId(id);
+        var flight = flightService.getFlightById(flightSeatDto.getFlightId()).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Flight was not found with id = " + flightSeatDto.getFlightId())
+        );
+        flightSeat.setFlight(flight);
 
-        if (flightSeat.getFare() == null) {
-            flightSeat.setFare(targetFlightSeat.getFare());
+        var seat = seatService.getSeatById(flightSeatDto.getSeat().getId());
+        if (seat == null) {
+            throw new EntityNotFoundException("Operation was not finished because Seat was not found with id = " + flightSeatDto.getFlightId());
         }
-        if (flightSeat.getIsSold() == null) {
-            flightSeat.setIsSold(targetFlightSeat.getIsSold());
-        }
-        if (flightSeat.getIsBooked() == null) {
-            flightSeat.setIsBooked(targetFlightSeat.getIsBooked());
-        }
-        if (flightSeat.getFlight() == null) {
-            flightSeat.setFlight(targetFlightSeat.getFlight());
-        }
-        if (flightSeat.getSeat() == null) {
-            flightSeat.setSeat(targetFlightSeat.getSeat());
-        }
+        flightSeat.setSeat(seat);
+
+        flightSeat.setId(null);
         return flightSeatMapper.toDto(flightSeatRepository.save(flightSeat), flightService);
     }
 
-    @Loggable
+    @Transactional
+    public FlightSeatDto editFlightSeat(Long id, FlightSeatDto flightSeatDto) {
+        var existingFlightSeat = flightSeatRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = " + id)
+        );
+        if (flightSeatDto.getFare() == null) {
+            existingFlightSeat.setFare(flightSeatDto.getFare());
+        }
+        if (flightSeatDto.getIsSold() == null) {
+            existingFlightSeat.setIsSold(flightSeatDto.getIsSold());
+        }
+        if (flightSeatDto.getIsBooked() == null) {
+            existingFlightSeat.setIsBooked(flightSeatDto.getIsBooked());
+        }
+        if (flightSeatDto.getIsRegistered() == null) {
+            existingFlightSeat.setIsRegistered(flightSeatDto.getIsRegistered());
+        }
+        return flightSeatMapper.toDto(flightSeatRepository.save(existingFlightSeat), flightService);
+    }
+
     public int getNumberOfFreeSeatOnFlight(Flight flight) {
         return flightSeatRepository
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flight.getId()).size();
     }
 
-    @Loggable
     public Set<Seat> getSetOfFreeSeatsOnFlightByFlightId(Long id) {
         var targetFlight = flightRepository.getById(id);
         var setOfSeat = targetFlight.getAircraft().getSeatSet();
@@ -203,22 +189,18 @@ public class FlightSeatService {
         return seatRepository.findAll().stream().map(seatMapper::toDto).collect(Collectors.toList());
     }
 
-    @Loggable
     public Set<FlightSeat> getFlightSeatsBySeat(Seat seat) {
         return flightSeatRepository.findFlightSeatsBySeat(seat);
     }
 
-    @Loggable
     public void deleteFlightSeatById(Long id) {
         flightSeatRepository.deleteById(id);
     }
 
-    @Loggable
     public Set<FlightSeat> getNotSoldFlightSeatsById(Long id) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(id);
     }
 
-    @Loggable
     public Page<FlightSeatDto> findNotRegisteredFlightSeatsById(Long id, Pageable pageable) {
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(id, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));

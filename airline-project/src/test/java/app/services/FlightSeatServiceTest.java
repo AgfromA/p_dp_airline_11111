@@ -5,7 +5,6 @@ import app.enums.Airport;
 import app.enums.CategoryType;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
-import app.services.FlightService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -96,7 +95,7 @@ class FlightSeatServiceTest {
 
         var result = flightSeatService.addFlightSeatsByFlightNumber(flightNumber);
 
-        Mockito.verify(flightSeatRepository, Mockito.times(8)).save(any(FlightSeat.class));
+        Mockito.verify(flightSeatRepository, Mockito.times(1)).saveAll(any());
 
         assertEquals(8, result.size());
 

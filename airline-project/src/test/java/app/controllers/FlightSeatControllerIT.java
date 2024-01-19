@@ -175,7 +175,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     void shouldGetFreeSeats() throws Exception {
         FlightSeat flightSeat = createFlightSeat();
         var flightId = flightSeat.getFlight().getId().toString();
-        mockMvc.perform(get("http://localhost:8080/api/flight-seats/param")
+        mockMvc.perform(get("http://localhost:8080/api/flight-seats/filtered")
                         .param("flightId", flightId)
                         .param("isSold", "false")
                         .param("isRegistered", "false"))
@@ -188,7 +188,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     void shouldGetNonSoldFlightSeatsByFlightId() throws Exception {
         FlightSeat flightSeat = createFlightSeat();
         var flightId = flightSeat.getFlight().getId().toString();
-        mockMvc.perform(get("http://localhost:8080/api/flight-seats/param")
+        mockMvc.perform(get("http://localhost:8080/api/flight-seats/filtered")
                         .param("flightId", flightId)
                         .param("isSold", "false")
                         .param("isRegistered", "true"))
@@ -249,7 +249,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         String flightId = createFlightSeat().getFlight().getId().toString();
         String isSold = "true";
         String isRegistered = "true";
-        mockMvc.perform(get("http://localhost:8080/api/flight-seats/param?flightId={flightId}&isSold={isSold}&isRegistered={isRegistered}", flightId, isSold, isRegistered)
+        mockMvc.perform(get("http://localhost:8080/api/flight-seats/filtered?flightId={flightId}&isSold={isSold}&isRegistered={isRegistered}", flightId, isSold, isRegistered)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
