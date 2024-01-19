@@ -40,6 +40,8 @@ public class PassengerService {
 
     @Transactional
     public Passenger savePassenger(PassengerDto passengerDTO) {
+        System.out.println(passengerDTO);
+        passengerDTO.setId(0L);
         var passenger = passengerMapper.toEntity(passengerDTO);
         return passengerRepository.save(passenger);
     }
@@ -51,13 +53,13 @@ public class PassengerService {
     @Transactional
     public Passenger updatePassengerById(Long id, PassengerDto passengerDTO) {
         var passenger = passengerMapper.toEntity(passengerDTO);
-        var editPassenger = new Passenger();
-        editPassenger.setFirstName(passenger.getFirstName());
-        editPassenger.setLastName(passenger.getLastName());
-        editPassenger.setBirthDate(passenger.getBirthDate());
-        editPassenger.setPhoneNumber(passenger.getPhoneNumber());
-        editPassenger.setEmail(passenger.getEmail());
-        editPassenger.setPassport(passenger.getPassport());
+        var editPassenger = getPassengerById(id);
+//        editPassenger.setFirstName(passenger.getFirstName());
+//        editPassenger.setLastName(passenger.getLastName());
+//        editPassenger.setBirthDate(passenger.getBirthDate());
+//        editPassenger.setPhoneNumber(passenger.getPhoneNumber());
+//        editPassenger.setEmail(passenger.getEmail());
+//        editPassenger.setPassport(passenger.getPassport());
 
         return passengerRepository.save(passenger);
     }

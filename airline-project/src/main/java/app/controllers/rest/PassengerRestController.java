@@ -79,6 +79,7 @@ public class PassengerRestController implements PassengerRestApi {
 
     @Override
     public ResponseEntity<PassengerDto> create(PassengerDto passengerDTO) {
+        System.out.println("Зашли в сохранение "+ passengerDTO);
         if (passengerDTO.getId() != null) {
             log.error("create: passenger already exist in database");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -91,6 +92,7 @@ public class PassengerRestController implements PassengerRestApi {
 
     @Override
     public ResponseEntity<PassengerDto> updateById(Long id, PassengerDto passengerDTO) {
+        System.out.println("Controller "+passengerDTO);
         passengerDTO.setId(id);
         log.info("update: update Passenger with id = {}", id);
         return new ResponseEntity<>(

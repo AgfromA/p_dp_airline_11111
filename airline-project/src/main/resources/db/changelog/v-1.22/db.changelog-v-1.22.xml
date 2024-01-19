@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="01-create-sequence-table-passenger.sql" relativeToChangelogFile="true"/>
+    <changeSet id="1.22.1" author="anton-luboshnikov">
+        <tagDatabase tag="01-create-sequence-table-passenger"/>
+    </changeSet>
+    <include file="02-filling-table-passengers.sql" relativeToChangelogFile="true"/>
+    <changeSet id="1.22.5" author="anton-luboshnikov">
+        <tagDatabase tag="05-filling-table-passengers"/>
+        </changeSet>
+        <include file="03-change-values-table-booking.sql" relativeToChangelogFile="true"/>
+        <changeSet id="1.22.3" author="anton-luboshnikov">
+            <tagDatabase tag="03-delete-values-table-booking"/>
+        </changeSet>
+<!--    <include file="02-delete-values-table-tickets.sql" relativeToChangelogFile="true"/>-->
+<!--    <changeSet id="1.22.2" author="anton-luboshnikov">-->
+<!--        <tagDatabase tag="02-delete-values-table-tickets"/>-->
+<!--    </changeSet>-->
+
+
+
+<!--    <include file="04-delete-values-table-passengers.sql" relativeToChangelogFile="true"/>-->
+<!--    <changeSet id="1.22.4" author="anton-luboshnikov">-->
+<!--        <tagDatabase tag="04-delete-values-table-passengers"/>-->
+<!--    </changeSet>-->
+
+
+
+<!--    <include file="06-filling-table-booking.sql" relativeToChangelogFile="true"/>-->
+<!--    <changeSet id="1.22.6" author="anton-luboshnikov">-->
+<!--        <tagDatabase tag="06-filling-table-booking"/>-->
+<!--    </changeSet>-->
+
+<!--    <include file="07-filling-table-tickets.sql" relativeToChangelogFile="true"/>-->
+<!--    <changeSet id="1.22.7" author="anton-luboshnikov">-->
+<!--        <tagDatabase tag="07-filling-table-tickets"/>-->
+<!--    </changeSet>-->
+
+
+
+</databaseChangeLog>
+
