@@ -242,6 +242,9 @@ public class FlightSeatService {
     public List<FlightSeat> findByFlightId(Long id) {
         return flightSeatRepository.findByFlightId(id);
     }
+    public Set<FlightSeat> getSetFlightSeatsByFlightId(Long id) {
+        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id);
+    }
 
     public int generateFareForFlightSeat(Seat seat, Flight flight) {
 

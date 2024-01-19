@@ -5,19 +5,16 @@ import app.dto.FlightDto;
 import app.dto.FlightSeatDto;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.html.H3;
-
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -102,12 +99,10 @@ public class SearchResultView extends VerticalLayout {
                         , searchForm.getSearch().getReturnDate(), searchForm.getSearch().getNumberOfPassengers());
                 if (!(response.getStatusCode() == HttpStatus.NO_CONTENT)) {
                     searchResult = response.getBody();
-                    if (!searchResult.getDepartFlights().isEmpty()) {
-                        departFlights.addAll(searchResult.getDepartFlights());
+                    if (!searchResult.getFlights().isEmpty()) {
                         noDepartFlightsMessage.setVisible(false);
                     }
-                    if (!searchResult.getReturnFlights().isEmpty()) {
-                        returnFlights.addAll(searchResult.getReturnFlights());
+                    if (!searchResult.getFlights().isEmpty()) {
                         noReturnFlightsMessage.setVisible(false);
                     }
                 }
