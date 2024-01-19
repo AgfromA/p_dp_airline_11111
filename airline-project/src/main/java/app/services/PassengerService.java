@@ -2,6 +2,7 @@ package app.services;
 
 import app.dto.PassengerDto;
 import app.entities.Passenger;
+import app.exceptions.EntityNotFoundException;
 import app.mappers.PassengerMapper;
 import app.repositories.PassengerRepository;
 import org.springframework.context.annotation.Lazy;
@@ -40,8 +41,6 @@ public class PassengerService {
 
     @Transactional
     public Passenger savePassenger(PassengerDto passengerDTO) {
-        System.out.println(passengerDTO);
-        passengerDTO.setId(0L);
         var passenger = passengerMapper.toEntity(passengerDTO);
         return passengerRepository.save(passenger);
     }
@@ -52,16 +51,16 @@ public class PassengerService {
 
     @Transactional
     public Passenger updatePassengerById(Long id, PassengerDto passengerDTO) {
-        var passenger = passengerMapper.toEntity(passengerDTO);
-        var editPassenger = getPassengerById(id);
-//        editPassenger.setFirstName(passenger.getFirstName());
-//        editPassenger.setLastName(passenger.getLastName());
-//        editPassenger.setBirthDate(passenger.getBirthDate());
-//        editPassenger.setPhoneNumber(passenger.getPhoneNumber());
-//        editPassenger.setEmail(passenger.getEmail());
-//        editPassenger.setPassport(passenger.getPassport());
-
-        return passengerRepository.save(passenger);
+        var existingPassenger = passengerRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = " + id)
+        );
+        existingPassenger.setFirstName(passengerDTO.getFirstName());
+        existingPassenger.setLastName(passengerDTO.getLastName());
+        existingPassenger.setBirthDate(passengerDTO.getBirthDate());
+        existingPassenger.setPhoneNumber(passengerDTO.getPhoneNumber());
+        existingPassenger.setEmail(passengerDTO.getEmail());
+        existingPassenger.setPassport(passengerDTO.getPassport());
+        return passengerRepository.save(existingPassenger);
     }
 
     public Page<PassengerDto> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {

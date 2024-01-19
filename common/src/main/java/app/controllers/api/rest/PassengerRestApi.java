@@ -72,7 +72,7 @@ public interface PassengerRestApi {
     ResponseEntity<PassengerDto> updateById(
             @ApiParam(
                     name = "id",
-                    value = "User.id",
+                    value = "Passenger.id",
                     required = true
             )
             @PathVariable(value = "id") Long id,

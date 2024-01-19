@@ -53,9 +53,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         passport.setPassportIssuingDate(LocalDate.parse("2014-12-11"));
         passport.setMiddleName("Ivanovich");
         passenger.setPassport(passport);
-        System.out.println(passenger);
         passengerRepository.save(passenger);
-        System.out.println(passenger);
 
         return passenger;
     }
@@ -112,7 +110,6 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @DisplayName("Get passenger by ID")
     void shouldGetPassengerById() throws Exception {
         var passenger = createPassenger();
-        System.out.println(passenger);
         var id = passenger.getId();
         mockMvc.perform(
                         get("http://localhost:8080/api/passengers/{id}", id))
@@ -126,9 +123,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Post new passenger")
     void shouldAddNewPassenger() throws Exception {
-        System.out.println(passengerService.getAllPassengers());
         var passenger = createPassenger();
-        System.out.println(passenger);
         passenger.setId(0L);
         var passengerDto = passengerMapper.toDto(passenger);
 
@@ -146,11 +141,12 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @DisplayName("Post exist passenger")
     void shouldAddExistPassenger() throws Exception {
         var passenger = createPassenger();
-        System.out.println(passenger);
-        var passengerDTO = passengerMapper.toDto(passenger);
+        var id = passenger.getId();
+        var passengerDto = new PassengerDto();
+        passengerDto.setId(id);
         mockMvc.perform(
                         post("http://localhost:8080/api/passengers")
-                                .content(objectMapper.writeValueAsString(passengerDTO))
+                                .content(objectMapper.writeValueAsString(passengerDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -161,9 +157,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Delete passenger by ID and check passenger with deleted ID")
     void shouldDeletePassenger() throws Exception {
-        System.out.println(passengerService.getAllPassengers());
         Passenger passenger = createPassenger();
-        System.out.println(passenger);
         var id = passenger.getId();
         mockMvc.perform(delete("http://localhost:8080/api/passengers/{id}", id))
                 .andDo(print())
@@ -178,7 +172,6 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @DisplayName("Update passenger")
     void shouldUpdatePassenger() throws Exception {
         PassengerDto passengerDto = passengerMapper.toDto(createPassenger());
-        System.out.println(passengerDto);
         var id = passengerDto.getId();
         passengerDto.setFirstName("Klark");
         long numberOfPassenger = passengerRepository.count();
