@@ -38,7 +38,7 @@ public class SeatMapperTest {
         Aircraft aircraft = new Aircraft();
         aircraft.setId(1002L);
         aircraft.setAircraftNumber("77777");
-        when(aircraftService.getAircraftById(1002L)).thenReturn(aircraft);
+        when(aircraftService.getAircraft(1002L)).thenReturn(aircraft);
 
         Seat seat = new Seat();
         seat.setId(1003L);
@@ -69,7 +69,7 @@ public class SeatMapperTest {
         Aircraft aircraft = new Aircraft();
         aircraft.setId(1002L);
         aircraft.setAircraftNumber("77777");
-        when(aircraftService.getAircraftById(1002L)).thenReturn(aircraft);
+        when(aircraftService.getAircraft(1002L)).thenReturn(aircraft);
 
         SeatDto seatDTO = new SeatDto();
         seatDTO.setId(1003L);
@@ -100,7 +100,7 @@ public class SeatMapperTest {
         Aircraft aircraft = new Aircraft();
         aircraft.setId(1002L);
         aircraft.setAircraftNumber("77777");
-        when(aircraftService.getAircraftById(1002L)).thenReturn(aircraft);
+        when(aircraftService.getAircraft(1002L)).thenReturn(aircraft);
 
         Seat seat = new Seat();
         seat.setId(1003L);
@@ -134,7 +134,7 @@ public class SeatMapperTest {
         Aircraft aircraft = new Aircraft();
         aircraft.setId(1002L);
         aircraft.setAircraftNumber("77777");
-        when(aircraftService.getAircraftById(1002L)).thenReturn(aircraft);
+        when(aircraftService.getAircraft(1002L)).thenReturn(aircraft);
 
         SeatDto seatDTO = new SeatDto();
         seatDTO.setId(1003L);

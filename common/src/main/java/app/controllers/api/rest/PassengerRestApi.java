@@ -17,7 +17,6 @@ import java.util.List;
 
 @Api(tags = "Passenger REST")
 @Tag(name = "Passenger REST", description = "API для операций с пассажирами")
-@RequestMapping("/api/passengers")
 public interface PassengerRestApi {
 
     @ApiOperation(value = "Get list of all Passengers filtered")
@@ -25,7 +24,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 200, message = "Passenger found"),
             @ApiResponse(code = 400, message = "Passenger not found")
     })
-    @GetMapping
+    @RequestMapping(value = "/api/passengers", method = RequestMethod.GET)
     ResponseEntity<List<PassengerDto>> getAllPassengers(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
@@ -41,8 +40,8 @@ public interface PassengerRestApi {
             @ApiResponse(code = 200, message = "Passenger found"),
             @ApiResponse(code = 404, message = "Passenger not found")
     })
-    @GetMapping("/{id}")
-    ResponseEntity<PassengerDto> getById(
+    @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.GET)
+    ResponseEntity<PassengerDto> getPassenger(
             @ApiParam(
                     name = "id",
                     value = "User.id",
@@ -55,8 +54,8 @@ public interface PassengerRestApi {
             @ApiResponse(code = 201, message = "Passenger created"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @PostMapping
-    ResponseEntity<PassengerDto> create(
+    @RequestMapping(value = "/api/passengers", method = RequestMethod.POST)
+    ResponseEntity<PassengerDto> createPassenger(
             @ApiParam(
                     name = "Passenger",
                     value = "Passenger model",
@@ -69,14 +68,14 @@ public interface PassengerRestApi {
             @ApiResponse(code = 200, message = "Passenger updated"),
             @ApiResponse(code = 404, message = "Passenger not found")
     })
-    @PatchMapping(value = "/{id}")
-    ResponseEntity<PassengerDto> updateById(
+    @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.PATCH)
+    ResponseEntity<PassengerDto> updatePassenger(
             @ApiParam(
                     name = "id",
-                    value = "User.id",
+                    value = "Passenger.id",
                     required = true
             )
-            @PathVariable("id") Long id,
+            @PathVariable(value = "id") Long id,
             @ApiParam(
                     name = "Passenger",
                     value = "Passenger model"
@@ -89,8 +88,8 @@ public interface PassengerRestApi {
             @ApiResponse(code = 200, message = "Passenger deleted"),
             @ApiResponse(code = 404, message = "Passenger not found")
     })
-    @DeleteMapping(value = "/{id}")
-    ResponseEntity<HttpStatus> deleteById(
+    @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.DELETE)
+    ResponseEntity<HttpStatus> deletePassenger(
             @ApiParam(
                     name = "id",
                     value = "User.id",

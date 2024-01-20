@@ -39,7 +39,7 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft found"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDto> getAircraftById(
+    ResponseEntity<AircraftDto> getAircraft(
             @ApiParam(name = "id", value = "Aircraft.id")
             @PathVariable("id") @Min(0) Long id);
 
@@ -58,7 +58,7 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft updated"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDto> updateAircraftById(
+    ResponseEntity<AircraftDto> updateAircraft(
             @ApiParam(
                     name = "id",
                     value = "Aircraft.id"
@@ -76,7 +76,7 @@ public interface AircraftRestApi {
             @ApiResponse(code = 200, message = "Aircraft deleted"),
             @ApiResponse(code = 404, message = "Aircraft not found"),
             @ApiResponse(code = 405, message = "Can't delete an aircraft because it has seats assigned to it")})
-    ResponseEntity<HttpStatus> deleteAircraftById(
+    ResponseEntity<HttpStatus> deleteAircraft(
             @ApiParam(
                     name = "id",
                     value = "Aircraft.id"

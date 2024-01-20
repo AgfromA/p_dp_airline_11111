@@ -169,7 +169,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     void shouldGetFreeSeats() throws Exception {
         FlightSeat flightSeat = createFlightSeat();
         var flightId = flightSeat.getFlight().getId().toString();
-        mockMvc.perform(get("http://localhost:8080/api/flight-seats/filtered")
+        mockMvc.perform(get("http://localhost:8080/api/flight-seats")
                         .param("flightId", flightId)
                         .param("isSold", "false")
                         .param("isRegistered", "false"))
@@ -182,7 +182,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     void shouldGetNonSoldFlightSeatsByFlightId() throws Exception {
         FlightSeat flightSeat = createFlightSeat();
         var flightId = flightSeat.getFlight().getId().toString();
-        mockMvc.perform(get("http://localhost:8080/api/flight-seats/filtered")
+        mockMvc.perform(get("http://localhost:8080/api/flight-seats")
                         .param("flightId", flightId)
                         .param("isSold", "false")
                         .param("isRegistered", "true"))
@@ -199,7 +199,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
             flightSeatService.deleteFlightSeatById(flightSeat.getId());
         }
         mockMvc.perform(
-                        post("http://localhost:8080/api/generate?flightId={flightId}", flightId)
+                        post("http://localhost:8080/api/flight-seats/generate?flightId={flightId}", flightId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -226,13 +226,12 @@ class FlightSeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldGenerateFlightSeatsForFlightIdempotent() throws Exception {
-        String flightId = createFlightSeat().getFlight().getId().toString();
-        String isSold = "true";
-        String isRegistered = "true";
-        mockMvc.perform(get("http://localhost:8080/api/flight-seats/filtered?flightId={flightId}&isSold={isSold}&isRegistered={isRegistered}", flightId, isSold, isRegistered)
+        var flightId = createFlightSeat().getFlight().getId().toString();
+        mockMvc.perform(post("http://localhost:8080/api/flight-seats/generate")
+                        .param("flightId", flightId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test

@@ -29,16 +29,16 @@ public interface AccountRestApi {
             @ApiResponse(code = 200, message = "Accounts found"),
             @ApiResponse(code = 204, message = "Accounts not found")})
     ResponseEntity<List<AccountDto>> getAllAccounts(@ApiParam(name = "page")
-                                             @RequestParam(value = "page", required = false) Integer page,
+                                                    @RequestParam(value = "page", required = false) Integer page,
                                                     @ApiParam(name = "size")
-                                             @RequestParam(value = "size", required = false) Integer size);
+                                                    @RequestParam(value = "size", required = false) Integer size);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Account by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account found"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<AccountDto> getAccountById(
+    ResponseEntity<AccountDto> getAccount(
             @ApiParam(
                     name = "id",
                     value = "Account.id"
@@ -60,7 +60,6 @@ public interface AccountRestApi {
                     value = "Account model"
             )
             @RequestBody
-            //@Valid fix it
             AccountDto accountDTO);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.PATCH)
@@ -68,7 +67,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account updated"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<AccountDto> updateAccountById(
+    ResponseEntity<AccountDto> updateAccount(
             @ApiParam(
                     name = "id",
                     value = "Account.id"
@@ -76,10 +75,9 @@ public interface AccountRestApi {
             @PathVariable(value = "id") Long id,
             @ApiParam(
                     name = "account",
-                    value = "AccountDto"
+                    value = "Account"
             )
             @RequestBody
-            //@Valid
             AccountDto accountDTO);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.DELETE)
@@ -87,7 +85,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Account deleted"),
             @ApiResponse(code = 404, message = "Account not found")})
-    ResponseEntity<Void> deleteAccountById(
+    ResponseEntity<Void> deleteAccount(
             @ApiParam(
                     name = "id",
                     value = "Account.id"

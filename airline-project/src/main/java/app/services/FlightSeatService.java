@@ -41,20 +41,19 @@ public class FlightSeatService {
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
-    public List<FlightSeatDto> getAllFlightSeatsFiltered(Integer page, Integer size, Long flightId, Boolean isSold, Boolean isRegistered) {
+    public Page<FlightSeatDto> getAllFlightSeatsFiltered(Integer page, Integer size, Long flightId, Boolean isSold, Boolean isRegistered) {
         Pageable pageable = PageRequest.of(page, size);
         if (Boolean.FALSE.equals(isSold) && Boolean.FALSE.equals(isRegistered)) {
-            return getFreeSeatsById(pageable, flightId).getContent();
+            return getFreeSeatsById(pageable, flightId);
         } else if (Boolean.FALSE.equals(isSold)) {
-            return getNotSoldFlightSeatsById(flightId, pageable).getContent();
+            return getNotSoldFlightSeatsById(flightId, pageable);
         } else if (Boolean.FALSE.equals(isRegistered)) {
-            return findNotRegisteredFlightSeatsById(flightId, pageable).getContent();
+            return findNotRegisteredFlightSeatsById(flightId, pageable);
         } else {
-            return getFlightSeatsByFlightId(flightId, pageable).getContent();
+            return getFlightSeatsByFlightId(flightId, pageable);
         }
     }
 
-    // FIXME удалить, оставить только getFlightSeatDto
     public Optional<FlightSeat> getFlightSeat(Long id) {
         return flightSeatRepository.findById(id);
     }
@@ -115,7 +114,7 @@ public class FlightSeatService {
     }
 
     @Transactional
-    public void editFlightSeatIsSoldToFalseByFlightSeatId(long[] flightSeatId) {
+    public void makeFlightSeatNotSold(long[] flightSeatId) {
         flightSeatRepository.editIsSoldToFalseByFlightSeatId(flightSeatId);
     }
 

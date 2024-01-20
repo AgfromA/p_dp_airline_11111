@@ -29,7 +29,6 @@ import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 @Sql(value = {"/sqlQuery/create-destination-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class DestinationControllerIT extends IntegrationTestBase {
 
-
     @Autowired
     private DestinationRepository destinationRepository;
     @Autowired
@@ -37,7 +36,6 @@ class DestinationControllerIT extends IntegrationTestBase {
     @Autowired
     private DestinationMapper destinationMapper;
 
-    // Пагинация 2.0
     @Test
     void shouldGetAllDestination() throws Exception {
         mockMvc.perform(get("http://localhost:8080/api/destinations"))
@@ -83,7 +81,6 @@ class DestinationControllerIT extends IntegrationTestBase {
                         .getAllDestinations(pageable.getPageNumber(), pageable.getPageSize())
                         .getContent())));
     }
-    // Пагинация 2.0
 
     @Test
     void shouldCreateDestination() throws Exception {

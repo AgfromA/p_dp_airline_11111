@@ -94,7 +94,7 @@ public class AircraftView extends VerticalLayout {
         grid.setItems(dataSource);
 
         editor.addSaveListener(e -> {
-            aircraftClient.updateAircraftById(e.getItem().getId(), e.getItem());
+            aircraftClient.updateAircraft(e.getItem().getId(), e.getItem());
         });
         return tableTab;
     }
@@ -212,7 +212,7 @@ public class AircraftView extends VerticalLayout {
             HttpStatus statusCode = null;
             if (editor.isOpen()) editor.cancel();
             try {
-                statusCode = aircraftClient.deleteAircraftById(aircraftDto.getId()).getStatusCode();
+                statusCode = aircraftClient.deleteAircraft(aircraftDto.getId()).getStatusCode();
             } catch (FeignException.MethodNotAllowed except) {
                 Notification.show("You can't delete an aircraft because it has seats assigned to it", 3000, Notification.Position.TOP_CENTER)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);

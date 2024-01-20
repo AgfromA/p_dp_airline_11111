@@ -62,12 +62,12 @@ public class FlightSeatView extends VerticalLayout {
     public FlightSeatView(SeatClient seatClient, FlightSeatClient flightSeatClient) {
         this.seatClient = seatClient;
         this.flightSeatClient = flightSeatClient;
-        this.response = flightSeatClient.getAllFlightSeats(0, 10);
-        this.dataSourceAll = seatClient.getAllSeats (0, 50).getBody();
+        this.response = flightSeatClient.getAllFlightSeats(0, 10, null, null, null);
+        this.dataSourceAll = seatClient.getAllSeats(0, 50, null).getBody();
         this.currentPage = 0;
         this.isSearchByFare = false;
         this.isSearchById = false;
-        this.maxPages = (int) Math.ceil(flightSeatClient.getAllFlightSeats(null, null).getBody().size()/10);
+        this.maxPages = (int) Math.ceil(flightSeatClient.getAllFlightSeats(null, null, null, null, null).getBody().size() / 10);
         this.dataSource = response.getBody();
 
         ValidationMessage idValidationMessage = new ValidationMessage();
@@ -276,7 +276,7 @@ public class FlightSeatView extends VerticalLayout {
     }
 
     private void searchByFare() {
-        List<FlightSeatDto> allFlightSeatDto = flightSeatClient.getAllFlightSeats(0, 100).getBody();
+        List<FlightSeatDto> allFlightSeatDto = flightSeatClient.getAllFlightSeats(0, 100, null, null, null).getBody();
         Integer min = minFareSearchField.getValue();
         Integer max = maxFareSearchField.getValue();
         List<FlightSeatDto> filteredListSeats = new ArrayList<>();
@@ -497,7 +497,7 @@ public class FlightSeatView extends VerticalLayout {
         dataSource.clear();
         isSearchById = false;
         isSearchByFare = false;
-        response = flightSeatClient.getAllFlightSeats(currentPage, 10);
+        response = flightSeatClient.getAllFlightSeats(currentPage, 10, null, null, null);
         maxPages = response.getBody().size() - 1;
         dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
         grid.getDataProvider().refreshAll();

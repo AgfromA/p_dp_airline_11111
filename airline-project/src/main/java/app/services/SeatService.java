@@ -11,7 +11,6 @@ import app.mappers.SeatMapper;
 import org.springframework.data.domain.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,9 +35,9 @@ public class SeatService {
         return seatRepository.findAll(PageRequest.of(page, size)).map(seatMapper::toDto);
     }
 
-    public Page<SeatDto> getAllSeatsByAircraftId(Long aircraftId, Pageable pageable) {
+    public Page<SeatDto> getAllSeatsByAircraftId(Integer page, Integer size, Long aircraftId) {
         checkIfAircraftExists(aircraftId);
-        return seatRepository.findByAircraftId(aircraftId, pageable).map(seatMapper::toDto);
+        return seatRepository.findByAircraftId(aircraftId, PageRequest.of(page, size)).map(seatMapper::toDto);
     }
 
     @Transactional
@@ -49,7 +48,6 @@ public class SeatService {
         return seatMapper.toDto(seatRepository.save(seat));
     }
 
-    // FIXME удалить, оставить только getSeatDto
     public Seat getSeat(long id) {
         return seatRepository.findById(id).orElse(null);
     }
@@ -114,13 +112,13 @@ public class SeatService {
     }
 
     private AircraftSeatsInformation getNumbersOfSeatsByAircraftId(long aircraftId) {
-        var aircraft = aircraftService.getAircraftById(aircraftId);
+        var aircraft = aircraftService.getAircraft(aircraftId);
         return AircraftSeatsInformation.valueOf(aircraft.getModel()
                 .toUpperCase().replaceAll("[^A-Za-z0-9]", "_"));
     }
 
     private Aircraft checkIfAircraftExists(Long aircraftId) {
-        var aircraft = aircraftService.getAircraftById(aircraftId);
+        var aircraft = aircraftService.getAircraft(aircraftId);
         if (aircraft == null) {
             throw new EntityNotFoundException(
                     "Operation was not finished because Aircraft was not found with id = " + aircraftId);

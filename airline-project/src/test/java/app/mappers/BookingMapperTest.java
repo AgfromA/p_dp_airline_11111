@@ -31,7 +31,7 @@ class BookingMapperTest {
     void shouldConvertBookingToBookingDTOEntity() throws Exception {
         Passenger passenger = new Passenger();
         passenger.setId(1001L);
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(2L);
@@ -42,7 +42,7 @@ class BookingMapperTest {
         booking.setId(1L);
         booking.setBookingNumber("BK-111111");
         booking.setBookingDate(LocalDateTime.now());
-        booking.setPassenger(passengerServiceMock.getPassengerById(1001L).get());
+        booking.setPassenger(passengerServiceMock.getPassenger(1001L).get());
         booking.setFlightSeat(flightSeat);
         booking.setCreateTime(createTime);
         booking.setBookingStatus(BookingStatus.NOT_PAID);
@@ -65,7 +65,7 @@ class BookingMapperTest {
 
         Passenger passenger = new Passenger();
         passenger.setId(1001L);
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         LocalDateTime createTime = LocalDateTime.MIN;
 
@@ -77,7 +77,7 @@ class BookingMapperTest {
         bookingDTO.setId(1L);
         bookingDTO.setBookingNumber("BK-111111");
         bookingDTO.setBookingDate(LocalDateTime.now());
-        bookingDTO.setPassengerId(passengerServiceMock.getPassengerById(1001L).get().getId());
+        bookingDTO.setPassengerId(passengerServiceMock.getPassenger(1001L).get().getId());
         bookingDTO.setCreateTime(createTime);
         bookingDTO.setFlightSeatId(flightSeatId);
         bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
@@ -102,10 +102,10 @@ class BookingMapperTest {
 
         Passenger passenger1 = new Passenger();
         passenger1.setId(1001L);
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger1));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger1));
         Passenger passenger2 = new Passenger();
         passenger2.setId(1002L);
-        when(passengerServiceMock.getPassengerById(1002L)).thenReturn(Optional.of(passenger2));
+        when(passengerServiceMock.getPassenger(1002L)).thenReturn(Optional.of(passenger2));
 
         FlightSeat flightSeat1 = new FlightSeat();
         flightSeat1.setId(2L);
@@ -118,7 +118,7 @@ class BookingMapperTest {
         bookingOne.setId(1L);
         bookingOne.setBookingNumber("BK-111111");
         bookingOne.setBookingDate(LocalDateTime.now());
-        bookingOne.setPassenger(passengerServiceMock.getPassengerById(1001L).get());
+        bookingOne.setPassenger(passengerServiceMock.getPassenger(1001L).get());
         bookingOne.setFlightSeat(flightSeat1);
         bookingOne.setCreateTime(createTime);
         bookingOne.setBookingStatus(BookingStatus.NOT_PAID);
@@ -127,7 +127,7 @@ class BookingMapperTest {
         bookingTwo.setId(2L);
         bookingTwo.setBookingNumber("BK-211112");
         bookingTwo.setBookingDate(LocalDateTime.now());
-        bookingTwo.setPassenger(passengerServiceMock.getPassengerById(1002L).get());
+        bookingTwo.setPassenger(passengerServiceMock.getPassenger(1002L).get());
         bookingTwo.setFlightSeat(flightSeat2);
         bookingTwo.setCreateTime(createTime);
         bookingTwo.setBookingStatus(BookingStatus.PAID);
@@ -162,10 +162,10 @@ class BookingMapperTest {
 
         Passenger passenger1 = new Passenger();
         passenger1.setId(1001L);
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger1));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger1));
         Passenger passenger2 = new Passenger();
         passenger2.setId(1002L);
-        when(passengerServiceMock.getPassengerById(1002L)).thenReturn(Optional.of(passenger2));
+        when(passengerServiceMock.getPassenger(1002L)).thenReturn(Optional.of(passenger2));
 
         FlightSeat flightSeat1 = new FlightSeat();
         Long flightSeatId1 = 2L;
@@ -182,7 +182,7 @@ class BookingMapperTest {
         bookingDtoOne.setId(1L);
         bookingDtoOne.setBookingNumber("BK-111111");
         bookingDtoOne.setBookingDate(LocalDateTime.now());
-        bookingDtoOne.setPassengerId(passengerServiceMock.getPassengerById(1001L).get().getId());
+        bookingDtoOne.setPassengerId(passengerServiceMock.getPassenger(1001L).get().getId());
         bookingDtoOne.setCreateTime(createTime);
         bookingDtoOne.setFlightSeatId(flightSeatId1);
         bookingDtoOne.setBookingStatus(BookingStatus.NOT_PAID);
@@ -191,7 +191,7 @@ class BookingMapperTest {
         bookingDtoTwo.setId(2L);
         bookingDtoTwo.setBookingNumber("BK-211112");
         bookingDtoTwo.setBookingDate(LocalDateTime.now());
-        bookingDtoTwo.setPassengerId(passengerServiceMock.getPassengerById(1002L).get().getId());
+        bookingDtoTwo.setPassengerId(passengerServiceMock.getPassenger(1002L).get().getId());
         bookingDtoTwo.setCreateTime(createTime);
         bookingDtoTwo.setFlightSeatId(flightSeatId2);
         bookingDtoTwo.setBookingStatus(BookingStatus.PAID);

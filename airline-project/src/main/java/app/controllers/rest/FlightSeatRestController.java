@@ -5,6 +5,7 @@ import app.dto.FlightSeatDto;
 import app.services.FlightSeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,11 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     private final FlightSeatService flightSeatService;
 
     @Override
-    public ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(Integer page, Integer size) {
+    public ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(Integer page,
+                                                                 Integer size,
+                                                                 Long flightId,
+                                                                 Boolean isSold,
+                                                                 Boolean isRegistered) {
         log.info("getAll:");
         if (page == null || size == null) {
             return createUnPagedResponse();
@@ -27,10 +32,18 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         if (page < 0 || size < 1) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        var flightSeats = flightSeatService.getAllFlightSeats(page, size);
+
+        Page<FlightSeatDto> flightSeats;
+
+        if (flightId == null && isSold == null && isRegistered == null) {
+            flightSeats = flightSeatService.getAllFlightSeats(page, size);
+        } else {
+            log.info("getAllPassengers: filtered");
+            flightSeats = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
+        }
         return flightSeats.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(flightSeats.getContent(), HttpStatus.OK);
+                : ResponseEntity.ok(flightSeats.getContent());
     }
 
     private ResponseEntity<List<FlightSeatDto>> createUnPagedResponse() {
@@ -39,16 +52,8 @@ public class FlightSeatRestController implements FlightSeatRestApi {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllFlightSeats: count {}", flightSeats.size());
-            return new ResponseEntity<>(flightSeats, HttpStatus.OK);
+            return ResponseEntity.ok(flightSeats);
         }
-    }
-
-    @Override
-    public ResponseEntity<List<FlightSeatDto>> getAllFlightSeatsFiltered(
-            Integer page, Integer size, Long flightId, Boolean isSold, Boolean isRegistered) {
-        log.info("getAllFlightSeatsFiltered: flightId={}, isSold={}, isRegistered={}", flightId, isSold, isRegistered);
-        var flightSeats = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
-        return (flightSeats.isEmpty()) ? ResponseEntity.notFound().build() : ResponseEntity.ok(flightSeats);
     }
 
     @Override

@@ -66,7 +66,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(aircraftService
-                        .getPage(pageable.getPageNumber(), pageable.getPageSize()).getContent())));
+                        .getAllAircrafts(pageable.getPageNumber(), pageable.getPageSize()).getContent())));
     }
 
     @Test
@@ -151,7 +151,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(aircraftMapper.toDto(aircraftService.getAircraftById(id)))));
+                        .writeValueAsString(aircraftMapper.toDto(aircraftService.getAircraft(id)))));
     }
 
     @Test
@@ -198,7 +198,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
     @DisplayName("Should update Aircraft by id from data base")
     void shouldUpdateById() throws Exception {
         long id = 2;
-        var aircraft = aircraftMapper.toDto(aircraftService.getAircraftById(id));
+        var aircraft = aircraftMapper.toDto(aircraftService.getAircraft(id));
         aircraft.setAircraftNumber("531487");
         aircraft.setModel("Boeing 737");
         aircraft.setModelYear(2001);

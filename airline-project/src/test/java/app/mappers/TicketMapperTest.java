@@ -36,7 +36,7 @@ class TicketMapperTest {
         passenger.setId(1001L);
         passenger.setFirstName("Test");
         passenger.setLastName("Testing");
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         Flight flight = new Flight();
         Destination destinationFrom = new Destination();
@@ -93,7 +93,7 @@ class TicketMapperTest {
         passenger.setId(1001L);
         passenger.setFirstName("Test");
         passenger.setLastName("Testing");
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         Flight flight = new Flight();
         Destination destinationFrom = new Destination();
@@ -163,7 +163,7 @@ class TicketMapperTest {
         passenger.setId(1001L);
         passenger.setFirstName("Test");
         passenger.setLastName("Testing");
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         Flight flight = new Flight();
         Destination destinationFrom = new Destination();
@@ -223,7 +223,7 @@ class TicketMapperTest {
         passenger.setId(1001L);
         passenger.setFirstName("Test");
         passenger.setLastName("Testing");
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         Flight flight = new Flight();
         Destination destinationFrom = new Destination();

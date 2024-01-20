@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Api(tags = "FlightSeat REST")
@@ -28,33 +26,22 @@ public interface FlightSeatRestApi {
     })
     ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(@PageableDefault()
                                                           @RequestParam(value = "page", required = false) Integer page,
-                                                          @RequestParam(value = "size", required = false) Integer size);
-
-    @RequestMapping(value = "/api/flight-seats/filtered", method = RequestMethod.GET)
-    @ApiOperation(value = "Get list of FlightSeats by code of Flight")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "FlightSeats found"),
-            @ApiResponse(code = 404, message = "Not found")
-    })
-    ResponseEntity<List<FlightSeatDto>> getAllFlightSeatsFiltered(
-            @PageableDefault(sort = {"id"})
-            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
-            @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size,
-            @ApiParam(
-                    name = "flightId",
-                    value = "Flight.id"
-            )
-            @RequestParam(required = false) Long flightId,
-            @ApiParam(
-                    name = "isSold",
-                    value = "FlightSeat.isSold"
-            )
-            @RequestParam(required = false) Boolean isSold,
-            @ApiParam(
-                    name = "isRegistered",
-                    value = "FlightSeat.isRegistered"
-            )
-            @RequestParam(required = false) Boolean isRegistered);
+                                                          @RequestParam(value = "size", required = false) Integer size,
+                                                          @ApiParam(
+                                                                  name = "flightId",
+                                                                  value = "Flight.id"
+                                                          )
+                                                          @RequestParam(required = false) Long flightId,
+                                                          @ApiParam(
+                                                                  name = "isSold",
+                                                                  value = "FlightSeat.isSold"
+                                                          )
+                                                          @RequestParam(required = false) Boolean isSold,
+                                                          @ApiParam(
+                                                                  name = "isRegistered",
+                                                                  value = "FlightSeat.isRegistered"
+                                                          )
+                                                          @RequestParam(required = false) Boolean isRegistered);
 
     @RequestMapping(value = "/api/flight-seats/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get FlightSeat by id")
@@ -121,7 +108,7 @@ public interface FlightSeatRestApi {
             ) @PathVariable(value = "id") Long id
     );
 
-    @RequestMapping(value = "/api/generate", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/flight-seats/generate", method = RequestMethod.POST)
     @ApiOperation(value = "Generate FlightSeats for provided Flight based on Aircraft's Seats")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "FlightSeats existed"),
@@ -135,6 +122,5 @@ public interface FlightSeatRestApi {
                     value = "Flight.id",
                     required = true
             )
-            @RequestParam
-            Long flightId);
+            @RequestParam Long flightId);
 }
