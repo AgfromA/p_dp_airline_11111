@@ -36,9 +36,9 @@ public class SeatService {
         return seatRepository.findAll(PageRequest.of(page, size)).map(seatMapper::toDto);
     }
 
-    public Page<SeatDto> getAllSeatsByAircraftId(Long aircraftId, Pageable pageable) {
+    public Page<SeatDto> getAllSeatsByAircraftId(Integer page, Integer size, Long aircraftId) {
         checkIfAircraftExists(aircraftId);
-        return seatRepository.findByAircraftId(aircraftId, pageable).map(seatMapper::toDto);
+        return seatRepository.findByAircraftId(aircraftId, PageRequest.of(page, size)).map(seatMapper::toDto);
     }
 
     @Transactional

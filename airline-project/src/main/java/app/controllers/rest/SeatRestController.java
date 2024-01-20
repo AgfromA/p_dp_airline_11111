@@ -6,9 +6,9 @@ import app.dto.SeatDto;
 import app.services.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class SeatRestController implements SeatRestApi {
     private final SeatService seatService;
 
     @Override
-    public ResponseEntity<List<SeatDto>> getAllSeats(Integer page, Integer size) {
+    public ResponseEntity<List<SeatDto>> getAllSeats(Integer page, Integer size, Long aircraftId) {
         log.info("getAllSeats:");
         if (page == null || size == null) {
             return createUnPagedResponse();
@@ -29,7 +29,13 @@ public class SeatRestController implements SeatRestApi {
         if (page < 0 || size < 1) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        var seats = seatService.getAllSeats(page, size);
+
+        Page<SeatDto> seats;
+        if (aircraftId != null) {
+            seats = seatService.getAllSeatsByAircraftId(page, size, aircraftId);
+        } else {
+            seats = seatService.getAllSeats(page, size);
+        }
         return seats.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : ResponseEntity.ok(seats.getContent());
@@ -42,17 +48,6 @@ public class SeatRestController implements SeatRestApi {
         } else {
             log.info("getAllSeats: count {}", seats.size());
             return ResponseEntity.ok(seats);
-        }
-    }
-
-    @Override
-    public ResponseEntity<List<SeatDto>> getAllSeatsByAircraftId(Pageable pageable, Long aircraftId) {
-        var seats = seatService.getAllSeatsByAircraftId(aircraftId, pageable);
-        if (seats.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            log.info("getAllSeatsByAircraftId: count {}, aircraftId={}", seats.getContent().size(), aircraftId);
-            return ResponseEntity.ok(seats.getContent());
         }
     }
 

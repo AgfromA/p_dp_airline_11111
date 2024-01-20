@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,21 +26,12 @@ public interface SeatRestApi {
     })
     ResponseEntity<List<SeatDto>> getAllSeats(@PageableDefault()
                                               @RequestParam(value = "page", required = false) Integer page,
-                                              @RequestParam(value = "size", required = false) Integer size);
-
-    @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.GET)
-    @ApiOperation(value = "Get Seats by \"aircraftId\"")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Seats found"),
-            @ApiResponse(code = 404, message = "Seats not found")
-    })
-    ResponseEntity<List<SeatDto>> getAllSeatsByAircraftId(
-            @PageableDefault(sort = {"id"}, value = 30) Pageable pageable,
-            @ApiParam(
-                    name = "aircraftId",
-                    value = "Aircraft.id"
-            )
-            @PathVariable("aircraftId") Long aircraftId);
+                                              @RequestParam(value = "size", required = false) Integer size,
+                                              @ApiParam(
+                                                      name = "aircraftId",
+                                                      value = "Aircraft.id"
+                                              )
+                                              @RequestParam(value = "aircraftId", required = false) Long aircraftId);
 
     @RequestMapping(value = "/api/seats/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get Seat by \"id\"")

@@ -203,7 +203,7 @@ class SeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldGetNotExistedSeatsDTOByAircraftId() throws Exception {
         var aircraftId = 100L;
-        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -211,7 +211,7 @@ class SeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldGetNotValidExistedSeatsDTOByAircraftId() throws Exception {
         var aircraftId = "notValid";
-        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -219,12 +219,11 @@ class SeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldGetAllPagesSeatsDTOByAircraftId() throws Exception {
         var aircraftId = 1L;
-        var pageable = PageRequest.of(0, 30, Sort.by("id"));
-        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(seatService.getAllSeatsByAircraftId(aircraftId, pageable).getContent())));
+                        .writeValueAsString(seatService.getAllSeatsByAircraftId(0, 30, aircraftId).getContent())));
     }
 
 

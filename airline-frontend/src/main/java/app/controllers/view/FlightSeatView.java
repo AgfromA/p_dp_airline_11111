@@ -63,7 +63,7 @@ public class FlightSeatView extends VerticalLayout {
         this.seatClient = seatClient;
         this.flightSeatClient = flightSeatClient;
         this.response = flightSeatClient.getAllFlightSeats(0, 10);
-        this.dataSourceAll = seatClient.getAllSeats (0, 50).getBody();
+        this.dataSourceAll = seatClient.getAllSeats (0, 50, null).getBody();
         this.currentPage = 0;
         this.isSearchByFare = false;
         this.isSearchById = false;
