@@ -186,10 +186,10 @@ class SeatControllerIT extends IntegrationTestBase {
         aircraft.setFlightRange(3800);
         long aircraftId = aircraftService.saveAircraft(aircraft).getId();
 
-        mockMvc.perform(post("http://localhost:8080/api/seats/aircraft/{aircraftId}", 1))
+        mockMvc.perform(post("http://localhost:8080/api/seats/generate").param("aircraftId", "1"))
                 .andDo(print())
                 .andExpect(status().isCreated());
-        mockMvc.perform(post("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+        mockMvc.perform(post("http://localhost:8080/api/seats/generate").param("aircraftId", "1"))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }

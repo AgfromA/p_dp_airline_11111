@@ -91,7 +91,7 @@ public interface SeatRestApi {
             )
             @PathVariable("id") Long id);
 
-    @RequestMapping(value = "/api/seats/aircraft/{aircraftId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/seats/generate", method = RequestMethod.POST)
     @ApiOperation(value = "Generate Seats for provided Aircraft based on Aircraft's model")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Seats existed"),
@@ -99,5 +99,5 @@ public interface SeatRestApi {
             @ApiResponse(code = 400, message = "Seats not created"),
             @ApiResponse(code = 404, message = "Aircraft with this id not found")
     })
-    ResponseEntity<List<SeatDto>> generateSeats(@PathVariable("aircraftId") Long aircraftId);
+    ResponseEntity<List<SeatDto>> generateSeats(@RequestParam("aircraftId") Long aircraftId);
 }
