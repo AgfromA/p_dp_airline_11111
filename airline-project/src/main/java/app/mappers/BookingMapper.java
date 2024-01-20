@@ -20,7 +20,7 @@ public interface BookingMapper {
     @Mapping(target = "flightSeatId", expression = "java(booking.getFlightSeat().getId())")
     BookingDto toDto(Booking booking);
 
-    @Mapping(target = "passenger", expression = "java(passengerService.getPassengerById(bookingDto.getPassengerId()).get())")
+    @Mapping(target = "passenger", expression = "java(passengerService.getPassenger(bookingDto.getPassengerId()).get())")
     @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeat(bookingDto.getFlightSeatId()).get())")
     Booking toEntity(BookingDto bookingDto,
                      @Context PassengerService passengerService,

@@ -40,6 +40,7 @@ public class PassengerDto {
     @Size(min = 6, max = 64, message = "Size phone cannot be less than 6 and more than 64 characters")
     private String phoneNumber;
 
+    // FIXME положить сюда дто, а не сущность БД
     @NotNull(message = "Passport should not be empty")
     @Valid
     private Passport passport;

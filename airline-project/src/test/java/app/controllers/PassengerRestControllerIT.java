@@ -101,7 +101,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengers(pageable)
+                        .getAllPassengers(pageable)
                         .getContent())));
     }
     // Пагинация 2.0
@@ -117,7 +117,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andExpectAll(
                         status().isOk(),
                         content().json(objectMapper.writeValueAsString(passengerMapper.toDto(
-                                passengerService.getPassengerById(id).get()))));
+                                passengerService.getPassenger(id).get()))));
     }
 
     @Test
@@ -200,7 +200,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
     }
 
     @Test
@@ -216,7 +216,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
     }
 
     @Test
@@ -232,7 +232,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
     }
 
     @Test
@@ -248,7 +248,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
     }
 
     @Test
@@ -264,7 +264,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, serialNumberPassport).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, serialNumberPassport).getContent())));
     }
 
     @Test

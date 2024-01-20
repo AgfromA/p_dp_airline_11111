@@ -5,6 +5,8 @@ import app.entities.Passenger;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.PassengerMapper;
 import app.repositories.PassengerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,55 +17,33 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class PassengerService {
 
-    private final PassengerRepository passengerRepository;
-    private final BookingService bookingService;
-    private final TicketService ticketService;
+    @Lazy // FIXME костыль
+    @Autowired
+    private BookingService bookingService;
+    @Lazy // FIXME костыль
+    @Autowired
+    private TicketService ticketService;
     private final FlightSeatService flightSeatService;
+    private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
-
-    // FIXME Отрефакторить
-    public PassengerService(PassengerRepository passengerRepository,
-                            @Lazy BookingService bookingService, @Lazy TicketService ticketService,
-                            @Lazy FlightSeatService flightSeatService, PassengerMapper passengerMapper) {
-        this.passengerRepository = passengerRepository;
-        this.bookingService = bookingService;
-        this.ticketService = ticketService;
-        this.flightSeatService = flightSeatService;
-        this.passengerMapper = passengerMapper;
-    }
 
     public List<PassengerDto> getAllPassengers() {
         return passengerMapper.toDtoList(passengerRepository.findAll());
     }
 
-    @Transactional
-    public Passenger savePassenger(PassengerDto passengerDTO) {
-        var passenger = passengerMapper.toEntity(passengerDTO);
-        return passengerRepository.save(passenger);
+    public Page<PassengerDto> getAllPassengers(Pageable pageable) {
+        return passengerRepository.findAll(pageable).map(passengerMapper::toDto);
     }
 
-    public Optional<Passenger> getPassengerById(Long id) {
-        return passengerRepository.findById(id);
-    }
-
-    @Transactional
-    public Passenger updatePassengerById(Long id, PassengerDto passengerDTO) {
-        var existingPassenger = passengerRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = " + id)
-        );
-        existingPassenger.setFirstName(passengerDTO.getFirstName());
-        existingPassenger.setLastName(passengerDTO.getLastName());
-        existingPassenger.setBirthDate(passengerDTO.getBirthDate());
-        existingPassenger.setPhoneNumber(passengerDTO.getPhoneNumber());
-        existingPassenger.setEmail(passengerDTO.getEmail());
-        existingPassenger.setPassport(passengerDTO.getPassport());
-        return passengerRepository.save(existingPassenger);
-    }
-
-    public Page<PassengerDto> getAllPagesPassengerByKeyword(Pageable pageable, String firstName, String lastName, String email, String serialNumberPassport) {
+    // FIXME страшновтая портянка. Отрефакторить
+    public Page<PassengerDto> getAllPassengersFiltered(Pageable pageable,
+                                                       String firstName,
+                                                       String lastName,
+                                                       String email,
+                                                       String serialNumberPassport) {
         if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
             return passengerRepository.findByFirstNameAndLastName(pageable, firstName, lastName)
                     .map(passengerMapper::toDto);
@@ -84,19 +64,55 @@ public class PassengerService {
             return passengerRepository.findByPassportSerialNumber(pageable, serialNumberPassport)
                     .map(passengerMapper::toDto);
         }
-        return passengerRepository.findAll(pageable)
-                .map(passengerMapper::toDto);
+        return passengerRepository.findAll(pageable).map(passengerMapper::toDto);
+    }
+
+    public Optional<Passenger> getPassenger(Long id) {
+        return passengerRepository.findById(id);
+    }
+
+    public Optional<PassengerDto> getPassengerDto(Long id) {
+        return passengerRepository.findById(id).map(passengerMapper::toDto);
     }
 
     @Transactional
-    public void deletePassengerById(Long id) {
-        flightSeatService.editFlightSeatIsSoldToFalseByFlightSeatId(ticketService.getArrayOfFlightSeatIdByPassengerId(id));
+    public PassengerDto createPassenger(PassengerDto passengerDto) {
+        passengerDto.setId(null);
+        var passenger = passengerMapper.toEntity(passengerDto);
+        return passengerMapper.toDto(passengerRepository.save(passenger));
+    }
+
+    @Transactional
+    public PassengerDto updatePassenger(Long id, PassengerDto passengerDto) {
+        var existingPassenger = passengerRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Passenger was not found with id = " + id)
+        );
+        if (passengerDto.getFirstName() != null) {
+            existingPassenger.setFirstName(passengerDto.getFirstName());
+        }
+        if (passengerDto.getLastName() != null) {
+            existingPassenger.setLastName(passengerDto.getLastName());
+        }
+        if (passengerDto.getBirthDate() != null) {
+            existingPassenger.setBirthDate(passengerDto.getBirthDate());
+        }
+        if (passengerDto.getPhoneNumber() != null) {
+            existingPassenger.setPhoneNumber(passengerDto.getPhoneNumber());
+        }
+        if (passengerDto.getEmail() != null) {
+            existingPassenger.setEmail(passengerDto.getEmail());
+        }
+        if (passengerDto.getPassport() != null) {
+            existingPassenger.setPassport(passengerDto.getPassport());
+        }
+        return passengerMapper.toDto(passengerRepository.save(existingPassenger));
+    }
+
+    @Transactional
+    public void deletePassenger(Long id) {
+        flightSeatService.makeFlightSeatNotSold(ticketService.getFlightSeatIdsByPassengerId(id));
         bookingService.deleteBookingByPassengerId(id);
         ticketService.deleteTicketByPassengerId(id);
         passengerRepository.deleteById(id);
-    }
-
-    public Page<PassengerDto> getAllPagesPassengers(Pageable pageable) {
-        return passengerRepository.findAll(pageable).map(passengerMapper::toDto);
     }
 }

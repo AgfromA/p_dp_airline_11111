@@ -54,7 +54,6 @@ public class FlightSeatService {
         }
     }
 
-    // FIXME удалить, оставить только getFlightSeatDto
     public Optional<FlightSeat> getFlightSeat(Long id) {
         return flightSeatRepository.findById(id);
     }
@@ -115,7 +114,7 @@ public class FlightSeatService {
     }
 
     @Transactional
-    public void editFlightSeatIsSoldToFalseByFlightSeatId(long[] flightSeatId) {
+    public void makeFlightSeatNotSold(long[] flightSeatId) {
         flightSeatRepository.editIsSoldToFalseByFlightSeatId(flightSeatId);
     }
 

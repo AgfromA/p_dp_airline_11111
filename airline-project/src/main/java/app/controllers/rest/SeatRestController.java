@@ -32,7 +32,7 @@ public class SeatRestController implements SeatRestApi {
         var seats = seatService.getAllSeats(page, size);
         return seats.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
+                : ResponseEntity.ok(seats.getContent());
     }
 
     private ResponseEntity<List<SeatDto>> createUnPagedResponse() {
@@ -41,7 +41,7 @@ public class SeatRestController implements SeatRestApi {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllSeats: count {}", seats.size());
-            return new ResponseEntity<>(seats, HttpStatus.OK);
+            return ResponseEntity.ok(seats);
         }
     }
 
@@ -52,7 +52,7 @@ public class SeatRestController implements SeatRestApi {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllSeatsByAircraftId: count {}, aircraftId={}", seats.getContent().size(), aircraftId);
-            return new ResponseEntity<>(seats.getContent(), HttpStatus.OK);
+            return ResponseEntity.ok(seats.getContent());
         }
     }
 
@@ -72,7 +72,7 @@ public class SeatRestController implements SeatRestApi {
     @Override
     public ResponseEntity<SeatDto> updateSeat(Long id, SeatDto seatDTO) {
         log.info("updateSeat: by id={}", id);
-        return new ResponseEntity<>(seatService.editSeat(id, seatDTO), HttpStatus.OK);
+        return ResponseEntity.ok(seatService.editSeat(id, seatDTO));
     }
 
     @Override

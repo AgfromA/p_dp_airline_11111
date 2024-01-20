@@ -49,7 +49,6 @@ public class SeatService {
         return seatMapper.toDto(seatRepository.save(seat));
     }
 
-    // FIXME удалить, оставить только getSeatDto
     public Seat getSeat(long id) {
         return seatRepository.findById(id).orElse(null);
     }

@@ -30,7 +30,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         var flightSeats = flightSeatService.getAllFlightSeats(page, size);
         return flightSeats.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(flightSeats.getContent(), HttpStatus.OK);
+                : ResponseEntity.ok(flightSeats.getContent());
     }
 
     private ResponseEntity<List<FlightSeatDto>> createUnPagedResponse() {
@@ -39,7 +39,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllFlightSeats: count {}", flightSeats.size());
-            return new ResponseEntity<>(flightSeats, HttpStatus.OK);
+            return ResponseEntity.ok(flightSeats);
         }
     }
 

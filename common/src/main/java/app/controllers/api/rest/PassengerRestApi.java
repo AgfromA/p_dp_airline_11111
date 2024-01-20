@@ -41,7 +41,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.GET)
-    ResponseEntity<PassengerDto> getById(
+    ResponseEntity<PassengerDto> getPassenger(
             @ApiParam(
                     name = "id",
                     value = "User.id",
@@ -55,7 +55,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @RequestMapping(value = "/api/passengers", method = RequestMethod.POST)
-    ResponseEntity<PassengerDto> create(
+    ResponseEntity<PassengerDto> createPassenger(
             @ApiParam(
                     name = "Passenger",
                     value = "Passenger model",
@@ -69,7 +69,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.PATCH)
-    ResponseEntity<PassengerDto> updateById(
+    ResponseEntity<PassengerDto> updatePassenger(
             @ApiParam(
                     name = "id",
                     value = "Passenger.id",
@@ -89,7 +89,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 404, message = "Passenger not found")
     })
     @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.DELETE)
-    ResponseEntity<HttpStatus> deleteById(
+    ResponseEntity<HttpStatus> deletePassenger(
             @ApiParam(
                     name = "id",
                     value = "User.id",
