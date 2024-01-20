@@ -49,7 +49,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
     List<Flight> findByFromAndToAndDepartureDateTimeBetween(Destination from, Destination to,
                                                             LocalDateTime fromDate, LocalDateTime toDate);
 
-    List<Flight> findByAircraft_Id(Long id);
+    List<Flight> findByAircraftId(Long aircraftId);
 
     @Query(value = "select f\n" +
             "from Flight f\n" +

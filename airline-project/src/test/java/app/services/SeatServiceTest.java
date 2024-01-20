@@ -54,7 +54,7 @@ public class SeatServiceTest {
                 .thenReturn(economyCategory);
         when(categoryService.getCategoryByType(CategoryType.BUSINESS))
                 .thenReturn(businessCategory);
-        when(aircraftService.getAircraftById(AIRCRAFT_TEST_ID))
+        when(aircraftService.getAircraft(AIRCRAFT_TEST_ID))
                 .thenReturn(aircraft);
         when(seatRepository.findByAircraftId(eq(AIRCRAFT_TEST_ID), any()))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));

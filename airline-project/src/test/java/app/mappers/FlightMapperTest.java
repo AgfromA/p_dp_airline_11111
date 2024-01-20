@@ -176,7 +176,7 @@ class FlightMapperTest {
         Aircraft aircraft = new Aircraft();
         aircraft.setId(6001L);
 
-        when(aircraftServiceMock.getAircraftById(flightDto.getAircraftId())).thenReturn(aircraft);
+        when(aircraftServiceMock.getAircraft(flightDto.getAircraftId())).thenReturn(aircraft);
 
         Flight flight = flightMapper.toEntity(flightDto, aircraftServiceMock, destinationServiceMock,
                 ticketServiceMock, flightSeatServiceMock);
@@ -340,7 +340,7 @@ class FlightMapperTest {
         Aircraft aircraft = new Aircraft();
         aircraft.setId(6001L);
 
-        when(aircraftServiceMock.getAircraftById(flightDto.getAircraftId())).thenReturn(aircraft);
+        when(aircraftServiceMock.getAircraft(flightDto.getAircraftId())).thenReturn(aircraft);
 
         flightDtoList.add(flightDto);
 

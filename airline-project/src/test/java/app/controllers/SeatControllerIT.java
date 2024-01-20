@@ -11,7 +11,6 @@ import app.services.SeatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -184,7 +183,7 @@ class SeatControllerIT extends IntegrationTestBase {
         aircraft.setModel("Airbus A319");
         aircraft.setModelYear(2002);
         aircraft.setFlightRange(3800);
-        long aircraftId = aircraftService.saveAircraft(aircraft).getId();
+        long aircraftId = aircraftService.createAircraft(aircraft).getId();
 
         mockMvc.perform(post("http://localhost:8080/api/seats/generate").param("aircraftId", "1"))
                 .andDo(print())

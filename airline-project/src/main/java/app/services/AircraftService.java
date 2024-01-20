@@ -2,11 +2,9 @@ package app.services;
 
 import app.dto.AircraftDto;
 import app.entities.Aircraft;
-import app.entities.Flight;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.AircraftMapper;
 import app.repositories.AircraftRepository;
-import app.repositories.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,73 +12,63 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AircraftService {
 
     private final AircraftRepository aircraftRepository;
-    private final FlightRepository flightRepository;
     private final AircraftMapper aircraftMapper;
 
-    public List<AircraftDto> findAll() {
+    public List<AircraftDto> getAllAircrafts() {
         return aircraftMapper.toDtoList(aircraftRepository.findAll());
     }
 
+    public Page<AircraftDto> getAllAircrafts(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return aircraftRepository.findAll(pageRequest).map(aircraftMapper::toDto);
+    }
+
+    public Aircraft getAircraft(Long id) {
+        return aircraftRepository.findById(id).orElse(null);
+    }
+
+    public Optional<AircraftDto> getAircraftDto(Long id) {
+        return aircraftRepository.findById(id).map(aircraftMapper::toDto);
+    }
+
     @Transactional
-    public AircraftDto saveAircraft(AircraftDto aircraftDTO) {
+    public AircraftDto createAircraft(AircraftDto aircraftDTO) {
         aircraftDTO.setId(null);
         var aircraft = aircraftMapper.toEntity(aircraftDTO);
-        if (!aircraft.getSeatSet().isEmpty()) {
-            aircraft.getSeatSet().forEach(seat -> seat.setAircraft(aircraft));
-        }
         return aircraftMapper.toDto(aircraftRepository.save(aircraft));
     }
 
     @Transactional
     public AircraftDto updateAircraft(Long id, AircraftDto aircraftDTO) {
-        var existAircraft = aircraftRepository.findById(id)
+        var existingAircraft = aircraftRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Operation was not finished because Aircraft was not found with id = " + id)
                 );
 
-        if (aircraftDTO.getAircraftNumber() == null) {
-            aircraftDTO.setAircraftNumber(existAircraft.getAircraftNumber());
+        if (aircraftDTO.getAircraftNumber() != null) {
+            existingAircraft.setAircraftNumber(aircraftDTO.getAircraftNumber());
         }
-        if (aircraftDTO.getModel() == null) {
-            aircraftDTO.setModel(existAircraft.getModel());
+        if (aircraftDTO.getModel() != null) {
+            existingAircraft.setModel(aircraftDTO.getModel());
         }
-        if (aircraftDTO.getModelYear() == null) {
-            aircraftDTO.setModelYear(existAircraft.getModelYear());
+        if (aircraftDTO.getModelYear() != null) {
+            existingAircraft.setModelYear(aircraftDTO.getModelYear());
         }
-        if (aircraftDTO.getFlightRange() == null) {
-            aircraftDTO.setFlightRange(existAircraft.getFlightRange());
+        if (aircraftDTO.getFlightRange() != null) {
+            existingAircraft.setFlightRange(aircraftDTO.getFlightRange());
         }
-
-        aircraftDTO.setId(id);
-
-        var aircraft = aircraftMapper.toEntity(aircraftDTO);
-        if (!aircraft.getSeatSet().isEmpty()) {
-            aircraft.getSeatSet().forEach(seat -> seat.setAircraft(aircraft));
-        }
-        return aircraftMapper.toDto(aircraftRepository.save(aircraft));
-    }
-
-    public Page<AircraftDto> getPage(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return aircraftRepository.findAll(pageRequest).map(aircraftMapper::toDto);
-    }
-
-    public Aircraft getAircraftById(Long id) {
-        return aircraftRepository.findById(id).orElse(null);
+        return aircraftMapper.toDto(aircraftRepository.save(existingAircraft));
     }
 
     @Transactional
-    public void deleteAircraftById(Long id) {
-        List<Flight> flightSet = flightRepository.findByAircraft_Id(id);
-        if (flightSet != null) {
-            flightSet.forEach(flight -> flight.setAircraft(null));
-        }
+    public void deleteAircraft(Long id) {
         aircraftRepository.deleteById(id);
     }
 }

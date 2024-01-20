@@ -29,7 +29,7 @@ class RuntimeExceptionHandlerTestIT extends IntegrationTestBase {
     public void runtimeExceptionHandlerTestIT() throws Exception {
         Long id = 1L;
 
-        when(accountRestController.getAccountById(id)).thenThrow(new RuntimeException("Runtime Exception"));
+        when(accountRestController.getAccount(id)).thenThrow(new RuntimeException("Runtime Exception"));
 
         mockMvc.perform(
                         get("http://localhost:8080/api/accounts/{id}", id))

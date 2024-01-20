@@ -21,7 +21,7 @@ public interface FlightMapper {
     @Mapping(target = "ticket", expression = "java(ticketService.findByFlightId(flightDto.getId()))")
     @Mapping(target = "from", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportFrom()))")
     @Mapping(target = "to", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportTo()))")
-    @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraftById(flightDto.getAircraftId()))")
+    @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraft(flightDto.getAircraftId()))")
     Flight toEntity(FlightDto flightDto,
                     @Context AircraftService aircraftService,
                     @Context DestinationService destinationService,

@@ -33,5 +33,4 @@ public class AircraftDto {
     @NotNull(message = "field \"flightRange\" should not be empty!")
     @Min(value = 0, message = "flightRange should be a positive value")
     private Integer flightRange;
-
 }
