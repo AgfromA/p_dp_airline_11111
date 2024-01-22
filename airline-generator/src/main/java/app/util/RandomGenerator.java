@@ -38,7 +38,6 @@ public class RandomGenerator {
         long dateEnd = dateTimeEnd.toEpochSecond(ZoneOffset.UTC);
         long randomDate = ThreadLocalRandom.current().nextLong(dateStart, dateEnd);
         return LocalDateTime.ofEpochSecond(randomDate, 0, ZoneOffset.UTC);
-
     }
 
     public <E> E getRandomElementOfList(List<E> list) {
@@ -52,9 +51,8 @@ public class RandomGenerator {
         return result.subList(0, x);
     }
 
-    public Long getRandomId() {
-        int randomInt = random.nextInt(1000 - 100) + 100;
+    public Long getRandomBoundId(Integer bound) {
+        int randomInt = random.nextInt(bound) + 1;
         return (long) randomInt;
     }
-
 }

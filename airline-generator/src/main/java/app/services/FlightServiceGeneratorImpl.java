@@ -2,8 +2,8 @@ package app.services;
 
 import app.clients.FlightGeneratorClient;
 import app.clients.FlightSeatGeneratorClient;
-import app.dto.FlightDTO;
-import app.dto.FlightSeatDTO;
+import app.dto.FlightDto;
+import app.dto.FlightSeatDto;
 import app.enums.Airport;
 import app.enums.FlightStatus;
 import app.services.interfaces.FlightServiceGenerator;
@@ -14,69 +14,56 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FlightServiceGeneratorImpl implements FlightServiceGenerator {
     private final RandomGenerator randomGenerator;
-    private List<FlightSeatDTO> flightSeatDTOList;
+    private List<FlightSeatDto> flightSeatDTOList;
     private final FlightGeneratorClient generatorClient;
     private final FlightSeatGeneratorClient flightSeatGeneratorClient;
-    private List<Airport> airports;
+    private List<Airport> airports = new ArrayList<>();
 
     @PostConstruct
     public void init() {
-        airports = List.of(Airport.values());
-        flightSeatDTOList=flightSeatGeneratorClient.getAllListFlightSeatDTO().getBody();
+        //airports = List.of(Airport.values()); // т.к. не все направления есть в базе
+        airports.addAll(Arrays.asList(Airport.VKO, Airport.VOG, Airport.MQF, Airport.OMS, Airport.VOZ,
+                Airport.SVX, Airport.AAQ, Airport.ARH, Airport.KGD, Airport.KRR, Airport.KLD, Airport.KLF,
+                Airport.KZN, Airport.KMW, Airport.KUF, Airport.IAR, Airport.IWA, Airport.GRV, Airport.IJK,
+                Airport.GOJ, Airport.LPK, Airport.NAL));
+        flightSeatDTOList = flightSeatGeneratorClient.getAllFlightSeats(null, null,
+                null, false, false).getBody();
     }
 
 
     @Override
-    public FlightDTO createRandomFlightDTO() {
-        FlightDTO flightDTO = new FlightDTO();
-
-        flightDTO.setId(0L);                                  //?
-
-
-        flightDTO.setSeats(randomGenerator.getRandomElements(flightSeatDTOList));
-
-        //flightDTO.setAirportFrom(randomGenerator.randomEnum(Airport.class)); // не работает
-        //flightDTO.setAirportTo(randomGenerator.randomEnum(Airport.class)); // не работает
-
-         flightDTO.setAirportFrom(airports.get(2)); // не работает
-        flightDTO.setAirportTo(airports.get(5)); // не работает
-
-       //flightDTO.setAirportFrom(Airport.AAQ);
-       //flightDTO.setAirportTo(Airport.AAQ); //не работает когда другой airport
-
-        flightDTO.setCode(flightDTO.getAirportFrom().getAirportInternalCode() + flightDTO.getAirportTo().getAirportInternalCode()); //должен содержать код от код ту
-
-
-        flightDTO.setDepartureDateTime(LocalDateTime.now().withNano(0)); //откорректировать работает
-        flightDTO.setArrivalDateTime(randomGenerator.randomLocalDateTime()); //работат
-
-        //flightDTO.setAircraftId(randomGenerator.getRandomId());   не работает
-        flightDTO.setAircraftId(5L); //заглушка
-
-        flightDTO.setFlightStatus(randomGenerator.randomEnum(FlightStatus.class)); // работает
-
-        return flightDTO;
+    public FlightDto createRandomFlightDTO() {
+        FlightDto flightDto = new FlightDto();
+        flightDto.setId(10000L); // должен игнорироваться при сохранении
+        flightDto.setAirportFrom(randomGenerator.getRandomElementOfList(airports));
+        flightDto.setAirportTo(randomGenerator.getRandomElementOfList(airports));
+        flightDto.setCode(flightDto.getAirportFrom().getAirportInternalCode() + flightDto.getAirportTo().getAirportInternalCode());
+        flightDto.setSeats(randomGenerator.getRandomElements(flightSeatDTOList));
+        flightDto.setDepartureDateTime(LocalDateTime.now().withNano(0));
+        flightDto.setArrivalDateTime(randomGenerator.randomLocalDateTime());
+        flightDto.setAircraftId(randomGenerator.getRandomBoundId(10)); // т.к. всего 10 самолетов в базе
+        flightDto.setFlightStatus(randomGenerator.randomEnum(FlightStatus.class));
+        return flightDto;
     }
 
     @Override
-    public List<FlightDTO> generateRandomFlightDTO(Integer amt) {
-        List<FlightDTO> result = new ArrayList<>();
-        for (int i = 0; i < amt; i++) {
-            FlightDTO flightDTO = createRandomFlightDTO();
-            generatorClient.createFlight(flightDTO);
-            result.add(flightDTO);
+    public List<FlightDto> generateRandomFlightDTO(Integer amt) {
+        List<FlightDto> result = new ArrayList<>();
+        if (amt < 1) {
+            return result;
         }
-        /*return Stream.generate(this::createRandomFlightDTO)
-                .limit(amt)
-                .parallel()
-                .peek(generatorClient::createFlight)
-                .collect(Collectors.toList());*/
+        for (int i = 0; i < amt; i++) {
+            FlightDto flightDto = createRandomFlightDTO();
+            FlightDto savedFlightDto = generatorClient.createFlight(flightDto).getBody();
+            result.add(savedFlightDto);
+        }
         return result;
     }
 }

@@ -1,10 +1,11 @@
 package app.services.interfaces;
 
-import app.dto.FlightSeatDTO;
+import app.dto.FlightSeatDto;
 
 import java.util.List;
 
 public interface FlightSeatServiceGenerator {
-    FlightSeatDTO createRandomFlightSeatDTO();
-    List<FlightSeatDTO> generateRandomFlightSeatDTO(Integer amt);
+    FlightSeatDto createRandomFlightSeatDTO();
+
+    List<FlightSeatDto> generateRandomFlightSeatDTO(Integer amt);
 }

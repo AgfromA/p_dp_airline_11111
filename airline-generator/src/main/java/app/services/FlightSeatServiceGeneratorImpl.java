@@ -1,74 +1,61 @@
 package app.services;
 
 import app.clients.FlightSeatGeneratorClient;
-import app.dto.FlightSeatDTO;
-import app.dto.SeatDTO;
+import app.dto.FlightSeatDto;
+import app.dto.SeatDto;
 import app.enums.CategoryType;
 import app.services.interfaces.FlightSeatServiceGenerator;
 import app.util.RandomGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class FlightSeatServiceGeneratorImpl implements FlightSeatServiceGenerator {
     private final RandomGenerator randomGenerator;
     private final FlightSeatGeneratorClient generatorClient;
-    private List<SeatDTO> listSeatDTO;
+    private List<SeatDto> listSeatDTO;
+
     @PostConstruct
     public void init() {
-        listSeatDTO = generatorClient.getAllSeatDTO().getBody();
+        listSeatDTO = generatorClient.getAllFlightSeats(null, null,
+                        null, false, false).getBody()
+                .stream()
+                .map(FlightSeatDto::getSeat)
+                .collect(Collectors.toList());
     }
 
 
-
     @Override
-    public FlightSeatDTO createRandomFlightSeatDTO() {
-        FlightSeatDTO flightSeatDTO = new FlightSeatDTO(); // не отображается id в свагере
-
-        flightSeatDTO.setFare(randomGenerator.random.nextInt(10000) + 1000); //работает
-
-        flightSeatDTO.setIsRegistered(randomGenerator.random.nextBoolean()); // работает
-
-        flightSeatDTO.setIsSold(randomGenerator.random.nextBoolean()); // работает
-
-        flightSeatDTO.setIsBooked(randomGenerator.random.nextBoolean()); // работает
-
-        flightSeatDTO.setFlightId(5L); //заглушка // работает
-        //flightSeatDTO.setFlightId(randomGenerator.getRandomId());
-        //flightSeatDTO.setFlightId(randomGenerator.random.nextLong()); //откорректировать
-
-
-        flightSeatDTO.setSeat(randomGenerator.getRandomElementOfList(listSeatDTO));// работает
-
-
-        flightSeatDTO.setCategory(randomGenerator.randomEnum(CategoryType.class)); // работает
-
-        return flightSeatDTO;
+    public FlightSeatDto createRandomFlightSeatDTO() {
+        FlightSeatDto flightSeatDto = new FlightSeatDto();
+        flightSeatDto.setId(1L);// должен игнорироваться при сохранении
+        flightSeatDto.setFare(randomGenerator.random.nextInt(10000) + 1000);
+        flightSeatDto.setIsRegistered(randomGenerator.random.nextBoolean());
+        flightSeatDto.setIsSold(randomGenerator.random.nextBoolean());
+        flightSeatDto.setIsBooked(randomGenerator.random.nextBoolean());
+        flightSeatDto.setFlightId(randomGenerator.getRandomBoundId(302)); // т.к. всего 302 полётов в базе
+        flightSeatDto.setSeat(randomGenerator.getRandomElementOfList(listSeatDTO));
+        flightSeatDto.setCategory(randomGenerator.randomEnum(CategoryType.class));
+        return flightSeatDto;
     }
 
     @Override
-    public List<FlightSeatDTO> generateRandomFlightSeatDTO(Integer amt) {
-        List<FlightSeatDTO> result = new ArrayList<>();
-        for (int i = 0; i < amt; i++) {
-            FlightSeatDTO flightSeatDTO = createRandomFlightSeatDTO();
-            generatorClient.createFlightSeatDTO(flightSeatDTO);
-            result.add(flightSeatDTO);
-
+    public List<FlightSeatDto> generateRandomFlightSeatDTO(Integer amt) {
+        List<FlightSeatDto> result = new ArrayList<>();
+        if (amt < 1) {
+            return result;
         }
-       /* return Stream.generate(this::createRandomFlightSeatDTO)
-                .limit(amt)
-                .parallel()
-                .peek(generatorClient::createFlightSeatDTO)
-                .collect(Collectors.toList());*/
+        for (int i = 0; i < amt; i++) {
+            FlightSeatDto flightSeatDto = createRandomFlightSeatDTO();
+            FlightSeatDto savedFlightSeatDto = generatorClient.createFlightSeat(flightSeatDto).getBody();
+            result.add(savedFlightSeatDto);
+        }
         return result;
     }
-
 }

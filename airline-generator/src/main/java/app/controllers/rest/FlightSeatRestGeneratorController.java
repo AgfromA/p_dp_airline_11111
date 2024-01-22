@@ -1,7 +1,7 @@
 package app.controllers.rest;
 
 import app.controllers.api.FlightSeatRestApiGenerator;
-import app.dto.FlightSeatDTO;
+import app.dto.FlightSeatDto;
 import app.services.interfaces.FlightSeatServiceGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FlightSeatRestGeneratorController implements FlightSeatRestApiGenerator {
     private final FlightSeatServiceGenerator flightSeatServiceGenerator;
+
     @Override
-    public ResponseEntity<List<FlightSeatDTO>> generateFlightSeatDTO(Integer amt) {
+    public ResponseEntity<List<FlightSeatDto>> generateFlightSeatDTO(Integer amt) {
         log.info("generate Flight Seat amount = {}", amt);
         var flights = flightSeatServiceGenerator.generateRandomFlightSeatDTO(amt);
-        return flights!=null
+        return flights != null
                 ? new ResponseEntity<>(flights, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
