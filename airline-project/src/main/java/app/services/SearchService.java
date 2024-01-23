@@ -85,7 +85,7 @@ public class SearchService {
         }
         return searchFlightList;
     }
-
+    @Loggable
     private List<SearchResultCard> getNonDirectFlights(Search search) {
         List<Flight> departFlights = addNonDirectDepartFlightsToSearchDepartFlight(search);
         List<SearchResultCard> nonDirectFlights = new ArrayList<>();
@@ -98,14 +98,41 @@ public class SearchService {
             searchResultCard.setTotalPrice(totalPriceDepart);
 
             if (search.getReturnDate() != null) {
-                List<Flight> returnFlights = addNonDirectReturnFlightsToSearchReturnFlight(search);
-                for (Flight flightR : returnFlights) {
-                    SearchResultCardData searchResultCardDataBack = builderForSearchResultCardData(flightR);
-                    searchResultCard.setDataBack(searchResultCardDataBack);
-                    Integer totalPriceReturn = totalPriceDepart + findLowestFare(search, flightR);
-                    searchResultCard.setTotalPrice(totalPriceReturn);
+                boolean foundSuitableReturnFlight = false;
+
+                List<Flight> returnDirectFlights = flightService.getListDirectFlightsByFromAndToAndDepartureDate(
+                        search.getTo(),
+                        search.getFrom(),
+                        Date.valueOf(search.getReturnDate()));
+
+                List<Flight> returnNonDirectFlights = addNonDirectReturnFlightsToSearchReturnFlight(search);
+
+                for (Flight flightR : returnDirectFlights) {
+                    if (checkFlightForNumberSeats(flightR, search)) {
+                        SearchResultCardData searchResultCardDataBack = builderForSearchResultCardData(flightR);
+                        searchResultCard.setDataBack(searchResultCardDataBack);
+                        Integer totalPriceReturn = totalPriceDepart + findLowestFare(search, flightR);
+                        searchResultCard.setTotalPrice(totalPriceReturn);
+                        nonDirectFlights.add(searchResultCard);
+                        foundSuitableReturnFlight = true;
+                    }
+                }
+
+                for (Flight flightR : returnNonDirectFlights) {
+                    if (checkFlightForNumberSeats(flightR, search)) {
+                        SearchResultCardData searchResultCardDataBack = builderForSearchResultCardData(flightR);
+                        searchResultCard.setDataBack(searchResultCardDataBack);
+                        Integer totalPriceReturn = totalPriceDepart + findLowestFare(search, flightR);
+                        searchResultCard.setTotalPrice(totalPriceReturn);
+                        nonDirectFlights.add(searchResultCard);
+                        foundSuitableReturnFlight = true;
+                    }
+                }
+
+                if (!foundSuitableReturnFlight) {
                     nonDirectFlights.add(searchResultCard);
                 }
+
             } else {
                 nonDirectFlights.add(searchResultCard);
                 searchResultCard.setTotalPrice(totalPriceDepart);
@@ -126,7 +153,7 @@ public class SearchService {
                 .arrivalDateTime(flight.getArrivalDateTime())
                 .build();
     }
-
+    @Loggable
     public Integer findLowestFare(Search search, Flight flight) {
         Set<FlightSeat> sortedFlightSeats = flightSeatService.getSetFlightSeatsByFlightId(flight.getId());
         return sortedFlightSeats.stream()
@@ -153,6 +180,8 @@ public class SearchService {
                     Date.valueOf(search.getReturnDate()));
         }
 
+        boolean foundSuitableReturnFlight = false;
+
         for (Flight departFlight : departFlights) {
             if (checkFlightForNumberSeats(departFlight, search)) {
                 SearchResultCard searchResultCard = new SearchResultCard();
@@ -162,6 +191,7 @@ public class SearchService {
                 searchResultCard.setTotalPrice(totalPriceDepart);
 
                 if (search.getReturnDate() != null) {
+                    foundSuitableReturnFlight = false;
                     for (Flight returnFlight : returnFlights) {
                         if (checkFlightForNumberSeats(returnFlight, search)) {
                             SearchResultCardData searchResultCardDataBack = builderForSearchResultCardData(returnFlight);
@@ -169,10 +199,11 @@ public class SearchService {
                             Integer totalPriceReturn = totalPriceDepart + findLowestFare(search, returnFlight);
                             searchResultCard.setTotalPrice(totalPriceReturn);
                             searchResultCardList.add(searchResultCard);
+                            foundSuitableReturnFlight = true;
                         }
                     }
-                } else {
-                    searchResultCard.setTotalPrice(totalPriceDepart);
+                }
+                if (!foundSuitableReturnFlight) {
                     searchResultCardList.add(searchResultCard);
                 }
             }
@@ -203,3 +234,4 @@ public class SearchService {
         return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
     }
 }
+

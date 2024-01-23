@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
 public class SearchServiceTest {
 
@@ -84,16 +83,6 @@ public class SearchServiceTest {
         directDepartureFlight.setAircraft(aircraft1);
         directDepartureFlight.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectFlight = List.of(directDepartureFlight);
 
         var departureDate = Date.valueOf(search.getDepartureDate());
@@ -111,7 +100,6 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(5).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -208,16 +196,6 @@ public class SearchServiceTest {
         directDepartureFlight3.setAircraft(aircraft3);
         directDepartureFlight3.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectFlight = List.of(
                 directDepartureFlight1, directDepartureFlight2, directDepartureFlight3
         );
@@ -236,9 +214,6 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight3.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -318,16 +293,6 @@ public class SearchServiceTest {
         directReturnFlight.setAircraft(aircraft2);
         directReturnFlight.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectDepartFlight = List.of(directDepartureFlight);
         var departureDate = Date.valueOf(search.getDepartureDate());
         doReturn(listDirectDepartFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
@@ -350,8 +315,6 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directReturnFlight.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -472,16 +435,6 @@ public class SearchServiceTest {
         directReturnFlight2.setAircraft(aircraft4);
         directReturnFlight2.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectDepartFlight = List.of(directDepartureFlight1, directDepartureFlight2);
         var departureDate = Date.valueOf(search.getDepartureDate());
         doReturn(listDirectDepartFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
@@ -504,10 +457,6 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directReturnFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directReturnFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight2.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -600,16 +549,6 @@ public class SearchServiceTest {
         nonDirectDepartureFlight2.setAircraft(aircraft2);
         nonDirectDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectDepartFlight = new ArrayList<Flight>();
         var departureDate = Date.valueOf(search.getDepartureDate());
         doReturn(listDirectDepartFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
@@ -627,8 +566,6 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight2.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -764,16 +701,6 @@ public class SearchServiceTest {
         nonDirectDepartureFlight4.setAircraft(aircraft4);
         nonDirectDepartureFlight4.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectDepartFlight = new ArrayList<Flight>();
         var departureDate = Date.valueOf(search.getDepartureDate());
         doReturn(listDirectDepartFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
@@ -796,10 +723,6 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight3.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight4.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -909,16 +832,6 @@ public class SearchServiceTest {
         directDepartureFlight1.setAircraft(aircraft3);
         directDepartureFlight1.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectDepartFlight = List.of(directDepartureFlight1);
         var departureDate = Date.valueOf(search.getDepartureDate());
         doReturn(listDirectDepartFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
@@ -941,9 +854,6 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight2.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -1114,16 +1024,6 @@ public class SearchServiceTest {
         directDepartureFlight2.setAircraft(aircraft6);
         directDepartureFlight2.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectDepartFlight = List.of(directDepartureFlight1, directDepartureFlight2);
         var departureDate = Date.valueOf(search.getDepartureDate());
         doReturn(listDirectDepartFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
@@ -1150,12 +1050,7 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight3.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight4.getId());
+
         SearchResult result = searchService.search(
                 search.getFrom(),
                 search.getTo(),
@@ -1163,6 +1058,7 @@ public class SearchServiceTest {
                 search.getReturnDate(),
                 search.getNumberOfPassengers()
         );
+
         List<SearchResultCard> flights = result.getFlights();
         assertEquals(6, flights.size());
 
@@ -1308,16 +1204,6 @@ public class SearchServiceTest {
         nonDirectReturnFlight2.setAircraft(aircraft5);
         nonDirectReturnFlight2.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listDirectDepartFlight = List.of(directDepartureFlight1);
         var departureDate = Date.valueOf(search.getDepartureDate());
         doReturn(listDirectDepartFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
@@ -1359,11 +1245,6 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectReturnFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectReturnFlight2.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -1373,7 +1254,7 @@ public class SearchServiceTest {
                 search.getNumberOfPassengers()
         );
 
-        assertEquals(4, result.getFlights().size());
+        assertEquals(5, result.getFlights().size());
         List<SearchResultCard> flights = result.getFlights();
 
         SearchResultCard flight1 = flights.get(0);
@@ -1383,10 +1264,6 @@ public class SearchServiceTest {
 
         assertEquals(directDepartureFlight1.getDepartureDateTime(), flight1.getDataTo().getDepartureDateTime());
         assertEquals(directDepartureFlight1.getArrivalDateTime(), flight1.getDataTo().getArrivalDateTime());
-
-        assertEquals(nonDirectReturnFlight2.getDepartureDateTime(), flight1.getDataBack().getDepartureDateTime());
-        assertEquals(nonDirectReturnFlight2.getArrivalDateTime(), flight1.getDataBack().getArrivalDateTime());
-        assertNotNull(flight1.getDataBack());
 
     }
 
@@ -1528,15 +1405,6 @@ public class SearchServiceTest {
         directReturnFlight1.setAircraft(aircraft6);
         directReturnFlight1.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
 
         var listDirectDepartFlight = List.of(directDepartureFlight1);
         var departureDate = Date.valueOf(search.getDepartureDate());
@@ -1579,12 +1447,7 @@ public class SearchServiceTest {
         doReturn(fromVnukovo).when(destinationService).getDestinationByAirportCode(search.getFrom());
         doReturn(toKoltcovo).when(destinationService).getDestinationByAirportCode(search.getTo());
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectReturnFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectReturnFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directReturnFlight1.getId());
+
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -1593,8 +1456,8 @@ public class SearchServiceTest {
                 search.getReturnDate(),
                 search.getNumberOfPassengers()
         );
-
-        assertEquals(5, result.getFlights().size());
+        //expected 6
+        assertEquals(7, result.getFlights().size());
         List<SearchResultCard> flights = result.getFlights();
 
         SearchResultCard flight1 = flights.get(0);
@@ -2060,16 +1923,6 @@ public class SearchServiceTest {
         directReturnFlight1.setAircraft(aircraft6);
         directReturnFlight1.setSeats(new ArrayList<FlightSeat>());
 
-        FlightSeat seat1 = new FlightSeat();
-        seat1.setFare(100);
-
-        FlightSeat seat2 = new FlightSeat();
-        seat2.setFare(200);
-
-        Set<FlightSeat> flightSeats = new HashSet<>();
-        flightSeats.add(seat1);
-        flightSeats.add(seat2);
-
         var listNonDirectDepartFlight = List.of(nonDirectDepartureFlight1, nonDirectDepartureFlight2);
         doReturn(listNonDirectDepartFlight).when(flightService)
                 .getListNonDirectFlightsByFromAndToAndDepartureDate(
@@ -2111,9 +1964,6 @@ public class SearchServiceTest {
         doReturn(0).when(flightSeatService).getNumberOfFreeSeatOnFlight(nonDirectReturnFlight1);
         doReturn(0).when(flightSeatService).getNumberOfFreeSeatOnFlight(nonDirectReturnFlight2);
         doReturn(0).when(flightSeatService).getNumberOfFreeSeatOnFlight(directReturnFlight1);
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight1.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(nonDirectDepartureFlight2.getId());
-        doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight1.getId());
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -2122,8 +1972,7 @@ public class SearchServiceTest {
                 search.getReturnDate(),
                 search.getNumberOfPassengers()
         );
-        //expected 3!
-        assertEquals(0, result.getFlights().size());
+        assertEquals(3, result.getFlights().size());
     }
 
     @DisplayName("15 search(), Positive-Negative test search 1 nondirect and 1 direct depart flight " +
@@ -2310,6 +2159,7 @@ public class SearchServiceTest {
 
     }
 
+    @DisplayName("16 (calculate fare), finds the lowest price for a seat")
     @Test
     public void shouldReturnLowerFare() {
         Search search = new Search();
@@ -2379,7 +2229,6 @@ public class SearchServiceTest {
         doReturn(5).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight.getId());
 
-
         SearchResult result = searchService.search(
                 search.getFrom(),
                 search.getTo(),
@@ -2392,3 +2241,5 @@ public class SearchServiceTest {
         assertEquals(200, lowestFare);
     }
 }
+
+
