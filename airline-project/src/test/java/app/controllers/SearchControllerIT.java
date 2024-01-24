@@ -37,6 +37,7 @@ class SearchControllerIT extends IntegrationTestBase {
     private SearchService searchService;
     @Autowired
     private FlightService flightService;
+
     // Прямые Рейсы туда: Внуково-Омск
     // Прямые рейсы обратно: Омск-Внуково
 
@@ -84,13 +85,13 @@ class SearchControllerIT extends IntegrationTestBase {
                 search.getTo(),
                 Date.valueOf(search.getDepartureDate()));
 
-        Integer lowestFareDepart = searchService.findLowestFare(search,departFlights.get(0));
+        Integer lowestFareDepart = searchService.findLowestFare(search, departFlights.get(0));
 
         assertEquals(1100, lowestFareDepart);
 
-        assertEquals(1100,searchResult.getFlights().get(0).getTotalPrice());
+        assertEquals(1100, searchResult.getFlights().get(0).getTotalPrice());
 
-        assertEquals("3h 30m",searchResult.getFlights().get(0).getDataTo().getFlightTime());
+        assertEquals("3h 30m", searchResult.getFlights().get(0).getDataTo().getFlightTime());
     }
 
     //2. В базе: один прямой рейс туда и один прямой рейс обратно с наличием мест (3 свободных мест).
@@ -146,17 +147,17 @@ class SearchControllerIT extends IntegrationTestBase {
                 search.getFrom(),
                 Date.valueOf(search.getReturnDate()));
 
-        Integer lowestFareDepart = searchService.findLowestFare(search,departFlights.get(0));
-        Integer lowestFareReturn = searchService.findLowestFare(search,returnFlights.get(0));
+        Integer lowestFareDepart = searchService.findLowestFare(search, departFlights.get(0));
+        Integer lowestFareReturn = searchService.findLowestFare(search, returnFlights.get(0));
 
         assertEquals(1100, lowestFareDepart);
 
         assertEquals(900, lowestFareReturn);
 
-        assertEquals(2000,searchResult.getFlights().get(0).getTotalPrice());
+        assertEquals(2000, searchResult.getFlights().get(0).getTotalPrice());
 
-        assertEquals("3h 30m",searchResult.getFlights().get(0).getDataTo().getFlightTime());
-        assertEquals("3h 50m",searchResult.getFlights().get(0).getDataBack().getFlightTime());
+        assertEquals("3h 30m", searchResult.getFlights().get(0).getDataTo().getFlightTime());
+        assertEquals("3h 50m", searchResult.getFlights().get(0).getDataBack().getFlightTime());
     }
 
     //3. В базе: два прямых рейсов туда и два прямых рейсов обратно (туда и обратно - 3 свободных мест).
@@ -164,7 +165,7 @@ class SearchControllerIT extends IntegrationTestBase {
     @DisplayName("3 test. In DB 2 direct depart flight with 3 free seats " +
             "and 2 direct return flight with 3 free seats")
     @Test
-    void shouldReturnOneDirectReturnFlightWithFreeSeats() throws Exception {
+    void shouldReturnTwoDirectDepartAndTwoDirectReturnFlightWithFreeSeats() throws Exception {
 
         Airport airportFrom = VKO;
         Airport airportTo = OMS;
@@ -209,26 +210,26 @@ class SearchControllerIT extends IntegrationTestBase {
                 search.getFrom(),
                 Date.valueOf(search.getReturnDate()));
 
-        Integer lowestFareDepart1 = searchService.findLowestFare(search,departFlights.get(0));
-        Integer lowestFareDepart2 = searchService.findLowestFare(search,departFlights.get(1));
-        Integer lowestFareReturn1 = searchService.findLowestFare(search,returnFlights.get(0));
-        Integer lowestFareReturn2 = searchService.findLowestFare(search,returnFlights.get(1));
+        Integer lowestFareDepart1 = searchService.findLowestFare(search, departFlights.get(0));
+        Integer lowestFareDepart2 = searchService.findLowestFare(search, departFlights.get(1));
+        Integer lowestFareReturn1 = searchService.findLowestFare(search, returnFlights.get(0));
+        Integer lowestFareReturn2 = searchService.findLowestFare(search, returnFlights.get(1));
 
         assertEquals(900, lowestFareDepart1);
         assertEquals(1100, lowestFareDepart2);
         assertEquals(1100, lowestFareReturn1);
         assertEquals(1000, lowestFareReturn2);
 
-        assertEquals(2000,searchResult.getFlights().get(0).getTotalPrice());   //dep1 - ret1
-        assertEquals(1900,searchResult.getFlights().get(1).getTotalPrice());   //dep1 - ret2
-        assertEquals(2200,searchResult.getFlights().get(2).getTotalPrice());   //dep2 - ret1
-        assertEquals(2100,searchResult.getFlights().get(3).getTotalPrice());   //dep2 - ret2
+        assertEquals(2000, searchResult.getFlights().get(0).getTotalPrice());   //dep1 - ret1
+        assertEquals(1900, searchResult.getFlights().get(1).getTotalPrice());   //dep1 - ret2
+        assertEquals(2200, searchResult.getFlights().get(2).getTotalPrice());   //dep2 - ret1
+        assertEquals(2100, searchResult.getFlights().get(3).getTotalPrice());   //dep2 - ret2
 
 
-        assertEquals("3h 30m",searchResult.getFlights().get(0).getDataTo().getFlightTime());
-        assertEquals("3h 30m",searchResult.getFlights().get(1).getDataTo().getFlightTime());
-        assertEquals("3h 50m",searchResult.getFlights().get(0).getDataBack().getFlightTime());
-        assertEquals("3h 40m",searchResult.getFlights().get(1).getDataBack().getFlightTime());
+        assertEquals("3h 30m", searchResult.getFlights().get(0).getDataTo().getFlightTime());
+        assertEquals("3h 30m", searchResult.getFlights().get(1).getDataTo().getFlightTime());
+        assertEquals("3h 50m", searchResult.getFlights().get(0).getDataBack().getFlightTime());
+        assertEquals("3h 40m", searchResult.getFlights().get(1).getDataBack().getFlightTime());
     }
 
     //4. В базе: два прямых туда и два прямых рейсов
@@ -237,7 +238,7 @@ class SearchControllerIT extends IntegrationTestBase {
     @DisplayName("4 test.In DB 2 direct depart flight with 3 free seats" +
             "and 2 direct return flight, one of them with 0 free seats")
     @Test
-    void shouldReturnTwoDirectAndTwoNonDirectDepartAndTwoDirectAndTwoNonDirectReturnFlightsWithThreeSeatsOnEach()
+    void shouldReturnTwoDirectDepartAndTwoDirectReturnFlightsWithThreeSeatsOnDepartAndZeroOnReturn()
             throws Exception {
 
         Airport airportFrom = VKO;
@@ -286,23 +287,23 @@ class SearchControllerIT extends IntegrationTestBase {
                 search.getFrom(),
                 Date.valueOf(search.getReturnDate()));
 
-        Integer lowestFareDepart1 = searchService.findLowestFare(search,departFlights.get(0));
-        Integer lowestFareDepart2 = searchService.findLowestFare(search,departFlights.get(1));
-        Integer lowestFareReturn1 = searchService.findLowestFare(search,returnFlights.get(0));
+        Integer lowestFareDepart1 = searchService.findLowestFare(search, departFlights.get(0));
+        Integer lowestFareDepart2 = searchService.findLowestFare(search, departFlights.get(1));
+        Integer lowestFareReturn1 = searchService.findLowestFare(search, returnFlights.get(0));
 
         assertEquals(1100, lowestFareDepart1);
         assertEquals(1100, lowestFareDepart2);
         assertEquals(1100, lowestFareReturn1);
 
-        assertEquals(2200,searchResult.getFlights().get(0).getTotalPrice());   //dep1 - ret1
-        assertEquals(1100,searchResult.getFlights().get(1).getTotalPrice());   //dep1 билет только туда
-        assertEquals(2200,searchResult.getFlights().get(2).getTotalPrice());   //dep2 - ret1
-        assertEquals(1100,searchResult.getFlights().get(3).getTotalPrice());   //dep2 билет только туда
+        assertEquals(2200, searchResult.getFlights().get(0).getTotalPrice());   //dep1 - ret1
+        assertEquals(1100, searchResult.getFlights().get(1).getTotalPrice());   //dep1 билет только туда
+        assertEquals(2200, searchResult.getFlights().get(2).getTotalPrice());   //dep2 - ret1
+        assertEquals(1100, searchResult.getFlights().get(3).getTotalPrice());   //dep2 билет только туда
 
 
-        assertEquals("3h 30m",searchResult.getFlights().get(0).getDataTo().getFlightTime());
-        assertEquals("3h 30m",searchResult.getFlights().get(1).getDataTo().getFlightTime());
-        assertEquals("3h 40m",searchResult.getFlights().get(0).getDataBack().getFlightTime());
+        assertEquals("3h 30m", searchResult.getFlights().get(0).getDataTo().getFlightTime());
+        assertEquals("3h 30m", searchResult.getFlights().get(1).getDataTo().getFlightTime());
+        assertEquals("3h 40m", searchResult.getFlights().get(0).getDataBack().getFlightTime());
 
         assertNull(searchResult.getFlights().get(1).getDataBack());
     }
@@ -355,13 +356,13 @@ class SearchControllerIT extends IntegrationTestBase {
                 search.getTo(),
                 Date.valueOf(search.getDepartureDate()));
 
-        Integer lowestFareDepart1 = searchService.findLowestFare(search,departFlights.get(0));
+        Integer lowestFareDepart1 = searchService.findLowestFare(search, departFlights.get(0));
 
         assertEquals(500, lowestFareDepart1);
 
-        assertEquals(500,searchResult.getFlights().get(0).getTotalPrice());   //dep1 билет только туда на 1ого
+        assertEquals(500, searchResult.getFlights().get(0).getTotalPrice());   //dep1 билет только туда на 1ого
 
-        assertEquals("3h 30m",searchResult.getFlights().get(0).getDataTo().getFlightTime());
+        assertEquals("3h 30m", searchResult.getFlights().get(0).getDataTo().getFlightTime());
     }
 
     private SearchResult getSearchResult(String json) throws JsonProcessingException {
@@ -381,6 +382,7 @@ class SearchControllerIT extends IntegrationTestBase {
             }
         }
     }
+
     // Посчитать количество прямых обратно
     private void assertNumberOfReturnDirectFlights(int expectDirect, Search search, String json) throws JsonProcessingException {
         var searchResult = getSearchResult(json);
