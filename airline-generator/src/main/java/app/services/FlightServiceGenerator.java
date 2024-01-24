@@ -6,7 +6,6 @@ import app.dto.FlightDto;
 import app.dto.FlightSeatDto;
 import app.enums.Airport;
 import app.enums.FlightStatus;
-import app.services.interfaces.FlightServiceGenerator;
 import app.util.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FlightServiceGeneratorImpl implements FlightServiceGenerator {
+public class FlightServiceGenerator {
     private final RandomGenerator randomGenerator;
     private List<FlightSeatDto> flightSeatDTOList;
     private final FlightGeneratorClient generatorClient;
@@ -38,7 +37,6 @@ public class FlightServiceGeneratorImpl implements FlightServiceGenerator {
     }
 
 
-    @Override
     public FlightDto createRandomFlightDTO() {
         FlightDto flightDto = new FlightDto();
         flightDto.setId(10000L); // должен игнорироваться при сохранении
@@ -53,7 +51,6 @@ public class FlightServiceGeneratorImpl implements FlightServiceGenerator {
         return flightDto;
     }
 
-    @Override
     public List<FlightDto> generateRandomFlightDTO(Integer amt) {
         List<FlightDto> result = new ArrayList<>();
         if (amt < 1) {

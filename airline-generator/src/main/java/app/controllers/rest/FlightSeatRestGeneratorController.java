@@ -2,7 +2,7 @@ package app.controllers.rest;
 
 import app.controllers.api.FlightSeatRestApiGenerator;
 import app.dto.FlightSeatDto;
-import app.services.interfaces.FlightSeatServiceGenerator;
+import app.services.FlightSeatServiceGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

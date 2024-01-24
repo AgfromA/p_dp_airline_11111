@@ -4,7 +4,6 @@ import app.clients.FlightSeatGeneratorClient;
 import app.dto.FlightSeatDto;
 import app.dto.SeatDto;
 import app.enums.CategoryType;
-import app.services.interfaces.FlightSeatServiceGenerator;
 import app.util.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FlightSeatServiceGeneratorImpl implements FlightSeatServiceGenerator {
+public class FlightSeatServiceGenerator {
     private final RandomGenerator randomGenerator;
     private final FlightSeatGeneratorClient generatorClient;
     private List<SeatDto> listSeatDTO;
@@ -30,8 +29,6 @@ public class FlightSeatServiceGeneratorImpl implements FlightSeatServiceGenerato
                 .collect(Collectors.toList());
     }
 
-
-    @Override
     public FlightSeatDto createRandomFlightSeatDTO() {
         FlightSeatDto flightSeatDto = new FlightSeatDto();
         flightSeatDto.setId(1L);// должен игнорироваться при сохранении
@@ -45,7 +42,6 @@ public class FlightSeatServiceGeneratorImpl implements FlightSeatServiceGenerato
         return flightSeatDto;
     }
 
-    @Override
     public List<FlightSeatDto> generateRandomFlightSeatDTO(Integer amt) {
         List<FlightSeatDto> result = new ArrayList<>();
         if (amt < 1) {
