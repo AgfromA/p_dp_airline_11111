@@ -22,4 +22,17 @@
         <tagDatabase tag="v-1.23-filling-table-flight_seats"/>
     </changeSet>
 
+    <include file="04-filling-table-flights.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.23.4" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.23-filling-table-flights"/>
+    </changeSet>
+
+    <include file="05-filling-table-flight_seats.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.23.5" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.23-filling-table-flight_seats"/>
+    </changeSet>
+
+
 </databaseChangeLog>

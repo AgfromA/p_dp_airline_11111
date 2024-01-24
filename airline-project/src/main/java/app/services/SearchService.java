@@ -102,7 +102,6 @@ public class SearchService {
             return ZoneId.of(timeZone);
         }
     }
-
     @Loggable
     private List<SearchResultCard> getDirectFlights(Search search) {
         List<SearchResultCard> searchResultCardList = new ArrayList<>();
@@ -123,15 +122,16 @@ public class SearchService {
 
         for (Flight departFlight : departFlights) {
             if (checkFlightForNumberSeats(departFlight, search)) {
-                SearchResultCard searchResultCard = new SearchResultCard();
-                SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
-                searchResultCard.setDataTo(searchResultCardData);
-                Integer totalPriceDepart = findLowestFare(search, departFlight);
-                searchResultCard.setTotalPrice(totalPriceDepart);
 
                 if (search.getReturnDate() != null) {
-                    foundSuitableReturnFlight = false;
                     for (Flight returnFlight : returnFlights) {
+                        SearchResultCard searchResultCard = new SearchResultCard();
+                        SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
+                        searchResultCard.setDataTo(searchResultCardData);
+                        Integer totalPriceDepart = findLowestFare(search, departFlight);
+                        searchResultCard.setTotalPrice(totalPriceDepart);
+                        foundSuitableReturnFlight = false;
+
                         if (checkFlightForNumberSeats(returnFlight, search)) {
                             SearchResultCardData searchResultCardDataBack = builderForSearchResultCardData(returnFlight);
                             searchResultCard.setDataBack(searchResultCardDataBack);
@@ -143,14 +143,17 @@ public class SearchService {
                     }
                 }
                 if (!foundSuitableReturnFlight) {
-                    searchResultCardList.add(searchResultCard);
+                    SearchResultCard searchResultCard = new SearchResultCard();
+                    SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
+                    searchResultCard.setDataTo(searchResultCardData);
+                    Integer totalPriceDepart = findLowestFare(search, departFlight);
                     searchResultCard.setTotalPrice(totalPriceDepart);
+                    searchResultCardList.add(searchResultCard);
                 }
             }
         }
-        //   Set<SearchResultCard> uniqueCards = new LinkedHashSet<>(searchResultCardList);
-       // searchResultCardList = new ArrayList<>(uniqueCards);
-
+           Set<SearchResultCard> uniqueCards = new LinkedHashSet<>(searchResultCardList);
+        searchResultCardList = new ArrayList<>(uniqueCards);
         return searchResultCardList;
     }
     @Loggable
