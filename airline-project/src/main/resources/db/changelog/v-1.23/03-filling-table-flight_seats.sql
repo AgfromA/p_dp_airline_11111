@@ -82,7 +82,15 @@ values (15000, false, false, 303, 24, false),
        (28000, false, false, 352, 53, false),
        (31000, false, false, 352, 52, false),
        (28000, false, false, 353, 32, false),
-       (31000, false, false, 353, 31, false)
+       (31000, false, false, 353, 31, false),
+       (28000, false, false, 354, 53, false),
+       (25000, false, false, 354, 51, false),
+       (31000, false, false, 355, 52, false),
+       (34000, false, false, 355, 53, false),
+       (28000, false, false, 356, 32, false),
+       (26000, false, false, 356, 33, false),
+       (30000, false, false, 357, 53, false),
+       (31000, false, false, 357, 52, false)
 
 
 
