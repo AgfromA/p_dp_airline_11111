@@ -136,9 +136,9 @@
         <tagDatabase tag="v-1.21"/>
     </changeSet>
 
-    <include file="v-1.22/db.changelog-v-1.22.xml" relativeToChangelogFile="true"/>
-    <changeSet id="1.22" author="irina-inozemtseva">
-        <tagDatabase tag="v-1.22"/>
+    <include file="v-1.23/db.changelog-v-1.23.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.23" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.23"/>
     </changeSet>
 
 </databaseChangeLog>

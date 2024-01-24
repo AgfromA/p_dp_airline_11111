@@ -20,5 +20,5 @@ public class SearchResultCardData {
 
     private LocalDateTime arrivalDateTime;
 
-    private LocalDateTime flightTime;
+    private String flightTime;
 }
