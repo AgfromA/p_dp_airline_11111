@@ -100,7 +100,7 @@ VALUES (12, '4C', true, true,
 -- ТУДА (для 1-2 тестов)
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (1, 'VKOOMS', '2023-04-01 12:40:00', '2023-04-01 13:40:00', 'ON_TIME',
+VALUES (1, 'VKOOMS', '2023-04-01 11:20:00', '2023-04-01 17:50:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1), 1, 2);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (1, 500, false, false, false,
@@ -118,14 +118,14 @@ VALUES (3, 650, false, false, false,
 -- ОБРАТНО (для 2 теста)
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (2, 'OMSVKO', '2023-04-03 12:40:00', '2023-04-03 13:40:00', 'ON_TIME',
+VALUES (2, 'OMSVKO', '2023-04-03 07:05:00', '2023-04-03 07:55:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 2, 1);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (4, 500, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 2),
         (SELECT seats.id FROM seats WHERE seats.id = 4));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
-VALUES (5, 600, false, false, false,
+VALUES (5, 400, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 2),
         (SELECT seats.id FROM seats WHERE seats.id = 5));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
@@ -140,14 +140,14 @@ VALUES (6, 650, false, false, false,
 -- ТУДА №1
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (62, 'VKOOMS', '2023-03-01 12:40:00', '2023-03-01 13:40:00', 'ON_TIME',
+VALUES (62, 'VKOOMS', '2023-03-01 11:20:00', '2023-03-01 17:50:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1), 1, 2);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (184, 500, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 62),
         (SELECT seats.id FROM seats WHERE seats.id = 1));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
-VALUES (185, 600, false, false, false,
+VALUES (185, 400, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 62),
         (SELECT seats.id FROM seats WHERE seats.id = 2));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
@@ -158,7 +158,7 @@ VALUES (186, 650, false, false, false,
 -- ТУДА №2
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (63, 'VKOOMS', '2023-03-01 18:00:00', '2023-03-01 19:00:00', 'ON_TIME',
+VALUES (63, 'VKOOMS', '2023-03-01 22:10:00', '2023-03-02 04:35:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1), 1, 2);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (187, 500, false, false, false,
@@ -176,7 +176,7 @@ VALUES (189, 650, false, false, false,
 -- ОБРАТНО №1
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (6, 'OMSVKO', '2023-04-06 12:40:00', '2023-04-06 13:40:00', 'ON_TIME',
+VALUES (6, 'OMSVKO', '2023-04-06 07:05:00', '2023-04-06 07:55:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 2, 1);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (16, 500, false, false, false,
@@ -194,14 +194,14 @@ VALUES (18, 650, false, false, false,
 -- ОБРАТНО №2
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (56, 'OMSVKO', '2023-04-06 21:00:00', '2023-04-06 22:00:00', 'ON_TIME',
+VALUES (56, 'OMSVKO', '2023-04-06 18:50:00', '2023-04-06 19:30:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 2, 1);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (166, 500, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 56),
         (SELECT seats.id FROM seats WHERE seats.id = 4));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
-VALUES (167, 600, false, false, false,
+VALUES (167, 500, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 56),
         (SELECT seats.id FROM seats WHERE seats.id = 5));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
@@ -216,7 +216,7 @@ VALUES (168, 650, false, false, false,
 -- ПРЯМОЙ РЕЙС 1
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (14, 'VKOOMS', '2023-04-20 12:40:00', '2023-04-20 13:40:00', 'ON_TIME',
+VALUES (14, 'VKOOMS', '2023-04-20 11:20:00', '2023-04-20 17:50:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1), 1, 2);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (40, 500, false, false, false,
@@ -234,7 +234,7 @@ VALUES (42, 650, false, false, false,
 -- ПРЯМОЙ РЕЙС 2
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (15, 'VKOOMS', '2023-04-20 18:00:00', '2023-04-20 19:00:00', 'ON_TIME',
+VALUES (15, 'VKOOMS', '2023-04-20 22:10:00', '2023-04-21 04:35:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1), 1, 2);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (43, 500, false, false, false,
@@ -249,12 +249,11 @@ VALUES (45, 650, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 15),
         (SELECT seats.id FROM seats WHERE seats.id = 3));
 
-
 -- РЕЙСЫ ОБРАТНО
 -- ПРЯМОЙ РЕЙС 1
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (20, 'OMSVKO', '2023-04-25 01:00:00', '2023-04-25 02:00:00', 'ON_TIME',
+VALUES (20, 'OMSVKO', '2023-04-25 18:50:00', '2023-04-25 19:30:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 2, 1);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (58, 500, false, false, false,
@@ -272,7 +271,7 @@ VALUES (60, 650, false, false, false,
 -- ПРЯМОЙ РЕЙС 2
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (21, 'OMSVKO', '2023-04-25 12:40:00', '2023-04-25 13:40:00', 'ON_TIME',
+VALUES (21, 'OMSVKO', '2023-04-25 07:05:00', '2023-04-25 07:55:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 2, 1);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (61, 500, true, true, true,
@@ -299,7 +298,7 @@ VALUES (63, 650, true, true, true,
 -- ОБРАТНО
 
 INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
-VALUES (26, 'OMSVKO', '2023-05-03 12:40:00', '2023-05-03 13:40:00', 'ON_TIME',
+VALUES (26, 'OMSVKO', '2023-05-03 07:05:00', '2023-05-03 07:55:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2), 2, 1);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (76, 500, true, true, true,

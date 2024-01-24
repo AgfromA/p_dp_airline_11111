@@ -77,12 +77,11 @@ public class SearchService {
     }
     @Loggable
     public Integer findLowestFare(Search search, Flight flight) {
-        Set<FlightSeat> flightSeats = new TreeSet<>(Comparator.comparingInt(FlightSeat::getFare));
-        flightSeats.addAll(flightSeatService.getSetFlightSeatsByFlightId(flight.getId()));
+        List<FlightSeat> flightSeats = new ArrayList<>(flightSeatService.getSetFlightSeatsByFlightId(flight.getId()));
+        flightSeats.sort(Comparator.comparingInt(FlightSeat::getFare));
 
-        Set<FlightSeat> sortedFlightSeats = flightSeats.stream()
-                .limit(search.getNumberOfPassengers())
-                .collect(Collectors.toSet());
+        List<FlightSeat> sortedFlightSeats =
+                flightSeats.subList(0, Math.min(search.getNumberOfPassengers(), flightSeats.size()));
 
         Integer fare = 0;
         for (FlightSeat seat : sortedFlightSeats) {
