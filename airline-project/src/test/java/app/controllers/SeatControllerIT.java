@@ -11,13 +11,13 @@ import app.services.SeatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,7 +82,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(seatService
-                        .getAllPagesSeats(pageable.getPageNumber(), pageable.getPageSize())
+                        .getAllSeats(pageable.getPageNumber(), pageable.getPageSize())
                         .getContent())));
     }
     // Пагинация 2.0
@@ -112,7 +112,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
 
-                .andExpect(content().json(objectMapper.writeValueAsString(seatMapper.toDto(seatService.getSeatById(id)))));
+                .andExpect(content().json(objectMapper.writeValueAsString(seatMapper.toDto(seatService.getSeat(id)))));
     }
 
     @Test
@@ -125,7 +125,7 @@ class SeatControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldEditSeat() throws Exception {
-        var seatDTO = seatMapper.toDto(seatService.getSeatById(1));
+        var seatDTO = seatMapper.toDto(seatService.getSeat(1));
         seatDTO.setSeatNumber("1B");
         seatDTO.setIsLockedBack(false);
         seatDTO.setIsNearEmergencyExit(true);
@@ -146,7 +146,7 @@ class SeatControllerIT extends IntegrationTestBase {
         long numberOfNotExistedSeat = seatRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(seatService.getSeatById(100)))
+                        .content(objectMapper.writeValueAsString(seatService.getSeat(100)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -183,12 +183,12 @@ class SeatControllerIT extends IntegrationTestBase {
         aircraft.setModel("Airbus A319");
         aircraft.setModelYear(2002);
         aircraft.setFlightRange(3800);
-        long aircraftId = aircraftService.saveAircraft(aircraft).getId();
+        long aircraftId = aircraftService.createAircraft(aircraft).getId();
 
-        mockMvc.perform(post("http://localhost:8080/api/seats/aircraft/{aircraftId}", 1))
+        mockMvc.perform(post("http://localhost:8080/api/seats/generate").param("aircraftId", "1"))
                 .andDo(print())
-                .andExpect(status().isOk());
-        mockMvc.perform(post("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+                .andExpect(status().isCreated());
+        mockMvc.perform(post("http://localhost:8080/api/seats/generate").param("aircraftId", "1"))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
@@ -202,7 +202,7 @@ class SeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldGetNotExistedSeatsDTOByAircraftId() throws Exception {
         var aircraftId = 100L;
-        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -210,7 +210,7 @@ class SeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldGetNotValidExistedSeatsDTOByAircraftId() throws Exception {
         var aircraftId = "notValid";
-        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -218,11 +218,103 @@ class SeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldGetAllPagesSeatsDTOByAircraftId() throws Exception {
         var aircraftId = 1L;
-        var pageable = PageRequest.of(0, 30, Sort.by("id"));
-        mockMvc.perform(get("http://localhost:8080/api/seats/aircraft/{aircraftId}", aircraftId))
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(seatService.getPagesSeatsByAircraftId(aircraftId, pageable).getContent())));
+                        .writeValueAsString(seatService.getAllSeatsByAircraftId(0, 30, aircraftId).getContent())));
     }
+
+
+    // Тест на попытку удаления несуществующего места
+    @Test
+    void deleteNotExistedSeat() throws Exception {
+        long id = 1488;
+        long numberOfNotExistedSeat = seatRepository.count();
+
+        mockMvc.perform(delete("http://localhost:8080/api/seats/{id}", id)
+                        .content(objectMapper.writeValueAsString(seatService.getSeat(1488)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertThat(seatRepository.count(), equalTo(numberOfNotExistedSeat)));
+    }
+
+    // Тест на проверку успешного удаления места
+    @Test
+    void successfullDeleteSeat() throws Exception {
+
+        var seatDTO = seatMapper.toDto(seatService.getSeat(1));
+        seatDTO.setSeatNumber("1B");
+        seatDTO.setIsLockedBack(false);
+        seatDTO.setIsNearEmergencyExit(true);
+        long id = seatDTO.getId();
+
+        mockMvc.perform(delete("http://localhost:8080/api/seats/{id}", id)
+                        .content(objectMapper.writeValueAsString(seatDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    // Тест на проверку невозможности создания нового места с полями, равными null
+    @Test
+    void shouldReturnBadRequestWhenFieldsAreNull() throws Exception {
+        var seatDTO = new SeatDto();
+
+        mockMvc.perform(post("http://localhost:8080/api/seats")
+                        .content(objectMapper.writeValueAsString(seatDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    // Тест на проверку автоматической генерации id нового пользователя
+    @Test
+    void shouldNotAllowUserToSetId() throws Exception {
+
+        var seatDTO = new SeatDto();
+        seatDTO.setSeatNumber("1B");
+        seatDTO.setIsLockedBack(true);
+        seatDTO.setIsNearEmergencyExit(false);
+        seatDTO.setCategory(CategoryType.ECONOMY);
+        seatDTO.setAircraftId(1L);
+
+        // Не устанавливаем id, так как он должен генерироваться приложением автоматически
+
+        mockMvc.perform(post("http://localhost:8080/api/seats")
+                        .content(objectMapper.writeValueAsString(seatDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists());    // Проверяем, что json содержит id,
+        //    хотя мы его не устанавливали
+    }
+
+    // Тест для проверки получения мест при некорректных данных
+    @Test
+    void shouldGetAllSeatsWithPagination() throws Exception {
+        // Задаем значения для параметров page и size
+        int page = 200;
+        int size = 5;
+
+        // Выполняем GET-запрос
+        mockMvc.perform(get("http://localhost:8080/api/seats")
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size)))
+                .andExpect(status().isNoContent());
+    }
+
+    // Тест на проверку невозможности показать несуществующее место
+    @Test
+    void shouldGetNotExistSeatById() throws Exception {
+        long id = 1488;
+        mockMvc.perform(get("http://localhost:8080/api/seats/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+    }
+
 }

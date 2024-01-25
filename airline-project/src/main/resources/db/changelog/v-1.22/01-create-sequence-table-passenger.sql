@@ -1,0 +1,1 @@
+CREATE SEQUENCE seq_passenger START 1 INCREMENT 1;

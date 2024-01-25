@@ -21,7 +21,8 @@ import java.time.LocalDate;
 public class Passenger {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_passenger")
+    @SequenceGenerator(name = "seq_passenger", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @Column(name = "first_name")

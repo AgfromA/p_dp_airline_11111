@@ -56,7 +56,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDto> getAccountById(Long id) {
+    public ResponseEntity<AccountDto> getAccount(Long id) {
         log.info("getById: get Account by id. id = {}", id);
         var account = accountService.getAccountById(id);
         return account.isEmpty()
@@ -84,13 +84,13 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDto> updateAccountById(Long id, AccountDto accountDTO) {
+    public ResponseEntity<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
         log.info("update: update Account with id = {}", id);
         return new ResponseEntity<>(accountService.updateAccount(id, accountDTO).get(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> deleteAccountById(Long id) {
+    public ResponseEntity<Void> deleteAccount(Long id) {
         log.info("deleteAircraftById: deleteAircraftById Account with id = {}", id);
         var user = accountService.getAccountById(id);
         if (user.isEmpty()) {

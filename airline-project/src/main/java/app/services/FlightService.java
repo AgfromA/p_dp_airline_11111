@@ -6,7 +6,6 @@ import app.entities.Flight;
 import app.mappers.FlightMapper;
 import app.repositories.*;
 import app.enums.Airport;
-import app.utils.aop.Loggable;
 import net.sf.geographiclib.Geodesic;
 import net.sf.geographiclib.GeodesicData;
 import org.springframework.context.annotation.Lazy;
@@ -24,7 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-@Transactional
 public class FlightService {
 
     private final FlightRepository flightRepository;
@@ -47,25 +45,21 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public List<FlightDto> getAllListFlights() {
         return flightMapper.convertFlightListToFlighDtotList(flightRepository.findAll(), this);
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public Page<FlightDto> getAllFlights(Pageable pageable) {
         return flightRepository.findAll(pageable).map(flight -> flightMapper.toDto(flight, this));
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public Flight getFlightByCode(String code) {
         return flightRepository.getByCode(code);
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public Page<FlightDto> getAllFlightsByDestinationsAndDates(String cityFrom, String cityTo,
                                                                String dateStart, String dateFinish,
                                                                Pageable pageable) {
@@ -74,14 +68,12 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public List<Flight> getFlightsByDestinationsAndDepartureDate(Destination from, Destination to,
                                                                  LocalDate departureDate) {
         return flightRepository.getByFromAndToAndDepartureDate(from, to, departureDate);
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo
             , Date departureDate) {
         return flightRepository.getListDirectFlightsByFromAndToAndDepartureDate(airportCodeFrom, airportCodeTo
@@ -89,13 +81,11 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public List<Flight> getListNonDirectFlightsByFromAndToAndDepartureDate(int airportIdFrom, int airportIdTo, Date departureDate) {
         return flightRepository.getListNonDirectFlightsByFromAndToAndDepartureDate(airportIdFrom, airportIdTo, departureDate);
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public FlightDto getFlightByIdAndDates(Long id, String start, String finish) {
         var flight = flightRepository.findById(id);
         if (flight.isPresent() && (flight.get().getDepartureDateTime().isEqual(LocalDateTime.parse(start))
@@ -106,7 +96,6 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
-    @Loggable
     public Optional<Flight> getFlightById(Long id) {
         return flightRepository.findById(id);
     }
@@ -117,26 +106,23 @@ public class FlightService {
         return flightMapper.toDto(savedFlight, this);
     }
 
-    @Loggable
     public FlightDto updateFlight(Long id, FlightDto flightDto) {
         var updatedFlight = flightRepository.saveAndFlush(flightMapper.toEntity(flightDto, aircraftService,
                 destinationService, ticketService, flightSeatService));
         return flightMapper.toDto(updatedFlight, this);
     }
 
-    @Loggable
     public void deleteFlightById(Long id) {
         flightRepository.deleteById(id);
     }
 
-    @Loggable
     public Long getDistance(Flight flight) {
         Geodesic geodesic = Geodesic.WGS84;
         GeodesicData calculate = geodesic.Inverse(
-                parseLatitude(flight.getFrom().getAirportCode())
-                , parseLongitude(flight.getFrom().getAirportCode())
-                , parseLatitude(flight.getTo().getAirportCode())
-                , parseLongitude(flight.getTo().getAirportCode())
+                parseLatitude(flight.getFrom().getAirportCode()),
+                parseLongitude(flight.getFrom().getAirportCode()),
+                parseLatitude(flight.getTo().getAirportCode()),
+                parseLongitude(flight.getTo().getAirportCode())
         );
         return (long) (calculate.s12 / 1000);
     }

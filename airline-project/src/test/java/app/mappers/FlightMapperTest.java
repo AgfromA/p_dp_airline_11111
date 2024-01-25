@@ -43,11 +43,11 @@ class FlightMapperTest {
         aircraft.setId(6001L);
 
         Seat seat1 = new Seat();
-        seat1.setId(1);
+        seat1.setId(1L);
         seat1.setCategory(category);
         seat1.setAircraft(aircraft);
         Seat seat2 = new Seat();
-        seat2.setId(2);
+        seat2.setId(2L);
         seat2.setCategory(category);
         seat2.setAircraft(aircraft);
 
@@ -106,7 +106,7 @@ class FlightMapperTest {
         flightSeat2.setFlight(flight);
 
         when(flightServiceMock.getFlightById(1L)).thenReturn(Optional.of(flight));
-        when(seatServiceMock.getSeatById(anyLong())).thenReturn(flightSeat1.getSeat());
+        when(seatServiceMock.getSeat(anyLong())).thenReturn(flightSeat1.getSeat());
         FlightDto flightDto = flightMapper.toDto(flight, flightServiceMock);
 
         Assertions.assertNotNull(flightDto);
@@ -176,7 +176,7 @@ class FlightMapperTest {
         Aircraft aircraft = new Aircraft();
         aircraft.setId(6001L);
 
-        when(aircraftServiceMock.getAircraftById(flightDto.getAircraftId())).thenReturn(aircraft);
+        when(aircraftServiceMock.getAircraft(flightDto.getAircraftId())).thenReturn(aircraft);
 
         Flight flight = flightMapper.toEntity(flightDto, aircraftServiceMock, destinationServiceMock,
                 ticketServiceMock, flightSeatServiceMock);
@@ -203,11 +203,11 @@ class FlightMapperTest {
         aircraft.setId(6001L);
 
         Seat seat1 = new Seat();
-        seat1.setId(1);
+        seat1.setId(1L);
         seat1.setCategory(category);
         seat1.setAircraft(aircraft);
         Seat seat2 = new Seat();
-        seat2.setId(2);
+        seat2.setId(2L);
         seat2.setCategory(category);
         seat2.setAircraft(aircraft);
 
@@ -266,7 +266,7 @@ class FlightMapperTest {
         flightSeat2.setFlight(flight);
 
         when(flightServiceMock.getFlightById(1L)).thenReturn(Optional.of(flight));
-        when(seatServiceMock.getSeatById(anyLong())).thenReturn(flightSeat1.getSeat());
+        when(seatServiceMock.getSeat(anyLong())).thenReturn(flightSeat1.getSeat());
 
         flightList.add(flight);
 
@@ -340,7 +340,7 @@ class FlightMapperTest {
         Aircraft aircraft = new Aircraft();
         aircraft.setId(6001L);
 
-        when(aircraftServiceMock.getAircraftById(flightDto.getAircraftId())).thenReturn(aircraft);
+        when(aircraftServiceMock.getAircraft(flightDto.getAircraftId())).thenReturn(aircraft);
 
         flightDtoList.add(flightDto);
 

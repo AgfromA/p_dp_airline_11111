@@ -4,6 +4,7 @@ import app.enums.seats.interfaces.AircraftSeats;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+// FIXME превратить всю эту бадягу с енамом в нормальную сущность, обозвать AircraftModel
 @Getter
 @RequiredArgsConstructor
 public enum EmbraerERJ170Seats implements AircraftSeats {

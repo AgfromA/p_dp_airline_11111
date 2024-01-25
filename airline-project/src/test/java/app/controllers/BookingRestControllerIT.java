@@ -96,7 +96,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         var booking = new BookingDto();
         booking.setBookingNumber("BK-111111");
         booking.setBookingDate(LocalDateTime.now());
-        booking.setPassengerId(passengerService.getPassengerById(1001L).get().getId());
+        booking.setPassengerId(passengerService.getPassenger(1001L).get().getId());
         booking.setFlightSeatId(1L);
 
         mockMvc.perform(post("http://localhost:8080/api/bookings")
@@ -138,7 +138,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         long id = 6002;
         var booking = bookingService.getBookingById(id);
         booking.setBookingDate(LocalDateTime.now());
-        booking.setPassengerId(passengerService.getPassengerById(1002L).get().getId());
+        booking.setPassengerId(passengerService.getPassenger(1002L).get().getId());
         long numberOfBooking = bookingRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", id)

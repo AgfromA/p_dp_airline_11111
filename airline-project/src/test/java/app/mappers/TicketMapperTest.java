@@ -36,7 +36,7 @@ class TicketMapperTest {
         passenger.setId(1001L);
         passenger.setFirstName("Test");
         passenger.setLastName("Testing");
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         Flight flight = new Flight();
         Destination destinationFrom = new Destination();
@@ -54,10 +54,10 @@ class TicketMapperTest {
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3001L);
         Seat seat = new Seat();
-        seat.setId(42);
+        seat.setId(42L);
         seat.setSeatNumber("42L");
         flightSeat.setSeat(seat);
-        when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(3001L)).thenReturn(Optional.of(flightSeat));
 
         Ticket ticket = new Ticket();
         ticket.setId(1L);
@@ -93,7 +93,7 @@ class TicketMapperTest {
         passenger.setId(1001L);
         passenger.setFirstName("Test");
         passenger.setLastName("Testing");
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         Flight flight = new Flight();
         Destination destinationFrom = new Destination();
@@ -112,10 +112,10 @@ class TicketMapperTest {
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3001L);
         Seat seat = new Seat();
-        seat.setId(42);
+        seat.setId(42L);
         seat.setSeatNumber("42L");
         flightSeat.setSeat(seat);
-        when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(3001L)).thenReturn(Optional.of(flightSeat));
 
         TicketDto ticketDTO = new TicketDto();
         ticketDTO.setId(1L);
@@ -163,7 +163,7 @@ class TicketMapperTest {
         passenger.setId(1001L);
         passenger.setFirstName("Test");
         passenger.setLastName("Testing");
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         Flight flight = new Flight();
         Destination destinationFrom = new Destination();
@@ -181,10 +181,10 @@ class TicketMapperTest {
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3001L);
         Seat seat = new Seat();
-        seat.setId(42);
+        seat.setId(42L);
         seat.setSeatNumber("42L");
         flightSeat.setSeat(seat);
-        when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(3001L)).thenReturn(Optional.of(flightSeat));
 
         Ticket ticket = new Ticket();
         ticket.setId(1L);
@@ -223,7 +223,7 @@ class TicketMapperTest {
         passenger.setId(1001L);
         passenger.setFirstName("Test");
         passenger.setLastName("Testing");
-        when(passengerServiceMock.getPassengerById(1001L)).thenReturn(Optional.of(passenger));
+        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
         Flight flight = new Flight();
         Destination destinationFrom = new Destination();
@@ -242,10 +242,10 @@ class TicketMapperTest {
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3001L);
         Seat seat = new Seat();
-        seat.setId(42);
+        seat.setId(42L);
         seat.setSeatNumber("42L");
         flightSeat.setSeat(seat);
-        when(flightSeatServiceMock.getFlightSeatById(3001L)).thenReturn(Optional.of(flightSeat));
+        when(flightSeatServiceMock.getFlightSeat(3001L)).thenReturn(Optional.of(flightSeat));
 
         TicketDto ticketDTO = new TicketDto();
         ticketDTO.setId(1L);
