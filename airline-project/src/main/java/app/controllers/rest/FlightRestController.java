@@ -34,10 +34,7 @@ public class FlightRestController implements FlightRestApi {
             log.info("get all List Flights");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         Page<FlightDto> flightDtoPage;
         Pageable pageable = PageRequest.of(page, size);
 

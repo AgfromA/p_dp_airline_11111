@@ -29,10 +29,7 @@ public class DestinationRestController implements DestinationRestApi {
             log.info("get all List Destinations");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         Page<DestinationDto> destination;
         if (cityName == null && countryName == null && timezone == null) {
             destination = destinationService.getAllDestinations(page, size);

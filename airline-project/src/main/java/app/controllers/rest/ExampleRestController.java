@@ -28,10 +28,7 @@ public class ExampleRestController implements ExampleRestApi {
             log.info("getAll: get all List Example");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("getAll: no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         var examplePage = exampleService.getPage(page, size);
 
         return examplePage.isEmpty()

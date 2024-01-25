@@ -26,10 +26,7 @@ public class BookingRestController implements BookingRestApi {
             log.info("getAll: get all list Bookings");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("getAll: no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         var bookings = bookingService.getAllBookings(page, size);
         return bookings.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)

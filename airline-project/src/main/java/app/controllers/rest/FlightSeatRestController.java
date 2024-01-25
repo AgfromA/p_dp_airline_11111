@@ -29,9 +29,6 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         if (page == null || size == null) {
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         Page<FlightSeatDto> flightSeats;
 

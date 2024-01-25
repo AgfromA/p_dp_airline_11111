@@ -29,10 +29,7 @@ public class TimezoneRestController implements TimezoneRestApi {
             log.info("getAll: get all List Timezones");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         var timezone = timezoneService.getAllPagesTimezones(page, size);
 
         return timezone.isEmpty()

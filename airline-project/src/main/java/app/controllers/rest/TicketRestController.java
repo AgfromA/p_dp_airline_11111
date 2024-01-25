@@ -27,10 +27,7 @@ public class TicketRestController implements TicketRestApi {
             log.info("getAll: get all List Tickets");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         var ticketPage = ticketService.getAllTickets(page, size);
 
         return ticketPage.isEmpty()

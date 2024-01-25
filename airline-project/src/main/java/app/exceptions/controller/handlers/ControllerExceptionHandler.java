@@ -49,4 +49,12 @@ public class ControllerExceptionHandler {
     private String getRequestUrl() {
         return request.getRequestURL().toString();
     }
+
+
+    // Ловит IllegalArgumentException, если page < 0 или size < 1
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

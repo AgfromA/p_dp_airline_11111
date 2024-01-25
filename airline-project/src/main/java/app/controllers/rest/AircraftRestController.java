@@ -24,9 +24,7 @@ public class AircraftRestController implements AircraftRestApi {
         if (page == null || size == null) {
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         var aircraft = aircraftService.getAllAircrafts(page, size);
         return aircraft.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
