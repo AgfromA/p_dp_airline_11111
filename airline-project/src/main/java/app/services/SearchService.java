@@ -60,11 +60,21 @@ public class SearchService {
         // Использование Math.abs() чтобы получить абсолютное значение
         long durationMinutes = Math.abs(duration.toMinutes());
 
-        // Разделение продолжительности на часы и минуты
-        long hours = durationMinutes / 60;
+        // Разделение продолжительности на дни, часы и минуты
+        long days = durationMinutes / (60 * 24);
+        long hours = (durationMinutes % (60 * 24)) / 60;
         long minutes = durationMinutes % 60;
 
-        String flightTime = hours + "h " + minutes + "m";
+        String flightTime = "";
+        if (days > 0) {
+            flightTime += days + "д ";
+        }
+        if (hours > 0) {
+            flightTime += hours + "ч ";
+        }
+        if (minutes > 0) {
+            flightTime += minutes + "м";
+        }
 
         return SearchResultCardData.builder()
                 .airportFrom(flight.getFrom().getAirportCode())
