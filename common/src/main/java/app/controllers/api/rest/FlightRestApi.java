@@ -13,22 +13,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Api(tags = "Flight REST")
 @Tag(name = "Flight REST", description = "API для операций с рейсами")
 public interface FlightRestApi {
 
-    @RequestMapping(value = "/api/flights", method = RequestMethod.GET)
-    @ApiOperation(value = "Get all Flights or Flights by params")
+    @RequestMapping(value = "/api/flights/param", method = RequestMethod.GET)
+    @ApiOperation(value = "Get all Flights by params")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Flights found"),
             @ApiResponse(code = 204, message = "Flights not found")
     })
     ResponseEntity<List<FlightDto>> getAllFlightsByDestinationsAndDates(
             @PageableDefault(sort = {"id"})
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
+            @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(10) Integer size,
 
             @ApiParam(value = "Departure cityName", example = "Москва")
             @RequestParam(name = "cityFrom", required = false) String cityFrom,
@@ -101,4 +103,16 @@ public interface FlightRestApi {
                     value = "Flight.id"
             )
             @PathVariable("id") Long id);
+
+    @RequestMapping(value = "/api/flights", method = RequestMethod.GET)
+    @ApiOperation(value = "Get all Flights")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Flights found"),
+            @ApiResponse(code = 204, message = "Flights not found")
+    })
+    ResponseEntity<List<FlightDto>> getAllFlightsDTO(
+            @PageableDefault(sort = {"id"})
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size);
+
 }
