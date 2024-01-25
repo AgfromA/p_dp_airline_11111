@@ -3,7 +3,10 @@ package app.services;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.dto.search.SearchResultCard;
-import app.entities.*;
+import app.entities.Aircraft;
+import app.entities.Destination;
+import app.entities.Flight;
+import app.entities.FlightSeat;
 import app.enums.Airport;
 import app.enums.FlightStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -16,12 +19,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SearchServiceTest {

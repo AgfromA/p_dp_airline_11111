@@ -22,4 +22,5 @@
         <tagDatabase tag="v-1.23-filling-table-flight_seats"/>
     </changeSet>
 
+
 </databaseChangeLog>

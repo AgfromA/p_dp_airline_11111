@@ -14,9 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.time.*;
-import java.util.*;
-
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -43,6 +50,7 @@ public class SearchService {
         return searchResult;
 
     }
+
     @Loggable
     private SearchResultCardData builderForSearchResultCardData(Flight flight) {
 
@@ -57,10 +65,23 @@ public class SearchService {
         // Вычисление продолжительности полета в минутах
         Duration duration = Duration.between(departureDateTimeInTimeZone, arrivalDateTimeInTimeZone);
 
-        // Использование Math.abs() чтобы получить абсолютное значение
+        // Получение строки продолжительности времени полета в виде "дд чч мм"
+        String flightTime = getFormattedFlightDurationString(duration);
+
+        return SearchResultCardData.builder()
+                .airportFrom(flight.getFrom().getAirportCode())
+                .airportTo(flight.getTo().getAirportCode())
+                .flightTime(flightTime)
+                .departureDateTime(flight.getDepartureDateTime())
+                .arrivalDateTime(flight.getArrivalDateTime())
+                .build();
+    }
+
+    @Loggable
+    private static String getFormattedFlightDurationString(Duration duration) {
+
         long durationMinutes = Math.abs(duration.toMinutes());
 
-        // Разделение продолжительности на дни, часы и минуты
         long days = durationMinutes / (60 * 24);
         long hours = (durationMinutes % (60 * 24)) / 60;
         long minutes = durationMinutes % 60;
@@ -75,15 +96,21 @@ public class SearchService {
         if (minutes > 0) {
             flightTime += minutes + "м";
         }
-
-        return SearchResultCardData.builder()
-                .airportFrom(flight.getFrom().getAirportCode())
-                .airportTo(flight.getTo().getAirportCode())
-                .flightTime(flightTime)
-                .departureDateTime(flight.getDepartureDateTime())
-                .arrivalDateTime(flight.getArrivalDateTime())
-                .build();
+        return flightTime;
     }
+
+    @Loggable
+    private ZoneId parseTimeZone(String timeZone) {
+        // Проверка, является ли timeZone в формате "GMT +XX"
+        if (timeZone.startsWith("GMT")) {
+            String offset = timeZone.substring(4).trim();
+            ZoneOffset zoneOffset = ZoneOffset.of(offset);
+            return ZoneId.from(zoneOffset);
+        } else {
+            return ZoneId.of(timeZone);
+        }
+    }
+
     @Loggable
     public Integer findLowestFare(Search search, Flight flight) {
         List<FlightSeat> flightSeats = new ArrayList<>(flightSeatService.getSetFlightSeatsByFlightId(flight.getId()));
@@ -100,17 +127,6 @@ public class SearchService {
     }
 
     @Loggable
-    private ZoneId parseTimeZone(String timeZone) {
-        // Проверка, является ли timeZone в формате "GMT +XX"
-        if (timeZone.startsWith("GMT")) {
-            String offset = timeZone.substring(4).trim();
-            ZoneOffset zoneOffset = ZoneOffset.of(offset);
-            return ZoneId.from(zoneOffset);
-        } else {
-            return ZoneId.of(timeZone);
-        }
-    }
-    @Loggable
     private List<SearchResultCard> getDirectFlights(Search search) {
         List<SearchResultCard> searchResultCardList = new ArrayList<>();
         List<Flight> returnFlights = new ArrayList<>();
@@ -126,6 +142,7 @@ public class SearchService {
                     search.getFrom(),
                     Date.valueOf(search.getReturnDate()));
         }
+        // Флаг для обозначения наличия подходящего возвратного рейса
         boolean foundSuitableReturnFlight = false;
 
         for (Flight departFlight : departFlights) {
@@ -150,6 +167,7 @@ public class SearchService {
                         }
                     }
                 }
+                // Если не найден подходящий возвратный рейс, добавляем карточку результатов для направляющего рейса
                 if (!foundSuitableReturnFlight) {
                     SearchResultCard searchResultCard = new SearchResultCard();
                     SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
@@ -160,10 +178,11 @@ public class SearchService {
                 }
             }
         }
-           Set<SearchResultCard> uniqueCards = new LinkedHashSet<>(searchResultCardList);
+        Set<SearchResultCard> uniqueCards = new LinkedHashSet<>(searchResultCardList);
         searchResultCardList = new ArrayList<>(uniqueCards);
         return searchResultCardList;
     }
+
     @Loggable
     private boolean checkFlightForNumberSeats(Flight f, Search search) {
         return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
