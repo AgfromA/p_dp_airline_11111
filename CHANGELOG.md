@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #343 Произведен рефакторинг Search API. Удалена логика с непрямыми перелетами. Добавлена новая схема данных в виде SearchResultCard(Integer totalPrice, SearchResultCardData dataTo, dataBack); Также Добавлено поле FlightTime для вычисления продолжительности полета.
 
 ## [1.0.9] - 20.01.2024
 - Пагинация 2.0
