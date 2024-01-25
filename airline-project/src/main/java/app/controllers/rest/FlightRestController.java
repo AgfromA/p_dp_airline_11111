@@ -7,7 +7,6 @@ import app.mappers.FlightMapper;
 import app.services.FlightService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -38,20 +37,20 @@ public class FlightRestController implements FlightRestApi {
             log.info("no correct data");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Page<FlightDto> flightDtoPage;
+        List<FlightDto> flights = null;
         Pageable pageable = PageRequest.of(page, size);
 
         if (cityFrom == null && cityTo == null && dateStart == null && dateFinish == null) {
-            flightDtoPage = flightService.getAllFlights(pageable);
+            flights = flightService.getAllFlights(pageable).getContent();
             log.info("get all Flights by page");
         } else {
-            flightDtoPage = flightService
-                    .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable);
+            flights = flightService
+                    .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable).getContent();
             log.info("getAllFlightsByDestinationsAndDates: get all Flights or Flights by params");
         }
-        return flightDtoPage.isEmpty()
+        return flights.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(flightDtoPage.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(flights, HttpStatus.OK);
     }
 
     private ResponseEntity<List<FlightDto>> createUnPagedResponse() {
@@ -111,5 +110,24 @@ public class FlightRestController implements FlightRestApi {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<List<FlightDto>> getAllFlightsDTO(Integer page, Integer size) {
+        log.info("get all Flights");
+        if (page == null || size == null) {
+            log.info("get all List Flights");
+            return createUnPagedResponse();
+        }
+        if (page < 0 || size < 1) {
+            log.info("no correct data");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        var flights = flightService.getAllFlights(pageable).getContent();
+        return flights.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(flights, HttpStatus.OK);
+
     }
 }

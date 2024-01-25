@@ -1,0 +1,124 @@
+server:
+  port: 8083
+  servlet:
+    session:
+      timeout: -1
+
+jwt:
+  secret:
+    access: QZnCUVCnP3aukiTOa8XxPkfHODqpXB9xkg/o72yhIh4GE3BPiZszU4fYjJZTbcUcyGM/Bb5N81rv9Csq7blwCA==
+
+airline-project-base-url: http://localhost:8080
+airline-payments-base-url: http://localhost:8081
+airline-front-base-url: http://localhost:8082
+airline-security-base-url: http://localhost:8084
+
+spring:
+  application.name: gateway
+  cloud:
+    gateway:
+      default-filters:
+        - AuthenticationFilter
+
+      routes:
+###################   airline-security route
+        - id: airline-project_accounts_api
+          uri: ${airline-security-base-url}
+          predicates:
+            - Path=/api/auth/**
+
+###################   airline-project route
+
+        - id: airline-project_accounts_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/accounts/**
+
+        - id: airline-project_bookings_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/bookings/**
+
+        - id: airline-project_aircrafts_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/aircrafts/**
+
+        - id: airline-project_categories_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/categories/**
+
+        - id: airline-project_destinations_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/destinations/**
+
+        - id: airline-project_flights_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/flights/**
+
+        - id: airline-project_flight-seats_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/flight-seats/**
+
+        - id: airline-project_passengers_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/passengers/**
+
+        - id: airline-project_payments_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/payments/**
+
+        - id: airline-project_seats_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/seats/**
+
+        - id: airline-project_tickets_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/tickets/**
+
+        - id: airline-project_timezones_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/timezones/**
+
+        - id: airline-project_search_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/search/**
+
+        - id: airline-project_auth_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/auth/**
+
+        - id: airline-project_email_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/email/**
+
+        - id: airline-project_example_api
+          uri: ${airline-project-base-url}
+          predicates:
+            - Path=/api/example/**
+
+###################   airline-payments route
+
+        - id: airline-payments_api
+          uri: ${airline-payments-base-url}
+          predicates:
+            - Path=/api/payments/**
+
+###################   airline-front route
+
+        - id: airline-front
+          uri: ${airline-front-base-url}
+          predicates:
+            - Path=/**
