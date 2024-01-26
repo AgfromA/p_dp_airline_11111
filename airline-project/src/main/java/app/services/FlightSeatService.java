@@ -121,6 +121,7 @@ public class FlightSeatService {
     public List<FlightSeat> findByFlightId(Long id) {
         return flightSeatRepository.findByFlightId(id);
     }
+
     public Set<FlightSeat> getSetFlightSeatsByFlightId(Long id) {
         return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id);
     }
@@ -196,5 +197,14 @@ public class FlightSeatService {
         return flightService.getFlightById(flightId).orElseThrow(
                 () -> new EntityNotFoundException("Operation was not finished because Flight was not found with id = " + flightId)
         );
+    }
+
+    public List<Long> findSeatIdsByFlight(Flight flight) {
+        List<Long> seatIds = new ArrayList<>();
+        Set<FlightSeat> flightSeats = flightSeatRepository.findFlightSeatByFlight(flight);
+        for (FlightSeat flightSeat : flightSeats) {
+            seatIds.add(flightSeat.getSeat().getId());
+        }
+        return seatIds;
     }
 }

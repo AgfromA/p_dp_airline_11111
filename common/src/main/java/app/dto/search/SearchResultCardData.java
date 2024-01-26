@@ -17,9 +17,15 @@ public class SearchResultCardData {
 
     private Airport airportTo;
 
+    private String cityFrom;
+
+    private String cityTo;
+
     private LocalDateTime departureDateTime;
 
     private LocalDateTime arrivalDateTime;
 
     private String flightTime;
+
+    private Long flightSeatId;
 }

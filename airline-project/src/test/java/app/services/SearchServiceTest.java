@@ -26,7 +26,9 @@ import java.util.Set;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -107,6 +109,7 @@ public class SearchServiceTest {
 
         doReturn(5).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight.getId());
+        doReturn(List.of(3l, 4l)).when(flightSeatService).findSeatIdsByFlight(directDepartureFlight);
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -225,6 +228,7 @@ public class SearchServiceTest {
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight1.getId());
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight2.getId());
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight3.getId());
+        doReturn(List.of(3l, 4l)).when(flightSeatService).findSeatIdsByFlight(directDepartureFlight1);
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -329,6 +333,8 @@ public class SearchServiceTest {
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight.getId());
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directReturnFlight.getId());
+        doReturn(List.of(3l, 4l)).when(flightSeatService).findSeatIdsByFlight(directDepartureFlight);
+        doReturn(List.of(5l, 6l)).when(flightSeatService).findSeatIdsByFlight(directReturnFlight);
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -476,6 +482,8 @@ public class SearchServiceTest {
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directDepartureFlight2.getId());
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directReturnFlight1.getId());
         doReturn(flightSeats).when(flightSeatService).getSetFlightSeatsByFlightId(directReturnFlight2.getId());
+        doReturn(List.of(5l, 6l)).when(flightSeatService).findSeatIdsByFlight(directDepartureFlight2);
+        doReturn(List.of(9l, 10l)).when(flightSeatService).findSeatIdsByFlight(directReturnFlight2);
 
         SearchResult result = searchService.search(
                 search.getFrom(),
@@ -703,6 +711,223 @@ public class SearchServiceTest {
 
         assertEquals(50, lowestFareDepart1);
     }
+
+    @DisplayName("8 (check FlightSeatId), returns the expected seat IDs for a given flight")
+    @Test
+    void testFindFlightSeatIdsByFlight() {
+
+        Search search = new Search();
+        search.setFrom(Airport.VKO);
+        search.setTo(Airport.SVX);
+        search.setDepartureDate(LocalDate.of(2023, 4, 1));
+        search.setReturnDate(null);
+        search.setNumberOfPassengers(1);
+
+        Destination fromVnukovo = new Destination();
+        fromVnukovo.setId(1L);
+        fromVnukovo.setAirportCode(Airport.VKO);
+        fromVnukovo.setCityName("Москва");
+        fromVnukovo.setTimezone("GMT +3");
+        fromVnukovo.setCountryName("Россия");
+        fromVnukovo.setIsDeleted(false);
+
+        Destination toKoltcovo = new Destination();
+        toKoltcovo.setId(6L);
+        toKoltcovo.setAirportCode(Airport.SVX);
+        toKoltcovo.setCityName("Екатеринбург");
+        toKoltcovo.setTimezone("GMT +5");
+        toKoltcovo.setCountryName("Россия");
+        toKoltcovo.setIsDeleted(false);
+
+        Aircraft aircraft1 = new Aircraft();
+        aircraft1.setId(1L);
+
+        Flight directDepartureFlight = new Flight();
+        directDepartureFlight.setId(1L);
+        directDepartureFlight.setCode("VKOSVX");
+        directDepartureFlight.setFrom(fromVnukovo);
+        directDepartureFlight.setTo(toKoltcovo);
+        directDepartureFlight.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
+        directDepartureFlight.setFlightStatus(FlightStatus.ON_TIME);
+        directDepartureFlight.setAircraft(aircraft1);
+
+        FlightSeat seat1 = new FlightSeat();
+        seat1.setFare(200);
+        seat1.setId(2L);
+        seat1.setFlight(directDepartureFlight);
+        seat1.setIsBooked(false);
+        seat1.setIsSold(false);
+        seat1.setIsRegistered(false);
+
+        FlightSeat seat2 = new FlightSeat();
+        seat2.setFare(100);
+        seat2.setId(3L);
+        seat2.setFlight(directDepartureFlight);
+        seat2.setIsBooked(false);
+        seat2.setIsSold(false);
+        seat2.setIsRegistered(false);
+
+        Set<FlightSeat> flightSeats1 = new HashSet<>();
+        flightSeats1.add(seat1);
+        flightSeats1.add(seat2);
+
+        when(flightSeatService.findSeatIdsByFlight(directDepartureFlight))
+                .thenReturn(List.of(2L, 3L));
+
+        List<Long> flightSeatId = flightSeatService.findSeatIdsByFlight(directDepartureFlight);
+
+        Long firstFlightSeatId = flightSeatId.get(0);
+
+        assertFalse(flightSeatId.isEmpty(), "Seat IDs list should not be empty");
+
+        assertEquals(2L, firstFlightSeatId);
+    }
+
+    @DisplayName("9 (check NumberSeats), Positive test, be sure that seat is not booked,is not sold and is not registered")
+    @Test
+    void shouldFindFiveNumberOfFreeSeatOnFlight() {
+        Search search = new Search();
+        search.setFrom(Airport.VKO);
+        search.setTo(Airport.SVX);
+        search.setDepartureDate(LocalDate.of(2023, 4, 1));
+        search.setReturnDate(null);
+        search.setNumberOfPassengers(5);
+
+        Destination fromVnukovo = new Destination();
+        fromVnukovo.setId(1L);
+        fromVnukovo.setAirportCode(Airport.VKO);
+        fromVnukovo.setCityName("Москва");
+        fromVnukovo.setTimezone("GMT +3");
+        fromVnukovo.setCountryName("Россия");
+        fromVnukovo.setIsDeleted(false);
+
+        Destination toKoltcovo = new Destination();
+        toKoltcovo.setId(6L);
+        toKoltcovo.setAirportCode(Airport.SVX);
+        toKoltcovo.setCityName("Екатеринбург");
+        toKoltcovo.setTimezone("GMT +5");
+        toKoltcovo.setCountryName("Россия");
+        toKoltcovo.setIsDeleted(false);
+
+        Aircraft aircraft1 = new Aircraft();
+        aircraft1.setId(1L);
+
+        Flight directDepartureFlight = new Flight();
+        directDepartureFlight.setId(1L);
+        directDepartureFlight.setCode("VKOSVX");
+        directDepartureFlight.setFrom(fromVnukovo);
+        directDepartureFlight.setTo(toKoltcovo);
+        directDepartureFlight.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
+        directDepartureFlight.setFlightStatus(FlightStatus.ON_TIME);
+        directDepartureFlight.setAircraft(aircraft1);
+
+        FlightSeat seat1 = new FlightSeat();
+        seat1.setFare(200);
+        seat1.setId(2L);
+        seat1.setFlight(directDepartureFlight);
+        seat1.setIsBooked(false);
+        seat1.setIsSold(false);
+        seat1.setIsRegistered(false);
+
+        FlightSeat seat2 = new FlightSeat();
+        seat2.setFare(100);
+        seat2.setId(3L);
+        seat2.setFlight(directDepartureFlight);
+        seat2.setIsBooked(false);
+        seat2.setIsSold(false);
+        seat2.setIsRegistered(false);
+
+        Set<FlightSeat> flightSeats1 = new HashSet<>();
+        flightSeats1.add(seat1);
+        flightSeats1.add(seat2);
+
+        when(flightSeatService.getNumberOfFreeSeatOnFlight(any(Flight.class))).thenReturn(6);
+
+        boolean result = searchService.checkFlightForNumberSeats(directDepartureFlight, search);
+
+        assertTrue(result);
+    }
+
+    @DisplayName("10 (check NumberSeats), Negative test, be sure that seat is not booked,is not sold and is not registered")
+    @Test
+    void shouldFindTwoNumberOfFreeSeatOnFlight() {
+        Search search = new Search();
+        search.setFrom(Airport.VKO);
+        search.setTo(Airport.SVX);
+        search.setDepartureDate(LocalDate.of(2023, 4, 1));
+        search.setReturnDate(null);
+        search.setNumberOfPassengers(2);
+
+        Destination fromVnukovo = new Destination();
+        fromVnukovo.setId(1L);
+        fromVnukovo.setAirportCode(Airport.VKO);
+        fromVnukovo.setCityName("Москва");
+        fromVnukovo.setTimezone("GMT +3");
+        fromVnukovo.setCountryName("Россия");
+        fromVnukovo.setIsDeleted(false);
+
+        Destination toKoltcovo = new Destination();
+        toKoltcovo.setId(6L);
+        toKoltcovo.setAirportCode(Airport.SVX);
+        toKoltcovo.setCityName("Екатеринбург");
+        toKoltcovo.setTimezone("GMT +5");
+        toKoltcovo.setCountryName("Россия");
+        toKoltcovo.setIsDeleted(false);
+
+        Aircraft aircraft1 = new Aircraft();
+        aircraft1.setId(1L);
+
+        Flight directDepartureFlight = new Flight();
+        directDepartureFlight.setId(1L);
+        directDepartureFlight.setCode("VKOSVX");
+        directDepartureFlight.setFrom(fromVnukovo);
+        directDepartureFlight.setTo(toKoltcovo);
+        directDepartureFlight.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
+        directDepartureFlight.setFlightStatus(FlightStatus.ON_TIME);
+        directDepartureFlight.setAircraft(aircraft1);
+
+        FlightSeat seat1 = new FlightSeat();
+        seat1.setFare(200);
+        seat1.setId(2L);
+        seat1.setFlight(directDepartureFlight);
+        seat1.setIsBooked(false);
+        seat1.setIsSold(false);
+        seat1.setIsRegistered(false);
+
+        FlightSeat seat2 = new FlightSeat();
+        seat2.setFare(100);
+        seat2.setId(3L);
+        seat2.setFlight(directDepartureFlight);
+        seat2.setIsBooked(false);
+        seat2.setIsSold(false);
+        seat2.setIsRegistered(false);
+
+        Set<FlightSeat> flightSeats1 = new HashSet<>();
+        flightSeats1.add(seat1);
+        flightSeats1.add(seat2);
+
+        when(flightSeatService.getNumberOfFreeSeatOnFlight(any(Flight.class))).thenReturn(1);
+
+        boolean result = searchService.checkFlightForNumberSeats(directDepartureFlight, search);
+
+        assertFalse(result);
+    }
 }
+
 
 

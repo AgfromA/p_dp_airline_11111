@@ -68,9 +68,16 @@ public class SearchService {
         // Получение строки продолжительности времени полета в виде "дд чч мм"
         String flightTime = getFormattedFlightDurationString(duration);
 
+        List<Long> flightSeatId = flightSeatService.findSeatIdsByFlight(flight);
+
+        Long firstFlightSeatId = flightSeatId.get(0);
+
         return SearchResultCardData.builder()
                 .airportFrom(flight.getFrom().getAirportCode())
                 .airportTo(flight.getTo().getAirportCode())
+                .cityTo(flight.getTo().getCityName())
+                .cityFrom(flight.getFrom().getCityName())
+                .flightSeatId(firstFlightSeatId)
                 .flightTime(flightTime)
                 .departureDateTime(flight.getDepartureDateTime())
                 .arrivalDateTime(flight.getArrivalDateTime())
@@ -184,7 +191,7 @@ public class SearchService {
     }
 
     @Loggable
-    private boolean checkFlightForNumberSeats(Flight f, Search search) {
+    public boolean checkFlightForNumberSeats(Flight f, Search search) {
         return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
     }
 }

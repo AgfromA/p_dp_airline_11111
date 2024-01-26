@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.dto.search.SearchResultCardData;
 import app.entities.Flight;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
@@ -93,6 +94,10 @@ class SearchControllerIT extends IntegrationTestBase {
         assertEquals(1100, searchResult.getFlights().get(0).getTotalPrice());
 
         assertEquals("3ч 30м", searchResult.getFlights().get(0).getDataTo().getFlightTime());
+
+        for (int i = 0; i < searchResult.getFlights().size(); i++) {
+            assertSearchResultCities(searchResult, i, "Москва", "Омск");
+        }
     }
 
     //2. В базе: один прямой рейс туда и один прямой рейс обратно с наличием мест (3 свободных мест).
@@ -159,6 +164,10 @@ class SearchControllerIT extends IntegrationTestBase {
 
         assertEquals("3ч 30м", searchResult.getFlights().get(0).getDataTo().getFlightTime());
         assertEquals("3ч 50м", searchResult.getFlights().get(0).getDataBack().getFlightTime());
+
+        for (int i = 0; i < searchResult.getFlights().size(); i++) {
+            assertSearchResultCities(searchResult, i, "Москва", "Омск");
+        }
     }
 
     //3. В базе: два прямых рейсов туда и два прямых рейсов обратно (туда и обратно - 3 свободных мест).
@@ -226,11 +235,14 @@ class SearchControllerIT extends IntegrationTestBase {
         assertEquals(2200, searchResult.getFlights().get(2).getTotalPrice());   //dep2 - ret1
         assertEquals(2100, searchResult.getFlights().get(3).getTotalPrice());   //dep2 - ret2
 
-
         assertEquals("3ч 30м", searchResult.getFlights().get(0).getDataTo().getFlightTime());
         assertEquals("3ч 30м", searchResult.getFlights().get(1).getDataTo().getFlightTime());
         assertEquals("3ч 50м", searchResult.getFlights().get(0).getDataBack().getFlightTime());
         assertEquals("3ч 40м", searchResult.getFlights().get(1).getDataBack().getFlightTime());
+
+        for (int i = 0; i < searchResult.getFlights().size(); i++) {
+            assertSearchResultCities(searchResult, i, "Москва", "Омск");
+        }
     }
 
     //4. В базе: два прямых туда и два прямых рейсов
@@ -301,10 +313,9 @@ class SearchControllerIT extends IntegrationTestBase {
         assertEquals(2200, searchResult.getFlights().get(2).getTotalPrice());   //dep2 - ret1
         assertEquals(1100, searchResult.getFlights().get(3).getTotalPrice());   //dep2 билет только туда
 
-
-        assertEquals("3ч 30м", searchResult.getFlights().get(0).getDataTo().getFlightTime());
-        assertEquals("3ч 30м", searchResult.getFlights().get(1).getDataTo().getFlightTime());
-        assertEquals("3ч 40м", searchResult.getFlights().get(0).getDataBack().getFlightTime());
+        for (int i = 0; i < searchResult.getFlights().size(); i++) {
+            assertSearchResultCities(searchResult, i, "Москва", "Омск");
+        }
 
         assertNull(searchResult.getFlights().get(1).getDataBack());
     }
@@ -364,10 +375,29 @@ class SearchControllerIT extends IntegrationTestBase {
         assertEquals(500, searchResult.getFlights().get(0).getTotalPrice());   //dep1 билет только туда на 1ого
 
         assertEquals("3ч 30м", searchResult.getFlights().get(0).getDataTo().getFlightTime());
+
+        for (int i = 0; i < searchResult.getFlights().size(); i++) {
+            assertSearchResultCities(searchResult, i, "Москва", "Омск");
+        }
     }
 
     private SearchResult getSearchResult(String json) throws JsonProcessingException {
         return objectMapper.readValue(json, SearchResult.class);
+    }
+
+    private void assertSearchResultCities(SearchResult searchResult, int index, String cityFromTo, String cityToFrom) {
+        SearchResultCardData dataTo = searchResult.getFlights().get(index).getDataTo();
+        SearchResultCardData dataBack = searchResult.getFlights().get(index).getDataBack();
+
+        assertEquals(cityFromTo, dataTo.getCityFrom());
+        assertEquals(cityToFrom, dataTo.getCityTo());
+
+        if (dataBack != null) {
+            assertEquals(cityToFrom, dataBack.getCityFrom());
+            assertEquals(cityFromTo, dataBack.getCityTo());
+        } else {
+            assertNull(dataBack);
+        }
     }
 
     // Посчитать количество прямых флайтов туда
