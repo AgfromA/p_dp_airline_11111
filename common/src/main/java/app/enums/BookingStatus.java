@@ -6,4 +6,3 @@ public enum BookingStatus {
     OVERDUE,
     CANCELED
 }
-
