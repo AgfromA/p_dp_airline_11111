@@ -11,6 +11,7 @@ import net.sf.geographiclib.Geodesic;
 import net.sf.geographiclib.GeodesicData;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,8 +55,8 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     @Loggable
-    public Page<FlightDto> getAllFlights(Pageable pageable) {
-        return flightRepository.findAll(pageable).map(flight -> flightMapper.toDto(flight, this));
+    public Page<FlightDto> getAllFlights(Integer page, Integer size) {
+        return flightRepository.findAll(PageRequest.of(page, size)).map(flight -> flightMapper.toDto(flight, this));
     }
 
     @Transactional(readOnly = true)

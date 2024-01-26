@@ -41,7 +41,7 @@ public class FlightRestController implements FlightRestApi {
         Pageable pageable = PageRequest.of(page, size);
 
         if (cityFrom == null && cityTo == null && dateStart == null && dateFinish == null) {
-            flights = flightService.getAllFlights(pageable).getContent();
+            flights = flightService.getAllFlights(page, size).getContent();
             log.info("get all Flights by page");
         } else {
             flights = flightService
@@ -123,7 +123,7 @@ public class FlightRestController implements FlightRestApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Pageable pageable = PageRequest.of(page, size);
-        var flights = flightService.getAllFlights(pageable).getContent();
+        var flights = flightService.getAllFlights(page, size).getContent();
         return flights.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(flights, HttpStatus.OK);
