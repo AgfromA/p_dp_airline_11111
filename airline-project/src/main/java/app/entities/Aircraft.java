@@ -42,10 +42,10 @@ public class Aircraft {
     private String model;
 
     @Column(name = "model_year")
-    private int modelYear;
+    private Integer modelYear;
 
     @Column(name = "flight_range")
-    private int flightRange;
+    private Integer flightRange;
 
     @OneToMany(mappedBy = "aircraft", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

@@ -1,138 +1,442 @@
 package app.services;
 
+
+import app.dto.FlightSeatDto;
+import app.dto.SeatDto;
 import app.entities.*;
-import app.enums.Airport;
-import app.enums.CategoryType;
-import app.repositories.FlightRepository;
+import app.exceptions.EntityNotFoundException;
+import app.mappers.FlightSeatMapper;
 import app.repositories.FlightSeatRepository;
-import app.services.FlightService;
+import app.repositories.SeatRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class FlightSeatServiceTest {
-
     @Mock
-    FlightSeatRepository flightSeatRepository;
-
+    private FlightSeatRepository flightSeatRepository;
     @Mock
-    FlightRepository flightRepository;
-
+    private SeatRepository seatRepository;
     @Mock
-    FlightService flightService;
-
+    private SeatService seatService;
+    @Mock
+    private FlightService flightService;
+    @Mock
+    private FlightSeatMapper flightSeatMapper;
     @InjectMocks
-    FlightSeatService flightSeatService;
+    private FlightSeatService flightSeatService;
 
     @Test
-    void addFlightSeatsByFlightNumber() {
-        when(flightService.getDistance(any(Flight.class))).thenReturn(807L);
+    void testGetAllFlightSeatsWithReturnList() {
+        List<FlightSeat> flightSeatList = new ArrayList<>();
+        flightSeatList.add(new FlightSeat());
+        flightSeatList.add(new FlightSeat());
 
-        var flightNumber = "Code:Fl-1";
+        when(flightSeatRepository.findAll()).thenReturn(flightSeatList);
 
-        var aircraft = new Aircraft();
-        aircraft.setId(Long.valueOf(1));
-        aircraft.setAircraftNumber("Number:A-1");
-        aircraft.setModel("ModelAir");
-        aircraft.setFlightRange(500);
-        aircraft.setModelYear(2008);
+        List<FlightSeatDto> expectedFlightSeatDtoList = new ArrayList<>();
+        expectedFlightSeatDtoList.add(new FlightSeatDto());
+        expectedFlightSeatDtoList.add(new FlightSeatDto());
 
-        var category = new Category();
-        category.setCategoryType(CategoryType.BUSINESS);
+        when(flightSeatMapper.toDtoList(flightSeatList, flightService)).thenReturn(expectedFlightSeatDtoList);
 
-        //Список мест самолёта с номерами от 8 до 17
-        Set<Seat> seatSet = new HashSet<>();
-        for (int i = 0; i < 10; i++) {
-            var seat = new Seat();
-            seat.setSeatNumber(Integer.valueOf(i + 8).toString());
-            seat.setIsNearEmergencyExit(true);
-            seat.setIsLockedBack(true);
-            seat.setCategory(category);
-            seat.setAircraft(aircraft);
-            seatSet.add(seat);
-        }
+        List<FlightSeatDto> actualFlightSeatDtoList = flightSeatService.getAllFlightSeats();
 
-        aircraft.setSeatSet(seatSet);
+        assertNotNull(actualFlightSeatDtoList);
+        assertEquals(expectedFlightSeatDtoList, actualFlightSeatDtoList);
+        verify(flightSeatRepository, times(1)).findAll();
+        verify(flightSeatMapper, times(1)).toDtoList(flightSeatList, flightService);
+    }
 
-        var flight = new Flight();
-        flight.setCode(flightNumber);
-        flight.setAircraft(aircraft);
+    @Test
+    void testGetAllFlightSeats() {
+        FlightSeat flightSeat = new FlightSeat();
+        FlightSeatDto flightSeatDto = new FlightSeatDto();
+        when(flightSeatMapper.toDto(any(), any())).thenReturn(flightSeatDto);
+        when(flightSeatRepository.findAll(any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(List.of(flightSeat)));
 
-        //Список уже  существующих мест для продажи с номерами от 1 до 10
-        //№8 - такой же номер как в самолёте, но не относится к нему
-        //№9 и №10 - уже добавленные места нашего самолёта для этого Flight-а
-        Set<FlightSeat> flightSeatSet = new HashSet<>();
-        for (int i = 0; i < 10; i++) {
-            var flightSeat = new FlightSeat();
-            Seat seat = new Seat();
-            seat.setSeatNumber(Integer.valueOf(i + 1).toString());
+        Page<FlightSeatDto> result = flightSeatService.getAllFlightSeats(0, 10);
 
-            if ((i + 1) >= 9) {
-                seat.setAircraft(aircraft);
-                flightSeat.setFlight(flight);
-            }
-            flightSeat.setSeat(seat);
-            flightSeatSet.add(flightSeat);
-        }
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getTotalPages());
+        assertTrue(result.hasContent());
+        verify(flightSeatRepository, times(1)).findAll(any(PageRequest.class));
+    }
 
-        Mockito.doReturn(flight)
-                .when(flightRepository)
-                .getByCode(flightNumber);
+    @Test
+    void testGetAllFlightSeatsFiltered_NotSoldAndNotRegisteredSeats() {
+        Integer page = 1;
+        Integer size = 10;
+        Long flightId = 1L;
+        Boolean isSold = false;
+        Boolean isRegistered = false;
 
-        Mockito.doReturn(flightSeatSet)
-                .when(flightSeatRepository)
-                .findAll();
+        Flight flight = new Flight();
+        flight.setId(flightId);
 
-        var result = flightSeatService.addFlightSeatsByFlightNumber(flightNumber);
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(1L);
+        flightSeat.setIsSold(isSold);
+        flightSeat.setIsRegistered(isRegistered);
+        flightSeat.setFlight(flight);
 
-        Mockito.verify(flightSeatRepository, Mockito.times(8)).save(any(FlightSeat.class));
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FlightSeat> flightSeatPage = new PageImpl<>(List.of(flightSeat));
+        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
+        when(flightSeatRepository
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable))
+                .thenReturn(flightSeatPage);
 
-        assertEquals(8, result.size());
+        Page<FlightSeatDto> result = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
 
-        result.forEach(flightSeat -> assertEquals(flight, flightSeat.getFlight()));
 
-        Set<Seat> seatsInResult = new HashSet<>();
-        result.forEach(flightSeat -> seatsInResult.add(flightSeat.getSeat()));
-        seatSet.removeIf(seat -> seat.getSeatNumber().equals(Integer.valueOf(9).toString())
-                || seat.getSeatNumber().equals(Integer.valueOf(10).toString()));
-        seatSet.addAll(seatsInResult);
-        assertEquals(8, seatSet.size());
+        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity, flightService)), result);
+        verify(flightSeatRepository, times(1))
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable);
+        verify(flightSeatRepository, never())
+                .findAllFlightsSeatByFlightIdAndIsSoldFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, never())
+                .findAllFlightsSeatByFlightIdAndIsRegisteredFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, never())
+                .findFlightSeatsByFlightId(anyLong(), any(Pageable.class));
+    }
+
+    @Test
+    void testGetAllFlightSeatsFiltered_NotSoldSeats() {
+        Integer page = 0;
+        Integer size = 10;
+        Long flightId = 1L;
+        Boolean isSold = false;
+        Boolean isRegistered = true;
+
+        Flight flight = new Flight();
+        flight.setId(flightId);
+
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(1L);
+        flightSeat.setIsSold(isSold);
+        flightSeat.setIsRegistered(isRegistered);
+        flightSeat.setFlight(flight);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FlightSeat> flightSeatPage = new PageImpl<>(List.of(flightSeat));
+        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
+        when(flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(flightId, pageable))
+                .thenReturn(flightSeatPage);
+
+        Page<FlightSeatDto> result = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
+
+        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity, flightService)), result);
+        verify(flightSeatRepository, never())
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, times(1))
+                .findAllFlightsSeatByFlightIdAndIsSoldFalse(flightId, pageable);
+        verify(flightSeatRepository, never())
+                .findAllFlightsSeatByFlightIdAndIsRegisteredFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, never())
+                .findFlightSeatsByFlightId(anyLong(), any(Pageable.class));
+    }
+
+    @Test
+    void testGetAllFlightSeatsFiltered_NotRegisteredSeats() {
+        Integer page = 0;
+        Integer size = 10;
+        Long flightId = 1L;
+        Boolean isSold = true;
+        Boolean isRegistered = false;
+
+        Flight flight = new Flight();
+        flight.setId(flightId);
+
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(1L);
+        flightSeat.setIsSold(isSold);
+        flightSeat.setIsRegistered(isRegistered);
+        flightSeat.setFlight(flight);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FlightSeat> flightSeatPage = new PageImpl<>(List.of(flightSeat));
+        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
+        when(flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(flightId, pageable))
+                .thenReturn(flightSeatPage);
+
+        Page<FlightSeatDto> result = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
+
+        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity, flightService)), result);
+        verify(flightSeatRepository, never())
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, never())
+                .findAllFlightsSeatByFlightIdAndIsSoldFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, times(1))
+                .findAllFlightsSeatByFlightIdAndIsRegisteredFalse(flightId, pageable);
+        verify(flightSeatRepository, never())
+                .findFlightSeatsByFlightId(anyLong(), any(Pageable.class));
 
     }
 
     @Test
-    public void testGenerateFareForFlightSeat() {
+    void testGetAllFlightSeatsFiltered_availableSoldAvailableRegistered() {
+        Integer page = 0;
+        Integer size = 10;
+        Long flightId = 1L;
+        Boolean isSold = true;
+        Boolean isRegistered = true;
 
-        var from = new Destination();
-        from.setAirportCode(Airport.SVX);
-        var to = new Destination();
-        to.setAirportCode(Airport.VKO);
+        Flight flight = new Flight();
+        flight.setId(flightId);
 
-        var flight = new Flight();
-        flight.setFrom(from);
-        flight.setTo(to);
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(1L);
+        flightSeat.setIsSold(isSold);
+        flightSeat.setIsRegistered(isRegistered);
+        flightSeat.setFlight(flight);
 
-        var category = new Category();
-        category.setCategoryType(CategoryType.BUSINESS);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FlightSeat> flightSeatPage = new PageImpl<>(List.of(flightSeat));
+        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
+        when(flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable))
+                .thenReturn(flightSeatPage);
 
-        var seat = new Seat();
-        seat.setIsNearEmergencyExit(true);
-        seat.setIsLockedBack(true);
-        seat.setCategory(category);
+        Page<FlightSeatDto> result = flightSeatService
+                .getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
 
-        when(flightService.getDistance(any(Flight.class))).thenReturn(1459L);
+        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity, flightService)), result);
+        verify(flightSeatRepository, never())
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, never())
+                .findAllFlightsSeatByFlightIdAndIsSoldFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, never())
+                .findAllFlightsSeatByFlightIdAndIsRegisteredFalse(anyLong(), any(Pageable.class));
+        verify(flightSeatRepository, times(1))
+                .findFlightSeatsByFlightId(flightId, pageable);
 
-        assertEquals(11920,  flightSeatService.generateFareForFlightSeat(seat, flight));
+    }
+
+    @Test
+    void testGetFlightSeat() {
+        FlightSeat flightSeat = new FlightSeat();
+        Optional<FlightSeat> expectedFlightSeat = Optional.of(flightSeat);
+        when(flightSeatRepository.findById(anyLong())).thenReturn(expectedFlightSeat);
+
+        Optional<FlightSeat> result = flightSeatService.getFlightSeat(123L);
+
+        assertTrue(result.isPresent());
+        assertEquals(expectedFlightSeat, result);
+        verify(flightSeatRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void testGetFlightSeatDto() {
+        FlightSeat flightSeat = new FlightSeat();
+        FlightSeatDto expectedFlightSeatDto = new FlightSeatDto();
+        when(flightSeatRepository.findById(anyLong())).thenReturn(Optional.of(flightSeat));
+        when(flightSeatMapper.toDto(flightSeat, flightService)).thenReturn(expectedFlightSeatDto);
+
+        Optional<FlightSeatDto> result = flightSeatService.getFlightSeatDto(anyLong());
+
+        assertTrue(result.isPresent());
+        assertEquals(expectedFlightSeatDto, result.get());
+        verify(flightSeatRepository, times(1)).findById(anyLong());
+        verify(flightSeatMapper, times(1)).toDto(flightSeat, flightService);
+    }
+
+
+    @Test
+    void getFlightSeatsByFlightId() {
+        FlightSeat flightSeat = new FlightSeat();
+        FlightSeatDto flightSeatDto = new FlightSeatDto();
+        when(flightSeatRepository.findFlightSeatsByFlightId(anyLong()))
+                .thenReturn(new HashSet<>(List.of(flightSeat)));
+        when(flightSeatMapper.toDto(any(), any())).thenReturn(flightSeatDto);
+
+        List<FlightSeatDto> result = flightSeatService.getFlightSeatsByFlightId(1L);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(flightSeatRepository, times(1)).findFlightSeatsByFlightId(anyLong());
+        verify(flightSeatMapper, times(1)).toDto(any(), any());
+    }
+
+
+    @Test
+    void testCreateFlightSeat() {
+        // Arrange
+        SeatDto seatDto = new SeatDto();
+        seatDto.setId(1L);
+        Seat seat = new Seat();
+        FlightSeatDto flightSeatDto = new FlightSeatDto();
+        flightSeatDto.setFlightId(1L);
+        flightSeatDto.setSeat(seatDto);
+        Flight flight = new Flight();
+        flight.setId(1L);
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(1L);
+        flightSeat.setSeat(seat);
+
+        when(flightService.getFlightById(anyLong())).thenReturn(Optional.of(flight));
+        when(flightSeatMapper.toEntity(flightSeatDto, flightService, seatService)).thenReturn(flightSeat);
+        when(flightSeatRepository.save(flightSeat)).thenReturn(flightSeat);
+        when(seatService.getSeat(flightSeatDto.getSeat().getId())).thenReturn(seat);
+        when(flightSeatMapper.toDto(flightSeat, flightService)).thenReturn(flightSeatDto);
+
+
+        FlightSeatDto result = flightSeatService.createFlightSeat(flightSeatDto);
+
+
+        assertEquals(flightSeatDto, result);
+        verify(flightSeatRepository, times(1)).save(flightSeat);
+    }
+
+
+    @Test
+    void testEditFlightSeat_WhenFlightSeatExists() {
+        Long id = 1L;
+        FlightSeatDto flightSeatDto = new FlightSeatDto();
+        flightSeatDto.setFare(15_000);
+        flightSeatDto.setIsSold(true);
+        flightSeatDto.setIsBooked(false);
+        flightSeatDto.setIsRegistered(true);
+
+        FlightSeat existingFlightSeat = new FlightSeat();
+        existingFlightSeat.setId(id);
+        existingFlightSeat.setFare(10_000);
+        existingFlightSeat.setIsSold(false);
+        existingFlightSeat.setIsBooked(true);
+        existingFlightSeat.setIsRegistered(false);
+
+        when(flightSeatRepository.findById(id)).thenReturn(Optional.of(existingFlightSeat));
+        when(flightSeatMapper.toDto(any(), any())).thenReturn(flightSeatDto);
+        when(flightSeatRepository.save(existingFlightSeat)).thenReturn(existingFlightSeat);
+
+        FlightSeatDto result = flightSeatService.editFlightSeat(id, flightSeatDto);
+
+        assertNotNull(result);
+        assertEquals(flightSeatDto.getFare(), result.getFare());
+        assertEquals(flightSeatDto.getIsSold(), result.getIsSold());
+        assertEquals(flightSeatDto.getIsBooked(), result.getIsBooked());
+        assertEquals(flightSeatDto.getIsRegistered(), result.getIsRegistered());
+        verify(flightSeatRepository, times(1)).findById(id);
+        verify(flightSeatRepository, times(1)).save(existingFlightSeat);
+        verify(flightSeatMapper, times(1)).toDto(existingFlightSeat, flightService);
+    }
+
+    @Test
+    void testEditFlightSeat_WhenFlightSeatDoesNotExist() {
+        Long id = 1L;
+        FlightSeatDto flightSeatDto = new FlightSeatDto();
+
+        when(flightSeatRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> flightSeatService.editFlightSeat(id, flightSeatDto));
+        verify(flightSeatRepository, times(1)).findById(id);
+        verify(flightSeatRepository, never()).save(any());
+        verify(flightSeatMapper, never()).toDto(any(), any());
+    }
+
+    @Test
+    void testGetNumberOfFreeSeatOnFlight1() {
+        Flight flight = new Flight();
+        flight.setId(1L);
+        List<FlightSeat> flightSeats = List.of(new FlightSeat());
+        flight.setSeats(flightSeats);
+        when(flightSeatRepository
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flight.getId()))
+                .thenReturn(new HashSet<>(flightSeats));
+
+        int numberOfFreeSeats = flightSeatService.getNumberOfFreeSeatOnFlight(flight);
+
+        assertEquals(1, numberOfFreeSeats);
+        verify(flightSeatRepository, times(1))
+                .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(anyLong());
+    }
+
+    @Test
+    void testDeleteFlightSeatById() {
+        flightSeatService.deleteFlightSeatById(anyLong());
+
+        verify(flightSeatRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void testMakeFlightSeatNotSold() {
+        long[] flightSeatId = {1L, 2L, 3L};
+
+        flightSeatService.makeFlightSeatNotSold(flightSeatId);
+
+        verify(flightSeatRepository, times(1)).editIsSoldToFalseByFlightSeatId(flightSeatId);
+    }
+
+    @Test
+    void testFindByFlightId() {
+        Flight flight = new Flight();
+        flight.setSeats(List.of(new FlightSeat(), new FlightSeat(), new FlightSeat()));
+        flight.setId(1L);
+        List<FlightSeat> expectedFlightSeats = flight.getSeats();
+        when(flightSeatRepository.findByFlightId(flight.getId())).thenReturn(expectedFlightSeats);
+
+        List<FlightSeat> actualFlightSeats = flightSeatService.findByFlightId(flight.getId());
+
+        assertNotNull(actualFlightSeats);
+        assertEquals(expectedFlightSeats.size(), actualFlightSeats.size());
+        assertEquals(expectedFlightSeats, actualFlightSeats);
+        verify(flightSeatRepository, times(1)).findByFlightId(flight.getId());
+    }
+
+
+    @Test
+    void testGenerateFlightSeats() {
+        Long flightId = 1L;
+        Aircraft aircraft = new Aircraft();
+        Flight flight = new Flight();
+        flight.setId(flightId);
+        flight.setAircraft(aircraft);
+        FlightSeatDto flightSeatDto = new FlightSeatDto();
+        flightSeatDto.setId(1L);
+
+        List<FlightSeatDto> flightSeatDtoList = List.of(flightSeatDto);
+        Set<FlightSeat> flightSeatList =
+                new HashSet<>(flightSeatMapper.toEntityList(flightSeatDtoList, flightService, seatService));
+        flight.setSeats(flightSeatMapper.toEntityList(flightSeatDtoList, flightService, seatService));
+
+        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
+        when(flightSeatRepository.findFlightSeatsByFlightId(flightId))
+                .thenReturn(flightSeatList);
+
+
+        List<FlightSeatDto> result = flightSeatService.generateFlightSeats(flightId);
+
+        assertNotNull(result);
+        verify(flightService, times(1)).getFlightById(anyLong());
+        verify(flightSeatRepository, times(1)).findFlightSeatsByFlightId(anyLong());
+        verify(seatRepository, never()).findByAircraftId(anyLong());
+        verify(flightSeatRepository, never()).saveAll(flightSeatList);
+    }
+
+    @Test
+    void testGenerateFlightSeats_showThrowExceptionWhenNotFlight() {
+        Long flightId = 1L;
+
+        doThrow(EntityNotFoundException.class).when(flightService).getFlightById(flightId);
+
+        assertThrows(EntityNotFoundException.class, () -> flightSeatService.generateFlightSeats(flightId));
+        verify(flightService, times(1)).getFlightById(anyLong());
+        verify(flightSeatRepository, never()).findFlightSeatsByFlightId(anyLong());
+        verify(seatRepository, never()).findByAircraftId(anyLong());
+        verify(flightSeatRepository, never()).saveAll(any());
     }
 }

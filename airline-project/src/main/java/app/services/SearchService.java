@@ -5,7 +5,6 @@ import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
 import app.mappers.FlightMapper;
-import app.utils.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
@@ -28,7 +27,6 @@ public class SearchService {
     private final FlightSeatService flightSeatService;
 
     @Transactional
-    @Loggable
     public SearchResult search(Airport from, Airport to, LocalDate departureDate,
                                LocalDate returnDate, Integer numberOfPassengers) {
 
@@ -67,7 +65,6 @@ public class SearchService {
         return searchResult;
     }
 
-    @Loggable
     private void addDirectDepartFlightsToSearchDepartFlight(Search search, List<Flight> searchFlightList) {
         var departFlight = getDirectDepartFlights(search);
         //проверка рейсов на наличие мест. если места есть, то рейс добавлется в список рейсов
@@ -78,7 +75,6 @@ public class SearchService {
         }
     }
 
-    @Loggable
     private void addDirectReturnFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
         var returnFlight = getDirectReturnFlights(search);
         //проверка прямых рейсов на наличие мест. если места есть, то рейс добавлется в список рейсов
@@ -89,7 +85,6 @@ public class SearchService {
         }
     }
 
-    @Loggable
     private void addNonDirectDepartFlightsToSearchDepartFlight(Search search, List<Flight> searchFlightList) {
         var nonDirectDepartFlights = getNonDirectDepartFlights(search);
         //проверка непрямых рейсов на наличие мест. если места есть, то соответствующая пара добавляется в список рейсов
@@ -105,7 +100,6 @@ public class SearchService {
         }
     }
 
-    @Loggable
     private void addNonDirectReturnFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
         var nonDirectReturnFlights = getNonDirectReturnFlights(search);
         //проверка непрямых обратных рейсов на наличие мест: если места есть, то соответствующая пара добавляется в список рейсов
@@ -121,7 +115,6 @@ public class SearchService {
         }
     }
 
-    @Loggable
     private List<Flight> getDirectDepartFlights(Search search) {
         return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
                 search.getFrom(),
@@ -130,7 +123,6 @@ public class SearchService {
         );
     }
 
-    @Loggable
     private List<Flight> getDirectReturnFlights(Search search) {
         return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
                 search.getTo(),
@@ -139,7 +131,6 @@ public class SearchService {
         );
     }
 
-    @Loggable
     private List<Flight> getNonDirectDepartFlights(Search search) {
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
                 destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
@@ -148,7 +139,6 @@ public class SearchService {
         );
     }
 
-    @Loggable
     private List<Flight> getNonDirectReturnFlights(Search search) {
         return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
                 destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue(),
@@ -157,7 +147,6 @@ public class SearchService {
         );
     }
 
-    @Loggable
     private boolean checkFlightForNumberSeats(Flight f, Search search) {
         return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
     }

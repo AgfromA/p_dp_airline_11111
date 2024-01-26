@@ -28,10 +28,7 @@ public class PaymentRestController implements PaymentRestApi {
             log.info("getAll: get all List Payments");
             return createUnPagedResponse();
         }
-        if (page < 0 || count < 1) {
-            log.info("no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         var payments = paymentService.pagePagination(page, count);
         return payments.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)

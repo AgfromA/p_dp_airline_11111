@@ -293,7 +293,7 @@ public class AccountView extends VerticalLayout {
                 }
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
                     ListDataProvider<AccountDto> dataProvider = (ListDataProvider<AccountDto>) grid.getDataProvider();
-                    accountClient.deleteAccountById(account.getId());
+                    accountClient.deleteAccount(account.getId());
                     dataProvider.getItems().remove(account);
                 }
                 grid.getDataProvider().refreshAll();
@@ -345,7 +345,7 @@ public class AccountView extends VerticalLayout {
 
     private void addEditorListeners() {
         editor.addSaveListener(e -> {
-            accountClient.updateAccountById(e.getItem().getId(), e.getItem());
+            accountClient.updateAccount(e.getItem().getId(), e.getItem());
             grid.getDataProvider().refreshAll();
         });
     }

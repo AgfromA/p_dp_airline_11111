@@ -1,25 +1,22 @@
 package app.services;
 
 import app.dto.SeatDto;
+import app.entities.Aircraft;
 import app.entities.Seat;
 import app.enums.CategoryType;
-import app.enums.seats.SeatsNumbersByAircraft;
-import app.enums.seats.interfaces.AircraftSeats;
-import app.exceptions.ViolationOfForeignKeyConstraintException;
-import app.repositories.FlightSeatRepository;
+import app.enums.seats.AircraftSeatsInformation;
+import app.exceptions.EntityNotFoundException;
 import app.repositories.SeatRepository;
 import app.mappers.SeatMapper;
 import org.springframework.data.domain.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,105 +25,112 @@ public class SeatService {
     private final SeatRepository seatRepository;
     private final CategoryService categoryService;
     private final AircraftService aircraftService;
-    private final FlightSeatRepository flightSeatRepository;
     private final SeatMapper seatMapper;
 
     public List<SeatDto> getAllSeats() {
         return seatMapper.toDtoList(seatRepository.findAll());
     }
 
-    @Transactional
-    public Seat saveSeat(SeatDto seatDTO) {
-        var seat = seatMapper.toEntity(seatDTO, categoryService, aircraftService);
-        if (seat.getId() != 0) {
-            Seat aldSeat = getSeatById(seat.getId());
-            if (aldSeat != null && aldSeat.getAircraft() != null) {
-                seat.setAircraft(aldSeat.getAircraft());
-            }
-        }
-        seat.setCategory(categoryService.getCategoryByType(seat.getCategory().getCategoryType()));
-        return seatRepository.saveAndFlush(seat);
+    public Page<SeatDto> getAllSeats(Integer page, Integer size) {
+        return seatRepository.findAll(PageRequest.of(page, size)).map(seatMapper::toDto);
     }
 
-    public Seat getSeatById(long id) {
+    public Page<SeatDto> getAllSeatsByAircraftId(Integer page, Integer size, Long aircraftId) {
+        checkIfAircraftExists(aircraftId);
+        return seatRepository.findByAircraftId(aircraftId, PageRequest.of(page, size)).map(seatMapper::toDto);
+    }
+
+    @Transactional
+    public SeatDto saveSeat(SeatDto seatDto) {
+        checkIfAircraftExists(seatDto.getAircraftId());
+        var seat = seatMapper.toEntity(seatDto, categoryService, aircraftService);
+        seat.setId(null);
+        return seatMapper.toDto(seatRepository.save(seat));
+    }
+
+    public Seat getSeat(long id) {
         return seatRepository.findById(id).orElse(null);
     }
 
-    @Transactional
-    public Seat editSeatById(Long id, SeatDto seatDTO) {
-        var seat = seatMapper.toEntity(seatDTO, categoryService, aircraftService);
-        var targetSeat = seatRepository.findById(id).orElse(null);
-        if (seat.getCategory() != null && seat.getCategory().getCategoryType() != targetSeat.getCategory().getCategoryType()) {
-            targetSeat.setCategory(categoryService.getCategoryByType(seat.getCategory().getCategoryType()));
-        }
-        if (seat.getAircraft() != null && !seat.getAircraft().equals(targetSeat.getAircraft())) {
-            targetSeat.setAircraft(aircraftService.getAircraftByAircraftNumber(seat.getAircraft().getAircraftNumber()));
-        }
-        targetSeat.setSeatNumber(seat.getSeatNumber());
-        targetSeat.setIsNearEmergencyExit(seat.getIsNearEmergencyExit());
-        targetSeat.setIsLockedBack(seat.getIsLockedBack());
-        return seatRepository.saveAndFlush(targetSeat);
+    public Optional<SeatDto> getSeatDto(long id) {
+        return seatRepository.findById(id).map(seatMapper::toDto);
     }
 
     @Transactional
-    public void deleteSeatById(Long id) throws ViolationOfForeignKeyConstraintException {
-        if (!(flightSeatRepository.findFlightSeatsBySeat(getSeatById(id))).isEmpty()) {
-            throw new ViolationOfForeignKeyConstraintException(
-                    String.format("Seat with id = %d cannot be deleted because it is locked by the table \"flight_seat\"", id));
+    public SeatDto editSeat(Long id, SeatDto seatDto) {
+        checkIfSeatExists(id);
+        var aircraft = checkIfAircraftExists(seatDto.getAircraftId());
+        var existingSeat = seatRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Seat was not found with id = " + id)
+        );
+        existingSeat.setAircraft(aircraft);
+
+        if (seatDto.getSeatNumber() != null) {
+            existingSeat.setSeatNumber(seatDto.getSeatNumber());
         }
+        if (seatDto.getIsLockedBack() != null) {
+            existingSeat.setIsLockedBack(seatDto.getIsLockedBack());
+        }
+        if (seatDto.getIsNearEmergencyExit() != null) {
+            existingSeat.setIsNearEmergencyExit(seatDto.getIsNearEmergencyExit());
+        }
+        if (seatDto.getCategory() != null) {
+            existingSeat.setCategory(categoryService.getCategoryByType(seatDto.getCategory()));
+        }
+        return seatMapper.toDto(seatRepository.save(existingSeat));
+    }
+
+    @Transactional
+    public void deleteSeat(Long id) {
+        checkIfSeatExists(id);
         seatRepository.deleteById(id);
     }
 
-    public Page<SeatDto> getPagesSeatsByAircraftId(Long id, Pageable pageable) {
-        return seatRepository.findByAircraftId(id, pageable)
-                .map(seatMapper::toDto);
-    }
-
     @Transactional
-    public List<SeatDto> generateSeatsDTOByAircraftId(long aircraftId) {
-
-        List<SeatDto> savedSeatsDTO = new ArrayList<>(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats());
-        if (getPagesSeatsByAircraftId(aircraftId, Pageable.unpaged()).getTotalElements() > 0) {
-            return savedSeatsDTO;
+    public List<SeatDto> generateSeats(Long aircraftId) {
+        var aircraft = checkIfAircraftExists(aircraftId);
+        if (!aircraft.getSeatSet().isEmpty()) {
+            return seatMapper.toDtoList(new ArrayList<>(aircraft.getSeatSet()));
         }
-        int enumSeatsCounter = 0;
-        for (SeatDto seatDTO : getSeatsDTOByAircraftId(aircraftId)) {
-            seatDTO.setSeatNumber(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].getNumber());
-            seatDTO.setAircraftId(aircraftId);
-            if (enumSeatsCounter < getNumbersOfSeatsByAircraftId(aircraftId).getNumberOfBusinessClassSeats()) { //Назначаем категории
-                seatDTO.setCategory(CategoryType.BUSINESS);
+        var aircraftSeatsInformation = getNumbersOfSeatsByAircraftId(aircraftId);
+        var aircraftSeats = aircraftSeatsInformation.getAircraftSeats();
+
+        List<Seat> seats = new ArrayList<>();
+        for (int i = 0; i < aircraftSeats.length; i++) {
+            var seat = new Seat();
+            if (i < aircraftSeatsInformation.getNumberOfBusinessClassSeats()) {
+                seat.setCategory(categoryService.getCategoryByType(CategoryType.BUSINESS));
             } else {
-                seatDTO.setCategory(CategoryType.ECONOMY);
+                seat.setCategory(categoryService.getCategoryByType(CategoryType.ECONOMY));
             }
-            seatDTO.setIsNearEmergencyExit(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isNearEmergencyExit());
-            seatDTO.setIsLockedBack(getAircraftSeatsByAircraftId(aircraftId)[enumSeatsCounter].isLockedBack());
-            enumSeatsCounter += 1;
+            seat.setAircraft(aircraft);
+            seat.setSeatNumber(aircraftSeats[i].getNumber());
+            seat.setIsNearEmergencyExit(aircraftSeats[i].isNearEmergencyExit());
+            seat.setIsLockedBack(aircraftSeats[i].isLockedBack());
 
-            var savedSeat = saveSeat(seatDTO);
-
-            savedSeatsDTO.add(seatMapper.toDto(savedSeat));
+            seats.add(seat);
         }
-        return savedSeatsDTO;
+        return seatMapper.toDtoList(seatRepository.saveAll(seats));
     }
 
-    private SeatsNumbersByAircraft getNumbersOfSeatsByAircraftId(long aircraftId) {
-        var aircraft = aircraftService.getAircraftById(aircraftId); //создается объект САМОЛЕТ
-        return SeatsNumbersByAircraft.valueOf(aircraft.getModel() //количество мест в самолете
+    private AircraftSeatsInformation getNumbersOfSeatsByAircraftId(long aircraftId) {
+        var aircraft = aircraftService.getAircraft(aircraftId);
+        return AircraftSeatsInformation.valueOf(aircraft.getModel()
                 .toUpperCase().replaceAll("[^A-Za-z0-9]", "_"));
     }
 
-    private AircraftSeats[] getAircraftSeatsByAircraftId(long aircraftId) {
-        return getNumbersOfSeatsByAircraftId(aircraftId).getAircraftSeats();
+    private Aircraft checkIfAircraftExists(Long aircraftId) {
+        var aircraft = aircraftService.getAircraft(aircraftId);
+        if (aircraft == null) {
+            throw new EntityNotFoundException(
+                    "Operation was not finished because Aircraft was not found with id = " + aircraftId);
+        }
+        return aircraft;
     }
 
-    private List<SeatDto> getSeatsDTOByAircraftId(long aircraftId) {
-        return Stream.generate(SeatDto::new)
-                .limit(getNumbersOfSeatsByAircraftId(aircraftId).getTotalNumberOfSeats())
-                .collect(Collectors.toList());
-    }
-
-    public Page<SeatDto> getAllPagesSeats(Integer page, Integer size) {
-        return seatRepository.findAll(PageRequest.of(page, size))
-                .map(seatMapper::toDto);
+    private Seat checkIfSeatExists(Long seatId) {
+        return seatRepository.findById(seatId).orElseThrow(() -> new EntityNotFoundException(
+                "Operation was not finished because Seat was not found with id = " + seatId)
+        );
     }
 }

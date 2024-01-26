@@ -3,6 +3,13 @@
 ## [Unreleased]
 - #task_number - short task description
 
+## [1.0.9] - 20.01.2024
+- Пагинация 2.0
+- Рефакторинг Seat API
+- Рефакторинг FlightSeat API
+- Рефакторинг Passenger API
+- Рефакторинг Aircraft API
+
 ## [1.0.8] - 24.12.2023
 - #332 Можно отправить во фронт информативное сообщение об ошибке поиска в одну строку: throw new SearchRequestException(errorMessage, HttpStatus.BAD_REQUEST);
 - #282 Добавлен View для Aircraft(в т.ч. клиент feign). DTO и API перенесено в Common. DTO теперь использует Mapper. Методы createAircraft() и updateAircraft() в API Теперь возвращает DTO вместо Entity;

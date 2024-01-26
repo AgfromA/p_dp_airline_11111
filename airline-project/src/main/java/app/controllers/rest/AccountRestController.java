@@ -33,15 +33,11 @@ public class AccountRestController implements AccountRestApi {
             log.info("getAll: get all List Accounts");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("getAll: no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        var accountPage = accountService.getPage(page, size);
 
-        return accountPage.isEmpty()
+        var accounts = accountService.getPage(page, size);
+        return accounts.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(accountPage.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(accounts.getContent(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<AccountDto>> createUnPagedResponse() {
@@ -56,7 +52,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDto> getAccountById(Long id) {
+    public ResponseEntity<AccountDto> getAccount(Long id) {
         log.info("getById: get Account by id. id = {}", id);
         var account = accountService.getAccountById(id);
         return account.isEmpty()
@@ -84,13 +80,13 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDto> updateAccountById(Long id, AccountDto accountDTO) {
+    public ResponseEntity<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
         log.info("update: update Account with id = {}", id);
         return new ResponseEntity<>(accountService.updateAccount(id, accountDTO).get(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> deleteAccountById(Long id) {
+    public ResponseEntity<Void> deleteAccount(Long id) {
         log.info("deleteAircraftById: deleteAircraftById Account with id = {}", id);
         var user = accountService.getAccountById(id);
         if (user.isEmpty()) {

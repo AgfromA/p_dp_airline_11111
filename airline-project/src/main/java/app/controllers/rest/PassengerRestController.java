@@ -2,7 +2,6 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.PassengerRestApi;
 import app.dto.PassengerDto;
-import app.mappers.PassengerMapper;
 import app.services.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,87 +20,66 @@ import java.util.List;
 public class PassengerRestController implements PassengerRestApi {
 
     private final PassengerService passengerService;
-    private final PassengerMapper passengerMapper;
 
     @Override
-    public ResponseEntity<List<PassengerDto>> getAllPassengers(Integer page, Integer size, String firstName, String lastName,
-                                                               String email, String serialNumberPassport) {
-        log.info("getAll: get all Passenger");
+    public ResponseEntity<List<PassengerDto>> getAllPassengers(Integer page,
+                                                               Integer size,
+                                                               String firstName,
+                                                               String lastName,
+                                                               String email,
+                                                               String serialNumberPassport) {
+        log.info("getAllPassengers: get all Passenger");
         if (page == null || size == null) {
-            log.info("getAll: get all List Passenger");
+            log.info("getAllPassengers: get all List Passenger");
             return createUnPagedResponse();
-        }
-        if (page < 0 || size < 1) {
-            log.info("no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         Page<PassengerDto> passengers;
         Pageable pageable = PageRequest.of(page, size);
-
         if (firstName == null && lastName == null && email == null && serialNumberPassport == null) {
-            passengers = passengerService.getAllPagesPassengers(pageable);
-            log.info("getAll: get all Passenger by page");
-            log.info(passengers.toString());
+            passengers = passengerService.getAllPassengers(pageable);
         } else {
-            log.info("filter: filter Passenger by firstname or lastname or email or serialNumberPassport");
-            passengers = passengerService.getAllPagesPassengerByKeyword(pageable, firstName, lastName, email, serialNumberPassport);
-            log.info(passengers.toString());
+            log.info("getAllPassengers: filtered");
+            passengers = passengerService.getAllPassengersFiltered(pageable, firstName, lastName, email, serialNumberPassport);
         }
         return passengers.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(passengers.getContent(), HttpStatus.OK);
+                : ResponseEntity.ok(passengers.getContent());
     }
 
     private ResponseEntity<List<PassengerDto>> createUnPagedResponse() {
         var passengers = passengerService.getAllPassengers();
         if (passengers.isEmpty()) {
-            log.info("getAll:  Passengers not found ");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll: found {} Passengers", passengers.size());
-            return new ResponseEntity<>(passengers, HttpStatus.OK);
+            log.info("getAllPassengers: count {}", passengers.size());
+            return ResponseEntity.ok(passengers);
         }
     }
 
     @Override
-    public ResponseEntity<PassengerDto> getById(Long id) {
-        log.info("getById: get passenger by ID = {}", id);
-        var passenger = passengerService.getPassengerById(id);
-
-        if (passenger.isEmpty()) {
-            log.error("getById: passenger with this id={} doesnt exist", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        }
-        return new ResponseEntity<>(passengerMapper.toDto(passenger.get()), HttpStatus.OK);
+    public ResponseEntity<PassengerDto> getPassenger(Long id) {
+        log.info("getPassenger: by id={}", id);
+        var passenger = passengerService.getPassengerDto(id);
+        return passenger.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
-    public ResponseEntity<PassengerDto> create(PassengerDto passengerDTO) {
-        if (passengerDTO.getId() != null) {
-            log.error("create: passenger already exist in database");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        log.info("create: new passenger added");
-        return new ResponseEntity<>(
-                passengerMapper.toDto(passengerService.savePassenger(passengerDTO)),
-                HttpStatus.CREATED);
+    public ResponseEntity<PassengerDto> createPassenger(PassengerDto passengerDTO) {
+        log.info("createPassenger:");
+        return new ResponseEntity<>(passengerService.createPassenger(passengerDTO), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<PassengerDto> updateById(Long id, PassengerDto passengerDTO) {
-        passengerDTO.setId(id);
-        log.info("update: update Passenger with id = {}", id);
-        return new ResponseEntity<>(
-                passengerMapper.toDto(passengerService.updatePassengerById(id, passengerDTO)),
-                HttpStatus.OK);
+    public ResponseEntity<PassengerDto> updatePassenger(Long id, PassengerDto passengerDTO) {
+        log.info("updatePassenger: by id={}", id);
+        return ResponseEntity.ok(passengerService.updatePassenger(id, passengerDTO));
     }
 
     @Override
-    public ResponseEntity<HttpStatus> deleteById(Long id) {
-        log.info("delete: passenger with id={} deleted", id);
-        passengerService.deletePassengerById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<HttpStatus> deletePassenger(Long id) {
+        log.info("deletePassenger: by id={}", id);
+        passengerService.deletePassenger(id);
+        return ResponseEntity.ok().build();
     }
 }

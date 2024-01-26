@@ -28,15 +28,11 @@ public class ExampleRestController implements ExampleRestApi {
             log.info("getAll: get all List Example");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("getAll: no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        var examplePage = exampleService.getPage(page, size);
 
-        return examplePage.isEmpty()
+        var examples = exampleService.getPage(page, size);
+        return examples.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(examplePage.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(examples.getContent(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<ExampleDto>> createUnPagedResponse() {

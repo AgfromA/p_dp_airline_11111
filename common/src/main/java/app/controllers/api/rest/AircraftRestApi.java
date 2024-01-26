@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Api(tags = "Aircraft REST")
@@ -38,9 +39,9 @@ public interface AircraftRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft found"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDto> getAircraftById(
+    ResponseEntity<AircraftDto> getAircraft(
             @ApiParam(name = "id", value = "Aircraft.id")
-            @PathVariable("id") Long id);
+            @PathVariable("id") @Min(0) Long id);
 
     @PostMapping("/api/aircrafts")
     @ApiOperation(value = "Create new Aircraft")
@@ -50,24 +51,24 @@ public interface AircraftRestApi {
                     name = "Aircraft",
                     value = "Aircraft model"
             )
-            @RequestBody @Valid AircraftDto timezoneDto);
+            @RequestBody @Valid AircraftDto aircraftDto);
 
     @PatchMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Update Aircraft by \"id\"")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Aircraft updated"),
             @ApiResponse(code = 404, message = "Aircraft not found")})
-    ResponseEntity<AircraftDto> updateAircraftById(
+    ResponseEntity<AircraftDto> updateAircraft(
             @ApiParam(
                     name = "id",
                     value = "Aircraft.id"
             )
-            @PathVariable("id") Long id,
+            @PathVariable("id") @Min(0) Long id,
             @ApiParam(
                     name = "Aircraft",
                     value = "Aircraft model"
             )
-            @RequestBody @Valid AircraftDto timezoneDto);
+            @RequestBody @Valid AircraftDto aircraftDto);
 
     @DeleteMapping("/api/aircrafts/{id}")
     @ApiOperation(value = "Delete Aircraft by \"id\"")
@@ -75,10 +76,10 @@ public interface AircraftRestApi {
             @ApiResponse(code = 200, message = "Aircraft deleted"),
             @ApiResponse(code = 404, message = "Aircraft not found"),
             @ApiResponse(code = 405, message = "Can't delete an aircraft because it has seats assigned to it")})
-    ResponseEntity<HttpStatus> deleteAircraftById(
+    ResponseEntity<HttpStatus> deleteAircraft(
             @ApiParam(
                     name = "id",
                     value = "Aircraft.id"
             )
-            @PathVariable("id") Long id);
+            @PathVariable("id") @Min(0) Long id);
 }

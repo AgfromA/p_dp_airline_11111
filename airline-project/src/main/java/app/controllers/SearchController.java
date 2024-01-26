@@ -3,7 +3,7 @@ package app.controllers;
 import app.controllers.api.SearchControllerApi;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
-import app.exceptions.controller.SearchControllerException;
+import app.exceptions.SearchControllerException;
 import app.services.SearchService;
 import app.utils.LogsUtils;
 import lombok.RequiredArgsConstructor;

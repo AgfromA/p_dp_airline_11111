@@ -50,7 +50,7 @@ public class TicketService {
 
     @Transactional
     public Ticket saveTicket(TicketDto timezoneDto) {
-        if (passengerService.getPassengerById(timezoneDto.getPassengerId()).isEmpty()) {
+        if (passengerService.getPassenger(timezoneDto.getPassengerId()).isEmpty()) {
             throw new EntityNotFoundException("Operation was not finished because Passenger was not found with id = "
                     + timezoneDto.getPassengerId());
         }
@@ -58,7 +58,7 @@ public class TicketService {
             throw new EntityNotFoundException("Operation was not finished because Flight was not found with id = "
                     + timezoneDto.getFlightId());
         }
-        if (flightSeatService.getFlightSeatById(timezoneDto.getFlightSeatId()).isEmpty()) {
+        if (flightSeatService.getFlightSeat(timezoneDto.getFlightSeatId()).isEmpty()) {
             throw new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = "
                     + timezoneDto.getFlightSeatId());
         }
@@ -92,7 +92,7 @@ public class TicketService {
         return ticketRepository.save(updatedTicket);
     }
 
-    public long[] getArrayOfFlightSeatIdByPassengerId(long passengerId) {
+    public long[] getFlightSeatIdsByPassengerId(long passengerId) {
         return ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId);
     }
 

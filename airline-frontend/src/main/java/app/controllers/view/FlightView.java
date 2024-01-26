@@ -656,7 +656,7 @@ public class FlightView extends VerticalLayout {
 
 
             try {
-                var a = aircraftClient.getAircraftById(e.getItem().getAircraftId());
+                var a = aircraftClient.getAircraft(e.getItem().getAircraftId());
             } catch (FeignException.NotFound ex) {
                 Notification.show("Aircraft with id = " + e.getItem().getAircraftId() + " not exists, ",
                         3000, Notification.Position.TOP_CENTER);
@@ -798,7 +798,7 @@ public class FlightView extends VerticalLayout {
                 return;
             }
             try {
-                var a = aircraftClient.getAircraftById(aircraftId.getValue().longValue());
+                var a = aircraftClient.getAircraft(aircraftId.getValue().longValue());
             } catch (FeignException.NotFound ex) {
                 Notification.show("Aircraft with id = " + aircraftId.getValue().toString() + " not exists, ",
                         3000, Notification.Position.TOP_CENTER);
