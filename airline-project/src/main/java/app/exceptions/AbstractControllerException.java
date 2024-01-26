@@ -1,4 +1,4 @@
-package app.exceptions.controller;
+package app.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 public abstract class AbstractControllerException extends RuntimeException {
     @Getter
     HttpStatus httpStatus;
+
     public AbstractControllerException(String message, HttpStatus httpStatus) {
         super(message);
         this.httpStatus = httpStatus;

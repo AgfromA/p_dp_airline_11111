@@ -31,7 +31,6 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         }
 
         Page<FlightSeatDto> flightSeats;
-
         if (flightId == null && isSold == null && isRegistered == null) {
             flightSeats = flightSeatService.getAllFlightSeats(page, size);
         } else {

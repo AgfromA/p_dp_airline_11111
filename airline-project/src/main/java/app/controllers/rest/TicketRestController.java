@@ -28,11 +28,10 @@ public class TicketRestController implements TicketRestApi {
             return createUnPagedResponse();
         }
 
-        var ticketPage = ticketService.getAllTickets(page, size);
-
-        return ticketPage.isEmpty()
+        var tickets = ticketService.getAllTickets(page, size);
+        return tickets.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(ticketPage.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(tickets.getContent(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<TicketDto>> createUnPagedResponse() {

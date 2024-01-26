@@ -25,10 +25,10 @@ public class AircraftRestController implements AircraftRestApi {
             return createUnPagedResponse();
         }
 
-        var aircraft = aircraftService.getAllAircrafts(page, size);
-        return aircraft.isEmpty()
+        var aircrafts = aircraftService.getAllAircrafts(page, size);
+        return aircrafts.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : ResponseEntity.ok(aircraft.getContent());
+                : ResponseEntity.ok(aircrafts.getContent());
     }
 
     private ResponseEntity<List<AircraftDto>> createUnPagedResponse() {

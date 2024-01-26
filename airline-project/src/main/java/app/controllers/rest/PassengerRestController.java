@@ -36,7 +36,6 @@ public class PassengerRestController implements PassengerRestApi {
 
         Page<PassengerDto> passengers;
         Pageable pageable = PageRequest.of(page, size);
-
         if (firstName == null && lastName == null && email == null && serialNumberPassport == null) {
             passengers = passengerService.getAllPassengers(pageable);
         } else {

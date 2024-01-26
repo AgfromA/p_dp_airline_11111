@@ -30,11 +30,10 @@ public class TimezoneRestController implements TimezoneRestApi {
             return createUnPagedResponse();
         }
 
-        var timezone = timezoneService.getAllPagesTimezones(page, size);
-
-        return timezone.isEmpty()
+        var timezones = timezoneService.getAllPagesTimezones(page, size);
+        return timezones.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(timezone.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(timezones.getContent(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<TimezoneDto>> createUnPagedResponse() {

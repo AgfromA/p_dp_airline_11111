@@ -30,18 +30,18 @@ public class DestinationRestController implements DestinationRestApi {
             return createUnPagedResponse();
         }
 
-        Page<DestinationDto> destination;
+        Page<DestinationDto> destinations;
         if (cityName == null && countryName == null && timezone == null) {
-            destination = destinationService.getAllDestinations(page, size);
-            log.info("get all Destinations: found {} Destination", destination.getNumberOfElements());
+            destinations = destinationService.getAllDestinations(page, size);
+            log.info("get all Destinations: found {} Destination", destinations.getNumberOfElements());
         } else {
-            destination = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
+            destinations = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
             log.info("get all Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}: found {} Destination",
-                    countryName, cityName, timezone, destination.getNumberOfElements());
+                    countryName, cityName, timezone, destinations.getNumberOfElements());
         }
-        return destination.isEmpty()
+        return destinations.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(destination.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(destinations.getContent(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<DestinationDto>> createUnPagedResponse() {

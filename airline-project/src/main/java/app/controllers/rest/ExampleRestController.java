@@ -29,11 +29,10 @@ public class ExampleRestController implements ExampleRestApi {
             return createUnPagedResponse();
         }
 
-        var examplePage = exampleService.getPage(page, size);
-
-        return examplePage.isEmpty()
+        var examples = exampleService.getPage(page, size);
+        return examples.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(examplePage.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(examples.getContent(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<ExampleDto>> createUnPagedResponse() {

@@ -1,5 +1,6 @@
 package app.exceptions;
 
+import app.exceptions.handlers.ValidationExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;

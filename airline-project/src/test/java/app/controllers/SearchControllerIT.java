@@ -1,10 +1,10 @@
 package app.controllers;
 
-import app.exceptions.controller.responses.ErrorResponse;
+import app.exceptions.dtos.ErrorResponse;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
-import app.exceptions.controller.SearchControllerException;
+import app.exceptions.SearchControllerException;
 import app.services.SearchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;

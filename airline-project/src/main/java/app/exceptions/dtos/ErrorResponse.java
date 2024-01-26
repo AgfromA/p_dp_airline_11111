@@ -1,8 +1,6 @@
-package app.exceptions.controller.responses;
+package app.exceptions.dtos;
 
-import app.exceptions.controller.AbstractControllerException;
 import lombok.*;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -13,6 +11,7 @@ public class ErrorResponse {
     public ErrorResponse(Exception e, String requestUrl) {
         this.setError(new ErrorResponse.Error(e.getMessage(), requestUrl));
     }
+
     @AllArgsConstructor
     @Getter
     public class Error {

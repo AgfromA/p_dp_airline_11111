@@ -2,6 +2,7 @@ package app.exceptions;
 
 import app.controllers.IntegrationTestBase;
 import app.controllers.rest.AccountRestController;
+import app.exceptions.handlers.ValidationExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.mockito.Mock;

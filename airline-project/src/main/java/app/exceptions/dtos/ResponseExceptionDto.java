@@ -1,4 +1,4 @@
-package app.exceptions;
+package app.exceptions.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -7,11 +7,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 @AllArgsConstructor
 @Setter
-public class ResponseExceptionDTO {
+public class ResponseExceptionDto {
 
     private String exceptionMessage;
 
