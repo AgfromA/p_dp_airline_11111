@@ -35,7 +35,7 @@ class FlightSeatMapperTest {
         aircraft.setId(55L);
         Flight flight = new Flight();
         flight.setId(4001L);
-        when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
+        when(flightServiceMock.getFlight(4001L)).thenReturn(Optional.of(flight));
 
         Seat seat = new Seat();
         Category category = new Category();
@@ -71,7 +71,7 @@ class FlightSeatMapperTest {
     public void shouldConvertFlightSeatDTOToFlightSeat() {
         Flight flight = new Flight();
         flight.setId(4001L);
-        when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
+        when(flightServiceMock.getFlight(4001L)).thenReturn(Optional.of(flight));
 
         Seat seat = new Seat();
         seat.setId(42L);
@@ -111,7 +111,7 @@ class FlightSeatMapperTest {
         aircraft.setId(55L);
         Flight flight = new Flight();
         flight.setId(4001L);
-        when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
+        when(flightServiceMock.getFlight(4001L)).thenReturn(Optional.of(flight));
 
         Seat seat = new Seat();
         Category category = new Category();
@@ -150,7 +150,7 @@ class FlightSeatMapperTest {
         List<FlightSeatDto> flightSeatDtoList = new ArrayList<>();
         Flight flight = new Flight();
         flight.setId(4001L);
-        when(flightServiceMock.getFlightById(4001L)).thenReturn(Optional.of(flight));
+        when(flightServiceMock.getFlight(4001L)).thenReturn(Optional.of(flight));
 
         Seat seat = new Seat();
         seat.setId(42L);

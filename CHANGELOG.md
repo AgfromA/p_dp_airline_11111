@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- Рефакторинг Flight API
 - #343 Произведен рефакторинг Search API. Удалена логика с непрямыми перелетами. Добавлена новая схема данных в виде SearchResultCard(Integer totalPrice, SearchResultCardData dataTo, dataBack); Также Добавлено поле FlightTime для вычисления продолжительности полета.
 
 ## [1.0.9] - 20.01.2024
@@ -33,6 +34,7 @@
 - #321 Рефакторинг DestinationDTO, FlightSeatDTO, фронт Destination, обработка FeignException во фронте
 - #192 Добавлены тесты на ендпоинт api/seats/aircraft/{aircraftId}
 - #286 Добавлен фронт для Flight
+- #301 Переход TicketMapper на Mapstruct, добавлен junit тест
 
 ## [1.0.7] - 8.09.2023
 - #277 Обновлены версии зависимостей в pom файлах и исправлены конфликты.

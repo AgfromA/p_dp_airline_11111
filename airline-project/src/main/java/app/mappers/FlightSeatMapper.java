@@ -20,12 +20,12 @@ public interface FlightSeatMapper {
 
     SeatMapper seatMapper = Mappers.getMapper(SeatMapper.class);
 
-    @Mapping(target = "flightId", expression = "java(flightService.getFlightById(flightSeat.getFlight().getId()).get().getId())")
+    @Mapping(target = "flightId", expression = "java(flightService.getFlight(flightSeat.getFlight().getId()).get().getId())")
     @Mapping(target = "category", expression = "java(flightSeat.getSeat().getCategory().getCategoryType())")
     @Mapping(target = "seat", expression = "java(toSeatDto(flightSeat.getSeat()))")
     FlightSeatDto toDto(FlightSeat flightSeat, @Context FlightService flightService);
 
-    @Mapping(target = "flight", expression = "java(flightService.getFlightById(flightSeatDto.getFlightId()).get())")
+    @Mapping(target = "flight", expression = "java(flightService.getFlight(flightSeatDto.getFlightId()).get())")
     @Mapping(target = "seat", expression = "java(seatService.getSeat(flightSeatDto.getSeat().getId()))")
     FlightSeat toEntity(FlightSeatDto flightSeatDto,
                         @Context FlightService flightService,

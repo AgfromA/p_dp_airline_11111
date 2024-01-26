@@ -29,5 +29,4 @@ public class FlightDto {
     private LocalDateTime arrivalDateTime;
     private Long aircraftId;
     private FlightStatus flightStatus;
-
 }

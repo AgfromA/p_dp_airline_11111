@@ -79,11 +79,9 @@ public class FlightView extends VerticalLayout {
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         isSearchById = false;
         isSearchByDestinationsAndDates = false;
-        var response = flightClient.getAllFlightsByDestinationsAndDates(
-                pageable.getPageNumber(), pageable.getPageSize(), null, null, null, null);
+        var response = flightClient.getAllFlights(pageable.getPageNumber(), pageable.getPageSize());
         dataSource = response.getBody();
-        List<FlightDto> flightDtoList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
-                null, null, null).getBody();
+        List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody();
         maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
 
         ValidationMessage idValidationMessage = new ValidationMessage();
@@ -209,29 +207,17 @@ public class FlightView extends VerticalLayout {
                 || dateStartSearchByDestinationsAndDatesField.getValue()
                 .isBefore(dateFinishSearchByDestinationsAndDatesField.getValue())
         ) {
-            String cityFrom = getNullIfEmpty(cityFromSearchByDestinationsAndDatesField.getValue());
-            String cityTo = getNullIfEmpty(cityToSearchByDestinationsAndDatesField.getValue());
-            String dateStartString = dateTimeConverterToString(dateStartSearchByDestinationsAndDatesField.getValue());
-            String dateFinishString = dateTimeConverterToString(dateFinishSearchByDestinationsAndDatesField.getValue());
             dataSource.clear();
             grid.getDataProvider().refreshAll();
             PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-            var response = flightClient.getAllFlightsByDestinationsAndDates(
-                    pageable.getPageNumber(),
-                    pageable.getPageSize(),
-                    cityFrom,
-                    cityTo,
-                    dateStartString,
-                    dateFinishString
-            );
+            var response = flightClient.getAllFlights(pageable.getPageNumber(), pageable.getPageSize());
             if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
                 Notification.show("Flights with these parameters not found.", 3000, Notification.Position.TOP_CENTER);
                 maxPages = 0;
                 List<FlightDto> emptyList = Collections.emptyList();
                 grid.setItems(emptyList);
             } else {
-                List<FlightDto> flightDtoList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
-                        null, null, null).getBody();
+                List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody();
                 maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
                 dataSource = response.getBody();
                 grid.setItems(dataSource);
@@ -241,20 +227,6 @@ public class FlightView extends VerticalLayout {
                     .isAfter(dateFinishSearchByDestinationsAndDatesField.getValue())) {
                 Notification.show("Date start must be early then date finish", 3000, Notification.Position.TOP_CENTER);
             }
-        }
-    }
-
-    private String getNullIfEmpty(String value) {
-        if (value.trim().isEmpty()) {
-            return null;
-        } else return value;
-    }
-
-    private String dateTimeConverterToString(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        } else {
-            return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         }
     }
 
@@ -379,7 +351,7 @@ public class FlightView extends VerticalLayout {
     private void searchById() {
         dataSource.clear();
         grid.getDataProvider().refreshAll();
-        var a = flightClient.getFlightById(idSearchField.getValue().longValue());
+        var a = flightClient.getFlight(idSearchField.getValue().longValue());
         if (a.getStatusCode() == HttpStatus.NOT_FOUND) {
             List<FlightDto> emptyList = Collections.emptyList();
             grid.setItems(emptyList);
@@ -391,10 +363,8 @@ public class FlightView extends VerticalLayout {
     private void defaultCurrentPageOfFlights() {
         dataSource.clear();
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
-        var response = flightClient.getAllFlightsByDestinationsAndDates(
-                pageable.getPageNumber(), pageable.getPageSize(), null, null, null, null);
-        List<FlightDto> flightDtoList = flightClient.getAllFlightsByDestinationsAndDates(null, null, null,
-                null, null, null).getBody();
+        var response = flightClient.getAllFlights(pageable.getPageNumber(), pageable.getPageSize());
+        List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody();
         maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
         dataSource = response.getBody();
 
@@ -503,7 +473,7 @@ public class FlightView extends VerticalLayout {
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
                     ListDataProvider<FlightDto> dataProvider = (ListDataProvider<FlightDto>) grid.getDataProvider();
                     try {
-                        flightClient.deleteFlightById(flight.getId());
+                        flightClient.deleteFlight(flight.getId());
                     } catch (Exception exception) {
                         Notification.show("Error of delete flight",
                                 3000, Notification.Position.TOP_CENTER);
@@ -570,7 +540,7 @@ public class FlightView extends VerticalLayout {
         airportToField.setWidthFull();
         binder.forField(airportToField).asRequired("Airport must not be empty")
                 .withStatusLabel(airportToValidationMessage)
-                .bind(FlightDto::getAirportFrom, FlightDto::setAirportFrom);
+                .bind(FlightDto::getAirportTo, FlightDto::setAirportTo);
         airportToColumn.setEditorComponent(airportToField);
     }
 
@@ -665,7 +635,7 @@ public class FlightView extends VerticalLayout {
 
 
             try {
-                flightClient.updateFlightById(e.getItem().getId(), e.getItem());
+                flightClient.updateFlight(e.getItem().getId(), e.getItem());
             } catch (Exception exception) {
                 Notification.show("Server error", 3000, Notification.Position.TOP_CENTER);
             }

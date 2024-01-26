@@ -2,7 +2,6 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDto;
-import app.entities.Destination;
 import app.services.DestinationService;
 import app.utils.LogsUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class DestinationRestController implements DestinationRestApi {
             log.info("get all Destinations: found {} Destination", destinations.getNumberOfElements());
         } else {
             destinations = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
-            log.info("get all Destinations by cityName or countryName or timezone. countryName = {}. cityName= {}. timezone = {}: found {} Destination",
+            log.info("get all Destinations by cityName or countryName or timezone. countryName: {}. cityName: {}. timezone: {} found {} Destination",
                     countryName, cityName, timezone, destinations.getNumberOfElements());
         }
         return destinations.isEmpty()
@@ -57,14 +56,13 @@ public class DestinationRestController implements DestinationRestApi {
 
     @Override
     public ResponseEntity<DestinationDto> createDestination(DestinationDto destinationDTO) {
-        Destination existingDestination = destinationService.getDestinationByAirportCode(destinationDTO.getAirportCode());
-        log.info("create: new Destination - {}", LogsUtils.objectToJson(destinationDTO));
+        log.info("create: new Destination: {}", LogsUtils.objectToJson(destinationDTO));
         return new ResponseEntity<>(destinationService.saveDestination(destinationDTO), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<DestinationDto> updateDestinationById(Long id, DestinationDto destinationDTO) {
-        log.info("update: Destination with id={}", id);
+        log.info("update: Destination with id: {}", id);
         destinationService.updateDestinationById(id, destinationDTO);
         var updatedDestinationDTO = destinationService.getDestinationById(id);
         if (updatedDestinationDTO != null) {
@@ -76,7 +74,7 @@ public class DestinationRestController implements DestinationRestApi {
 
     @Override
     public ResponseEntity<HttpStatus> deleteDestinationById(Long id) {
-        log.info("delete: Destination with id={}", id);
+        log.info("delete: Destination with id: {}", id);
         destinationService.deleteDestinationById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

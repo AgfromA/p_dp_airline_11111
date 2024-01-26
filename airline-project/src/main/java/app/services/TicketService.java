@@ -54,7 +54,7 @@ public class TicketService {
             throw new EntityNotFoundException("Operation was not finished because Passenger was not found with id = "
                     + timezoneDto.getPassengerId());
         }
-        if (flightService.getFlightById(timezoneDto.getFlightId()).isEmpty()) {
+        if (flightService.getFlight(timezoneDto.getFlightId()).isEmpty()) {
             throw new EntityNotFoundException("Operation was not finished because Flight was not found with id = "
                     + timezoneDto.getFlightId());
         }

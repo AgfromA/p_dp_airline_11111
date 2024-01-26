@@ -3,19 +3,14 @@ package app.controllers.rest;
 import app.controllers.api.rest.FlightRestApi;
 import app.dto.FlightDto;
 import app.enums.FlightStatus;
-import app.mappers.FlightMapper;
 import app.services.FlightService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -23,98 +18,58 @@ import java.util.stream.Collectors;
 public class FlightRestController implements FlightRestApi {
 
     private final FlightService flightService;
-    private final FlightMapper flightMapper;
 
     @Override
-    public ResponseEntity<List<FlightDto>> getAllFlightsByDestinationsAndDates(Integer page, Integer size,
-                                                                               String cityFrom, String cityTo,
-                                                                               String dateStart, String dateFinish) {
-        log.info("get all Flights");
+    public ResponseEntity<List<FlightDto>> getAllFlights(Integer page, Integer size) {
+        log.info("getAllFlights:");
         if (page == null || size == null) {
-            log.info("get all List Flights");
             return createUnPagedResponse();
         }
-
-        Page<FlightDto> flights;
-        Pageable pageable = PageRequest.of(page, size);
-
-        if (cityFrom == null && cityTo == null && dateStart == null && dateFinish == null) {
-            flights = flightService.getAllFlights(pageable);
-            log.info("get all Flights by page");
-        } else {
-            flights = flightService
-                    .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable);
-            log.info("getAllFlightsByDestinationsAndDates: get all Flights or Flights by params");
-        }
+        var flights = flightService.getAllFlights(page, size).getContent();
         return flights.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(flights.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(flights, HttpStatus.OK);
     }
 
     private ResponseEntity<List<FlightDto>> createUnPagedResponse() {
-        var flights = flightService.getAllListFlights();
+        var flights = flightService.getAllFlights();
         if (flights.isEmpty()) {
-            log.info("Flights not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("found {} Flights ", flights.size());
+            log.info("getAllFlights: count {}", flights.size());
             return new ResponseEntity<>(flights, HttpStatus.OK);
         }
     }
 
     @Override
-    public ResponseEntity<FlightDto> getFlightById(Long id) {
-        log.info("getById: get Flight by id. id = {}", id);
-        var flight = flightService.getFlightById(id);
-        return flight.isPresent()
-                ? new ResponseEntity<>(flightMapper.toDto(flight.get(), flightService), HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @Override
-    public ResponseEntity<FlightDto> getFlightByIdAndDates(Long id, String start, String finish) {
-        log.info("getByIdAndDates: get Flight by id={} and dates from {} to {}", id, start, finish);
-        var flight = flightService.getFlightByIdAndDates(id, start, finish);
-        return flight != null
-                ? new ResponseEntity<>(flight, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @Override
-    public ResponseEntity<FlightStatus[]> getAllFlightStatus() {
-        log.info("getAllFlightStatus: get all Flight Statuses");
-        return new ResponseEntity<>(flightService.getAllListFlights().stream()
-                .map(FlightDto::getFlightStatus)
-                .distinct().collect(Collectors.toList()).toArray(FlightStatus[]::new), HttpStatus.OK);
+    public ResponseEntity<FlightDto> getFlight(Long id) {
+        log.info("getFlight: by id: {}", id);
+        var flightSeat = flightService.getFlightDto(id);
+        return flightSeat.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
     public ResponseEntity<FlightDto> createFlight(FlightDto flightDto) {
-        log.info("create: create new Flight");
-        return new ResponseEntity<>(flightService.saveFlight(flightDto), HttpStatus.CREATED);
+        log.info("createFlight:");
+        return new ResponseEntity<>(flightService.createFlight(flightDto), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<FlightDto> updateFlightById(Long id, FlightDto flightDto) {
-        var flight = flightService.getFlightById(id);
-        if (flight.isEmpty()) {
-            log.error("update: Flight with id={} doesn't exist.", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        flightDto.setId(id);
-        log.info("update: Flight with id = {} updated", id);
-        return new ResponseEntity<>(flightService.updateFlight(id, flightDto), HttpStatus.OK);
+    public ResponseEntity<FlightDto> updateFlight(Long id, FlightDto flightDto) {
+        log.info("updateFlight: by id: {}", id);
+        return ResponseEntity.ok(flightService.updateFlight(id, flightDto));
     }
 
     @Override
-    public ResponseEntity<HttpStatus> deleteFlightById(Long id) {
-        log.info("deleteAircraftById: Flight with id = {}", id);
-        try {
-            flightService.deleteFlightById(id);
-        } catch (Exception e) {
-            log.error("deleteAircraftById: error of deleting - Flight with id = {} not found", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<HttpStatus> deleteFlight(Long id) {
+        log.info("deleteFlight: by id: {}", id);
+        flightService.deleteFlightById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<FlightStatus[]> getAllFlightStatus() {
+        log.info("getAllFlightStatus:");
+        return ResponseEntity.ok(FlightStatus.values());
     }
 }

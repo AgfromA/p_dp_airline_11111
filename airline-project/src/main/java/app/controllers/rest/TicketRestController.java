@@ -40,14 +40,14 @@ public class TicketRestController implements TicketRestApi {
             log.error("getAll: Tickets not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll: found {} Tickets", tickets.size());
+            log.info("getAll: found: {} Tickets", tickets.size());
             return new ResponseEntity<>(tickets, HttpStatus.OK);
         }
     }
 
     @Override
     public ResponseEntity<TicketDto> getTicketByTicketNumber(String ticketNumber) {
-        log.info("getByNumber: Ticket by ticketNumber = {}", ticketNumber);
+        log.info("getByNumber: Ticket by ticketNumber: {}", ticketNumber);
         var ticket = ticketService.getTicketByTicketNumber(ticketNumber);
         return ticket != null
                 ? new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK)
@@ -56,14 +56,14 @@ public class TicketRestController implements TicketRestApi {
 
     @Override
     public ResponseEntity<TicketDto> createTicket(TicketDto ticketDTO) {
-        log.info("create: new Ticket = {}", ticketDTO);
+        log.info("create: new Ticket: {}", ticketDTO);
         var savedTicket = ticketService.saveTicket(ticketDTO);
         return new ResponseEntity<>(ticketMapper.toDto(savedTicket), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<?> updateTicketById(Long id, TicketDto ticketDTO) {
-        log.info("update: Ticket with id = {}", id);
+        log.info("update: Ticket with id: {}", id);
         var ticket = ticketService.updateTicketById(id, ticketDTO);
         return new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK);
     }
@@ -72,10 +72,10 @@ public class TicketRestController implements TicketRestApi {
     public ResponseEntity<HttpStatus> deleteTicketById(Long id) {
         try {
             ticketService.deleteTicketById(id);
-            log.info("delete: Ticket. id={}", id);
+            log.info("delete: Ticket. id: {}", id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            log.error("delete: Ticket with id={} not found.", id);
+            log.error("delete: Ticket with id: {} not found.", id);
             return ResponseEntity.notFound().build();
         }
     }
