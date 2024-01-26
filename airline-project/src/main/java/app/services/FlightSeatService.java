@@ -123,10 +123,6 @@ public class FlightSeatService {
         return flightSeatRepository.findByFlightId(id);
     }
 
-    public Set<FlightSeat> getSetFlightSeatsByFlightId(Long id) {
-        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id);
-    }
-
     @Transactional
     public List<FlightSeatDto> generateFlightSeats(Long flightId) {
         var flight = flightService.checkIfFlightExists(flightId);
@@ -193,13 +189,6 @@ public class FlightSeatService {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
-
-    private Flight checkIfFlightExists(Long flightId) {
-        return flightService.getFlightById(flightId).orElseThrow(
-                () -> new EntityNotFoundException("Operation was not finished because Flight was not found with id = " + flightId)
-        );
-    }
-
     public List<Long> findSeatIdsByFlight(Flight flight) {
         List<Long> seatIds = new ArrayList<>();
         Set<FlightSeat> flightSeats = flightSeatRepository.findFlightSeatByFlight(flight);
@@ -207,5 +196,8 @@ public class FlightSeatService {
             seatIds.add(flightSeat.getSeat().getId());
         }
         return seatIds;
+    }
+    public Set<FlightSeat> getSetFlightSeatsByFlightId(Long id) {
+        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id);
     }
 }
