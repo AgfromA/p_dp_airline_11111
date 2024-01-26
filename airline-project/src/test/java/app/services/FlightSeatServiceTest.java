@@ -1,6 +1,5 @@
 package app.services;
 
-
 import app.dto.FlightSeatDto;
 import app.dto.SeatDto;
 import app.entities.*;
@@ -23,9 +22,9 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
 class FlightSeatServiceTest {
+
     @Mock
     private FlightSeatRepository flightSeatRepository;
     @Mock
@@ -97,7 +96,6 @@ class FlightSeatServiceTest {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<FlightSeat> flightSeatPage = new PageImpl<>(List.of(flightSeat));
-        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
         when(flightSeatRepository
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable))
                 .thenReturn(flightSeatPage);
@@ -135,9 +133,7 @@ class FlightSeatServiceTest {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<FlightSeat> flightSeatPage = new PageImpl<>(List.of(flightSeat));
-        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
-        when(flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(flightId, pageable))
-                .thenReturn(flightSeatPage);
+        when(flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(flightId, pageable)).thenReturn(flightSeatPage);
 
         Page<FlightSeatDto> result = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
 
@@ -171,7 +167,6 @@ class FlightSeatServiceTest {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<FlightSeat> flightSeatPage = new PageImpl<>(List.of(flightSeat));
-        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
         when(flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(flightId, pageable))
                 .thenReturn(flightSeatPage);
 
@@ -208,7 +203,6 @@ class FlightSeatServiceTest {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<FlightSeat> flightSeatPage = new PageImpl<>(List.of(flightSeat));
-        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
         when(flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable))
                 .thenReturn(flightSeatPage);
 
@@ -288,12 +282,10 @@ class FlightSeatServiceTest {
         flightSeat.setId(1L);
         flightSeat.setSeat(seat);
 
-        when(flightService.getFlightById(anyLong())).thenReturn(Optional.of(flight));
         when(flightSeatMapper.toEntity(flightSeatDto, flightService, seatService)).thenReturn(flightSeat);
         when(flightSeatRepository.save(flightSeat)).thenReturn(flightSeat);
         when(seatService.getSeat(flightSeatDto.getSeat().getId())).thenReturn(seat);
         when(flightSeatMapper.toDto(flightSeat, flightService)).thenReturn(flightSeatDto);
-
 
         FlightSeatDto result = flightSeatService.createFlightSeat(flightSeatDto);
 
@@ -413,7 +405,7 @@ class FlightSeatServiceTest {
                 new HashSet<>(flightSeatMapper.toEntityList(flightSeatDtoList, flightService, seatService));
         flight.setSeats(flightSeatMapper.toEntityList(flightSeatDtoList, flightService, seatService));
 
-        when(flightService.getFlightById(flightId)).thenReturn(Optional.of(flight));
+        when(flightService.checkIfFlightExists(flightId)).thenReturn(flight);
         when(flightSeatRepository.findFlightSeatsByFlightId(flightId))
                 .thenReturn(flightSeatList);
 
@@ -421,7 +413,6 @@ class FlightSeatServiceTest {
         List<FlightSeatDto> result = flightSeatService.generateFlightSeats(flightId);
 
         assertNotNull(result);
-        verify(flightService, times(1)).getFlightById(anyLong());
         verify(flightSeatRepository, times(1)).findFlightSeatsByFlightId(anyLong());
         verify(seatRepository, never()).findByAircraftId(anyLong());
         verify(flightSeatRepository, never()).saveAll(flightSeatList);
@@ -431,10 +422,9 @@ class FlightSeatServiceTest {
     void testGenerateFlightSeats_showThrowExceptionWhenNotFlight() {
         Long flightId = 1L;
 
-        doThrow(EntityNotFoundException.class).when(flightService).getFlightById(flightId);
+        doThrow(EntityNotFoundException.class).when(flightService).checkIfFlightExists(flightId);
 
         assertThrows(EntityNotFoundException.class, () -> flightSeatService.generateFlightSeats(flightId));
-        verify(flightService, times(1)).getFlightById(anyLong());
         verify(flightSeatRepository, never()).findFlightSeatsByFlightId(anyLong());
         verify(seatRepository, never()).findByAircraftId(anyLong());
         verify(flightSeatRepository, never()).saveAll(any());

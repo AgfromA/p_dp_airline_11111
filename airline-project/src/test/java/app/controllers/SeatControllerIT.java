@@ -99,7 +99,7 @@ class SeatControllerIT extends IntegrationTestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
     }
 
@@ -278,7 +278,7 @@ class SeatControllerIT extends IntegrationTestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists());    // Проверяем, что json содержит id,
         //    хотя мы его не устанавливали
     }

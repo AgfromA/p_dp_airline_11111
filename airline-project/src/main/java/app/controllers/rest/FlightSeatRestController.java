@@ -25,7 +25,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
                                                                  Long flightId,
                                                                  Boolean isSold,
                                                                  Boolean isRegistered) {
-        log.info("getAll:");
+        log.info("getAllFlightSeats:");
         if (page == null || size == null) {
             return createUnPagedResponse();
         }
@@ -34,7 +34,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         if (flightId == null && isSold == null && isRegistered == null) {
             flightSeats = flightSeatService.getAllFlightSeats(page, size);
         } else {
-            log.info("getAllPassengers: filtered");
+            log.info("getAllFlightSeats: filtered");
             flightSeats = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
         }
         return flightSeats.isEmpty()
@@ -47,14 +47,14 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         if (flightSeats.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAllFlightSeats: count {}", flightSeats.size());
+            log.info("getAllFlightSeats: count: {}", flightSeats.size());
             return ResponseEntity.ok(flightSeats);
         }
     }
 
     @Override
     public ResponseEntity<FlightSeatDto> getFlightSeat(Long id) {
-        log.info("getFlightSeatById: by id={}", id);
+        log.info("getFlightSeat: by id: {}", id);
         var flightSeat = flightSeatService.getFlightSeatDto(id);
         return flightSeat.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -62,25 +62,25 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     @Override
     public ResponseEntity<FlightSeatDto> createFlightSeat(FlightSeatDto flightSeat) {
         log.info("createFlightSeat:");
-        return ResponseEntity.ok(flightSeatService.createFlightSeat(flightSeat));
+        return new ResponseEntity<>(flightSeatService.createFlightSeat(flightSeat), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<FlightSeatDto> updateFlightSeat(Long id, FlightSeatDto flightSeatDTO) {
-        log.info("updateFlightSeat: by id={}", id);
+        log.info("updateFlightSeat: by id: {}", id);
         return ResponseEntity.ok(flightSeatService.editFlightSeat(id, flightSeatDTO));
     }
 
     @Override
     public ResponseEntity<String> deleteFlightSeat(Long id) {
-        log.info("deleteFlightSeat: by id={}", id);
+        log.info("deleteFlightSeat: by id: {}", id);
         flightSeatService.deleteFlightSeatById(id);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<List<FlightSeatDto>> generateFlightSeats(Long flightId) {
-        log.info("generateFlightSeats: by flightId={}", flightId);
+        log.info("generateFlightSeats: by flightId: {}", flightId);
         return new ResponseEntity<>(flightSeatService.generateFlightSeats(flightId), HttpStatus.CREATED);
     }
 }

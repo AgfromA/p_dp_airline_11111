@@ -24,9 +24,8 @@ public class TimezoneRestController implements TimezoneRestApi {
 
     @Override
     public ResponseEntity<List<TimezoneDto>> getAllTimezones(Integer page, Integer size) {
-        log.info("getAll: get all Timezones");
+        log.info("getAllTimezones:");
         if (page == null || size == null) {
-            log.info("getAll: get all List Timezones");
             return createUnPagedResponse();
         }
 
@@ -39,21 +38,21 @@ public class TimezoneRestController implements TimezoneRestApi {
     private ResponseEntity<List<TimezoneDto>> createUnPagedResponse() {
         var timezone = timezoneService.getAllTimeZone();
         if (timezone.isEmpty()) {
-            log.error("getAll: Timezones not found");
+            log.error("getAllTimezones: Timezones not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll: found {} Timezones", timezone.size());
+            log.info("getAllTimezones: found: {} Timezones", timezone.size());
             return new ResponseEntity<>(timezone, HttpStatus.OK);
         }
     }
 
     @Override
     public ResponseEntity<TimezoneDto> getTimezoneById(Long id) {
-        log.info("getById: search Timezone by id = {}", id);
+        log.info("getTimezoneById: search Timezone by id: {}", id);
         var timezone = timezoneService.getTimezoneById(id);
 
         if (timezone.isEmpty()) {
-            log.info("getById: not found Timezone with id = {} doesn't exist", id);
+            log.info("getTimezoneById: not found Timezone with id: {} doesn't exist", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -63,15 +62,14 @@ public class TimezoneRestController implements TimezoneRestApi {
     @Override
     public ResponseEntity<TimezoneDto> createTimezone(TimezoneDto timezoneDto) {
         timezoneService.saveTimezone(timezoneDto);
-        log.info("create: new Timezone");
-        return new ResponseEntity<>(new TimezoneDto(),
-                HttpStatus.CREATED);
+        log.info("createTimezone:");
+        return new ResponseEntity<>(new TimezoneDto(), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<TimezoneDto> updateTimezoneById(Long id, TimezoneDto timezoneDto) {
         timezoneDto.setId(id);
-        log.info("update: timezone = {}", timezoneDto);
+        log.info("updateTimezoneById: timezone: {}", timezoneDto);
 
         Timezone updatedTimezone = timezoneService.updateTimezone(timezoneDto);
 
@@ -82,11 +80,11 @@ public class TimezoneRestController implements TimezoneRestApi {
 
     @Override
     public ResponseEntity<HttpStatus> deleteTimezoneById(Long id) {
-        log.info("deleteAircraftById: deleting a Timezone with id = {}", id);
+        log.info("deleteTimezoneById: deleting a Timezone with id: {}", id);
         try {
             timezoneService.deleteTimezoneById(id);
         } catch (Exception e) {
-            log.error("deleteAircraftById: Timezone with id = {} not found", id);
+            log.error("deleteTimezoneById: Timezone with id: {} not found", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

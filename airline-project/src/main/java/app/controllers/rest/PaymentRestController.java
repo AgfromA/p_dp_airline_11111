@@ -41,7 +41,7 @@ public class PaymentRestController implements PaymentRestApi {
             log.info("getListOfAllPayments: not found any payments");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll: found {} Payments", payments.size());
+            log.info("getAll: found: {} Payments", payments.size());
             return new ResponseEntity<>(payments, HttpStatus.OK);
         }
     }
@@ -50,10 +50,10 @@ public class PaymentRestController implements PaymentRestApi {
     public ResponseEntity<Payment> getPaymentById(Long id) {
         var payment = paymentService.getPaymentById(id);
         if (payment != null) {
-            log.info("get: find payment with id = {}", id);
+            log.info("get: find payment with id: {}", id);
             return new ResponseEntity<>(payment, HttpStatus.OK);
         } else {
-            log.info("get: not find payment with id = {}", id);
+            log.info("get: not find payment with id: {}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

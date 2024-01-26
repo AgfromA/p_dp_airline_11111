@@ -26,7 +26,7 @@ public class AircraftService {
     }
 
     public Page<AircraftDto> getAllAircrafts(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        var pageRequest = PageRequest.of(page, size);
         return aircraftRepository.findAll(pageRequest).map(aircraftMapper::toDto);
     }
 
@@ -69,7 +69,7 @@ public class AircraftService {
         aircraftRepository.deleteById(id);
     }
 
-    private Aircraft checkIfAircraftExists(Long aircraftId) {
+    public Aircraft checkIfAircraftExists(Long aircraftId) {
         return aircraftRepository.findById(aircraftId).orElseThrow(() -> new EntityNotFoundException(
                 "Operation was not finished because Aircraft was not found with id = " + aircraftId)
         );

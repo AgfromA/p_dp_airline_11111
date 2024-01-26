@@ -28,12 +28,10 @@ public class PassengerRestController implements PassengerRestApi {
                                                                String lastName,
                                                                String email,
                                                                String serialNumberPassport) {
-        log.info("getAllPassengers: get all Passenger");
+        log.info("getAllPassengers:");
         if (page == null || size == null) {
-            log.info("getAllPassengers: get all List Passenger");
             return createUnPagedResponse();
         }
-
         Page<PassengerDto> passengers;
         Pageable pageable = PageRequest.of(page, size);
         if (firstName == null && lastName == null && email == null && serialNumberPassport == null) {
@@ -52,14 +50,14 @@ public class PassengerRestController implements PassengerRestApi {
         if (passengers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAllPassengers: count {}", passengers.size());
+            log.info("getAllPassengers: count: {}", passengers.size());
             return ResponseEntity.ok(passengers);
         }
     }
 
     @Override
     public ResponseEntity<PassengerDto> getPassenger(Long id) {
-        log.info("getPassenger: by id={}", id);
+        log.info("getPassenger: by id: {}", id);
         var passenger = passengerService.getPassengerDto(id);
         return passenger.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -72,13 +70,13 @@ public class PassengerRestController implements PassengerRestApi {
 
     @Override
     public ResponseEntity<PassengerDto> updatePassenger(Long id, PassengerDto passengerDTO) {
-        log.info("updatePassenger: by id={}", id);
+        log.info("updatePassenger: by id: {}", id);
         return ResponseEntity.ok(passengerService.updatePassenger(id, passengerDTO));
     }
 
     @Override
     public ResponseEntity<HttpStatus> deletePassenger(Long id) {
-        log.info("deletePassenger: by id={}", id);
+        log.info("deletePassenger: by id: {}", id);
         passengerService.deletePassenger(id);
         return ResponseEntity.ok().build();
     }

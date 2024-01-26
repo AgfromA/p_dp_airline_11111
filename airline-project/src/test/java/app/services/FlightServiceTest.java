@@ -3,7 +3,6 @@ package app.services;
 import app.entities.Destination;
 import app.entities.Flight;
 import app.enums.Airport;
-import app.services.*;
 import org.junit.Test;
 
 
@@ -16,13 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class FlightServiceTest {
 
-    private final FlightService flightService = new FlightService(null
-            , null
-            , null
-            , null
-            , null
-            , null
-            ,null);
+    private final FlightService flightService = new FlightService(null, null, null, null);
 
     @Test
     public void testGetDistance() {
@@ -48,5 +41,4 @@ public class FlightServiceTest {
     public void testParseLongitude() {
         assertEquals(73.316683, flightService.parseLongitude(Airport.OMS), 0.000001);
     }
-
 }

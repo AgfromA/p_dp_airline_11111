@@ -43,14 +43,14 @@ public class SeatRestController implements SeatRestApi {
         if (seats.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAllSeats: count {}", seats.size());
+            log.info("getAllSeats: count: {}", seats.size());
             return ResponseEntity.ok(seats);
         }
     }
 
     @Override
     public ResponseEntity<SeatDto> getSeat(Long id) {
-        log.info("getSeat: by id={}", id);
+        log.info("getSeat: by id: {}", id);
         var seat = seatService.getSeatDto(id);
         return seat.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -58,25 +58,25 @@ public class SeatRestController implements SeatRestApi {
     @Override
     public ResponseEntity<SeatDto> createSeat(SeatDto seatDTO) {
         log.info("createSeat:");
-        return ResponseEntity.ok(seatService.saveSeat(seatDTO));
+        return new ResponseEntity<>(seatService.saveSeat(seatDTO), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<SeatDto> updateSeat(Long id, SeatDto seatDTO) {
-        log.info("updateSeat: by id={}", id);
+        log.info("updateSeat: by id: {}", id);
         return ResponseEntity.ok(seatService.editSeat(id, seatDTO));
     }
 
     @Override
     public ResponseEntity<String> deleteSeat(Long id) {
-        log.info("deleteSeat: by id={}", id);
+        log.info("deleteSeat: by id: {}", id);
         seatService.deleteSeat(id);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<List<SeatDto>> generateSeats(Long aircraftId) {
-        log.info("generateSeats: by aircraftId={}", aircraftId);
+        log.info("generateSeats: by aircraftId: {}", aircraftId);
         return new ResponseEntity<>(seatService.generateSeats(aircraftId), HttpStatus.CREATED);
     }
 }

@@ -94,8 +94,7 @@ public class SeatService {
         }
         var aircraftSeatsInformation = getNumbersOfSeatsByAircraftId(aircraftId);
         var aircraftSeats = aircraftSeatsInformation.getAircraftSeats();
-
-        List<Seat> seats = new ArrayList<>();
+        var seats = new ArrayList<Seat>();
         for (int i = 0; i < aircraftSeats.length; i++) {
             var seat = new Seat();
             if (i < aircraftSeatsInformation.getNumberOfBusinessClassSeats()) {
