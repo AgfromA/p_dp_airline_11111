@@ -38,10 +38,10 @@ public class CategoryRestController implements CategoryRestApi {
     public ResponseEntity<Category> getCategoryByType(CategoryType categoryType) {
         var category = categoryService.getCategoryByType(categoryType);
         if (category != null) {
-            log.info("getByCategoryType: get by Category type = {}. id = {} ", categoryType, category.getId());
+            log.info("getByCategoryType: get by Category type: {}, id: {} ", categoryType, category.getId());
             return new ResponseEntity<>(category, HttpStatus.OK);
         } else {
-            log.info("getByCategoryType: not found by Category type = {}", categoryType);
+            log.info("getByCategoryType: not found by Category type: {}", categoryType);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

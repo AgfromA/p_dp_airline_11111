@@ -26,7 +26,7 @@ public class RoleService {
     }
 
     public Set<RoleDto> saveRolesToUser(AccountDto user) {
-        Set<RoleDto> userRoles = new HashSet<>();
+        var userRoles = new HashSet<RoleDto>();
         user.getRoles().stream().forEach(a -> {
             var roleFromDb = getRoleByName(a.getName());
             if (roleFromDb == null) {
@@ -35,10 +35,6 @@ public class RoleService {
             userRoles.add(roleFromDb);
         });
         return userRoles;
-    }
-
-    public void saveRole(RoleDto role) {
-        roleRepository.save(roleMapper.toEntity(role));
     }
 
     public Set<RoleDto> getAllRoles() {

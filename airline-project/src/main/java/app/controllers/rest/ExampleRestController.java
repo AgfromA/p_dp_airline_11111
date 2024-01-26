@@ -23,12 +23,10 @@ public class ExampleRestController implements ExampleRestApi {
 
     @Override
     public ResponseEntity<List<ExampleDto>> getAllExamples(Integer page, Integer size) {
-        log.info("getAll: get  Examples");
+        log.info("getAllExamples:");
         if (page == null || size == null) {
-            log.info("getAll: get all List Example");
             return createUnPagedResponse();
         }
-
         var examples = exampleService.getPage(page, size);
         return examples.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
@@ -38,10 +36,10 @@ public class ExampleRestController implements ExampleRestApi {
     private ResponseEntity<List<ExampleDto>> createUnPagedResponse() {
         var examples = exampleService.findAll();
         if (examples.isEmpty()) {
-            log.info("getAll: not found Example");
+            log.info("getAllExamples: not found Example");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll: found {} Example", examples.size());
+            log.info("getAllExamples: found {} Example", examples.size());
             return new ResponseEntity<>(examples, HttpStatus.OK);
         }
     }
@@ -55,8 +53,7 @@ public class ExampleRestController implements ExampleRestApi {
 
     @Override
     public ResponseEntity<ExampleDto> create(ExampleDto exampleDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(exampleService.save(exampleDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(exampleService.save(exampleDto));
     }
 
     @Override

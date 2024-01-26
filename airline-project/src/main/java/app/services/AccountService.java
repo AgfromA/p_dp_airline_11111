@@ -38,7 +38,7 @@ public class AccountService {
     }
 
     public Optional<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
-        Optional<AccountDto> optionalSavedAccount = getAccountById(id);
+        var optionalSavedAccount = getAccountById(id);
         AccountDto savedAccount;
         if (optionalSavedAccount.isEmpty()) {
             return optionalSavedAccount;
@@ -65,7 +65,7 @@ public class AccountService {
 
     @Transactional(readOnly = true)
     public Page<AccountDto> getPage(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        var pageRequest = PageRequest.of(page, size);
         return accountRepository.findAll(pageRequest).map(accountMapper::toDto);
     }
 
@@ -80,8 +80,7 @@ public class AccountService {
     }
 
     public Optional<AccountDto> deleteAccountById(Long id) {
-
-        Optional<AccountDto> optionalSavedAccount = getAccountById(id);
+        var optionalSavedAccount = getAccountById(id);
         if (optionalSavedAccount.isEmpty()) {
             return optionalSavedAccount;
         } else {

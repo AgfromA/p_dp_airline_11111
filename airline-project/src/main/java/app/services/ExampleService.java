@@ -23,7 +23,7 @@ public class ExampleService {
     }
 
     public Page<ExampleDto> getPage(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        var pageRequest = PageRequest.of(page, size);
         return exampleRepository.findAll(pageRequest).map(exampleMapper::toDto);
     }
 
@@ -38,7 +38,7 @@ public class ExampleService {
 
     public Optional<ExampleDto> update(Long id, ExampleDto exampleDto) {
         var example = exampleMapper.toEntity(exampleDto);
-        Optional<ExampleDto> optionalSavedExample = findById(id);
+        var optionalSavedExample = findById(id);
         ExampleDto savedExample;
         if (optionalSavedExample.isEmpty()) {
             return optionalSavedExample;
@@ -52,7 +52,7 @@ public class ExampleService {
     }
 
     public Optional<ExampleDto> delete(Long id) {
-        Optional<ExampleDto> optionalSavedExample = findById(id);
+        var optionalSavedExample = findById(id);
         if (optionalSavedExample.isEmpty()) {
             return optionalSavedExample;
         } else {

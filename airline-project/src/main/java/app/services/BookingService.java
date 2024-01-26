@@ -47,7 +47,6 @@ public class BookingService {
         } else {
             booking.setBookingNumber(bookingRepository.findById(booking.getId()).get().getBookingNumber());
         }
-
         return bookingMapper.toDto(bookingRepository.save(booking));
     }
 
@@ -83,10 +82,9 @@ public class BookingService {
 
     @Transactional
     public void updateBookingAndFlightSeatStatusIfExpired() {
-        List<Booking> bookingList = bookingRepository.findByBookingStatusAndCreateTime(BookingStatus.NOT_PAID,
+        var bookingList = bookingRepository.findByBookingStatusAndCreateTime(BookingStatus.NOT_PAID,
                 LocalDateTime.now().minusMinutes(10));
-
-        for (Booking booking : bookingList) {
+        for (var booking : bookingList) {
             booking.setBookingStatus(BookingStatus.OVERDUE);
             booking.getFlightSeat().setIsBooked(false);
             booking.setCreateTime(null);

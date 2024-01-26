@@ -31,7 +31,7 @@ public class FlightSeatService {
     private final FlightSeatMapper flightSeatMapper;
 
     public List<FlightSeatDto> getAllFlightSeats() {
-        List<FlightSeat> flightSeatList = new ArrayList<>();
+        var flightSeatList = new ArrayList<FlightSeat>();
         flightSeatRepository.findAll().forEach(flightSeatList::add);
         return flightSeatMapper.toDtoList(flightSeatList, flightService);
     }
@@ -42,7 +42,7 @@ public class FlightSeatService {
     }
 
     public Page<FlightSeatDto> getAllFlightSeatsFiltered(Integer page, Integer size, Long flightId, Boolean isSold, Boolean isRegistered) {
-        Pageable pageable = PageRequest.of(page, size);
+        var pageable = PageRequest.of(page, size);
         if (Boolean.FALSE.equals(isSold) && Boolean.FALSE.equals(isRegistered)) {
             return getFreeSeatsById(pageable, flightId);
         } else if (Boolean.FALSE.equals(isSold)) {
@@ -71,7 +71,7 @@ public class FlightSeatService {
     @Transactional
     public FlightSeatDto createFlightSeat(FlightSeatDto flightSeatDto) {
         var flightSeat = flightSeatMapper.toEntity(flightSeatDto, flightService, seatService);
-        var flight = checkIfFlightExists(flightSeatDto.getFlightId());
+        var flight = flightService.checkIfFlightExists(flightSeatDto.getFlightId());
         flightSeat.setFlight(flight);
 
         var seat = seatService.getSeat(flightSeatDto.getSeat().getId());
@@ -110,6 +110,7 @@ public class FlightSeatService {
     }
 
     public void deleteFlightSeatById(Long id) {
+        flightService.checkIfFlightExists(id);
         flightSeatRepository.deleteById(id);
     }
 
@@ -124,12 +125,12 @@ public class FlightSeatService {
 
     @Transactional
     public List<FlightSeatDto> generateFlightSeats(Long flightId) {
-        var flight = checkIfFlightExists(flightId);
+        var flight = flightService.checkIfFlightExists(flightId);
         var flightSeats = getFlightSeatsByFlightId(flightId);
         if (!flightSeats.isEmpty()) {
             return flightSeats;
         }
-        List<FlightSeat> newFlightSeats = new ArrayList<>();
+        var newFlightSeats = new ArrayList<FlightSeat>();
         var seats = seatRepository.findByAircraftId(flight.getAircraft().getId());
         for (Seat seat : seats) {
             newFlightSeats.add(generateFlightSeat(seat, flight));
@@ -165,33 +166,27 @@ public class FlightSeatService {
     }
 
     private Page<FlightSeatDto> getFreeSeatsById(Pageable pageable, Long flightId) {
-        checkIfFlightExists(flightId);
+        flightService.checkIfFlightExists(flightId);
         return flightSeatRepository
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
     private Page<FlightSeatDto> getNotSoldFlightSeatsById(Long flightId, Pageable pageable) {
-        checkIfFlightExists(flightId);
+        flightService.checkIfFlightExists(flightId);
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(flightId, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
     private Page<FlightSeatDto> findNotRegisteredFlightSeatsById(Long flightId, Pageable pageable) {
-        checkIfFlightExists(flightId);
+        flightService.checkIfFlightExists(flightId);
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(flightId, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
     private Page<FlightSeatDto> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
-        checkIfFlightExists(flightId);
+        flightService.checkIfFlightExists(flightId);
         return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
-    }
-
-    private Flight checkIfFlightExists(Long flightId) {
-        return flightService.getFlightById(flightId).orElseThrow(
-                () -> new EntityNotFoundException("Operation was not finished because Flight was not found with id = " + flightId)
-        );
     }
 }
