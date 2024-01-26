@@ -58,6 +58,7 @@ public class SeatService {
 
     @Transactional
     public SeatDto editSeat(Long id, SeatDto seatDto) {
+        checkIfSeatExists(id);
         var aircraft = checkIfAircraftExists(seatDto.getAircraftId());
         var existingSeat = seatRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Operation was not finished because Seat was not found with id = " + id)
@@ -81,6 +82,7 @@ public class SeatService {
 
     @Transactional
     public void deleteSeat(Long id) {
+        checkIfSeatExists(id);
         seatRepository.deleteById(id);
     }
 
@@ -124,5 +126,11 @@ public class SeatService {
                     "Operation was not finished because Aircraft was not found with id = " + aircraftId);
         }
         return aircraft;
+    }
+
+    private Seat checkIfSeatExists(Long seatId) {
+        return seatRepository.findById(seatId).orElseThrow(() -> new EntityNotFoundException(
+                "Operation was not finished because Seat was not found with id = " + seatId)
+        );
     }
 }

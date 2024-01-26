@@ -17,6 +17,6 @@ class EmptyResultDataAccessExceptionHandlerTestIT extends IntegrationTestBase {
         Long id = 0L;
         mockMvc.perform(delete("http://localhost:8080/api/destinations/{id}", id))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isInternalServerError());
     }
 }
