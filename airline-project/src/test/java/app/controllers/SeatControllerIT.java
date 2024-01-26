@@ -15,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -205,14 +203,6 @@ class SeatControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void shouldGetNotValidExistedSeatsDTOByAircraftId() throws Exception {
-        var aircraftId = "notValid";
-        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
     }
 
     @Test

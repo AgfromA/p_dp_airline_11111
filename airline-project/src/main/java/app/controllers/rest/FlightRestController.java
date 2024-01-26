@@ -34,24 +34,21 @@ public class FlightRestController implements FlightRestApi {
             log.info("get all List Flights");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Page<FlightDto> flightDtoPage;
+
+        Page<FlightDto> flights;
         Pageable pageable = PageRequest.of(page, size);
 
         if (cityFrom == null && cityTo == null && dateStart == null && dateFinish == null) {
-            flightDtoPage = flightService.getAllFlights(pageable);
+            flights = flightService.getAllFlights(pageable);
             log.info("get all Flights by page");
         } else {
-            flightDtoPage = flightService
+            flights = flightService
                     .getAllFlightsByDestinationsAndDates(cityFrom, cityTo, dateStart, dateFinish, pageable);
             log.info("getAllFlightsByDestinationsAndDates: get all Flights or Flights by params");
         }
-        return flightDtoPage.isEmpty()
+        return flights.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(flightDtoPage.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(flights.getContent(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<FlightDto>> createUnPagedResponse() {

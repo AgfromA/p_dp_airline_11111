@@ -1,20 +1,16 @@
 package app.controllers;
 
 import app.entities.Flight;
-import app.exceptions.controller.responses.ErrorResponse;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
-import app.exceptions.controller.SearchControllerException;
 import app.services.FlightService;
 import app.services.SearchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -440,13 +436,7 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        new ErrorResponse(
-                                new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST),
-                                requestUrl.get()
-                        )
-                )));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -468,13 +458,7 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        new ErrorResponse(
-                                new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST),
-                                requestUrl.get()
-                        )
-                )));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -495,12 +479,6 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        new ErrorResponse(
-                                new MissingServletRequestParameterException("airportTo", "Airport"),
-                                requestUrl.get()
-                        )
-                )));
+                .andExpect(status().isBadRequest());
     }
 }

@@ -165,7 +165,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
 
     @Test
     @DisplayName("Should get Aircraft by id after saving it")
-    public void shouldGetAircraftById_AfterSavingAircraft() throws Exception {
+    void shouldGetAircraftById_AfterSavingAircraft() throws Exception {
         var aircraft = new AircraftDto();
         aircraft.setAircraftNumber("412584");
         aircraft.setModel("Boeing 999");
@@ -230,7 +230,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
 
     @Test
     @DisplayName("Should update Aircraft by id after saving it")
-    public void shouldUpdateAircraftById_AfterSavingAircraft() throws Exception {
+    void shouldUpdateAircraftById_AfterSavingAircraft() throws Exception {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("ABC123");
@@ -268,7 +268,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
 
     @Test
     @DisplayName("Should update Aircraft by id after saving it ignoring transfer id")
-    public void shouldUpdateAircraftById_IgnoringId() throws Exception {
+    void shouldUpdateAircraftById_IgnoringId() throws Exception {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("ABC123");
@@ -309,7 +309,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
 
     @Test
     @DisplayName("Should not update Aircraft with not exist id")
-    public void shouldNotUpdateAircraftById() throws Exception {
+    void shouldNotUpdateAircraftById() throws Exception {
         var updatedAircraftDTO = new AircraftDto();
         updatedAircraftDTO.setAircraftNumber("XYZ789");
         updatedAircraftDTO.setModel("Airbus A320");
@@ -341,7 +341,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
 
     @Test
     @DisplayName("Should not delete Aircraft by not exist id")
-    public void shouldNotDeleteAircraftById() throws Exception {
+    void shouldNotDeleteAircraftById() throws Exception {
         long id = 2000;
         mockMvc.perform(delete("http://localhost:8080/api/aircrafts/{id}", id))
                 .andDo(print())
@@ -350,7 +350,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
 
     @Test
     @DisplayName("Should delete Aircraft by id after saving it")
-    public void shouldDeleteAircraftById() throws Exception {
+    void shouldDeleteAircraftById() throws Exception {
         var aircraft = new AircraftDto();
         aircraft.setAircraftNumber("ABC123");
         aircraft.setModel("Boeing 777");
