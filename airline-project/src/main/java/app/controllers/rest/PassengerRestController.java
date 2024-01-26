@@ -33,12 +33,9 @@ public class PassengerRestController implements PassengerRestApi {
             log.info("getAllPassengers: get all List Passenger");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         Page<PassengerDto> passengers;
         Pageable pageable = PageRequest.of(page, size);
-
         if (firstName == null && lastName == null && email == null && serialNumberPassport == null) {
             passengers = passengerService.getAllPassengers(pageable);
         } else {

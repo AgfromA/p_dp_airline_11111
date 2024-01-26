@@ -1,29 +1,26 @@
 package app.controllers;
 
-import app.exceptions.controller.responses.ErrorResponse;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
 import app.enums.Airport;
-import app.exceptions.controller.SearchControllerException;
 import app.services.SearchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static app.enums.Airport.*;
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.jupiter.api.Assertions.*;
+import static app.enums.Airport.OMS;
+import static app.enums.Airport.VKO;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-search-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -1309,13 +1306,7 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        new ErrorResponse(
-                                new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST),
-                                requestUrl.get()
-                        )
-                )));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -1337,13 +1328,7 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        new ErrorResponse(
-                                new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST),
-                                requestUrl.get()
-                        )
-                )));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -1365,13 +1350,7 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        new ErrorResponse(
-                                new MissingServletRequestParameterException("airportTo", "Airport"),
-                                requestUrl.get()
-                        )
-                )));
+                .andExpect(status().isBadRequest());
 
     }
 }

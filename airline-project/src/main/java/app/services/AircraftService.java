@@ -47,11 +47,7 @@ public class AircraftService {
 
     @Transactional
     public AircraftDto updateAircraft(Long id, AircraftDto aircraftDTO) {
-        var existingAircraft = aircraftRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Operation was not finished because Aircraft was not found with id = " + id)
-                );
-
+        var existingAircraft = checkIfAircraftExists(id);
         if (aircraftDTO.getAircraftNumber() != null) {
             existingAircraft.setAircraftNumber(aircraftDTO.getAircraftNumber());
         }
@@ -69,6 +65,13 @@ public class AircraftService {
 
     @Transactional
     public void deleteAircraft(Long id) {
+        checkIfAircraftExists(id);
         aircraftRepository.deleteById(id);
+    }
+
+    private Aircraft checkIfAircraftExists(Long aircraftId) {
+        return aircraftRepository.findById(aircraftId).orElseThrow(() -> new EntityNotFoundException(
+                "Operation was not finished because Aircraft was not found with id = " + aircraftId)
+        );
     }
 }

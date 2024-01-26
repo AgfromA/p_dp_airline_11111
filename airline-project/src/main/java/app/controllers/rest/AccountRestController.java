@@ -33,15 +33,11 @@ public class AccountRestController implements AccountRestApi {
             log.info("getAll: get all List Accounts");
             return createUnPagedResponse();
         }
-        if (page < 0 || size < 1) {
-            log.info("getAll: no correct data");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        var accountPage = accountService.getPage(page, size);
 
-        return accountPage.isEmpty()
+        var accounts = accountService.getPage(page, size);
+        return accounts.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(accountPage.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(accounts.getContent(), HttpStatus.OK);
     }
 
     private ResponseEntity<List<AccountDto>> createUnPagedResponse() {
