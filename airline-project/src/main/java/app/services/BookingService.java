@@ -3,7 +3,7 @@ package app.services;
 import app.dto.BookingDto;
 import app.entities.Booking;
 import app.enums.BookingStatus;
-import app.exceptions.FlightSeatIsBookedException;
+import app.exceptions.BookedFlightSeatException;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +31,9 @@ public class BookingService {
 
     @Transactional
     public BookingDto saveBooking(BookingDto bookingDto) {
-        var booking = bookingMapper
-                .toEntity(bookingDto, passengerService, flightSeatService);
-        if (booking.getFlightSeat().getIsBooked()) {
-            throw new FlightSeatIsBookedException("FlightSeat is already booked.");
+        var booking = bookingMapper.toEntity(bookingDto, passengerService, flightSeatService);
+        if (Boolean.TRUE.equals(booking.getFlightSeat().getIsBooked())) {
+            throw new BookedFlightSeatException(booking.getFlightSeat().getId());
         } else {
             booking.getFlightSeat().setIsBooked(true);
         }

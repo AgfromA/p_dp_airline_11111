@@ -1,10 +1,15 @@
 package app.exceptions;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-public class SearchControllerException extends AbstractControllerException {
+public class SearchControllerException extends RuntimeException {
 
-    public SearchControllerException(String message, HttpStatus httpStatus ) {
-        super(message, httpStatus);
+    @Getter
+    private final HttpStatus httpStatus;
+
+    public SearchControllerException(String message, HttpStatus httpStatus) {
+        super(message);
+        this.httpStatus = httpStatus;
     }
 }
