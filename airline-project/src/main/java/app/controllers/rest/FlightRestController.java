@@ -73,7 +73,6 @@ public class FlightRestController implements FlightRestApi {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-
     @Override
     public ResponseEntity<FlightStatus[]> getAllFlightStatus() {
         log.info("getAllFlightStatus: get all Flight Statuses");
