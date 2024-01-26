@@ -1,9 +1,0 @@
-app\airlinegateway\security\config\EndpointConfig.class
-app\airlinegateway\security\AuthenticationFilter.class
-app\airlinegateway\security\exceptions\AuthorizationException.class
-app\airlinegateway\util\YmlPropertySourceFactory.class
-app\airlinegateway\AirlineGatewayApplication.class
-app\airlinegateway\security\config\RouterValidatorConfig.class
-META-INF\spring-configuration-metadata.json
-app\airlinegateway\security\exceptions\GatewayExceptionHandler.class
-app\airlinegateway\security\RouterValidator.class
