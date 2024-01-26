@@ -92,7 +92,7 @@ public interface AccountRestApi {
             )
             @PathVariable(value = "id") Long id);
 
-    @RequestMapping(value = "/api/accounts/all-roles", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/accounts/roles", method = RequestMethod.GET)
     @ApiOperation(value = "Get all existing roles")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Roles found"),
