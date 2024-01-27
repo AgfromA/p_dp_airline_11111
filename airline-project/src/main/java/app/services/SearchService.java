@@ -195,4 +195,3 @@ public class SearchService {
         return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
     }
 }
-
