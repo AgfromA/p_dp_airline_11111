@@ -52,7 +52,7 @@ public class SearchController implements SearchControllerApi {
         }
         try {
             SearchResult searchResult = searchService.search(from, to, departureDate, returnDate, numberOfPassengers);
-            if (searchResult.getDepartFlights().isEmpty() && searchResult.getReturnFlights().isEmpty()) {
+            if (searchResult.getFlights().isEmpty()) {
                 log.info("Flights not found");
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

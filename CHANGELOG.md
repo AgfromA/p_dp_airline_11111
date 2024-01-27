@@ -3,6 +3,7 @@
 ## [Unreleased]
 - #task_number - short task description
 - Рефакторинг Flight API
+- #343 Произведен рефакторинг Search API. Удалена логика с непрямыми перелетами. Добавлена новая схема данных в виде SearchResultCard(Integer totalPrice, SearchResultCardData dataTo, dataBack); Также Добавлены поля FlightTime, CityTo, CityFrom, flightSeatId. 
 
 ## [1.0.9] - 20.01.2024
 - Пагинация 2.0

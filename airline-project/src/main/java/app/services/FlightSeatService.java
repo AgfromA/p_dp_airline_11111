@@ -189,4 +189,15 @@ public class FlightSeatService {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
+    public List<Long> findSeatIdsByFlight(Flight flight) {
+        List<Long> seatIds = new ArrayList<>();
+        Set<FlightSeat> flightSeats = flightSeatRepository.findFlightSeatByFlight(flight);
+        for (FlightSeat flightSeat : flightSeats) {
+            seatIds.add(flightSeat.getSeat().getId());
+        }
+        return seatIds;
+    }
+    public Set<FlightSeat> getSetFlightSeatsByFlightId(Long id) {
+        return flightSeatRepository.findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(id);
+    }
 }

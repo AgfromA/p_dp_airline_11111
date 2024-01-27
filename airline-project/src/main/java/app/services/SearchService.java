@@ -1,21 +1,29 @@
 package app.services;
 
-import app.entities.Flight;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
+import app.dto.search.SearchResultCard;
+import app.dto.search.SearchResultCardData;
+import app.entities.Flight;
+import app.entities.FlightSeat;
 import app.enums.Airport;
-import app.mappers.FlightMapper;
+import app.utils.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -23,10 +31,10 @@ import java.util.stream.Collectors;
 public class SearchService {
 
     private final FlightService flightService;
-    private final DestinationService destinationService;
     private final FlightSeatService flightSeatService;
 
     @Transactional
+    @Loggable
     public SearchResult search(Airport from, Airport to, LocalDate departureDate,
                                LocalDate returnDate, Integer numberOfPassengers) {
 
@@ -35,119 +43,155 @@ public class SearchService {
         var searchResult = new SearchResult();
         searchResult.setSearch(search);
 
-        List<Flight> searchDepartFlight = new ArrayList<>();
-        List<Flight> searchReturnFlight = new ArrayList<>();
+        List<SearchResultCard> directFlights = getDirectFlights(search);
 
-        addDirectDepartFlightsToSearchDepartFlight(search, searchDepartFlight);
-        addNonDirectDepartFlightsToSearchDepartFlight(search, searchDepartFlight);
+        searchResult.setFlights(directFlights);
 
-        var searchDepartFlightDto = searchDepartFlight.stream()
-                .map(departFlight -> Mappers.getMapper(FlightMapper.class)
-                        .toDto(departFlight, flightService))
-                .collect(Collectors.toList());
-
-        searchResult.setDepartFlights(searchDepartFlightDto);
-
-        if (search.getReturnDate() == null) {
-            searchResult.setReturnFlights(new ArrayList<>());
-        } else {
-            addDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
-            addNonDirectReturnFlightsToSearchReturnFlight(search, searchReturnFlight);
-
-
-            var searchReturnFlightDto = searchReturnFlight.stream()
-                    .map(returnFlight -> Mappers.getMapper(FlightMapper.class)
-                            .toDto(returnFlight, flightService))
-                    .collect(Collectors.toList());
-
-            searchResult.setReturnFlights(searchReturnFlightDto);
-        }
         return searchResult;
+
     }
 
-    private void addDirectDepartFlightsToSearchDepartFlight(Search search, List<Flight> searchFlightList) {
-        var departFlight = getDirectDepartFlights(search);
-        //проверка рейсов на наличие мест. если места есть, то рейс добавлется в список рейсов
-        for (Flight f : departFlight) {
-            if (checkFlightForNumberSeats(f, search)) {
-                searchFlightList.add(f);
-            }
+    @Loggable
+    private SearchResultCardData builderForSearchResultCardData(Flight flight) {
+
+        // Получение часовых поясов для аэропортов
+        ZoneId departureTimeZone = parseTimeZone(flight.getFrom().getTimezone());
+        ZoneId arrivalTimeZone = parseTimeZone(flight.getTo().getTimezone());
+
+        // Преобразование времени в часовые пояса аэропортов
+        ZonedDateTime departureDateTimeInTimeZone = flight.getDepartureDateTime().atZone(departureTimeZone);
+        ZonedDateTime arrivalDateTimeInTimeZone = flight.getArrivalDateTime().atZone(arrivalTimeZone);
+
+        // Вычисление продолжительности полета в минутах
+        Duration duration = Duration.between(departureDateTimeInTimeZone, arrivalDateTimeInTimeZone);
+
+        // Получение строки продолжительности времени полета в виде "дд чч мм"
+        String flightTime = getFormattedFlightDurationString(duration);
+
+        List<Long> flightSeatId = flightSeatService.findSeatIdsByFlight(flight);
+
+        Long firstFlightSeatId = flightSeatId.get(0);
+
+        return SearchResultCardData.builder()
+                .airportFrom(flight.getFrom().getAirportCode())
+                .airportTo(flight.getTo().getAirportCode())
+                .cityTo(flight.getTo().getCityName())
+                .cityFrom(flight.getFrom().getCityName())
+                .flightSeatId(firstFlightSeatId)
+                .flightTime(flightTime)
+                .departureDateTime(flight.getDepartureDateTime())
+                .arrivalDateTime(flight.getArrivalDateTime())
+                .build();
+    }
+
+    @Loggable
+    private static String getFormattedFlightDurationString(Duration duration) {
+
+        long durationMinutes = Math.abs(duration.toMinutes());
+
+        long days = durationMinutes / (60 * 24);
+        long hours = (durationMinutes % (60 * 24)) / 60;
+        long minutes = durationMinutes % 60;
+
+        String flightTime = "";
+        if (days > 0) {
+            flightTime += days + "д ";
+        }
+        if (hours > 0) {
+            flightTime += hours + "ч ";
+        }
+        if (minutes > 0) {
+            flightTime += minutes + "м";
+        }
+        return flightTime;
+    }
+
+    @Loggable
+    private ZoneId parseTimeZone(String timeZone) {
+        // Проверка, является ли timeZone в формате "GMT +XX"
+        if (timeZone.startsWith("GMT")) {
+            String offset = timeZone.substring(4).trim();
+            ZoneOffset zoneOffset = ZoneOffset.of(offset);
+            return ZoneId.from(zoneOffset);
+        } else {
+            return ZoneId.of(timeZone);
         }
     }
 
-    private void addDirectReturnFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
-        var returnFlight = getDirectReturnFlights(search);
-        //проверка прямых рейсов на наличие мест. если места есть, то рейс добавлется в список рейсов
-        for (Flight f : returnFlight) {
-            if (checkFlightForNumberSeats(f, search)) {
-                searchFlightList.add(f);
-            }
+    @Loggable
+    public Integer findLowestFare(Search search, Flight flight) {
+        List<FlightSeat> flightSeats = new ArrayList<>(flightSeatService.getSetFlightSeatsByFlightId(flight.getId()));
+        flightSeats.sort(Comparator.comparingInt(FlightSeat::getFare));
+
+        List<FlightSeat> sortedFlightSeats =
+                flightSeats.subList(0, Math.min(search.getNumberOfPassengers(), flightSeats.size()));
+
+        Integer fare = 0;
+        for (FlightSeat seat : sortedFlightSeats) {
+            fare += seat.getFare();
         }
+        return fare;
     }
 
-    private void addNonDirectDepartFlightsToSearchDepartFlight(Search search, List<Flight> searchFlightList) {
-        var nonDirectDepartFlights = getNonDirectDepartFlights(search);
-        //проверка непрямых рейсов на наличие мест. если места есть, то соответствующая пара добавляется в список рейсов
-        for (Flight f : nonDirectDepartFlights) {
-            if (checkFlightForNumberSeats(f, search)) {
-                for (Flight connected_flight : nonDirectDepartFlights) {
-                    if (f.getTo().equals(connected_flight.getFrom()) && checkFlightForNumberSeats(connected_flight, search)) {
-                        searchFlightList.add(f);
-                        searchFlightList.add(connected_flight);
+    @Loggable
+    private List<SearchResultCard> getDirectFlights(Search search) {
+        List<SearchResultCard> searchResultCardList = new ArrayList<>();
+        List<Flight> returnFlights = new ArrayList<>();
+
+        List<Flight> departFlights = flightService.getListDirectFlightsByFromAndToAndDepartureDate(
+                search.getFrom(),
+                search.getTo(),
+                Date.valueOf(search.getDepartureDate()));
+
+        if (search.getReturnDate() != null) {
+            returnFlights = flightService.getListDirectFlightsByFromAndToAndDepartureDate(
+                    search.getTo(),
+                    search.getFrom(),
+                    Date.valueOf(search.getReturnDate()));
+        }
+        // Флаг для обозначения наличия подходящего возвратного рейса
+        boolean foundSuitableReturnFlight = false;
+
+        for (Flight departFlight : departFlights) {
+            if (checkFlightForNumberSeats(departFlight, search)) {
+
+                if (search.getReturnDate() != null) {
+                    for (Flight returnFlight : returnFlights) {
+                        SearchResultCard searchResultCard = new SearchResultCard();
+                        SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
+                        searchResultCard.setDataTo(searchResultCardData);
+                        Integer totalPriceDepart = findLowestFare(search, departFlight);
+                        searchResultCard.setTotalPrice(totalPriceDepart);
+                        foundSuitableReturnFlight = false;
+
+                        if (checkFlightForNumberSeats(returnFlight, search)) {
+                            SearchResultCardData searchResultCardDataBack = builderForSearchResultCardData(returnFlight);
+                            searchResultCard.setDataBack(searchResultCardDataBack);
+                            Integer totalPriceReturn = totalPriceDepart + findLowestFare(search, returnFlight);
+                            searchResultCard.setTotalPrice(totalPriceReturn);
+                            searchResultCardList.add(searchResultCard);
+                            foundSuitableReturnFlight = true;
+                        }
                     }
+                }
+                // Если не найден подходящий возвратный рейс, добавляем карточку результатов для направляющего рейса
+                if (!foundSuitableReturnFlight) {
+                    SearchResultCard searchResultCard = new SearchResultCard();
+                    SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
+                    searchResultCard.setDataTo(searchResultCardData);
+                    Integer totalPriceDepart = findLowestFare(search, departFlight);
+                    searchResultCard.setTotalPrice(totalPriceDepart);
+                    searchResultCardList.add(searchResultCard);
                 }
             }
         }
+        Set<SearchResultCard> uniqueCards = new LinkedHashSet<>(searchResultCardList);
+        searchResultCardList = new ArrayList<>(uniqueCards);
+        return searchResultCardList;
     }
 
-    private void addNonDirectReturnFlightsToSearchReturnFlight(Search search, List<Flight> searchFlightList) {
-        var nonDirectReturnFlights = getNonDirectReturnFlights(search);
-        //проверка непрямых обратных рейсов на наличие мест: если места есть, то соответствующая пара добавляется в список рейсов
-        for (Flight f : nonDirectReturnFlights) {
-            if (checkFlightForNumberSeats(f, search)) {
-                for (Flight connected_flight : nonDirectReturnFlights) {
-                    if (f.getTo().equals(connected_flight.getFrom()) && checkFlightForNumberSeats(connected_flight, search)) {
-                        searchFlightList.add(f);
-                        searchFlightList.add(connected_flight);
-                    }
-                }
-            }
-        }
-    }
-
-    private List<Flight> getDirectDepartFlights(Search search) {
-        return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
-                search.getFrom(),
-                search.getTo(),
-                Date.valueOf(search.getDepartureDate())
-        );
-    }
-
-    private List<Flight> getDirectReturnFlights(Search search) {
-        return flightService.getListDirectFlightsByFromAndToAndDepartureDate(
-                search.getTo(),
-                search.getFrom(),
-                Date.valueOf(search.getReturnDate())
-        );
-    }
-
-    private List<Flight> getNonDirectDepartFlights(Search search) {
-        return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
-                destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
-                destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue(),
-                Date.valueOf(search.getDepartureDate())
-        );
-    }
-
-    private List<Flight> getNonDirectReturnFlights(Search search) {
-        return flightService.getListNonDirectFlightsByFromAndToAndDepartureDate(
-                destinationService.getDestinationByAirportCode(search.getTo()).getId().intValue(),
-                destinationService.getDestinationByAirportCode(search.getFrom()).getId().intValue(),
-                Date.valueOf(search.getReturnDate())
-        );
-    }
-
-    private boolean checkFlightForNumberSeats(Flight f, Search search) {
+    @Loggable
+    public boolean checkFlightForNumberSeats(Flight f, Search search) {
         return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
     }
 }

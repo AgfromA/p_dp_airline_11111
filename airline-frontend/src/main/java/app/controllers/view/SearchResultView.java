@@ -6,6 +6,7 @@ import app.dto.FlightSeatDto;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
 
+import app.dto.search.SearchResultCard;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -30,11 +31,11 @@ public class SearchResultView extends VerticalLayout {
     private final SearchClient searchClient;
     private final SearchForm searchForm = new SearchForm();
     private final Header header = new Header();
-    private final Grid<FlightDto> departFlightsGrid = new Grid<>(FlightDto.class, false);
-    private final Grid<FlightDto> returnFlightsGrid = new Grid<>(FlightDto.class, false);
+    private final Grid<SearchResultCard> departFlightsGrid = new Grid<>(SearchResultCard.class, false);
+    private final Grid<SearchResultCard> returnFlightsGrid = new Grid<>(SearchResultCard.class, false);
     private final Grid<FlightSeatDto> flightSeatGrid = new Grid<>(FlightSeatDto.class, false);
-    private final List<FlightDto> departFlights = new ArrayList<>();
-    private final List<FlightDto> returnFlights = new ArrayList<>();
+    private final List<SearchResultCard> departFlights = new ArrayList<>();
+    private final List<SearchResultCard> returnFlights = new ArrayList<>();
     private SearchResult searchResult;
     private final H5 noDepartFlightsMessage = new H5("Flights not found");
     private final H5 noReturnFlightsMessage = new H5("Flights not found");
@@ -48,22 +49,22 @@ public class SearchResultView extends VerticalLayout {
         setSearchButton();
         setSearchViewFromOutside();
 
-        Grid.Column<FlightDto> departureDataTimeDepartureFlight = createDepartureDataTimeColumn(departFlightsGrid);
-        Grid.Column<FlightDto> airportFromDepartureFlight = createAirportFromColumn(departFlightsGrid);
-        Grid.Column<FlightDto> airportToDepartureFlight = createAirportToColumn(departFlightsGrid);
-        Grid.Column<FlightDto> arrivalDataTimeDepartureFlight = createArrivalDataTimeColumn(departFlightsGrid);
-        Grid.Column<FlightDto> flightSeatsListDepartureFlight = createFlightSeatsColumn(departFlightsGrid);
+        Grid.Column<SearchResultCard> departureDataTimeDepartureFlight = createDepartureDataTimeColumnDepart(departFlightsGrid);
+        Grid.Column<SearchResultCard> airportFromDepartureFlight = createAirportFromColumnDepart(departFlightsGrid);
+        Grid.Column<SearchResultCard> airportToDepartureFlight = createAirportToColumnDepart(departFlightsGrid);
+        Grid.Column<SearchResultCard> arrivalDataTimeDepartureFlight = createArrivalDataTimeColumnDepart(departFlightsGrid);
+     //   Grid.Column<SearchResultCard> flightSeatsListDepartureFlight = createFlightSeatsColumn(departFlightsGrid);
 
-        Grid.Column<FlightDto> departureDataTimeReturnFlight = createDepartureDataTimeColumn(returnFlightsGrid);
-        Grid.Column<FlightDto> airportFromReturnFlight = createAirportFromColumn(returnFlightsGrid);
-        Grid.Column<FlightDto> airportToReturnFlight = createAirportToColumn(returnFlightsGrid);
-        Grid.Column<FlightDto> arrivalDataTimeReturnFlight = createArrivalDataTimeColumn(returnFlightsGrid);
-        Grid.Column<FlightDto> flightSeatsListReturnFlight = createFlightSeatsColumn(returnFlightsGrid);
+        Grid.Column<SearchResultCard> departureDataTimeReturnFlight = createDepartureDataTimeColumnReturn(returnFlightsGrid);
+        Grid.Column<SearchResultCard> airportFromReturnFlight = createAirportFromColumnReturn(returnFlightsGrid);
+        Grid.Column<SearchResultCard> airportToReturnFlight = createAirportToColumnReturn(returnFlightsGrid);
+        Grid.Column<SearchResultCard> arrivalDataTimeReturnFlight = createArrivalDataTimeColumnReturn(returnFlightsGrid);
+     //   Grid.Column<SearchResultCard> flightSeatsListReturnFlight = createFlightSeatsColumn(returnFlightsGrid);
 
         Grid.Column<FlightSeatDto> categorySeat = createCategorySeatColumn(flightSeatGrid);
         Grid.Column<FlightSeatDto> numberFlightSeat = createNumberSeatColumn(flightSeatGrid);
         Grid.Column<FlightSeatDto> fareFlightSeat = createFareColumn(flightSeatGrid);
-        Grid.Column<FlightSeatDto> buttonSeatView = createSeatsButton(flightSeatGrid);
+
 
         departFlightsGrid.setItems(departFlights);
         returnFlightsGrid.setItems(returnFlights);
@@ -102,12 +103,12 @@ public class SearchResultView extends VerticalLayout {
                         , searchForm.getSearch().getReturnDate(), searchForm.getSearch().getNumberOfPassengers());
                 if (!(response.getStatusCode() == HttpStatus.NO_CONTENT)) {
                     searchResult = response.getBody();
-                    if (!searchResult.getDepartFlights().isEmpty()) {
-                        departFlights.addAll(searchResult.getDepartFlights());
+                    if (!searchResult.getFlights().isEmpty()) {
+                        departFlights.addAll(searchResult.getFlights());
                         noDepartFlightsMessage.setVisible(false);
                     }
-                    if (!searchResult.getReturnFlights().isEmpty()) {
-                        returnFlights.addAll(searchResult.getReturnFlights());
+                    if (!searchResult.getFlights().isEmpty()) {
+                        returnFlights.addAll(searchResult.getFlights());
                         noReturnFlightsMessage.setVisible(false);
                     }
                 }
@@ -132,23 +133,39 @@ public class SearchResultView extends VerticalLayout {
         noReturnFlightsMessage.setVisible(false);
     }
 
-    private Grid.Column<FlightDto> createDepartureDataTimeColumn(Grid<FlightDto> grid) {
-        return grid.addColumn(FlightDto::getDepartureDateTime);
+    private Grid.Column<SearchResultCard> createDepartureDataTimeColumnDepart(Grid<SearchResultCard> grid) {
+        return grid.addColumn(card -> card.getDataTo().getDepartureDateTime());
     }
 
-    private Grid.Column<FlightDto> createAirportFromColumn(Grid<FlightDto> grid) {
-        return grid.addColumn(FlightDto::getAirportFrom);
+    private Grid.Column<SearchResultCard> createDepartureDataTimeColumnReturn(Grid<SearchResultCard> grid) {
+        return grid.addColumn(card -> card.getDataBack().getDepartureDateTime());
     }
 
-    private Grid.Column<FlightDto> createAirportToColumn(Grid<FlightDto> grid) {
-        return grid.addColumn(FlightDto::getAirportTo);
+    private Grid.Column<SearchResultCard> createAirportFromColumnDepart(Grid<SearchResultCard> grid) {
+        return grid.addColumn(card -> card.getDataTo().getAirportFrom());
     }
 
-    private Grid.Column<FlightDto> createArrivalDataTimeColumn(Grid<FlightDto> grid) {
-        return grid.addColumn(FlightDto::getArrivalDateTime);
+    private Grid.Column<SearchResultCard> createAirportFromColumnReturn(Grid<SearchResultCard> grid) {
+        return grid.addColumn(card -> card.getDataBack().getAirportFrom());
     }
 
-    //теперь будут отображаться только свободные flightSeats
+    private Grid.Column<SearchResultCard> createAirportToColumnDepart(Grid<SearchResultCard> grid) {
+        return grid.addColumn(card -> card.getDataTo().getAirportTo());
+    }
+
+    private Grid.Column<SearchResultCard> createAirportToColumnReturn(Grid<SearchResultCard> grid) {
+        return grid.addColumn(card -> card.getDataBack().getAirportTo());
+    }
+
+    private Grid.Column<SearchResultCard> createArrivalDataTimeColumnDepart(Grid<SearchResultCard> grid) {
+        return grid.addColumn(card -> card.getDataTo().getArrivalDateTime());
+    }
+
+    private Grid.Column<SearchResultCard> createArrivalDataTimeColumnReturn(Grid<SearchResultCard> grid) {
+        return grid.addColumn(card -> card.getDataBack().getArrivalDateTime());
+    }
+
+    //  теперь будут отображаться только свободные flightSeats
     private Grid.Column<FlightDto> createFlightSeatsColumn(Grid<FlightDto> grid) {
         return grid.addComponentColumn(flight -> {
             List<FlightSeatDto> list = new ArrayList<>();
@@ -164,14 +181,14 @@ public class SearchResultView extends VerticalLayout {
         });
     }
 
-    //Открываем список билетов для конкретного рейса при нажатии на кнопку View Flight Seats
+    // Открываем список билетов для конкретного рейса при нажатии на кнопку View Flight Seats
     private void openFlightSeatsTable(List<FlightSeatDto> list) {
         flightSeatGrid.getDataProvider().refreshAll();
-            flightSeatGrid.setItems(list);
-            Dialog flightSeatsDialog = new Dialog();
-            flightSeatsDialog.setWidth("50%");
-            flightSeatsDialog.add(flightSeatGrid);
-            flightSeatsDialog.open();
+        flightSeatGrid.setItems(list);
+        Dialog flightSeatsDialog = new Dialog();
+        flightSeatsDialog.setWidth("50%");
+        flightSeatsDialog.add(flightSeatGrid);
+        flightSeatsDialog.open();
     }
 
     private Grid.Column<FlightSeatDto> createFareColumn(Grid<FlightSeatDto> grid) {
@@ -195,7 +212,7 @@ public class SearchResultView extends VerticalLayout {
     }
 
     //Здесь реализуем действия при нажатии на кнопку details, как вариант перебросить на страницу бронирования
-    private void  openViewDetails(String seatNumber) {
+    private void openViewDetails(String seatNumber) {
         Div message = new Div();
         message.setText("Дальше думаем что можно сделать :)");
         Dialog flightSeatsDialog = new Dialog();
@@ -210,10 +227,9 @@ public class SearchResultView extends VerticalLayout {
         returnFlights.clear();
     }
 
-
     private void refreshGridsOfFlights() {
         departFlightsGrid.getDataProvider().refreshAll();
         returnFlightsGrid.getDataProvider().refreshAll();
     }
-
 }
+

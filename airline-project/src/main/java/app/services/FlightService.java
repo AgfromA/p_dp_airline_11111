@@ -54,10 +54,6 @@ public class FlightService {
         return flightRepository.getListDirectFlightsByFromAndToAndDepartureDate(airportCodeFrom, airportCodeTo, departureDate);
     }
 
-    public List<Flight> getListNonDirectFlightsByFromAndToAndDepartureDate(int airportIdFrom, int airportIdTo, Date departureDate) {
-        return flightRepository.getListNonDirectFlightsByFromAndToAndDepartureDate(airportIdFrom, airportIdTo, departureDate);
-    }
-
     public Optional<Flight> getFlight(Long id) {
         return flightRepository.findById(id);
     }
