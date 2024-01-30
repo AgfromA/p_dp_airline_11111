@@ -9,7 +9,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -34,11 +33,8 @@ public class SearchResultView extends VerticalLayout {
     private final Grid<SearchResultCard> flightsGrid = new Grid<>(SearchResultCard.class, false);
     private final Grid<Long> flightSeatGrid = new Grid<>(Long.class, false);
     private final List<SearchResultCard> flights = new ArrayList<>();
-
-    private final List<SearchResultCard> common = new ArrayList<>();
     private SearchResult searchResult;
     private final H5 noFlightsMessage = new H5("Flights not found");
-
 
     public SearchResultView(SearchClient searchClient) {
 
@@ -57,7 +53,6 @@ public class SearchResultView extends VerticalLayout {
         Grid.Column<SearchResultCard> flightTimeDepartFlight = createFlightTimeColumn(flightsGrid, false);
 
 
-
         Grid.Column<SearchResultCard> departureDataTimeReturnFlight = createDepartureDataTimeColumn(flightsGrid, true);
         Grid.Column<SearchResultCard> airportFromReturnFlight = createAirportFromColumn(flightsGrid, true);
         Grid.Column<SearchResultCard> airportToReturnFlight = createAirportToColumn(flightsGrid, true);
@@ -71,7 +66,6 @@ public class SearchResultView extends VerticalLayout {
         VerticalLayout departFlightsLayout = new VerticalLayout(departureGridHeader
                 , noFlightsMessage, flightsGrid);
         add(header, searchForm, departFlightsLayout);
-
     }
 
     private void setSearchViewFromOutside() {
@@ -112,7 +106,7 @@ public class SearchResultView extends VerticalLayout {
         flightsGrid.setSelectionMode(Grid.SelectionMode.NONE);
         flightSeatGrid.setAllRowsVisible(true);
         flightSeatGrid.setSelectionMode(Grid.SelectionMode.NONE);
-
+        flightSeatGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
     }
 
     private void setNoFlightsMessage() {
@@ -173,65 +167,40 @@ public class SearchResultView extends VerticalLayout {
         return grid.addColumn(card -> card.getTotalPrice());
     }
 
-
     private void clearContent() {
         flights.clear();
     }
 
     private void refreshGridsOfFlights() {
         flightsGrid.getDataProvider().refreshAll();
+        flightSeatGrid.getDataProvider().refreshAll();
     }
 
-    private Grid.Column<SearchResultCard> createSeatsButton(Grid<SearchResultCard> grid) {
-        return grid.addComponentColumn(seat -> {
-            Button button = new Button("View details");
-            button.addClickListener(e -> openViewDetails(seat.getDataTo().getFlightSeatId()));
-            return button;
-        }).setHeader("details");
-    }
-
-    //Здесь реализуем действия при нажатии на кнопку details, как вариант перебросить на страницу бронирования
-    private void openViewDetails(Long seatNumber) {
-        Div message = new Div();
-        message.setText("");
-        Dialog flightSeatsDialog = new Dialog();
-        flightSeatsDialog.addClassName("width-auto");
-        flightSeatsDialog.setWidth("50%");
-
-        SearchResultCard selectedFlight = flightsGrid.asSingleSelect().getValue();
-        if (selectedFlight != null && selectedFlight.getDataBack() != null) {
-            Long flightSeatId = selectedFlight.getDataBack().getFlightSeatId();
-            message.setText("Selected Flight Seat ID: " + flightSeatId);
-        }
-        flightSeatsDialog.add(message);
-        flightSeatsDialog.open();
-    }
-
-    //  теперь будут отображаться только свободные flightSeats
     private Grid.Column<SearchResultCard> createFlightSeatsColumn(Grid<SearchResultCard> grid) {
         return grid.addComponentColumn(flight -> {
-            List<Long> list = new ArrayList<>();
-            Long flightSeatIdDepart = flight.getDataTo().getFlightSeatId();
-            Long flightSeatIdReturn = flight.getDataBack().getFlightSeatId();
-            list.add(flightSeatIdDepart);
-            list.add(flightSeatIdReturn);
             Button button = new Button("Выбрать билет");
             button.addClickListener(e -> {
-                Notification.show("Flight Seat ID: " + flightSeatIdDepart);
-                Notification.show("Flight Seat ID: " + flightSeatIdReturn);
-                openFlightSeatsTable(list);
+                Notification.show("Flight Seat ID: " + flight.getDataTo().getFlightSeatId());
+                Notification.show("Flight Seat ID: " + flight.getDataBack().getFlightSeatId());
+                openFlightSeatsTable(flight);
             });
             return button;
         });
     }
-    // Открываем список билетов для конкретного рейса при нажатии на кнопку Выбрать билет
-    private void openFlightSeatsTable(List<Long> list) {
-        flightSeatGrid.getDataProvider().refreshAll();
+
+    // Открываем список билетов для конкретного рейса при нажатии на кнопку - Выбрать билет
+    private void openFlightSeatsTable(SearchResultCard flight) {
+        Dialog dialog = new Dialog();
+        List<Long> list = new ArrayList<>();
+        Long flightSeatIdDepart = flight.getDataTo().getFlightSeatId();
+        Long flightSeatIdReturn = flight.getDataBack().getFlightSeatId();
+        list.add(flightSeatIdDepart);
+        list.add(flightSeatIdReturn);
         flightSeatGrid.setItems(list);
-        Dialog flightSeatsDialog = new Dialog();
-        flightSeatsDialog.setWidth("50%");
-        flightSeatsDialog.add(flightSeatGrid);
-        flightSeatsDialog.open();
+        dialog.setWidth("50%");
+        dialog.add(flightSeatGrid);
+        dialog.open();
+        flightSeatGrid.getDataProvider().refreshAll();
     }
 }
 
