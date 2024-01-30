@@ -5,11 +5,16 @@ import app.dto.search.Search;
 import app.dto.search.SearchResult;
 
 import app.dto.search.SearchResultCard;
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.internal.AllowInert;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.H3;
@@ -21,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -187,20 +193,26 @@ public class SearchResultView extends VerticalLayout {
             return button;
         });
     }
-
     // Открываем список билетов для конкретного рейса при нажатии на кнопку - Выбрать билет
     private void openFlightSeatsTable(SearchResultCard flight) {
         Dialog dialog = new Dialog();
+        Div div = new Div();
         List<Long> list = new ArrayList<>();
         Long flightSeatIdDepart = flight.getDataTo().getFlightSeatId();
         Long flightSeatIdReturn = flight.getDataBack().getFlightSeatId();
         list.add(flightSeatIdDepart);
         list.add(flightSeatIdReturn);
-        flightSeatGrid.setItems(list);
-        dialog.setWidth("50%");
-        dialog.add(flightSeatGrid);
+        for (Long seatId : list) {
+            Span seatSpan = new Span(String.valueOf(seatId));
+            Button reserveButton = new Button("Забронировать");
+            reserveButton.addClickListener(event -> {
+                Dialog reservationDialog = new Dialog(new Text("А-ля Забронировано"));
+                reservationDialog.open();
+            });
+            div.add(seatSpan, reserveButton, new Text(" "));
+        }
+        dialog.add(div);
         dialog.open();
-        flightSeatGrid.getDataProvider().refreshAll();
     }
 }
 
