@@ -6,7 +6,6 @@ import app.dto.search.SearchResult;
 
 import app.dto.search.SearchResultCard;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -14,7 +13,6 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.internal.AllowInert;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.H3;
@@ -26,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -37,7 +34,6 @@ public class SearchResultView extends VerticalLayout {
     private final SearchForm searchForm = new SearchForm();
     private final Header header = new Header();
     private final Grid<SearchResultCard> flightsGrid = new Grid<>(SearchResultCard.class, false);
-    private final Grid<Long> flightSeatGrid = new Grid<>(Long.class, false);
     private final List<SearchResultCard> flights = new ArrayList<>();
     private SearchResult searchResult;
     private final H5 noFlightsMessage = new H5("Flights not found");
@@ -110,9 +106,6 @@ public class SearchResultView extends VerticalLayout {
         flightsGrid.setAllRowsVisible(true);
         flightsGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         flightsGrid.setSelectionMode(Grid.SelectionMode.NONE);
-        flightSeatGrid.setAllRowsVisible(true);
-        flightSeatGrid.setSelectionMode(Grid.SelectionMode.NONE);
-        flightSeatGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
     }
 
     private void setNoFlightsMessage() {
@@ -160,7 +153,7 @@ public class SearchResultView extends VerticalLayout {
     }
 
     private Grid.Column<SearchResultCard> createFlightTimeColumn(Grid<SearchResultCard> grid, boolean isReturn) {
-        return grid.addColumn(card -> {
+       return grid.addColumn(card -> {
             if (isReturn) {
                 return card.getDataBack() != null ? card.getDataBack().getFlightTime() : "";
             } else {
@@ -170,16 +163,17 @@ public class SearchResultView extends VerticalLayout {
     }
 
     private Grid.Column<SearchResultCard> createTotalPrice(Grid<SearchResultCard> grid) {
-        return grid.addColumn(card -> card.getTotalPrice());
+        return grid.addColumn(card -> {
+            String totalPrice = String.valueOf(card.getTotalPrice());
+            return totalPrice + " ₽";
+        });
     }
-
-    private void clearContent() {
-        flights.clear();
-    }
+        private void clearContent () {
+            flights.clear();
+        }
 
     private void refreshGridsOfFlights() {
         flightsGrid.getDataProvider().refreshAll();
-        flightSeatGrid.getDataProvider().refreshAll();
     }
 
     private Grid.Column<SearchResultCard> createFlightSeatsColumn(Grid<SearchResultCard> grid) {
