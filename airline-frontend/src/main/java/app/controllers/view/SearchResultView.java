@@ -15,7 +15,6 @@ import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.html.H3;
 
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -47,7 +46,7 @@ public class SearchResultView extends VerticalLayout {
         setSearchButton();
         setSearchViewFromOutside();
         Grid.Column<SearchResultCard> totalPrice = createTotalPrice(flightsGrid);
-        Grid.Column<SearchResultCard> flightSeatsListDepartFlight = createFlightSeatsColumn(flightsGrid);
+        Grid.Column<SearchResultCard> flightSeatsList = createFlightSeatsColumn(flightsGrid);
         Grid.Column<SearchResultCard> departureDataTimeDepartureFlight = createDepartureDataTimeColumn(flightsGrid, false);
         Grid.Column<SearchResultCard> airportFromDepartureFlight = createAirportFromColumn(flightsGrid, false);
         Grid.Column<SearchResultCard> airportToDepartureFlight = createAirportToColumn(flightsGrid, false);
@@ -64,9 +63,7 @@ public class SearchResultView extends VerticalLayout {
 
         flightsGrid.setItems(flights);
 
-        H3 departureGridHeader = new H3("flights");
-        VerticalLayout departFlightsLayout = new VerticalLayout(departureGridHeader
-                , noFlightsMessage, flightsGrid);
+        VerticalLayout departFlightsLayout = new VerticalLayout(noFlightsMessage, flightsGrid);
         add(header, searchForm, departFlightsLayout);
     }
 
@@ -153,7 +150,7 @@ public class SearchResultView extends VerticalLayout {
     }
 
     private Grid.Column<SearchResultCard> createFlightTimeColumn(Grid<SearchResultCard> grid, boolean isReturn) {
-       return grid.addColumn(card -> {
+        return grid.addColumn(card -> {
             if (isReturn) {
                 return card.getDataBack() != null ? card.getDataBack().getFlightTime() : "";
             } else {
@@ -168,9 +165,10 @@ public class SearchResultView extends VerticalLayout {
             return totalPrice + " ₽";
         });
     }
-        private void clearContent () {
-            flights.clear();
-        }
+
+    private void clearContent() {
+        flights.clear();
+    }
 
     private void refreshGridsOfFlights() {
         flightsGrid.getDataProvider().refreshAll();
@@ -187,7 +185,7 @@ public class SearchResultView extends VerticalLayout {
             return button;
         });
     }
-    // Открываем список билетов для конкретного рейса при нажатии на кнопку - Выбрать билет
+
     private void openFlightSeatsTable(SearchResultCard flight) {
         Dialog dialog = new Dialog();
         Div div = new Div();
