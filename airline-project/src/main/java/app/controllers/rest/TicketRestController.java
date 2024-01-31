@@ -6,11 +6,13 @@ import app.mappers.TicketMapper;
 import app.services.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Slf4j
 @RestController
@@ -21,7 +23,7 @@ public class TicketRestController implements TicketRestApi {
     private final TicketMapper ticketMapper;
 
     @Override
-    public ResponseEntity<List<TicketDto>> getAllTickets(Integer page, Integer size) {
+    public ResponseEntity<Page<TicketDto>> getAllTickets(Integer page, Integer size) {
         log.info("getAll: get all Tickets");
         if (page == null || size == null) {
             log.info("getAll: get all List Tickets");
@@ -31,17 +33,17 @@ public class TicketRestController implements TicketRestApi {
         var tickets = ticketService.getAllTickets(page, size);
         return tickets.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(tickets.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(tickets, HttpStatus.OK);
     }
 
-    private ResponseEntity<List<TicketDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<TicketDto>> createUnPagedResponse() {
         var tickets = ticketService.getAllTickets();
         if (tickets.isEmpty()) {
             log.error("getAll: Tickets not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAll: found: {} Tickets", tickets.size());
-            return new ResponseEntity<>(tickets, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(tickets)));
         }
     }
 

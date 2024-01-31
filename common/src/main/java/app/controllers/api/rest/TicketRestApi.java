@@ -3,12 +3,12 @@ package app.controllers.api.rest;
 import app.dto.TicketDto;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 @Api(tags = "Ticket REST")
@@ -22,7 +22,7 @@ public interface TicketRestApi {
             @ApiResponse(code = 200, message = "Tickets found"),
             @ApiResponse(code = 204, message = "Tickets not found")
     })
-    ResponseEntity<List<TicketDto>> getAllTickets(
+    ResponseEntity<Page<TicketDto>> getAllTickets(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size);
 

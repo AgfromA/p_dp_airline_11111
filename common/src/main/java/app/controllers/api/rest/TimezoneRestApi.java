@@ -4,12 +4,12 @@ package app.controllers.api.rest;
 import app.dto.TimezoneDto;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 @Api(tags = "Timezone REST")
@@ -22,7 +22,7 @@ public interface TimezoneRestApi {
             @ApiResponse(code = 200, message = "Timezones found"),
             @ApiResponse(code = 404, message = "Timezones not found")
     })
-    ResponseEntity<List<TimezoneDto>> getAllTimezones(
+    ResponseEntity<Page<TimezoneDto>> getAllTimezones(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size
     );

@@ -7,10 +7,12 @@ import app.services.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -21,7 +23,7 @@ public class SeatRestController implements SeatRestApi {
     private final SeatService seatService;
 
     @Override
-    public ResponseEntity<List<SeatDto>> getAllSeats(Integer page, Integer size, Long aircraftId) {
+    public ResponseEntity<Page<SeatDto>> getAllSeats(Integer page, Integer size, Long aircraftId) {
         log.info("getAllSeats:");
         if (page == null || size == null) {
             return createUnPagedResponse();
@@ -35,16 +37,16 @@ public class SeatRestController implements SeatRestApi {
         }
         return seats.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : ResponseEntity.ok(seats.getContent());
+                : ResponseEntity.ok(seats);
     }
 
-    private ResponseEntity<List<SeatDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<SeatDto>> createUnPagedResponse() {
         var seats = seatService.getAllSeats();
         if (seats.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllSeats: count: {}", seats.size());
-            return ResponseEntity.ok(seats);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(seats)));
         }
     }
 
@@ -75,8 +77,10 @@ public class SeatRestController implements SeatRestApi {
     }
 
     @Override
-    public ResponseEntity<List<SeatDto>> generateSeats(Long aircraftId) {
+    public ResponseEntity<Page<SeatDto>> generateSeats(Long aircraftId) {
         log.info("generateSeats: by aircraftId: {}", aircraftId);
-        return new ResponseEntity<>(seatService.generateSeats(aircraftId), HttpStatus.CREATED);
+        List<SeatDto> seatsList = seatService.generateSeats(aircraftId);
+        Page<SeatDto> seatsPage = new PageImpl<>(seatsList);
+        return new ResponseEntity<>(seatsPage, HttpStatus.CREATED);
     }
 }
