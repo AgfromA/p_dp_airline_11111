@@ -5,12 +5,14 @@ import app.dto.ExampleDto;
 import app.services.ExampleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Slf4j
@@ -22,7 +24,7 @@ public class ExampleRestController implements ExampleRestApi {
     private final ExampleService exampleService;
 
     @Override
-    public ResponseEntity<List<ExampleDto>> getAllExamples(Integer page, Integer size) {
+    public ResponseEntity<Page<ExampleDto>> getAllExamples(Integer page, Integer size) {
         log.info("getAllExamples:");
         if (page == null || size == null) {
             return createUnPagedResponse();
@@ -30,17 +32,17 @@ public class ExampleRestController implements ExampleRestApi {
         var examples = exampleService.getPage(page, size);
         return examples.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(examples.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(examples, HttpStatus.OK);
     }
 
-    private ResponseEntity<List<ExampleDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {
         var examples = exampleService.findAll();
         if (examples.isEmpty()) {
             log.info("getAllExamples: not found Example");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllExamples: found {} Example", examples.size());
-            return new ResponseEntity<>(examples, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(examples)));
         }
     }
 

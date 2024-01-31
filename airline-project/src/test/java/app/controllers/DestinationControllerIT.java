@@ -1,10 +1,13 @@
 package app.controllers;
 
 import app.dto.DestinationDto;
+import app.entities.Destination;
 import app.enums.Airport;
 import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
 import app.services.DestinationService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static app.enums.Airport.RAT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -78,8 +85,7 @@ class DestinationControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(destinationService
-                        .getAllDestinations(pageable.getPageNumber(), pageable.getPageSize())
-                        .getContent())));
+                        .getAllDestinations(pageable.getPageNumber(), pageable.getPageSize()))));
     }
 
     @Test
@@ -107,7 +113,7 @@ class DestinationControllerIT extends IntegrationTestBase {
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination.getContent())));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
     }
 
     @Test
@@ -116,16 +122,15 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination.getContent())));
+                .andExpect(content().json(convertPageToJson(destination)));
     }
-
     @Test
     void shouldShowDestinationByPageable() throws Exception {
         var pageable = PageRequest.of(0, 3, Sort.by("id"));
@@ -139,7 +144,7 @@ class DestinationControllerIT extends IntegrationTestBase {
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination.getContent())));
+                .andExpect(content().json(objectMapper.writeValueAsString(destination)));
     }
 
     @Test
@@ -155,7 +160,7 @@ class DestinationControllerIT extends IntegrationTestBase {
                         .param("timezone", timezone))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(destination.getContent())));
+                .andExpect(content().json(convertPageToJson(destination)));
     }
 
     @Test
@@ -196,5 +201,20 @@ class DestinationControllerIT extends IntegrationTestBase {
         mockMvc.perform(delete("http://localhost:8080/api/destinations/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+    public String convertPageToJson(Page page) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        List<Destination> destinations = page.getContent();
+        int totalPages = page.getTotalPages();
+        long totalElements = page.getTotalElements();
+        boolean last = page.isLast();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("content", destinations);
+        map.put("totalPages", totalPages);
+        map.put("totalElements", totalElements);
+        map.put("last", last);
+
+        return mapper.writeValueAsString(map);
     }
 }
