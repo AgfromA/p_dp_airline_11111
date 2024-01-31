@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
 
 @Api(tags = "Category REST")
 @Tag(name = "Category REST", description = "API для операций с категорией сиденья (эконом, бизнесс и т.д.)")

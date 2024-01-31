@@ -83,8 +83,7 @@ class PaymentRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(paymentService
-                        .pagePagination(pageable.getPageNumber(), pageable.getPageSize())
-                        .getContent())));
+                        .pagePagination(pageable.getPageNumber(), pageable.getPageSize()))));
     }
     // Пагинация 2.0
 

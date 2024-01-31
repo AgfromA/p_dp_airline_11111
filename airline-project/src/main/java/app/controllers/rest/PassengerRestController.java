@@ -6,12 +6,14 @@ import app.services.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -22,7 +24,7 @@ public class PassengerRestController implements PassengerRestApi {
     private final PassengerService passengerService;
 
     @Override
-    public ResponseEntity<List<PassengerDto>> getAllPassengers(Integer page,
+    public ResponseEntity<Page<PassengerDto>> getAllPassengers(Integer page,
                                                                Integer size,
                                                                String firstName,
                                                                String lastName,
@@ -42,16 +44,16 @@ public class PassengerRestController implements PassengerRestApi {
         }
         return passengers.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : ResponseEntity.ok(passengers.getContent());
+                : ResponseEntity.ok(passengers);
     }
 
-    private ResponseEntity<List<PassengerDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<PassengerDto>> createUnPagedResponse() {
         var passengers = passengerService.getAllPassengers();
         if (passengers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllPassengers: count: {}", passengers.size());
-            return ResponseEntity.ok(passengers);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(passengers)));
         }
     }
 

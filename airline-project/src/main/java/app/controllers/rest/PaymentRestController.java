@@ -7,10 +7,13 @@ import app.entities.Payment;
 import app.services.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -22,7 +25,7 @@ public class PaymentRestController implements PaymentRestApi {
     private final PaymentService paymentService;
 
     @Override
-    public ResponseEntity<List<Payment>> getAllPayments(Integer page, Integer count) {
+    public ResponseEntity<Page<Payment>> getAllPayments(Integer page, Integer count) {
         log.info("getAll: get all Payments");
         if (page == null || count == null) {
             log.info("getAll: get all List Payments");
@@ -32,17 +35,17 @@ public class PaymentRestController implements PaymentRestApi {
         var payments = paymentService.pagePagination(page, count);
         return payments.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(payments.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(payments, HttpStatus.OK);
     }
 
-    private ResponseEntity<List<Payment>> createUnPagedResponse() {
+    private ResponseEntity<Page<Payment>> createUnPagedResponse() {
         var payments = paymentService.getAllPayments();
         if (payments.isEmpty()) {
             log.info("getListOfAllPayments: not found any payments");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAll: found: {} Payments", payments.size());
-            return new ResponseEntity<>(payments, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(payments)));
         }
     }
 

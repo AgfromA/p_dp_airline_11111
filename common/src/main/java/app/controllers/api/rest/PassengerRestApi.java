@@ -7,13 +7,13 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Api(tags = "Passenger REST")
 @Tag(name = "Passenger REST", description = "API для операций с пассажирами")
@@ -25,7 +25,7 @@ public interface PassengerRestApi {
             @ApiResponse(code = 400, message = "Passenger not found")
     })
     @RequestMapping(value = "/api/passengers", method = RequestMethod.GET)
-    ResponseEntity<List<PassengerDto>> getAllPassengers(
+    ResponseEntity<Page<PassengerDto>> getAllPassengers(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size,
