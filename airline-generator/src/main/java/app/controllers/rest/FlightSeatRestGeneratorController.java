@@ -5,10 +5,13 @@ import app.dto.FlightSeatDto;
 import app.services.FlightSeatServiceGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -18,11 +21,11 @@ public class FlightSeatRestGeneratorController implements FlightSeatRestApiGener
     private final FlightSeatServiceGenerator flightSeatServiceGenerator;
 
     @Override
-    public ResponseEntity<List<FlightSeatDto>> generateFlightSeatDTO(Integer amt) {
+    public ResponseEntity<Page<FlightSeatDto>> generateFlightSeatDTO(Integer amt) {
         log.info("generate Flight Seat amount = {}", amt);
         var flights = flightSeatServiceGenerator.generateRandomFlightSeatDTO(amt);
         return flights != null
-                ? new ResponseEntity<>(flights, HttpStatus.OK)
+                ? ResponseEntity.ok(new PageImpl<>(new ArrayList<>(flights)))
                 : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

@@ -3,6 +3,7 @@ package app.controllers.api;
 import app.dto.FlightSeatDto;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +21,7 @@ public interface FlightSeatRestApiGenerator {
             @ApiResponse(code = 201, message = "Flight Seat generated"),
             @ApiResponse(code = 400, message = "Flight Seat not generated")
     })
-    ResponseEntity<List<FlightSeatDto>> generateFlightSeatDTO(
+    ResponseEntity<Page<FlightSeatDto>> generateFlightSeatDTO(
             @ApiParam(
                     value = "Amount of flightSeats",
                     example = "10"

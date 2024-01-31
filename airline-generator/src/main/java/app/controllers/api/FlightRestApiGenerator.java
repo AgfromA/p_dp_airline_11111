@@ -3,6 +3,7 @@ package app.controllers.api;
 import app.dto.FlightDto;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +21,7 @@ public interface FlightRestApiGenerator {
             @ApiResponse(code = 201, message = "Flight generated"),
             @ApiResponse(code = 400, message = "Flight not generated")
     })
-    ResponseEntity<List<FlightDto>> generateFlightDTO(
+    ResponseEntity<Page<FlightDto>> generateFlightDTO(
             @ApiParam(
                     value = "Amount of flights",
                     example = "10"
