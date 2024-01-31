@@ -140,8 +140,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(flightService
-                            .getAllFlights(pageable.getPageNumber(), pageable.getPageSize())
-                            .getContent())));
+                            .getAllFlights(pageable.getPageNumber(), pageable.getPageSize()))));
         }
 
         @Test

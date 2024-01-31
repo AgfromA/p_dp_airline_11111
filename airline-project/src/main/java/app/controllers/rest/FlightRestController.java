@@ -6,11 +6,14 @@ import app.enums.FlightStatus;
 import app.services.FlightService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 @Slf4j
 @RestController
@@ -20,24 +23,24 @@ public class FlightRestController implements FlightRestApi {
     private final FlightService flightService;
 
     @Override
-    public ResponseEntity<List<FlightDto>> getAllFlights(Integer page, Integer size) {
+    public ResponseEntity<Page<FlightDto>> getAllFlights(Integer page, Integer size) {
         log.info("getAllFlights:");
         if (page == null || size == null) {
             return createUnPagedResponse();
         }
-        var flights = flightService.getAllFlights(page, size).getContent();
+        var flights = flightService.getAllFlights(page, size);
         return flights.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(flights, HttpStatus.OK);
     }
 
-    private ResponseEntity<List<FlightDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<FlightDto>> createUnPagedResponse() {
         var flights = flightService.getAllFlights();
         if (flights.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllFlights: count {}", flights.size());
-            return new ResponseEntity<>(flights, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(flights)));
         }
     }
 

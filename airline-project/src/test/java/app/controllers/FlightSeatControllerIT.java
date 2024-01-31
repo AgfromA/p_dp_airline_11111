@@ -138,8 +138,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(flightSeatService
-                        .getAllFlightSeats(pageable.getPageNumber(), pageable.getPageSize())
-                        .getContent())));
+                        .getAllFlightSeats(pageable.getPageNumber(), pageable.getPageSize()))));
     }
 
 

@@ -6,6 +6,7 @@ import app.services.FlightSeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     private final FlightSeatService flightSeatService;
 
     @Override
-    public ResponseEntity<List<FlightSeatDto>> getAllFlightSeats(Integer page,
+    public ResponseEntity<Page<FlightSeatDto>> getAllFlightSeats(Integer page,
                                                                  Integer size,
                                                                  Long flightId,
                                                                  Boolean isSold,
@@ -39,16 +40,16 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         }
         return flightSeats.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : ResponseEntity.ok(flightSeats.getContent());
+                : ResponseEntity.ok(flightSeats);
     }
 
-    private ResponseEntity<List<FlightSeatDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<FlightSeatDto>> createUnPagedResponse() {
         var flightSeats = flightSeatService.getAllFlightSeats();
         if (flightSeats.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllFlightSeats: count: {}", flightSeats.size());
-            return ResponseEntity.ok(flightSeats);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(flightSeats)));
         }
     }
 
@@ -79,8 +80,10 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     }
 
     @Override
-    public ResponseEntity<List<FlightSeatDto>> generateFlightSeats(Long flightId) {
+    public ResponseEntity<Page<FlightSeatDto>> generateFlightSeats(Long flightId) {
         log.info("generateFlightSeats: by flightId: {}", flightId);
-        return new ResponseEntity<>(flightSeatService.generateFlightSeats(flightId), HttpStatus.CREATED);
+        List<FlightSeatDto> flightSeatsList = flightSeatService.generateFlightSeats(flightId);
+        Page<FlightSeatDto> flightSeatsPage = new PageImpl<>(flightSeatsList);
+        return new ResponseEntity<>(flightSeatsPage, HttpStatus.CREATED);
     }
 }
