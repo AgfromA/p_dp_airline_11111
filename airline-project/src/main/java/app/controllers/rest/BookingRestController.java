@@ -6,10 +6,13 @@ import app.enums.BookingStatus;
 import app.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -20,7 +23,7 @@ public class BookingRestController implements BookingRestApi {
     private final BookingService bookingService;
 
     @Override
-    public ResponseEntity<List<BookingDto>> getAllBookings(Integer page, Integer size) {
+    public ResponseEntity<Page<BookingDto>> getAllBookings(Integer page, Integer size) {
         log.info("getAll: search all Bookings");
         if (page == null || size == null) {
             log.info("getAll: get all list Bookings");
@@ -30,17 +33,17 @@ public class BookingRestController implements BookingRestApi {
         var bookings = bookingService.getAllBookings(page, size);
         return bookings.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(bookings.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(bookings,HttpStatus.OK);
     }
 
-    private ResponseEntity<List<BookingDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<BookingDto>> createUnPagedResponse() {
         var bookings = bookingService.findAll();
         if (bookings.isEmpty()) {
             log.info("getAll: Bookings not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAll:found {} Bookings", bookings.size());
-            return new ResponseEntity<>(bookings, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(bookings)));
         }
     }
 

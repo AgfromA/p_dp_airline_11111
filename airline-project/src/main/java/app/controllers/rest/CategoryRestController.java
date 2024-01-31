@@ -7,10 +7,13 @@ import app.services.CategoryService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -21,11 +24,11 @@ public class CategoryRestController implements CategoryRestApi {
     private final CategoryService categoryService;
 
     @Override
-    public ResponseEntity<List<Category>> getAllCategories() {
+    public ResponseEntity<Page<Category>> getAllCategories() {
         var categories = categoryService.getAllCategories();
         if (categories != null) {
             log.info("getAll: find all Categories");
-            return new ResponseEntity<>(categories, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(categories)));
         } else {
             log.info("getAll: Categories not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

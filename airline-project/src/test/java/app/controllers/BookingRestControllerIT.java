@@ -71,8 +71,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(bookingService
-                        .getAllBookings(pageable.getPageNumber(), pageable.getPageSize())
-                        .getContent())));
+                        .getAllBookings(pageable.getPageNumber(), pageable.getPageSize()))));
     }
 
     @Test
