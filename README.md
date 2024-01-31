@@ -81,7 +81,7 @@ Dev-stand будем поднимать и разворачивать через
 <li>изучи весь проект - начни с pom, properties файлов и конфигурационных классов</li>
 <li>изучи гайд guide_docker из директории guides</li>
 <li>если на предыдущем шаге не получилось создать контейнер с БД, то создай локальную базу данных с названием <code>airline_db</code></li>
-<li>добейся успешного запуска проекта. <a href="http://localhost:8080/"> Проверить</a>.</li>
+<li>добейся успешного запуска проекта. <a href="http://localhost:8080/swagger-ui/"> Проверить</a></li>
 <li>изучи <a href="https://gitlab.com/de.pronin/p_dp_airline_1/-/boards">таск-борд</a>
 <li>изучи гайд guide_kubernetes.md из директории guides</li>
 <li>ознакомься с остальными гайдами из директории guides</li>
