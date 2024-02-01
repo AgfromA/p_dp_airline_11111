@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+-#380 Пагинация, контроллеры GET возвращают объект Page<T>
 
 ## [1.1.0] - 27.01.2024
 - #task_number - short task description
