@@ -131,6 +131,7 @@ class DestinationControllerIT extends IntegrationTestBase {
                 .andExpect(status().isOk())
                 .andExpect(content().json(convertPageToJson(destination)));
     }
+
     @Test
     void shouldShowDestinationByPageable() throws Exception {
         var pageable = PageRequest.of(0, 3, Sort.by("id"));
@@ -202,6 +203,7 @@ class DestinationControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
+
     public String convertPageToJson(Page page) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         List<Destination> destinations = page.getContent();

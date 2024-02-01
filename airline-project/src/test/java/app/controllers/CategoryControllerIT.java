@@ -60,6 +60,7 @@ class CategoryControllerIT extends IntegrationTestBase {
 
         return mapper.writeValueAsString(map);
     }
+
     @Test
     void shouldGetPageCategory() throws Exception {
         var pageable = PageRequest.of(0, 2);

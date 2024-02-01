@@ -38,7 +38,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Autowired
     private PassengerRepository passengerRepository;
 
-    public Passenger createPassenger () {
+    public Passenger createPassenger() {
         Passenger passenger = new Passenger();
         passenger.setFirstName("Andrey");
         passenger.setLastName("Ivanov");

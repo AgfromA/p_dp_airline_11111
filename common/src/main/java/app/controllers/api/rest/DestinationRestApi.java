@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-
 @Api(tags = "Destination REST")
 @Tag(name = "Destination REST", description = "API для операций с пунктами назначения (прилет/вылет)")
 public interface DestinationRestApi {

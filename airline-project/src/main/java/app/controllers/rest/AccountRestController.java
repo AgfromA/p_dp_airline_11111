@@ -51,6 +51,7 @@ public class AccountRestController implements AccountRestApi {
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(account)));
         }
     }
+
     private ResponseEntity<Page<AccountDto>> createPagedResponse(Page<AccountDto> accountPage) {
         var accountDTOPage = new PageImpl<>(
                 new ArrayList<>(accountPage.getContent()),
