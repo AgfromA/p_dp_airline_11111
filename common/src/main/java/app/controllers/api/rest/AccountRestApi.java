@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Set;
 
 @Api(tags = "Account REST")
@@ -28,7 +28,7 @@ public interface AccountRestApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Accounts found"),
             @ApiResponse(code = 204, message = "Accounts not found")})
-    ResponseEntity<List<AccountDto>> getAllAccounts(@ApiParam(name = "page")
+    ResponseEntity<Page<AccountDto>> getAllAccounts(@ApiParam(name = "page")
                                                     @RequestParam(value = "page", required = false) Integer page,
                                                     @ApiParam(name = "size")
                                                     @RequestParam(value = "size", required = false) Integer size);

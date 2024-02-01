@@ -65,7 +65,7 @@ class AccountControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(accountService
-                        .getPage(pageable.getPageNumber(), pageable.getPageSize()).getContent())));
+                        .getPage(pageable.getPageNumber(), pageable.getPageSize()))));
     }
 
     @Test

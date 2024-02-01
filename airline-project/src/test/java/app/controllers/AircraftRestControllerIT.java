@@ -66,7 +66,7 @@ class AircraftRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(aircraftService
-                        .getAllAircrafts(pageable.getPageNumber(), pageable.getPageSize()).getContent())));
+                        .getAllAircrafts(pageable.getPageNumber(), pageable.getPageSize()))));
     }
 
     @Test

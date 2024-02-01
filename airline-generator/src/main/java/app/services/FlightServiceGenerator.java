@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class FlightServiceGenerator {
                 Airport.KZN, Airport.KMW, Airport.KUF, Airport.IAR, Airport.IWA, Airport.GRV, Airport.IJK,
                 Airport.GOJ, Airport.LPK, Airport.NAL));
         flightSeatDTOList = flightSeatGeneratorClient.getAllFlightSeats(null, null,
-                null, false, false).getBody();
+                null, false, false).getBody().stream().collect(Collectors.toList());;
     }
 
 

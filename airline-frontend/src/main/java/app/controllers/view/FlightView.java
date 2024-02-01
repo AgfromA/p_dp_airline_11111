@@ -80,8 +80,8 @@ public class FlightView extends VerticalLayout {
         isSearchById = false;
         isSearchByDestinationsAndDates = false;
         var response = flightClient.getAllFlights(pageable.getPageNumber(), pageable.getPageSize());
-        dataSource = response.getBody();
-        List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody();
+        dataSource = response.getBody().stream().collect(Collectors.toList());;
+        List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody().stream().collect(Collectors.toList());;
         maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
 
         ValidationMessage idValidationMessage = new ValidationMessage();
@@ -217,9 +217,9 @@ public class FlightView extends VerticalLayout {
                 List<FlightDto> emptyList = Collections.emptyList();
                 grid.setItems(emptyList);
             } else {
-                List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody();
+                List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody().stream().collect(Collectors.toList());;
                 maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
-                dataSource = response.getBody();
+                dataSource = response.getBody().stream().collect(Collectors.toList());;
                 grid.setItems(dataSource);
             }
         } else {
@@ -364,9 +364,9 @@ public class FlightView extends VerticalLayout {
         dataSource.clear();
         PageRequest pageable = PageRequest.of(currentPage, 10, Sort.by("id").ascending());
         var response = flightClient.getAllFlights(pageable.getPageNumber(), pageable.getPageSize());
-        List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody();
+        List<FlightDto> flightDtoList = flightClient.getAllFlights(null, null).getBody().stream().collect(Collectors.toList());;
         maxPages = (int) Math.ceil((double) flightDtoList.size() / 10);
-        dataSource = response.getBody();
+        dataSource = response.getBody().stream().collect(Collectors.toList());;
 
 
         grid.getDataProvider().refreshAll();

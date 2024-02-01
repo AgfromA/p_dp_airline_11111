@@ -7,12 +7,12 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Api(tags = "Seat REST")
 @Tag(name = "Seat REST", description = "API для операций с физическими местами в самолете")
@@ -24,7 +24,7 @@ public interface SeatRestApi {
             @ApiResponse(code = 200, message = "Seats found"),
             @ApiResponse(code = 404, message = "Seats not found")
     })
-    ResponseEntity<List<SeatDto>> getAllSeats(@PageableDefault()
+    ResponseEntity<Page<SeatDto>> getAllSeats(@PageableDefault()
                                               @RequestParam(value = "page", required = false) Integer page,
                                               @RequestParam(value = "size", required = false) Integer size,
                                               @ApiParam(
@@ -99,5 +99,5 @@ public interface SeatRestApi {
             @ApiResponse(code = 400, message = "Seats not created"),
             @ApiResponse(code = 404, message = "Aircraft with this id not found")
     })
-    ResponseEntity<List<SeatDto>> generateSeats(@RequestParam("aircraftId") Long aircraftId);
+    ResponseEntity<Page<SeatDto>> generateSeats(@RequestParam("aircraftId") Long aircraftId);
 }

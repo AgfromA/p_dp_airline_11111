@@ -24,6 +24,7 @@ import feign.FeignException;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * Вью сделана на основе ExempleView, SeatView, TimezoneView с небольшим рефакторингом
@@ -45,10 +46,10 @@ public class AircraftView extends VerticalLayout {
 
     public AircraftView(AircraftClient aircraftClient) {
         this.aircraftClient = aircraftClient;
-        List<AircraftDto> aircrafts = aircraftClient.getAllAircrafts(null, null).getBody();
+        List<AircraftDto> aircrafts = aircraftClient.getAllAircrafts(null, null).getBody().stream().collect(Collectors.toList());;
         int pageSize = 10;
         this.maxPages = (int) Math.ceil((double) aircrafts.size() / pageSize);
-        this.dataSource = aircraftClient.getAllAircrafts(0, 10).getBody();
+        this.dataSource = aircraftClient.getAllAircrafts(0, 10).getBody().stream().collect(Collectors.toList());
         getThemeList().clear();
         getThemeList().add("spacing-s");
         contentTabContainer.setSizeFull();
@@ -124,7 +125,7 @@ public class AircraftView extends VerticalLayout {
 
     private void refreshGrid() {
         dataSource.clear();
-        List<AircraftDto> newData = aircraftClient.getAllAircrafts(currentPage, 10).getBody();
+        List<AircraftDto> newData = aircraftClient.getAllAircrafts(currentPage, 10).getBody().stream().collect(Collectors.toList());;
         dataSource.addAll(newData);
         grid.getListDataView().refreshAll();
     }

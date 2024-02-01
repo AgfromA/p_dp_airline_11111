@@ -38,7 +38,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Autowired
     private PassengerRepository passengerRepository;
 
-    public Passenger createPassenger () {
+    public Passenger createPassenger() {
         Passenger passenger = new Passenger();
         passenger.setFirstName("Andrey");
         passenger.setLastName("Ivanov");
@@ -101,8 +101,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPassengers(pageable)
-                        .getContent())));
+                        .getAllPassengers(pageable))));
     }
     // Пагинация 2.0
 
@@ -189,7 +188,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @DisplayName("Filter passenger by FirstName and LastName")
     void shouldShowPassengerByFirstNameAndLastName() throws Exception {
         createPassenger();
-        var pageable = PageRequest.of(0, 10, Sort.by("id"));
+        var pageable = PageRequest.of(0, 10);
         var firstName = "Andrey";
         var lastName = "Ivanov";
         var email = "";
@@ -200,13 +199,13 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber))));
     }
 
     @Test
     @DisplayName("Filter passenger by FirstName")
     void shouldShowPassengerByFirstName() throws Exception {
-        var pageable = PageRequest.of(0, 10, Sort.by("id"));
+        var pageable = PageRequest.of(0, 10);
         var firstName = "John20";
         var lastName = "";
         var email = "";
@@ -216,13 +215,13 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber))));
     }
 
     @Test
     @DisplayName("Filter passenger by LastName")
     void shouldShowPassengerByLastName() throws Exception {
-        var pageable = PageRequest.of(0, 10, Sort.by("id"));
+        var pageable = PageRequest.of(0, 10);
         var firstName = "";
         var lastName = "Simons20";
         var email = "";
@@ -232,13 +231,13 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber))));
     }
 
     @Test
     @DisplayName("Filter passenger by Email")
     void shouldShowPassengerByEmail() throws Exception {
-        var pageable = PageRequest.of(0, 10, Sort.by("id"));
+        var pageable = PageRequest.of(0, 10);
         var firstName = "";
         var lastName = "";
         var email = "passenger20@mail.ru";
@@ -248,13 +247,13 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, passportSerialNumber))));
     }
 
     @Test
     @DisplayName("Filter passenger by serialNumberPassport")
     void shouldShowPassengerByPassportSerialNumber() throws Exception {
-        var pageable = PageRequest.of(0, 10, Sort.by("id"));
+        var pageable = PageRequest.of(0, 10);
         var firstName = "";
         var lastName = "";
         var email = "";
@@ -264,7 +263,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(passengerService
-                        .getAllPassengersFiltered(pageable, firstName, lastName, email, serialNumberPassport).getContent())));
+                        .getAllPassengersFiltered(pageable, firstName, lastName, email, serialNumberPassport))));
     }
 
     @Test

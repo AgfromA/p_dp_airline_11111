@@ -80,8 +80,7 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(seatService
-                        .getAllSeats(pageable.getPageNumber(), pageable.getPageSize())
-                        .getContent())));
+                        .getAllSeats(pageable.getPageNumber(), pageable.getPageSize()))));
     }
     // Пагинация 2.0
 
@@ -208,13 +207,12 @@ class SeatControllerIT extends IntegrationTestBase {
     @Test
     void shouldGetAllPagesSeatsDTOByAircraftId() throws Exception {
         var aircraftId = 1L;
-        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
+        mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=30&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper
-                        .writeValueAsString(seatService.getAllSeatsByAircraftId(0, 30, aircraftId).getContent())));
+                        .writeValueAsString(seatService.getAllSeatsByAircraftId(0, 30, aircraftId))));
     }
-
 
     // Тест на попытку удаления несуществующего места
     @Test

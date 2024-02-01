@@ -7,11 +7,12 @@ import app.utils.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Slf4j
 @RestController
@@ -21,7 +22,7 @@ public class DestinationRestController implements DestinationRestApi {
     private final DestinationService destinationService;
 
     @Override
-    public ResponseEntity<List<DestinationDto>> getAllDestinations(Integer page, Integer size, String cityName,
+    public ResponseEntity<Page<DestinationDto>> getAllDestinations(Integer page, Integer size, String cityName,
                                                                    String countryName, String timezone) {
         log.info("get all Destinations");
         if (page == null || size == null) {
@@ -40,17 +41,17 @@ public class DestinationRestController implements DestinationRestApi {
         }
         return destinations.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(destinations.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(destinations, HttpStatus.OK);
     }
 
-    private ResponseEntity<List<DestinationDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<DestinationDto>> createUnPagedResponse() {
         var destinations = destinationService.getAllDestinationDTO();
         if (destinations.isEmpty()) {
             log.info("Destinations not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("found {} Destinations", destinations.size());
-            return new ResponseEntity<>(destinations, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(destinations)));
         }
     }
 

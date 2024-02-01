@@ -21,6 +21,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -44,8 +45,8 @@ public class TimezoneView extends VerticalLayout {
         this.timezoneClient = timezoneClient;
         currentPage = 0;
         var response = timezoneClient.getAllTimezones(currentPage, 10);
-        dataSource = response.getBody();
-        List<TimezoneDto> timezoneDtoList = timezoneClient.getAllTimezones(null, null).getBody();
+        dataSource = response.getBody().stream().collect(Collectors.toList());;
+        List<TimezoneDto> timezoneDtoList = timezoneClient.getAllTimezones(null, null).getBody().stream().collect(Collectors.toList());;
         maxPages = (int) Math.ceil((double) timezoneDtoList.size() / 10);
 
         ValidationMessage idValidationMessage = new ValidationMessage();
@@ -112,7 +113,7 @@ public class TimezoneView extends VerticalLayout {
 
     private void refreshGrid() {
         dataSource.clear();
-        List<TimezoneDto> newData = timezoneClient.getAllTimezones(currentPage, 10).getBody();
+        List<TimezoneDto> newData = timezoneClient.getAllTimezones(currentPage, 10).getBody().stream().collect(Collectors.toList());;
         dataSource.addAll(newData);
         grid.getDataProvider().refreshAll();
     }

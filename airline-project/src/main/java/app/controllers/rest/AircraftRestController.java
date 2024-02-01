@@ -5,11 +5,13 @@ import app.dto.AircraftDto;
 import app.services.AircraftService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Slf4j
 @RestController
@@ -19,7 +21,7 @@ public class AircraftRestController implements AircraftRestApi {
     private final AircraftService aircraftService;
 
     @Override
-    public ResponseEntity<List<AircraftDto>> getAllAircrafts(Integer page, Integer size) {
+    public ResponseEntity<Page<AircraftDto>> getAllAircrafts(Integer page, Integer size) {
         log.info("getAllAircrafts:");
         if (page == null || size == null) {
             return createUnPagedResponse();
@@ -28,16 +30,16 @@ public class AircraftRestController implements AircraftRestApi {
         var aircrafts = aircraftService.getAllAircrafts(page, size);
         return aircrafts.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : ResponseEntity.ok(aircrafts.getContent());
+                : new ResponseEntity<>(aircrafts, HttpStatus.OK);
     }
 
-    private ResponseEntity<List<AircraftDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<AircraftDto>> createUnPagedResponse() {
         var aircraft = aircraftService.getAllAircrafts();
         if (aircraft.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllAircrafts: count {}", aircraft.size());
-            return ResponseEntity.ok(aircraft);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(aircraft)));
         }
     }
 

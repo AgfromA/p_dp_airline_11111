@@ -8,12 +8,12 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Api(tags = "Flight REST")
 @Tag(name = "Flight REST", description = "API для операций с рейсами")
@@ -25,7 +25,7 @@ public interface FlightRestApi {
             @ApiResponse(code = 200, message = "Flights found"),
             @ApiResponse(code = 204, message = "Flights not found")
     })
-    ResponseEntity<List<FlightDto>> getAllFlights(
+    ResponseEntity<Page<FlightDto>> getAllFlights(
             @PageableDefault(sort = {"id"})
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "size", required = false) Integer size);

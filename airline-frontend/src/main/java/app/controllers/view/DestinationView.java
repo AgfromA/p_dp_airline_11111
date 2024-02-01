@@ -24,10 +24,12 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.Route;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Route(value = "destination", layout = MainLayout.class)
@@ -37,7 +39,7 @@ public class DestinationView extends VerticalLayout {
     private final Editor<DestinationDto> editor = grid.getEditor();
     private final DestinationClient destinationClient;
     private final List<DestinationDto> dataSource;
-    private ResponseEntity<List<DestinationDto>> response;
+    private ResponseEntity<Page<DestinationDto>> response;
     private final Button updateButton;
     private final Button cancelButton;
     private final Button nextButton;
@@ -63,10 +65,11 @@ public class DestinationView extends VerticalLayout {
         this.country = null;
         this.timezone = null;
         this.isFilteredSearch = false;
-        List<DestinationDto> dtos = destinationClient.getAllDestinations(null, null, null, null, null).getBody();
+        List<DestinationDto> dtos = destinationClient.getAllDestinations(null, null, null, null, null).getBody()
+                .stream().collect(Collectors.toList());
         int pageSize = 10;
         this.maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
-        this.dataSource = response.getBody();
+        this.dataSource = response.getBody().stream().collect(Collectors.toList());
 
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage airportCodeValidationMessage = new ValidationMessage();
@@ -179,13 +182,13 @@ public class DestinationView extends VerticalLayout {
 
     private boolean isFoundDestinations(String city, String country, String timezone) {
         try {
-            ResponseEntity<List<DestinationDto>> filteredResponse = destinationClient
+            ResponseEntity<Page<DestinationDto>> filteredResponse = destinationClient
                     .getAllDestinations(currentPage, 10, city, country, timezone);
             List<DestinationDto> dtos = destinationClient.getAllDestinations(null, null,
-                    null, null, null).getBody();
+                    null, null, null).getBody().stream().collect(Collectors.toList());
             int pageSize = 10;
             maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
-            dataSource.addAll(filteredResponse.getBody());
+            dataSource.addAll(filteredResponse.getBody().stream().collect(Collectors.toList()));
             return true;
         } catch (FeignException.NotFound ex) {
             log.error(ex.getMessage());
@@ -206,10 +209,10 @@ public class DestinationView extends VerticalLayout {
         dataSource.clear();
         response = destinationClient.getAllDestinations(currentPage, 10, city, country, timezone);
         List<DestinationDto> dtos = destinationClient.getAllDestinations(null, null,
-                null, null, null).getBody();
+                null, null, null).getBody().stream().collect(Collectors.toList());
         int pageSize = 10;
         maxPages = (int) Math.ceil((double) dtos.size() / pageSize);
-        dataSource.addAll(response.getBody());
+        dataSource.addAll(response.getBody().stream().collect(Collectors.toList()));
         grid.getDataProvider().refreshAll();
     }
 

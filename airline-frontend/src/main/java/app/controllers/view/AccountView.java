@@ -53,7 +53,7 @@ public class AccountView extends VerticalLayout {
         this.accountClient = accountClient;
         page = 0;
         size = 10;
-        this.dataSource = accountClient.getAllAccounts(page, size).getBody();
+        this.dataSource = accountClient.getAllAccounts(page, size).getBody().stream().collect(Collectors.toList());
         ValidationMessage idValidationMessage = new ValidationMessage();
         ValidationMessage nameValidationMessage = new ValidationMessage();
         ValidationMessage lastnameValidationMessage = new ValidationMessage();

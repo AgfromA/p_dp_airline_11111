@@ -1,9 +1,12 @@
 package app.services;
 
+import app.dto.AccountDto;
 import app.entities.Category;
 import app.enums.CategoryType;
 import app.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,5 +31,11 @@ public class CategoryService {
 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Category> getPage(Integer page, Integer size) {
+        var pageRequest = PageRequest.of(page, size);
+        return categoryRepository.findAll(pageRequest);
     }
 }

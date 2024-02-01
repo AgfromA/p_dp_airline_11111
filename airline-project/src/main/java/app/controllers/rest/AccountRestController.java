@@ -8,13 +8,15 @@ import app.services.AccountService;
 import app.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -27,28 +29,36 @@ public class AccountRestController implements AccountRestApi {
     private final JwtProviderLite jwtProvider;
 
     @Override
-    public ResponseEntity<List<AccountDto>> getAllAccounts(Integer page, Integer size) {
+    public ResponseEntity<Page<AccountDto>> getAllAccounts(Integer page, Integer size) {
         log.info("getAll: get all Accounts");
         if (page == null || size == null) {
             log.info("getAll: get all List Accounts");
             return createUnPagedResponse();
         }
-
         var accounts = accountService.getPage(page, size);
         return accounts.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(accounts.getContent(), HttpStatus.OK);
+                : createPagedResponse(accounts);
     }
 
-    private ResponseEntity<List<AccountDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<AccountDto>> createUnPagedResponse() {
         var account = accountService.findAll();
         if (account.isEmpty()) {
             log.info("getAll: Accounts not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAll: found {} Accounts", account.size());
-            return new ResponseEntity<>(account, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(account)));
         }
+    }
+
+    private ResponseEntity<Page<AccountDto>> createPagedResponse(Page<AccountDto> accountPage) {
+        var accountDTOPage = new PageImpl<>(
+                new ArrayList<>(accountPage.getContent()),
+                accountPage.getPageable(),
+                accountPage.getTotalElements()
+        );
+        return ResponseEntity.ok(accountDTOPage);
     }
 
     @Override

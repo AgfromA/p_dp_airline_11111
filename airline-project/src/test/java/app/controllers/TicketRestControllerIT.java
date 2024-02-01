@@ -75,8 +75,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(ticketService
-                        .getAllTickets(pageable.getPageNumber(), pageable.getPageSize())
-                        .getContent())));
+                        .getAllTickets(pageable.getPageNumber(), pageable.getPageSize()))));
     }
     // Пагинация 2.0
 

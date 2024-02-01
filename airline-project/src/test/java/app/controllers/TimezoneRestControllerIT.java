@@ -80,8 +80,7 @@ class TimezoneRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(timezoneService
-                        .getAllPagesTimezones(pageable.getPageNumber(), pageable.getPageSize())
-                        .getContent())));
+                        .getAllPagesTimezones(pageable.getPageNumber(), pageable.getPageSize()))));
     }
     // Пагинация 2.0
 

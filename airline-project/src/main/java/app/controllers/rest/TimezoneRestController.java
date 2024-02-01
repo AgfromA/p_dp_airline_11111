@@ -8,11 +8,14 @@ import app.services.TimezoneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 @Slf4j
 @RestController
@@ -23,7 +26,7 @@ public class TimezoneRestController implements TimezoneRestApi {
     private final TimezoneMapper timezoneMapper = Mappers.getMapper(TimezoneMapper.class);
 
     @Override
-    public ResponseEntity<List<TimezoneDto>> getAllTimezones(Integer page, Integer size) {
+    public ResponseEntity<Page<TimezoneDto>> getAllTimezones(Integer page, Integer size) {
         log.info("getAllTimezones:");
         if (page == null || size == null) {
             return createUnPagedResponse();
@@ -32,17 +35,17 @@ public class TimezoneRestController implements TimezoneRestApi {
         var timezones = timezoneService.getAllPagesTimezones(page, size);
         return timezones.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(timezones.getContent(), HttpStatus.OK);
+                : new ResponseEntity<>(timezones, HttpStatus.OK);
     }
 
-    private ResponseEntity<List<TimezoneDto>> createUnPagedResponse() {
+    private ResponseEntity<Page<TimezoneDto>> createUnPagedResponse() {
         var timezone = timezoneService.getAllTimeZone();
         if (timezone.isEmpty()) {
             log.error("getAllTimezones: Timezones not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             log.info("getAllTimezones: found: {} Timezones", timezone.size());
-            return new ResponseEntity<>(timezone, HttpStatus.OK);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(timezone)));
         }
     }
 
