@@ -192,7 +192,7 @@ public class SearchService {
         searchResultCardList = new ArrayList<>(uniqueCards);
         return searchResultCardList;
     }
-    // доступно ли достаточное количество свободных мест на рейсе для заданного количества пассажиров и категории мест.
+    //достаточно ли свободных мест в рейсе для указанного количества пассажиров и соответствует ли категория мест запросу.
     @Loggable
     public boolean checkFlightForNumberSeats(Flight flight, Search search) {
 
@@ -208,6 +208,7 @@ public class SearchService {
                 .filter(seat -> seat.getCategory().getCategoryType().equals(requestedCategory))
                 .collect(Collectors.toList());
 
-        return (numberOfFreeSeats >= numberOfPassengers && !seatsByCategory.isEmpty());
+        return (numberOfFreeSeats >= numberOfPassengers && !seatsByCategory.isEmpty()
+                && seatsByCategory.size()>= numberOfPassengers);
     }
 }
