@@ -150,7 +150,7 @@ public class FlightSeatService {
         return flightSeat;
     }
 
-    private int generateFareForFlightSeat(Seat seat, Flight flight) {
+    public int generateFareForFlightSeat(Seat seat, Flight flight) {
         float fare = BASE_FLIGHT_SEAT_FARE * seat.getCategory().getCategoryType().getCategoryRatio();
         if (Boolean.TRUE.equals(seat.getIsNearEmergencyExit())) {
             fare *= EMERGENCY_EXIT_SEAT_PRICE_RATIO;

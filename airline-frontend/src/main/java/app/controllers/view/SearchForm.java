@@ -2,6 +2,7 @@ package app.controllers.view;
 
 import app.dto.search.Search;
 import app.enums.Airport;
+import app.enums.CategoryType;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -25,6 +26,7 @@ public class SearchForm extends HorizontalLayout {
     private final DatePicker departureDateField = new DatePicker("Departure");
     private final DatePicker returnDateField = new DatePicker("Return");
     private final IntegerField numberOfPassengersField = new IntegerField("Number of passengers");
+    private final ComboBox<CategoryType> seatsField = new ComboBox<>("Сategory of Seats");
     private final Button searchButton = new Button(VaadinIcon.SEARCH.create());
     private final Button reverseButton = new Button(VaadinIcon.EXCHANGE.create());
 
@@ -35,6 +37,7 @@ public class SearchForm extends HorizontalLayout {
         setDepartureDateField();
         setReturnDateField();
         setNumberOfPassengersField();
+        setCategoryOfSeatsField();
 
         reverseButton.getElement().getStyle().set("background-color", "#9ACD32");
         reverseButton.getElement().getStyle().set("color", "white");
@@ -56,10 +59,10 @@ public class SearchForm extends HorizontalLayout {
         });
 
         add(fromField, reverseButton, toField, departureDateField
-                , returnDateField, numberOfPassengersField, searchButton);
+                , returnDateField, numberOfPassengersField, seatsField, searchButton);
 
         expand(fromField, toField, departureDateField
-                , returnDateField, numberOfPassengersField);
+                , returnDateField, numberOfPassengersField, seatsField);
 
         setWidthFull();
         setAlignItems(Alignment.BASELINE);
@@ -114,6 +117,14 @@ public class SearchForm extends HorizontalLayout {
                 .asRequired("Number of passengers must be between 1 and 9")
                 .withValidator(value -> value >= 1 && value <= 9, "Number of passengers must be between 1 and 9")
                 .bind(Search::getNumberOfPassengers, Search::setNumberOfPassengers);
+    }
+    private void setCategoryOfSeatsField() {
+        seatsField.setWidth("20%");
+        seatsField.setItems(CategoryType.values());
+        seatsField.setValue(CategoryType.ECONOMY);
+        binder.forField(seatsField)
+                .asRequired("Category of Seats cannot be empty")
+                .bind(Search::getCategoryOfSeats, Search::setCategoryOfSeats);
     }
 
     boolean createSearch() {

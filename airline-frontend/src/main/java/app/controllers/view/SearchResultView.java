@@ -1,5 +1,6 @@
 package app.controllers.view;
 
+import app.clients.FlightSeatClient;
 import app.clients.SearchClient;
 import app.dto.search.Search;
 import app.dto.search.SearchResult;
@@ -28,18 +29,20 @@ import java.util.List;
 
 @Route(value = "search", layout = MainLayout.class)
 public class SearchResultView extends VerticalLayout {
-
     private final SearchClient searchClient;
+    private final FlightSeatClient flightSeatClient;
     private final SearchForm searchForm = new SearchForm();
     private final Header header = new Header();
     private final Grid<SearchResultCard> flightsGrid = new Grid<>(SearchResultCard.class, false);
+    private final Grid<SearchResultCard> flightSeatGrid = new Grid<>(SearchResultCard.class, false);
     private final List<SearchResultCard> flights = new ArrayList<>();
     private SearchResult searchResult;
     private final H5 noFlightsMessage = new H5("Flights not found");
 
-    public SearchResultView(SearchClient searchClient) {
+    public SearchResultView(SearchClient searchClient, FlightSeatClient flightSeatClient) {
 
         this.searchClient = searchClient;
+        this.flightSeatClient = flightSeatClient;
 
         setFlightsGrids();
         setNoFlightsMessage();
@@ -61,10 +64,15 @@ public class SearchResultView extends VerticalLayout {
         Grid.Column<SearchResultCard> flightTimeReturnFlight = createFlightTimeColumn(flightsGrid, true);
 
 
+        Grid.Column<SearchResultCard> categorySeat = createCategorySeatColumn(flightSeatGrid);
+        Grid.Column<SearchResultCard> numberFlightSeat = createNumberSeatColumn(flightSeatGrid);
+        Grid.Column<SearchResultCard> fareFlightSeat = createFareColumn(flightSeatGrid);
+
         flightsGrid.setItems(flights);
 
         VerticalLayout departFlightsLayout = new VerticalLayout(noFlightsMessage, flightsGrid);
         add(header, searchForm, departFlightsLayout);
+
     }
 
     private void setSearchViewFromOutside() {
@@ -86,7 +94,8 @@ public class SearchResultView extends VerticalLayout {
             if (searchForm.createSearch()) {
                 ResponseEntity<SearchResult> response = searchClient.search(searchForm.getSearch().getFrom()
                         , searchForm.getSearch().getTo(), searchForm.getSearch().getDepartureDate()
-                        , searchForm.getSearch().getReturnDate(), searchForm.getSearch().getNumberOfPassengers());
+                        , searchForm.getSearch().getReturnDate(), searchForm.getSearch().getNumberOfPassengers(),
+                        searchForm.getSearch().getCategoryOfSeats());
                 if (!(response.getStatusCode() == HttpStatus.NO_CONTENT)) {
                     searchResult = response.getBody();
                     if (!searchResult.getFlights().isEmpty()) {
@@ -197,14 +206,34 @@ public class SearchResultView extends VerticalLayout {
         for (Long seatId : list) {
             Span seatSpan = new Span(String.valueOf(seatId));
             Button reserveButton = new Button("Забронировать");
-            reserveButton.addClickListener(event -> {
-                Dialog reservationDialog = new Dialog(new Text("А-ля Забронировано"));
-                reservationDialog.open();
-            });
+            reserveButton.addClickListener(event ->
+                    openFlightSeatsTable(seatId));
             div.add(seatSpan, reserveButton, new Text(" "));
         }
         dialog.add(div);
         dialog.open();
+    }
+
+    private Grid.Column<SearchResultCard> createCategorySeatColumn(Grid<SearchResultCard> grid) {
+        return grid.addColumn(seat -> flightSeatClient.getFlightSeat(searchResult.getFlights().get(0).getDataTo().getFlightSeatId()).getBody().getCategory()).setHeader("category");
+    }
+
+    private Grid.Column<SearchResultCard> createNumberSeatColumn(Grid<SearchResultCard> grid) {
+        return grid.addColumn(e -> flightSeatClient.getFlightSeat(searchResult.getFlights().get(0).getDataTo().getFlightSeatId()).getBody().getSeat().getSeatNumber()).setHeader("seat number");
+    }
+
+    private Grid.Column<SearchResultCard> createFareColumn(Grid<SearchResultCard> grid) {
+        return grid.addColumn(e -> flightSeatClient.getFlightSeat(searchResult.getFlights().get(0).getDataTo().getFlightSeatId()).getBody().getFare()).setHeader("fare");
+    }
+
+    private void openFlightSeatsTable(Long seatId) {
+        flightSeatGrid.setItems(new ArrayList<>(flights));
+        flightSeatGrid.getDataProvider().refreshAll();
+        flightSeatGrid.getDataProvider().refreshAll();
+        Dialog flightSeatsDialog = new Dialog();
+        flightSeatsDialog.setWidth("50%");
+        flightSeatsDialog.add(flightSeatGrid);
+        flightSeatsDialog.open();
     }
 }
 

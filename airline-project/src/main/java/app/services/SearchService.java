@@ -5,8 +5,9 @@ import app.dto.search.SearchResult;
 import app.dto.search.SearchResultCard;
 import app.dto.search.SearchResultCardData;
 import app.entities.Flight;
-import app.entities.FlightSeat;
+import app.entities.Seat;
 import app.enums.Airport;
+import app.enums.CategoryType;
 import app.utils.aop.Loggable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,10 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,13 +33,14 @@ public class SearchService {
 
     private final FlightService flightService;
     private final FlightSeatService flightSeatService;
+    private final SeatService seatService;
 
     @Transactional
     @Loggable
     public SearchResult search(Airport from, Airport to, LocalDate departureDate,
-                               LocalDate returnDate, Integer numberOfPassengers) {
+                               LocalDate returnDate, Integer numberOfPassengers, CategoryType categoryOfSeats) {
 
-        var search = new Search(from, to, departureDate, returnDate, numberOfPassengers);
+        var search = new Search(from, to, departureDate, returnDate, numberOfPassengers, categoryOfSeats);
 
         var searchResult = new SearchResult();
         searchResult.setSearch(search);
@@ -119,19 +121,27 @@ public class SearchService {
     }
 
     @Loggable
-    public Integer findLowestFare(Search search, Flight flight) {
-        List<FlightSeat> flightSeats = new ArrayList<>(flightSeatService.getSetFlightSeatsByFlightId(flight.getId()));
-        flightSeats.sort(Comparator.comparingInt(FlightSeat::getFare));
+    // находим стоимость для каждого сидения в зависимости от полета, категории места, количества пассажиров
+    public Integer findFare(Search search, Flight flight) {
 
-        List<FlightSeat> sortedFlightSeats =
-                flightSeats.subList(0, Math.min(search.getNumberOfPassengers(), flightSeats.size()));
+        long aircraftId = flight.getAircraft().getId();
 
-        Integer fare = 0;
-        for (FlightSeat seat : sortedFlightSeats) {
-            fare += seat.getFare();
+        Set <Seat> seats = seatService.findByAircraftId(aircraftId);
+
+        int fare = 0;
+
+        for (Seat seat : seats) {
+            fare = flightSeatService.generateFareForFlightSeat(seat,flight);
         }
-        return fare;
+        return fare * search.getNumberOfPassengers();
     }
+
+//    @Loggable
+//            public Integer findCurrentFare(Search search, Flight flight, Category category) {
+//       int fare1  =  findFare(search,flight);
+//       search.getCategoryOfSeat();
+//
+//    }
 
     @Loggable
     private List<SearchResultCard> getDirectFlights(Search search) {
@@ -160,17 +170,22 @@ public class SearchService {
                         SearchResultCard searchResultCard = new SearchResultCard();
                         SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
                         searchResultCard.setDataTo(searchResultCardData);
-                        Integer totalPriceDepart = findLowestFare(search, departFlight);
+                        Integer totalPriceDepart = findFare(search,departFlight);
                         searchResultCard.setTotalPrice(totalPriceDepart);
+                        Set<Seat> seats = seatService.findByAircraftId(departFlight.getAircraft().getId());
+                        System.out.println(seats);
                         foundSuitableReturnFlight = false;
 
                         if (checkFlightForNumberSeats(returnFlight, search)) {
                             SearchResultCardData searchResultCardDataBack = builderForSearchResultCardData(returnFlight);
                             searchResultCard.setDataBack(searchResultCardDataBack);
-                            Integer totalPriceReturn = totalPriceDepart + findLowestFare(search, returnFlight);
+                            Integer totalPriceReturn = totalPriceDepart + findFare(search,returnFlight);
                             searchResultCard.setTotalPrice(totalPriceReturn);
+                            Set<Seat> seatsr = seatService.findByAircraftId(returnFlight.getAircraft().getId());
+                            System.out.println(seatsr);
                             searchResultCardList.add(searchResultCard);
                             foundSuitableReturnFlight = true;
+                            break;
                         }
                     }
                 }
@@ -179,8 +194,10 @@ public class SearchService {
                     SearchResultCard searchResultCard = new SearchResultCard();
                     SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
                     searchResultCard.setDataTo(searchResultCardData);
-                    Integer totalPriceDepart = findLowestFare(search, departFlight);
+                    Integer totalPriceDepart = findFare(search,departFlight);
                     searchResultCard.setTotalPrice(totalPriceDepart);
+                    Set<Seat> seats = seatService.findByAircraftId(departFlight.getAircraft().getId());
+                    System.out.println(seats);
                     searchResultCardList.add(searchResultCard);
                 }
             }
@@ -189,9 +206,22 @@ public class SearchService {
         searchResultCardList = new ArrayList<>(uniqueCards);
         return searchResultCardList;
     }
-
+    // доступно ли достаточное количество свободных мест на рейсе для заданного количества пассажиров и категории мест.
     @Loggable
-    public boolean checkFlightForNumberSeats(Flight f, Search search) {
-        return (flightSeatService.getNumberOfFreeSeatOnFlight(f) - search.getNumberOfPassengers()) >= 0;
+    public boolean checkFlightForNumberSeats(Flight flight, Search search) {
+
+        int numberOfPassengers = search.getNumberOfPassengers();
+
+        int numberOfFreeSeats = flightSeatService.getNumberOfFreeSeatOnFlight(flight);
+
+        CategoryType requestedCategory = search.getCategoryOfSeats();
+
+        Set<Seat> seats = seatService.findByAircraftId(flight.getAircraft().getId());
+
+        List<Seat> seatsByCategory = seats.stream()
+                .filter(seat -> seat.getCategory().getCategoryType().equals(requestedCategory))
+                .collect(Collectors.toList());
+
+        return (numberOfFreeSeats >= numberOfPassengers && !seatsByCategory.isEmpty());
     }
 }
