@@ -13,8 +13,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H5;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import com.vaadin.flow.router.Route;
@@ -34,7 +32,8 @@ public class SearchResultView extends VerticalLayout {
     private final SearchForm searchForm = new SearchForm();
     private final Header header = new Header();
     private final Grid<SearchResultCard> flightsGrid = new Grid<>(SearchResultCard.class, false);
-    private final Grid<SearchResultCard> flightSeatGrid = new Grid<>(SearchResultCard.class, false);
+    private final Grid<SearchResultCard> flightSeatGridDepart = new Grid<>(SearchResultCard.class, false);
+    private final Grid<SearchResultCard> flightSeatGridReturn = new Grid<>(SearchResultCard.class, false);
     private final List<SearchResultCard> flights = new ArrayList<>();
     private SearchResult searchResult;
     private final H5 noFlightsMessage = new H5("Flights not found");
@@ -64,9 +63,13 @@ public class SearchResultView extends VerticalLayout {
         Grid.Column<SearchResultCard> flightTimeReturnFlight = createFlightTimeColumn(flightsGrid, true);
 
 
-        Grid.Column<SearchResultCard> categorySeat = createCategorySeatColumn(flightSeatGrid);
-        Grid.Column<SearchResultCard> numberFlightSeat = createNumberSeatColumn(flightSeatGrid);
-        Grid.Column<SearchResultCard> fareFlightSeat = createFareColumn(flightSeatGrid);
+        Grid.Column<SearchResultCard> categorySeatDepart = createCategorySeatColumn(flightSeatGridDepart, false);
+        Grid.Column<SearchResultCard> numberFlightSeatDepart = createNumberSeatColumn(flightSeatGridDepart, false);
+        Grid.Column<SearchResultCard> fareFlightSeatDepart = createFareColumn(flightSeatGridDepart, false);
+
+        Grid.Column<SearchResultCard> categorySeatReturn = createCategorySeatColumn(flightSeatGridReturn, true);
+        Grid.Column<SearchResultCard> numberFlightSeatReturn = createNumberSeatColumn(flightSeatGridReturn, true);
+        Grid.Column<SearchResultCard> fareFlightSeatReturn = createFareColumn(flightSeatGridReturn, true);
 
         flightsGrid.setItems(flights);
 
@@ -168,6 +171,36 @@ public class SearchResultView extends VerticalLayout {
         });
     }
 
+    private Grid.Column<SearchResultCard> createCategorySeatColumn(Grid<SearchResultCard> grid, boolean isReturn) {
+        return grid.addColumn(card -> {
+            if (isReturn) {
+                return card.getDataBack() != null ? flightSeatClient.getFlightSeat(card.getDataBack().getFlightSeatId()).getBody().getCategory() : "";
+            } else {
+                return flightSeatClient.getFlightSeat(card.getDataTo().getFlightSeatId()).getBody().getCategory();
+            }
+        }).setHeader("Категория места");
+    }
+
+    private Grid.Column<SearchResultCard> createNumberSeatColumn(Grid<SearchResultCard> grid, boolean isReturn) {
+        return grid.addColumn(card -> {
+            if (isReturn) {
+                return card.getDataBack() != null ? flightSeatClient.getFlightSeat(card.getDataBack().getFlightSeatId()).getBody().getSeat().getSeatNumber() : "";
+            } else {
+                return flightSeatClient.getFlightSeat(card.getDataTo().getFlightSeatId()).getBody().getSeat().getSeatNumber();
+            }
+        }).setHeader("Место");
+    }
+
+    private Grid.Column<SearchResultCard> createFareColumn(Grid<SearchResultCard> grid, boolean isReturn) {
+        return grid.addColumn(card -> {
+            if (isReturn) {
+                return card.getDataBack() != null ? flightSeatClient.getFlightSeat(card.getDataBack().getFlightSeatId()).getBody().getFare() : "";
+            } else {
+                return flightSeatClient.getFlightSeat(card.getDataTo().getFlightSeatId()).getBody().getFare();
+            }
+        }).setHeader("Стоимость");
+    }
+
     private Grid.Column<SearchResultCard> createTotalPrice(Grid<SearchResultCard> grid) {
         return grid.addColumn(card -> {
             String totalPrice = String.valueOf(card.getTotalPrice());
@@ -185,10 +218,8 @@ public class SearchResultView extends VerticalLayout {
 
     private Grid.Column<SearchResultCard> createFlightSeatsColumn(Grid<SearchResultCard> grid) {
         return grid.addComponentColumn(flight -> {
-            Button button = new Button("Выбрать билет");
+            Button button = new Button("Билеты");
             button.addClickListener(e -> {
-                Notification.show("Flight Seat ID: " + flight.getDataTo().getFlightSeatId());
-                Notification.show("Flight Seat ID: " + flight.getDataBack().getFlightSeatId());
                 openFlightSeatsTable(flight);
             });
             return button;
@@ -203,36 +234,42 @@ public class SearchResultView extends VerticalLayout {
         Long flightSeatIdReturn = flight.getDataBack().getFlightSeatId();
         list.add(flightSeatIdDepart);
         list.add(flightSeatIdReturn);
-        for (Long seatId : list) {
-            Span seatSpan = new Span(String.valueOf(seatId));
-            Button reserveButton = new Button("Забронировать");
-            reserveButton.addClickListener(event ->
-                    openFlightSeatsTable(seatId));
-            div.add(seatSpan, reserveButton, new Text(" "));
-        }
+        Button reserveButton = new Button("Выбрать места");
+        reserveButton.addClickListener(event -> openFlightSeatsTable(list));
+        div.add(reserveButton, new Text(" "));
+
         dialog.add(div);
         dialog.open();
     }
 
-    private Grid.Column<SearchResultCard> createCategorySeatColumn(Grid<SearchResultCard> grid) {
-        return grid.addColumn(seat -> flightSeatClient.getFlightSeat(searchResult.getFlights().get(0).getDataTo().getFlightSeatId()).getBody().getCategory()).setHeader("category");
-    }
+    private void openFlightSeatsTable(List<Long> seatIds) {
+        flightSeatGridDepart.setItems(new ArrayList<>(flights));
+        flightSeatGridDepart.getDataProvider().refreshAll();
+        flightSeatGridReturn.setItems(new ArrayList<>(flights));
+        flightSeatGridReturn.getDataProvider().refreshAll();
 
-    private Grid.Column<SearchResultCard> createNumberSeatColumn(Grid<SearchResultCard> grid) {
-        return grid.addColumn(e -> flightSeatClient.getFlightSeat(searchResult.getFlights().get(0).getDataTo().getFlightSeatId()).getBody().getSeat().getSeatNumber()).setHeader("seat number");
-    }
+        flightSeatGridDepart.addComponentColumn(card -> {
+            Button bookButton = new Button("Забронировать");
+            bookButton.addClickListener(event -> {
+                Dialog reservationDialog = new Dialog(new Text("Забронировано"));
+                reservationDialog.open();
+            });
+            return bookButton;
+        });
 
-    private Grid.Column<SearchResultCard> createFareColumn(Grid<SearchResultCard> grid) {
-        return grid.addColumn(e -> flightSeatClient.getFlightSeat(searchResult.getFlights().get(0).getDataTo().getFlightSeatId()).getBody().getFare()).setHeader("fare");
-    }
+        flightSeatGridReturn.addComponentColumn(card -> {
+            Button bookButton = new Button("Забронировать");
+            bookButton.addClickListener(event -> {
+                Dialog reservationDialog = new Dialog(new Text("Забронировано"));
+                reservationDialog.open();
+            });
+            return bookButton;
+        });
 
-    private void openFlightSeatsTable(Long seatId) {
-        flightSeatGrid.setItems(new ArrayList<>(flights));
-        flightSeatGrid.getDataProvider().refreshAll();
-        flightSeatGrid.getDataProvider().refreshAll();
         Dialog flightSeatsDialog = new Dialog();
         flightSeatsDialog.setWidth("50%");
-        flightSeatsDialog.add(flightSeatGrid);
+        flightSeatsDialog.add(flightSeatGridDepart);
+        flightSeatsDialog.add(flightSeatGridReturn);
         flightSeatsDialog.open();
     }
 }
