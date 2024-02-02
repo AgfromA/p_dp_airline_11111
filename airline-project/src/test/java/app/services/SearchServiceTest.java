@@ -959,13 +959,13 @@ public class SearchServiceTest {
 
     @DisplayName("10 (check NumberSeats), Positive test, be sure that seat is not booked,is not sold and is not registered")
     @Test
-    void shouldFindFiveNumberOfFreeSeatOnFlight() {
+    void shouldFindOneNumberOfFreeSeatOnFlight() {
         Search search = new Search();
         search.setFrom(Airport.VKO);
         search.setTo(Airport.SVX);
         search.setDepartureDate(LocalDate.of(2023, 4, 1));
         search.setReturnDate(null);
-        search.setNumberOfPassengers(5);
+        search.setNumberOfPassengers(1);
         search.setCategoryOfSeats(CategoryType.ECONOMY);
 
         Destination fromVnukovo = new Destination();
@@ -1034,7 +1034,7 @@ public class SearchServiceTest {
         Set<Seat> seats = new HashSet<>();
         seats.add(seat);
 
-        when(flightSeatService.getNumberOfFreeSeatOnFlight(any(Flight.class))).thenReturn(6);
+        when(flightSeatService.getNumberOfFreeSeatOnFlight(any(Flight.class))).thenReturn(2);
         doReturn(seats).when(seatService).findByAircraftId(1L);
 
         boolean result = searchService.checkFlightForNumberSeats(directDepartureFlight, search);
@@ -1122,6 +1122,103 @@ public class SearchServiceTest {
 
         boolean result = searchService.checkFlightForNumberSeats(directDepartureFlight, search);
         assertFalse(result);
+    }
+    @DisplayName("12 (check NumberSeats), Positive test, be sure that seat is not booked,is not sold and is not registered"
+    + "and enough seats in the selected category for two passengers")
+    @Test
+    void shouldFindTwoNumberOfFreeSeatWithCurrentCategoryOnFlight() {
+        Search search = new Search();
+        search.setFrom(Airport.VKO);
+        search.setTo(Airport.SVX);
+        search.setDepartureDate(LocalDate.of(2023, 4, 1));
+        search.setReturnDate(null);
+        search.setNumberOfPassengers(2);
+        search.setCategoryOfSeats(CategoryType.ECONOMY);
+
+        Destination fromVnukovo = new Destination();
+        fromVnukovo.setId(1L);
+        fromVnukovo.setAirportCode(Airport.VKO);
+        fromVnukovo.setCityName("Москва");
+        fromVnukovo.setTimezone("GMT +3");
+        fromVnukovo.setCountryName("Россия");
+        fromVnukovo.setIsDeleted(false);
+
+        Destination toKoltcovo = new Destination();
+        toKoltcovo.setId(6L);
+        toKoltcovo.setAirportCode(Airport.SVX);
+        toKoltcovo.setCityName("Екатеринбург");
+        toKoltcovo.setTimezone("GMT +5");
+        toKoltcovo.setCountryName("Россия");
+        toKoltcovo.setIsDeleted(false);
+
+        Aircraft aircraft1 = new Aircraft();
+        aircraft1.setId(1L);
+
+        Flight directDepartureFlight = new Flight();
+        directDepartureFlight.setId(1L);
+        directDepartureFlight.setCode("VKOSVX");
+        directDepartureFlight.setFrom(fromVnukovo);
+        directDepartureFlight.setTo(toKoltcovo);
+        directDepartureFlight.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
+        directDepartureFlight.setFlightStatus(FlightStatus.ON_TIME);
+        directDepartureFlight.setAircraft(aircraft1);
+
+        Category category = new Category();
+        category.setId(1L);
+        category.setCategoryType(CategoryType.ECONOMY);
+
+        Seat seat = new Seat();
+        seat.setId(1L);
+        seat.setCategory(category);
+        seat.setAircraft(aircraft1);
+        seat.setSeatNumber("1D");
+        seat.setIsNearEmergencyExit(true);
+        seat.setIsLockedBack(false);
+
+        Seat seat2 = new Seat();
+        seat2.setId(2L);
+        seat2.setCategory(category);
+        seat2.setAircraft(aircraft1);
+        seat2.setSeatNumber("1A");
+        seat2.setIsNearEmergencyExit(false);
+        seat2.setIsLockedBack(false);
+
+        Set<Seat> seats = new HashSet<>();
+        seats.add(seat);
+        seats.add(seat2);
+
+        FlightSeat flightSeat1 = new FlightSeat();
+        flightSeat1.setFare(200);
+        flightSeat1.setId(2L);
+        flightSeat1.setFlight(directDepartureFlight);
+        flightSeat1.setIsBooked(false);
+        flightSeat1.setIsSold(false);
+        flightSeat1.setIsRegistered(false);
+        flightSeat1.setSeat(seat);
+
+        FlightSeat flightSeat2 = new FlightSeat();
+        flightSeat2.setFare(100);
+        flightSeat2.setId(3L);
+        flightSeat2.setFlight(directDepartureFlight);
+        flightSeat2.setIsBooked(false);
+        flightSeat2.setIsSold(false);
+        flightSeat2.setIsRegistered(false);
+        flightSeat1.setSeat(seat2);
+
+        Set<FlightSeat> flightSeats1 = new HashSet<>();
+        flightSeats1.add(flightSeat1);
+        flightSeats1.add(flightSeat2);
+
+        when(flightSeatService.getNumberOfFreeSeatOnFlight(any(Flight.class))).thenReturn(4);
+        doReturn(seats).when(seatService).findByAircraftId(1L);
+
+        boolean result = searchService.checkFlightForNumberSeats(directDepartureFlight, search);
+        assertTrue(result);
     }
 }
 
