@@ -136,13 +136,6 @@ public class SearchService {
         return fare * search.getNumberOfPassengers();
     }
 
-//    @Loggable
-//            public Integer findCurrentFare(Search search, Flight flight, Category category) {
-//       int fare1  =  findFare(search,flight);
-//       search.getCategoryOfSeat();
-//
-//    }
-
     @Loggable
     private List<SearchResultCard> getDirectFlights(Search search) {
         List<SearchResultCard> searchResultCardList = new ArrayList<>();
@@ -170,22 +163,17 @@ public class SearchService {
                         SearchResultCard searchResultCard = new SearchResultCard();
                         SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
                         searchResultCard.setDataTo(searchResultCardData);
-                        Integer totalPriceDepart = findFare(search,departFlight);
+                        Integer totalPriceDepart = findFare(search, departFlight);
                         searchResultCard.setTotalPrice(totalPriceDepart);
-                        Set<Seat> seats = seatService.findByAircraftId(departFlight.getAircraft().getId());
-                        System.out.println(seats);
                         foundSuitableReturnFlight = false;
 
                         if (checkFlightForNumberSeats(returnFlight, search)) {
                             SearchResultCardData searchResultCardDataBack = builderForSearchResultCardData(returnFlight);
                             searchResultCard.setDataBack(searchResultCardDataBack);
-                            Integer totalPriceReturn = totalPriceDepart + findFare(search,returnFlight);
+                            Integer totalPriceReturn = totalPriceDepart + findFare(search, returnFlight);
                             searchResultCard.setTotalPrice(totalPriceReturn);
-                            Set<Seat> seatsr = seatService.findByAircraftId(returnFlight.getAircraft().getId());
-                            System.out.println(seatsr);
                             searchResultCardList.add(searchResultCard);
                             foundSuitableReturnFlight = true;
-                            break;
                         }
                     }
                 }
@@ -194,10 +182,8 @@ public class SearchService {
                     SearchResultCard searchResultCard = new SearchResultCard();
                     SearchResultCardData searchResultCardData = builderForSearchResultCardData(departFlight);
                     searchResultCard.setDataTo(searchResultCardData);
-                    Integer totalPriceDepart = findFare(search,departFlight);
+                    Integer totalPriceDepart = findFare(search, departFlight);
                     searchResultCard.setTotalPrice(totalPriceDepart);
-                    Set<Seat> seats = seatService.findByAircraftId(departFlight.getAircraft().getId());
-                    System.out.println(seats);
                     searchResultCardList.add(searchResultCard);
                 }
             }
