@@ -35,11 +35,11 @@ VALUES (1, '1A', false, true,
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1));
 INSERT INTO seats (id, seat_number, is_near_emergency_exit, is_locked_back, category_id, aircraft_id)
 VALUES (2, '1B', false, true,
-        (SELECT category.id FROM category WHERE category.id = 2),
+        (SELECT category.id FROM category WHERE category.id = 4),
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1));
 INSERT INTO seats (id, seat_number, is_near_emergency_exit, is_locked_back, category_id, aircraft_id)
 VALUES (3, '1C', false, true,
-        (SELECT category.id FROM category WHERE category.id = 3),
+        (SELECT category.id FROM category WHERE category.id = 4),
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1));
 
 -- Создаем 3 места в aircrafts.id = 2
@@ -50,11 +50,11 @@ VALUES (4, '2A', false, true,
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2));
 INSERT INTO seats (id, seat_number, is_near_emergency_exit, is_locked_back, category_id, aircraft_id)
 VALUES (5, '2B', false, true,
-        (SELECT category.id FROM category WHERE category.id = 2),
+        (SELECT category.id FROM category WHERE category.id = 4),
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2));
 INSERT INTO seats (id, seat_number, is_near_emergency_exit, is_locked_back, category_id, aircraft_id)
 VALUES (6, '2C', false, true,
-        (SELECT category.id FROM category WHERE category.id = 3),
+        (SELECT category.id FROM category WHERE category.id = 4),
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 2));
 
 -- Создаем 3 места в aircrafts.id = 3
@@ -76,7 +76,7 @@ VALUES (9, '3C', true, true,
 
 INSERT INTO seats (id, seat_number, is_near_emergency_exit, is_locked_back, category_id, aircraft_id)
 VALUES (10, '4A', true, true,
-        (SELECT category.id FROM category WHERE category.id = 1),
+        (SELECT category.id FROM category WHERE category.id = 2),
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 4));
 INSERT INTO seats (id, seat_number, is_near_emergency_exit, is_locked_back, category_id, aircraft_id)
 VALUES (11, '4B', true, true,
@@ -84,7 +84,7 @@ VALUES (11, '4B', true, true,
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 4));
 INSERT INTO seats (id, seat_number, is_near_emergency_exit, is_locked_back, category_id, aircraft_id)
 VALUES (12, '4C', true, true,
-        (SELECT category.id FROM category WHERE category.id = 3),
+        (SELECT category.id FROM category WHERE category.id = 2),
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 4));
 
 
@@ -312,6 +312,47 @@ INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id
 VALUES (78, 650, true, true, true,
         (SELECT flights.id FROM flights WHERE flights.id = 26),
         (SELECT seats.id FROM seats WHERE seats.id = 6));
+
+
+--6. В базе: один прямой рейс туда и один прямой рейс обратно с наличием мест (3 свободных).
+--    Поиск: рейс туда (2023-04-02) и рейс обратно (2023-04-05)
+
+-- ТУДА
+
+INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
+VALUES (88, 'VKOOMS', '2023-04-02 11:20:00', '2023-04-02 17:50:00', 'ON_TIME',
+        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 4), 1, 2);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (89, 500, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 88),
+        (SELECT seats.id FROM seats WHERE seats.id = 1));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (90, 600, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 88),
+        (SELECT seats.id FROM seats WHERE seats.id = 2));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (91, 650, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 88),
+        (SELECT seats.id FROM seats WHERE seats.id = 3));
+
+-- ОБРАТНО
+
+INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, aircraft_id, from_id, to_id)
+VALUES (92, 'OMSVKO', '2023-04-05 07:05:00', '2023-04-05 07:55:00', 'ON_TIME',
+        (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 4), 2, 1);
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (93, 500, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 92),
+        (SELECT seats.id FROM seats WHERE seats.id = 4));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (94, 400, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 92),
+        (SELECT seats.id FROM seats WHERE seats.id = 5));
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
+VALUES (95, 650, false, false, false,
+        (SELECT flights.id FROM flights WHERE flights.id = 92),
+        (SELECT seats.id FROM seats WHERE seats.id = 6));
+
 
 
 --------------------------------------------------------------------------------------

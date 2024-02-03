@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static app.enums.Airport.OMS;
 import static app.enums.Airport.VKO;
+import static app.enums.CategoryType.BUSINESS;
 import static app.enums.CategoryType.ECONOMY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -55,21 +56,22 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate departureDate = LocalDate.of(2023, 4, 1);
         LocalDate returnDate = null;
         Integer numberOfPassengers = 2;
-        CategoryType categoryType = ECONOMY;
+        CategoryType categoryOfSeats = ECONOMY;
 
         int expDirDepartFlights = 1;
         int expDirReturnFlights = 0;
 
-        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryType)
+        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
                         .param("airportFrom", String.valueOf(airportFrom))
                         .param("airportTo", String.valueOf(airportTo))
                         .param("departureDate", String.valueOf(departureDate))
-                        .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
+                        .param("numberOfPassengers", String.valueOf(numberOfPassengers))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryType))
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryOfSeats))
                 ))
                 .andReturn().getResponse().getContentAsString();
 
@@ -114,23 +116,24 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate departureDate = LocalDate.of(2023, 4, 1);
         LocalDate returnDate = LocalDate.of(2023, 4, 3);
         Integer numberOfPassengers = 2;
-        CategoryType categoryType = ECONOMY;
+        CategoryType categoryOfSeats = ECONOMY;
 
         int expDirDepartFlights = 1;
         int expDirReturnFlights = 1;
 
-        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryType)
+        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
                         .param("airportFrom", String.valueOf(airportFrom))
                         .param("airportTo", String.valueOf(airportTo))
                         .param("departureDate", String.valueOf(departureDate))
                         .param("returnDate", String.valueOf(returnDate))
-                        .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
+                        .param("numberOfPassengers", String.valueOf(numberOfPassengers))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryType))
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats))
                 ))
                 .andReturn().getResponse().getContentAsString();
 
@@ -186,23 +189,24 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate departureDate = LocalDate.of(2023, 3, 1);
         LocalDate returnDate = LocalDate.of(2023, 4, 6);
         Integer numberOfPassengers = 2;
-        CategoryType categoryType = ECONOMY;
+        CategoryType categoryOfSeats = ECONOMY;
 
         int expDirDepartFlights = 2;
         int expDirReturnFlights = 2;
 
-        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryType)
+        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
                         .param("airportFrom", String.valueOf(airportFrom))
                         .param("airportTo", String.valueOf(airportTo))
                         .param("departureDate", String.valueOf(departureDate))
                         .param("returnDate", String.valueOf(returnDate))
-                        .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
+                        .param("numberOfPassengers", String.valueOf(numberOfPassengers))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryType))
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats))
                 ))
                 .andReturn().getResponse().getContentAsString();
 
@@ -264,23 +268,24 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate departureDate = LocalDate.of(2023, 4, 20);
         LocalDate returnDate = LocalDate.of(2023, 4, 25);
         Integer numberOfPassengers = 2;
-        CategoryType categoryType = ECONOMY;
+        CategoryType categoryOfSeats = ECONOMY;
 
         int expDirDepartFlights = 2;
         int expDirReturnFlights = 1;
 
-        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryType)
+        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
                         .param("airportFrom", String.valueOf(airportFrom))
                         .param("airportTo", String.valueOf(airportTo))
                         .param("departureDate", String.valueOf(departureDate))
                         .param("returnDate", String.valueOf(returnDate))
-                        .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
+                        .param("numberOfPassengers", String.valueOf(numberOfPassengers))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryType))
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats))
                 ))
                 .andReturn().getResponse().getContentAsString();
 
@@ -337,23 +342,24 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate departureDate = LocalDate.of(2023, 4, 1);
         LocalDate returnDate = LocalDate.of(2023, 5, 3);
         Integer numberOfPassengers = 1;
-        CategoryType categoryType = ECONOMY;
+        CategoryType categoryOfSeats = ECONOMY;
 
         int expDirDepartFlights = 1;
         int expDirReturnFlights = 0;
 
-        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryType)
+        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats)
                 .getSearch();
         var json = mockMvc.perform(get("http://localhost:8080/api/search")
                         .param("airportFrom", String.valueOf(airportFrom))
                         .param("airportTo", String.valueOf(airportTo))
                         .param("departureDate", String.valueOf(departureDate))
                         .param("returnDate", String.valueOf(returnDate))
-                        .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
+                        .param("numberOfPassengers", String.valueOf(numberOfPassengers))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(
-                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers,categoryType))
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats))
                 ))
                 .andReturn().getResponse().getContentAsString();
 
@@ -382,6 +388,79 @@ class SearchControllerIT extends IntegrationTestBase {
 //        assertEquals(500, searchResult.getFlights().get(0).getTotalPrice());   //dep1 билет только туда на 1ого
 
         assertEquals("3ч 30м", searchResult.getFlights().get(0).getDataTo().getFlightTime());
+
+        for (int i = 0; i < searchResult.getFlights().size(); i++) {
+            assertSearchResultCities(searchResult, i, "Москва", "Омск");
+        }
+    }
+
+    //2. В базе: один прямой рейс туда и один прямой рейс обратно с наличием мест (3 свободных мест).
+    //   Поиск: рейс туда (2023-04-02) и рейс обратно (2023-04-05) для 2-х пассажиров
+    // 2 места категории бизнес в рейсе отправления, и в обратном рейсе
+    @DisplayName("6 test. In DB 1 direct depart flight 1 direct return flight")
+    @Test
+    void shouldReturnOneDirectDepartAndOneDirectReturnFlightsWithCurrentCategory() throws Exception {
+
+        Airport airportFrom = VKO;
+        Airport airportTo = OMS;
+        LocalDate departureDate = LocalDate.of(2023, 4, 2);
+        LocalDate returnDate = LocalDate.of(2023, 4, 5);
+        Integer numberOfPassengers = 2;
+        CategoryType categoryOfSeats = BUSINESS;
+
+        int expDirDepartFlights = 1;
+        int expDirReturnFlights = 1;
+
+        Search search = searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats)
+                .getSearch();
+        var json = mockMvc.perform(get("http://localhost:8080/api/search")
+                        .param("airportFrom", String.valueOf(airportFrom))
+                        .param("airportTo", String.valueOf(airportTo))
+                        .param("departureDate", String.valueOf(departureDate))
+                        .param("returnDate", String.valueOf(returnDate))
+                        .param("numberOfPassengers", String.valueOf(numberOfPassengers))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(
+                        searchService.search(airportFrom, airportTo, departureDate, returnDate, numberOfPassengers, categoryOfSeats))
+                ))
+                .andReturn().getResponse().getContentAsString();
+
+        var searchResult = getSearchResult(json);
+        assertEquals(search, searchResult.getSearch());
+        assertNotNull(searchResult.getFlights().get(0).getDataBack());
+        assertNotNull(searchResult.getFlights().get(0).getDataTo());
+
+        long dataToCount = searchResult.getFlights().stream().filter(flight -> flight.getDataTo() != null).count();
+        long dataBackCount = searchResult.getFlights().stream().filter(flight -> flight.getDataBack() != null).count();
+
+        assertEquals(expDirDepartFlights + expDirReturnFlights, dataBackCount + dataToCount);
+
+        assertNumberOfDepartDirectFlights(expDirDepartFlights, search, json);
+        assertNumberOfReturnDirectFlights(expDirReturnFlights, search, json);
+
+        List<Flight> departFlights = flightService.getListDirectFlightsByFromAndToAndDepartureDate(
+                search.getFrom(),
+                search.getTo(),
+                Date.valueOf(search.getDepartureDate()));
+
+        List<Flight> returnFlights = flightService.getListDirectFlightsByFromAndToAndDepartureDate(
+                search.getTo(),
+                search.getFrom(),
+                Date.valueOf(search.getReturnDate()));
+
+        //  Integer lowestFareDepart = searchService.findLowestFare(search, departFlights.get(0));
+        //  Integer lowestFareReturn = searchService.findLowestFare(search, returnFlights.get(0));
+
+        //  assertEquals(1100, lowestFareDepart);
+
+        //  assertEquals(900, lowestFareReturn);
+
+        // assertEquals(2000, searchResult.getFlights().get(0).getTotalPrice());
+
+        assertEquals("3ч 30м", searchResult.getFlights().get(0).getDataTo().getFlightTime());
+        assertEquals("3ч 50м", searchResult.getFlights().get(0).getDataBack().getFlightTime());
 
         for (int i = 0; i < searchResult.getFlights().size(); i++) {
             assertSearchResultCities(searchResult, i, "Москва", "Омск");
@@ -463,6 +542,7 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate departureDate = LocalDate.of(2023, 04, 01);
         LocalDate returnDate = LocalDate.of(2023, 03, 05);
         Integer numberOfPassengers = 2;
+        CategoryType categoryOfSeats = ECONOMY;
 
         AtomicReference<String> requestUrl = new AtomicReference<>();
         mockMvc.perform(get("http://localhost:8080/api/search")
@@ -470,7 +550,8 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("airportTo", String.valueOf(airportTo))
                         .param("departureDate", String.valueOf(departureDate))
                         .param("returnDate", String.valueOf(returnDate))
-                        .param("numberOfPassengers", String.valueOf(numberOfPassengers)))
+                        .param("numberOfPassengers", String.valueOf(numberOfPassengers))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
                 .andExpect(status().isBadRequest());
@@ -485,7 +566,7 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate departureDate = LocalDate.of(2023, 04, 01);
         LocalDate returnDate = LocalDate.of(2023, 05, 05);
         Integer numberOfPassengers = -1;
-        CategoryType categoryType = ECONOMY;
+        CategoryType categoryOfSeats = ECONOMY;
 
         AtomicReference<String> requestUrl = new AtomicReference<>();
         mockMvc.perform(get("http://localhost:8080/api/search")
@@ -494,7 +575,7 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("departureDate", String.valueOf(departureDate))
                         .param("returnDate", String.valueOf(returnDate))
                         .param("numberOfPassengers", String.valueOf(numberOfPassengers))
-                        .param("categoryOfSeats", String.valueOf(categoryType)))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
                 .andExpect(status().isBadRequest());
@@ -509,7 +590,7 @@ class SearchControllerIT extends IntegrationTestBase {
         LocalDate departureDate = LocalDate.of(2023, 04, 01);
         LocalDate returnDate = LocalDate.of(2023, 05, 05);
         Integer numberOfPassengers = -1;
-        CategoryType categoryType = ECONOMY;
+        CategoryType categoryOfSeats = ECONOMY;
 
         AtomicReference<String> requestUrl = new AtomicReference<>();
         mockMvc.perform(get("http://localhost:8080/api/search")
@@ -517,7 +598,7 @@ class SearchControllerIT extends IntegrationTestBase {
                         .param("departureDate", String.valueOf(departureDate))
                         .param("returnDate", String.valueOf(returnDate))
                         .param("numberOfPassengers", String.valueOf(numberOfPassengers))
-                        .param("categoryOfSeats", String.valueOf(categoryType)))
+                        .param("categoryOfSeats", String.valueOf(categoryOfSeats)))
                 .andDo(print())
                 .andDo(result -> requestUrl.set(result.getRequest().getRequestURL().toString()))
                 .andExpect(status().isBadRequest());
