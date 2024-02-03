@@ -121,7 +121,7 @@ public class SearchService {
     }
 
     @Loggable
-    // находим стоимость для каждого сидения в зависимости от полета, категории места, количества пассажиров
+    // находим стоимость для каждого места в зависимости от полета, категории места, количества пассажиров
     public Integer findFare(Search search, Flight flight) {
 
         long aircraftId = flight.getAircraft().getId();

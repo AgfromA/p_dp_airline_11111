@@ -103,7 +103,7 @@ INSERT INTO flights (id, code, departure_date, arrival_date, flight_status, airc
 VALUES (1, 'VKOOMS', '2023-04-01 11:20:00', '2023-04-01 17:50:00', 'ON_TIME',
         (SELECT aircrafts.id FROM aircrafts WHERE aircrafts.id = 1), 1, 2);
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
-VALUES (1, 500, false, false, false,
+VALUES (1, 900, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 1),
         (SELECT seats.id FROM seats WHERE seats.id = 1));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)

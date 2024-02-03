@@ -16,7 +16,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     @Query(value = "select seat from Seat seat where seat.aircraft.id = (:id)")
     Page<Seat> findByAircraftId(@Param("id") Long id, Pageable pageable);
 
-    @Query(value = "select seat from Seat seat join seat.aircraft a where a.id = :id")
-    Set<Seat> findByAircraftId(Long id);
-
+    @Query("SELECT s FROM Seat s JOIN FETCH s.aircraft WHERE s.aircraft.id = :id")
+    Set<Seat> findByAircraftId(@Param("id") Long id);
 }

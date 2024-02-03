@@ -746,9 +746,98 @@ public class SearchServiceTest {
         assertEquals(listOfAllDepartFlights.size(), result.getFlights().size());
     }
 
-    @DisplayName("7 (calculate fare), finds the price for a seat for 1 passenger")
+    @DisplayName("7 search(), Negative test search 1 direct depart flight with business category and 0 return flights, but return nothing")
     @Test
-    public void shouldReturnFareIfOnePassengers() {
+    public void shouldReturnSearchResultWithOneDirectDepartFlightsWithoutReturnFlightWithSpecialCategory() {
+
+        Search search = new Search();
+        search.setFrom(Airport.VKO);
+        search.setTo(Airport.SVX);
+        search.setDepartureDate(LocalDate.of(2023, 4, 1));
+        search.setReturnDate(null);
+        search.setNumberOfPassengers(1);
+        search.setCategoryOfSeats(CategoryType.BUSINESS);
+
+        Destination fromVnukovo = new Destination();
+        fromVnukovo.setId(1L);
+        fromVnukovo.setAirportCode(Airport.VKO);
+        fromVnukovo.setCityName("Москва");
+        fromVnukovo.setTimezone("GMT +3");
+        fromVnukovo.setCountryName("Россия");
+        fromVnukovo.setIsDeleted(false);
+
+        Destination toKoltcovo = new Destination();
+        toKoltcovo.setId(6L);
+        toKoltcovo.setAirportCode(Airport.SVX);
+        toKoltcovo.setCityName("Екатеринбург");
+        toKoltcovo.setTimezone("GMT +5");
+        toKoltcovo.setCountryName("Россия");
+        toKoltcovo.setIsDeleted(false);
+
+        Aircraft aircraft1 = new Aircraft();
+        aircraft1.setId(1L);
+
+        FlightSeat seat1 = new FlightSeat();
+        seat1.setFare(200);
+
+        FlightSeat seat2 = new FlightSeat();
+        seat2.setFare(100);
+
+        Set<FlightSeat> flightSeats = new HashSet<>();
+        flightSeats.add(seat1);
+        flightSeats.add(seat2);
+
+        Category category = new Category();
+        category.setCategoryType(CategoryType.ECONOMY);
+
+        Seat seat = new Seat();
+        seat.setId(1L);
+        seat.setCategory(category);
+        seat.setAircraft(aircraft1);
+
+        Set<Seat> seats = new HashSet<>();
+        seats.add(seat);
+
+        Flight directDepartureFlight = new Flight();
+        directDepartureFlight.setId(1L);
+        directDepartureFlight.setCode("VKOSVX");
+        directDepartureFlight.setFrom(fromVnukovo);
+        directDepartureFlight.setTo(toKoltcovo);
+        directDepartureFlight.setDepartureDateTime(
+                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
+        );
+        directDepartureFlight.setArrivalDateTime(
+                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
+        );
+        directDepartureFlight.setFlightStatus(FlightStatus.COMPLETED);
+        directDepartureFlight.setAircraft(aircraft1);
+        directDepartureFlight.setSeats(new ArrayList<FlightSeat>());
+
+        var listDirectFlight = List.of(directDepartureFlight);
+
+        var departureDate = Date.valueOf(search.getDepartureDate());
+        doReturn(listDirectFlight).when(flightService).getListDirectFlightsByFromAndToAndDepartureDate(
+                any(Airport.class), any(Airport.class), eq(departureDate)
+        );
+
+        doReturn(5).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
+        doReturn(seats).when(seatService).findByAircraftId(1L);
+
+        SearchResult result = searchService.search(
+                search.getFrom(),
+                search.getTo(),
+                search.getDepartureDate(),
+                search.getReturnDate(),
+                search.getNumberOfPassengers(),
+                search.getCategoryOfSeats()
+        );
+        assertEquals(1, listDirectFlight.size()); //полет существуеет
+        assertEquals(0, result.getFlights().size());  //но не запрашиваемой категории
+    }
+
+    @DisplayName("8 (calculate fare),Positive test finds the price for a seat for 1 passenger")
+    @Test
+    public void shouldReturnFareIfOnePassenger() {
         Search search = new Search();
         search.setFrom(Airport.VKO);
         search.setTo(Airport.SVX);
@@ -813,7 +902,7 @@ public class SearchServiceTest {
         assertEquals(500, fareDepart1);
     }
 
-    @DisplayName("8 (calculate fare), finds the price for a seat for 2 passenger")
+    @DisplayName("9 (calculate fare), Positive test finds the price for a seat for 2 passenger")
     @Test
     public void shouldReturnFareIfTwoPassengers() {
         Search search = new Search();
@@ -880,7 +969,7 @@ public class SearchServiceTest {
         assertEquals(1000, fareDepart1);
     }
 
-    @DisplayName("9 (check FlightSeatId), returns the expected seat IDs for a given flight")
+    @DisplayName("10 (check FlightSeatId), Positive test returns the expected seat IDs for a given flight")
     @Test
     void testFindFlightSeatIdsByFlight() {
 
@@ -957,9 +1046,9 @@ public class SearchServiceTest {
         assertEquals(2L, firstFlightSeatId);
     }
 
-    @DisplayName("10 (check NumberSeats), Positive test, be sure that seat is not booked,is not sold and is not registered")
+    @DisplayName("11 (check free seats), Positive test, be sure that seat is not booked,is not sold and is not registered")
     @Test
-    void shouldFindOneNumberOfFreeSeatOnFlight() {
+    void shouldFindOneNumberOfFreeSeatsOnFlight() {
         Search search = new Search();
         search.setFrom(Airport.VKO);
         search.setTo(Airport.SVX);
@@ -1041,9 +1130,9 @@ public class SearchServiceTest {
         assertTrue(result);
     }
 
-    @DisplayName("11 (check NumberSeats), Negative test, be sure that seat is not booked,is not sold and is not registered")
+    @DisplayName("12 (check free seats), Negative test, be sure that seat is not booked,is not sold and is not registered")
     @Test
-    void shouldFindTwoNumberOfFreeSeatOnFlight() {
+    void shouldFindTwoNumberOfFreeSeatsOnFlight() {
         Search search = new Search();
         search.setFrom(Airport.VKO);
         search.setTo(Airport.SVX);
@@ -1123,10 +1212,11 @@ public class SearchServiceTest {
         boolean result = searchService.checkFlightForNumberSeats(directDepartureFlight, search);
         assertFalse(result);
     }
-    @DisplayName("12 (check NumberSeats), Positive test, be sure that seat is not booked,is not sold and is not registered"
-    + "and enough seats in the selected category for two passengers")
+
+    @DisplayName("13 (check free seats), Positive test, be sure that seat is not booked,is not sold and is not registered"
+            + "and enough seats in the selected category for two passengers")
     @Test
-    void shouldFindTwoNumberOfFreeSeatWithCurrentCategoryOnFlight() {
+    void shouldFindTwoNumberOfFreeSeatsWithCurrentCategoryOnFlight() {
         Search search = new Search();
         search.setFrom(Airport.VKO);
         search.setTo(Airport.SVX);
