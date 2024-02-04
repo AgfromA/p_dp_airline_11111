@@ -231,7 +231,10 @@ public class SearchResultView extends VerticalLayout {
         Div div = new Div();
         List<Long> list = new ArrayList<>();
         Long flightSeatIdDepart = flight.getDataTo().getFlightSeatId();
-        Long flightSeatIdReturn = flight.getDataBack().getFlightSeatId();
+        Long flightSeatIdReturn = 0L;
+        if (flight.getDataBack() != null) {
+            flightSeatIdReturn = flight.getDataBack().getFlightSeatId();
+        }
         list.add(flightSeatIdDepart);
         list.add(flightSeatIdReturn);
         Button reserveButton = new Button("Выбрать места");

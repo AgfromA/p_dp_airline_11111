@@ -70,7 +70,7 @@ public class SearchService {
         // Получение строки продолжительности времени полета в виде "дд чч мм"
         String flightTime = getFormattedFlightDurationString(duration);
 
-        List<Long> flightSeatId = flightSeatService.findSeatIdsByFlight(flight);
+        List<Long> flightSeatId = flightSeatService.findFlightSeatIdsByFlight(flight);
 
         Long firstFlightSeatId = flightSeatId.get(0);
 
@@ -126,12 +126,12 @@ public class SearchService {
 
         long aircraftId = flight.getAircraft().getId();
 
-        Set <Seat> seats = seatService.findByAircraftId(aircraftId);
+        Set<Seat> seats = seatService.findByAircraftId(aircraftId);
 
         int fare = 0;
 
         for (Seat seat : seats) {
-            fare = flightSeatService.generateFareForFlightSeat(seat,flight);
+            fare = flightSeatService.generateFareForFlightSeat(seat, flight);
         }
         return fare * search.getNumberOfPassengers();
     }
@@ -192,6 +192,7 @@ public class SearchService {
         searchResultCardList = new ArrayList<>(uniqueCards);
         return searchResultCardList;
     }
+
     //достаточно ли свободных мест в рейсе для указанного количества пассажиров и соответствует ли категория мест запросу.
     @Loggable
     public boolean checkFlightForNumberSeats(Flight flight, Search search) {
@@ -208,7 +209,13 @@ public class SearchService {
                 .filter(seat -> seat.getCategory().getCategoryType().equals(requestedCategory))
                 .collect(Collectors.toList());
 
+        boolean isSeatsByCurrentCategory = false;
+        for (Seat seat : seats) {
+            if (seat.getCategory().getCategoryType().equals(requestedCategory)) {
+                isSeatsByCurrentCategory = true;
+            }
+        }
         return (numberOfFreeSeats >= numberOfPassengers && !seatsByCategory.isEmpty()
-                && seatsByCategory.size()>= numberOfPassengers);
+                && seatsByCategory.size() >= numberOfPassengers && isSeatsByCurrentCategory);
     }
 }

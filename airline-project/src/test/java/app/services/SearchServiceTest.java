@@ -124,7 +124,7 @@ public class SearchServiceTest {
         );
 
         doReturn(5).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(List.of(3l, 4l)).when(flightSeatService).findSeatIdsByFlight(directDepartureFlight);
+        doReturn(List.of(3l, 4l)).when(flightSeatService).findFlightSeatIdsByFlight(directDepartureFlight);
         doReturn(seats).when(seatService).findByAircraftId(1L);
 
         SearchResult result = searchService.search(
@@ -280,7 +280,7 @@ public class SearchServiceTest {
         );
 
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(List.of(1l, 2l)).when(flightSeatService).findSeatIdsByFlight(any(Flight.class));
+        doReturn(List.of(1l, 2l)).when(flightSeatService).findFlightSeatIdsByFlight(any(Flight.class));
         doReturn(seats).when(seatService).findByAircraftId(1L);
         doReturn(seats2).when(seatService).findByAircraftId(2L);
         doReturn(seats3).when(seatService).findByAircraftId(3L);
@@ -400,8 +400,8 @@ public class SearchServiceTest {
         );
 
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(List.of(3l, 4l)).when(flightSeatService).findSeatIdsByFlight(directDepartureFlight);
-        doReturn(List.of(5l, 6l)).when(flightSeatService).findSeatIdsByFlight(directReturnFlight);
+        doReturn(List.of(3l, 4l)).when(flightSeatService).findFlightSeatIdsByFlight(directDepartureFlight);
+        doReturn(List.of(5l, 6l)).when(flightSeatService).findFlightSeatIdsByFlight(directReturnFlight);
         doReturn(seats).when(seatService).findByAircraftId(1L);
 
         SearchResult result = searchService.search(
@@ -596,7 +596,7 @@ public class SearchServiceTest {
         );
 
         doReturn(2).when(flightSeatService).getNumberOfFreeSeatOnFlight(any(Flight.class));
-        doReturn(List.of(5l, 6l)).when(flightSeatService).findSeatIdsByFlight(any(Flight.class));
+        doReturn(List.of(5l, 6l)).when(flightSeatService).findFlightSeatIdsByFlight(any(Flight.class));
         doReturn(seats).when(seatService).findByAircraftId(1L);
         doReturn(seats2).when(seatService).findByAircraftId(2L);
         doReturn(seats3).when(seatService).findByAircraftId(3L);
@@ -1034,10 +1034,10 @@ public class SearchServiceTest {
         flightSeats1.add(seat1);
         flightSeats1.add(seat2);
 
-        when(flightSeatService.findSeatIdsByFlight(directDepartureFlight))
+        when(flightSeatService.findFlightSeatIdsByFlight(directDepartureFlight))
                 .thenReturn(List.of(2L, 3L));
 
-        List<Long> flightSeatId = flightSeatService.findSeatIdsByFlight(directDepartureFlight);
+        List<Long> flightSeatId = flightSeatService.findFlightSeatIdsByFlight(directDepartureFlight);
 
         Long firstFlightSeatId = flightSeatId.get(0);
 
