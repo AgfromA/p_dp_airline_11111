@@ -235,42 +235,42 @@ public class SearchResultView extends VerticalLayout {
         list.add(flightSeatIdDepart);
         list.add(flightSeatIdReturn);
         Button reserveButton = new Button("Выбрать места");
-        reserveButton.addClickListener(event -> openFlightSeatsTable(list));
+        reserveButton.addClickListener(event -> openSeatsTable(list));
         div.add(reserveButton, new Text(" "));
 
         dialog.add(div);
         dialog.open();
     }
 
-    private void openFlightSeatsTable(List<Long> seatIds) {
+    private boolean isButtonColumnAdded = false;
+
+    private void openSeatsTable(List<Long> seatIds) {
         flightSeatGridDepart.setItems(new ArrayList<>(flights));
-        flightSeatGridDepart.getDataProvider().refreshAll();
         flightSeatGridReturn.setItems(new ArrayList<>(flights));
+
+        if (!isButtonColumnAdded) {
+            flightSeatGridDepart.addComponentColumn(card -> createBookButton());
+            flightSeatGridReturn.addComponentColumn(card -> createBookButton());
+            isButtonColumnAdded = true;
+        }
+
+        flightSeatGridDepart.getDataProvider().refreshAll();
         flightSeatGridReturn.getDataProvider().refreshAll();
-
-        flightSeatGridDepart.addComponentColumn(card -> {
-            Button bookButton = new Button("Забронировать");
-            bookButton.addClickListener(event -> {
-                Dialog reservationDialog = new Dialog(new Text("Забронировано"));
-                reservationDialog.open();
-            });
-            return bookButton;
-        });
-
-        flightSeatGridReturn.addComponentColumn(card -> {
-            Button bookButton = new Button("Забронировать");
-            bookButton.addClickListener(event -> {
-                Dialog reservationDialog = new Dialog(new Text("Забронировано"));
-                reservationDialog.open();
-            });
-            return bookButton;
-        });
 
         Dialog flightSeatsDialog = new Dialog();
         flightSeatsDialog.setWidth("50%");
         flightSeatsDialog.add(flightSeatGridDepart);
         flightSeatsDialog.add(flightSeatGridReturn);
         flightSeatsDialog.open();
+    }
+
+    private Button createBookButton() {
+        Button bookButton = new Button("Забронировать");
+        bookButton.addClickListener(event -> {
+            Dialog reservationDialog = new Dialog(new Text("Забронировано"));
+            reservationDialog.open();
+        });
+        return bookButton;
     }
 }
 
