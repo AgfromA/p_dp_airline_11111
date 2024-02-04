@@ -2,7 +2,7 @@ version: '2'
 
 services:
   app:
-    image: 'denispronin/airline-project:1.1.0'
+    image: 'denispronin/airline-project:1.1.1'
     build:
       context: .
       dockerfile: Dockerfile_Project
@@ -15,7 +15,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/airline_db
   app-payment:
-    image: 'denispronin/airline-payments:1.1.0'
+    image: 'denispronin/airline-payments:1.1.1'
     build:
       context: .
       dockerfile: Dockerfile_Payments

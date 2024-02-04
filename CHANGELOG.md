@@ -1,11 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+- #task_number - short task description
+
+## [1.1.1] - 3.02.2024
 - #380 Пагинация, контроллеры GET возвращают объект Page<T>
 - Added CORS
 
 ## [1.1.0] - 27.01.2024
-- #task_number - short task description
 - Рефакторинг Flight API
 - #343 Произведен рефакторинг Search API. Удалена логика с непрямыми перелетами. Добавлена новая схема данных в виде SearchResultCard(Integer totalPrice, SearchResultCardData dataTo, dataBack); Также Добавлены поля FlightTime, CityTo, CityFrom, flightSeatId. 
 
