@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -174,6 +173,7 @@ public class SearchService {
                             searchResultCard.setTotalPrice(totalPriceReturn);
                             searchResultCardList.add(searchResultCard);
                             foundSuitableReturnFlight = true;
+
                         }
                     }
                 }
@@ -196,26 +196,18 @@ public class SearchService {
     //достаточно ли свободных мест в рейсе для указанного количества пассажиров и соответствует ли категория мест запросу.
     @Loggable
     public boolean checkFlightForNumberSeats(Flight flight, Search search) {
-
         int numberOfPassengers = search.getNumberOfPassengers();
-
         int numberOfFreeSeats = flightSeatService.getNumberOfFreeSeatOnFlight(flight);
 
-        CategoryType requestedCategory = search.getCategoryOfSeats();
-
-        Set<Seat> seats = seatService.findByAircraftId(flight.getAircraft().getId());
-
-        List<Seat> seatsByCategory = seats.stream()
-                .filter(seat -> seat.getCategory().getCategoryType().equals(requestedCategory))
-                .collect(Collectors.toList());
-
-        boolean isSeatsByCurrentCategory = false;
-        for (Seat seat : seats) {
-            if (seat.getCategory().getCategoryType().equals(requestedCategory)) {
-                isSeatsByCurrentCategory = true;
+        int count = 0;
+        for (int i = 0; flight.getSeats().size() > i; i++) {
+            if (flight.getSeats().get(i).getSeat().getCategory().getCategoryType().equals(search.getCategoryOfSeats())) {
+                count++;
+                if (count >= numberOfPassengers) {
+                    return numberOfFreeSeats >= numberOfPassengers;
+                }
             }
         }
-        return (numberOfFreeSeats >= numberOfPassengers && !seatsByCategory.isEmpty()
-                && seatsByCategory.size() >= numberOfPassengers && isSeatsByCurrentCategory);
+        return false;
     }
 }

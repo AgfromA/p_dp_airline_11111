@@ -325,15 +325,15 @@ VALUES (88, 'VKOOMS', '2023-04-02 11:20:00', '2023-04-02 17:50:00', 'ON_TIME',
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (89, 500, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 88),
-        (SELECT seats.id FROM seats WHERE seats.id = 1));
+        (SELECT seats.id FROM seats WHERE seats.id = 10));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (90, 600, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 88),
-        (SELECT seats.id FROM seats WHERE seats.id = 2));
+        (SELECT seats.id FROM seats WHERE seats.id = 11));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (91, 650, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 88),
-        (SELECT seats.id FROM seats WHERE seats.id = 3));
+        (SELECT seats.id FROM seats WHERE seats.id = 12));
 
 -- ОБРАТНО
 
@@ -343,15 +343,15 @@ VALUES (92, 'OMSVKO', '2023-04-05 07:05:00', '2023-04-05 07:55:00', 'ON_TIME',
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (93, 500, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 92),
-        (SELECT seats.id FROM seats WHERE seats.id = 4));
+        (SELECT seats.id FROM seats WHERE seats.id = 10));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (94, 400, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 92),
-        (SELECT seats.id FROM seats WHERE seats.id = 5));
+        (SELECT seats.id FROM seats WHERE seats.id = 11));
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, is_booked, flight_id, seat_id)
 VALUES (95, 650, false, false, false,
         (SELECT flights.id FROM flights WHERE flights.id = 92),
-        (SELECT seats.id FROM seats WHERE seats.id = 6));
+        (SELECT seats.id FROM seats WHERE seats.id = 12));
 
 
 
