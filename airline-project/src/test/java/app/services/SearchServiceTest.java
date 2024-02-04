@@ -937,7 +937,7 @@ public class SearchServiceTest {
 
     @DisplayName("10 (check FlightSeatId), Positive test returns the expected seat IDs for a given flight")
     @Test
-    void testFindFlightSeatIdsByFlight() {
+    void shouldFindFlightSeatIdsByFlight() {
 
         Search search = new Search();
         search.setFrom(Airport.VKO);
@@ -1014,7 +1014,7 @@ public class SearchServiceTest {
 
     @DisplayName("11 (check free seats), Positive test, be sure that seat is not booked,is not sold and is not registered")
     @Test
-    void shouldFindOneNumberOfFreeSeatsOnFlight() {
+    void shouldFindOneNumberOfFreeSeatsOnFlightWithCurrentCategoryOnFlight() {
         Search search = new Search();
         search.setFrom(Airport.VKO);
         search.setTo(Airport.SVX);
@@ -1090,6 +1090,7 @@ public class SearchServiceTest {
         boolean result = searchService.checkFlightForNumberSeats(directDepartureFlight, search);
         assertTrue(result);
     }
+
     @DisplayName("12 (check free seats), Positive test, be sure that seat is not booked,is not sold and is not registered"
             + "and enough seats in the selected category for two passengers")
     @Test
@@ -1254,14 +1255,17 @@ public class SearchServiceTest {
         directDepartureFlight = mock(Flight.class);
         when(directDepartureFlight.getSeats()).thenReturn(flightSeats1);
 
+        assertEquals(1, directDepartureFlight.getSeats().size());
+
         boolean result = searchService.checkFlightForNumberSeats(directDepartureFlight, search);
         assertFalse(result);
+
     }
 
     @DisplayName("14 (check free seats), Negative test, be sure that seat is not booked,is not sold and is not registered" +
             "and enough seats in the selected category for one passenger")
     @Test
-    void shouldFindOneNumberOfFreeSeatsOnFlightCurrent() {
+    void shouldFindOneNumberOfNotBookedAndNotSoldAndNotRegisteredSeatsOnFlight() {
         Search search = new Search();
         search.setFrom(Airport.VKO);
         search.setTo(Airport.SVX);

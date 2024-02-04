@@ -130,7 +130,9 @@ public class SearchService {
         int fare = 0;
 
         for (Seat seat : seats) {
-            fare = flightSeatService.generateFareForFlightSeat(seat, flight);
+            if (seat.getCategory().getCategoryType().equals(search.getCategoryOfSeats())) {
+                fare = flightSeatService.generateFareForFlightSeat(seat, flight);
+            }
         }
         return fare * search.getNumberOfPassengers();
     }
