@@ -1,7 +1,9 @@
 package app.dto.search;
 
 
+import app.entities.Category;
 import app.enums.Airport;
+import app.enums.CategoryType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.Cache;
@@ -38,4 +40,6 @@ public class Search {
     @Positive
     private Integer numberOfPassengers;
 
+    @NotNull(message = "category cannot be null")
+    private CategoryType categoryOfSeats;
 }

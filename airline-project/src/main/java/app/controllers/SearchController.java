@@ -2,7 +2,9 @@ package app.controllers;
 
 import app.controllers.api.SearchControllerApi;
 import app.dto.search.SearchResult;
+import app.entities.Category;
 import app.enums.Airport;
+import app.enums.CategoryType;
 import app.exceptions.SearchControllerException;
 import app.services.SearchService;
 import app.utils.LogsUtils;
@@ -29,7 +31,8 @@ public class SearchController implements SearchControllerApi {
             Airport to,
             LocalDate departureDate,
             LocalDate returnDate,
-            Integer numberOfPassengers) {
+            Integer numberOfPassengers,
+            CategoryType categoryOfSeats) {
         String errorMessage;
 
         log.debug("incoming Airport from = {}", LogsUtils.objectToJson(from));
@@ -45,6 +48,12 @@ public class SearchController implements SearchControllerApi {
             log.info(errorMessage);
             throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
         }
+        log.debug("incoming categoryOfSeats = {}", LogsUtils.objectToJson(categoryOfSeats));
+        if (categoryOfSeats == null) {
+            errorMessage = "categoryOfSeats is incorrect";
+            log.info(errorMessage);
+            throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
+        }
         log.debug("incoming departureDate = {}", LogsUtils.objectToJson(departureDate));
         log.debug("incoming returnDate = {}", LogsUtils.objectToJson(returnDate));
         if (returnDate != null && !(returnDate.isAfter(departureDate))) {
@@ -53,7 +62,8 @@ public class SearchController implements SearchControllerApi {
             throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
         }
         try {
-            SearchResult searchResult = searchService.search(from, to, departureDate, returnDate, numberOfPassengers);
+            SearchResult searchResult = searchService.search(from, to, departureDate, returnDate, numberOfPassengers,
+                    categoryOfSeats);
             if (searchResult.getFlights().isEmpty()) {
                 log.info("Flights not found");
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

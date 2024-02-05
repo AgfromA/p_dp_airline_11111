@@ -150,7 +150,7 @@ public class FlightSeatService {
         return flightSeat;
     }
 
-    private int generateFareForFlightSeat(Seat seat, Flight flight) {
+    public int generateFareForFlightSeat(Seat seat, Flight flight) {
         float fare = BASE_FLIGHT_SEAT_FARE * seat.getCategory().getCategoryType().getCategoryRatio();
         if (Boolean.TRUE.equals(seat.getIsNearEmergencyExit())) {
             fare *= EMERGENCY_EXIT_SEAT_PRICE_RATIO;
@@ -189,11 +189,11 @@ public class FlightSeatService {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
-    public List<Long> findSeatIdsByFlight(Flight flight) {
+    public List<Long> findFlightSeatIdsByFlight(Flight flight) {
         List<Long> seatIds = new ArrayList<>();
         Set<FlightSeat> flightSeats = flightSeatRepository.findFlightSeatByFlight(flight);
         for (FlightSeat flightSeat : flightSeats) {
-            seatIds.add(flightSeat.getSeat().getId());
+            seatIds.add(flightSeat.getId());
         }
         return seatIds;
     }

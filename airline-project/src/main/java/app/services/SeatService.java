@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -131,5 +132,8 @@ public class SeatService {
         return seatRepository.findById(seatId).orElseThrow(() -> new EntityNotFoundException(
                 "Operation was not finished because Seat was not found with id = " + seatId)
         );
+    }
+    public Set<Seat> findByAircraftId(Long id) {
+       return seatRepository.findByAircraftId(id);
     }
 }

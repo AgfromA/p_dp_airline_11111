@@ -2,6 +2,7 @@ package app.controllers.api;
 
 import app.dto.search.SearchResult;
 import app.enums.Airport;
+import app.enums.CategoryType;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,7 +21,9 @@ public interface SearchControllerApi {
                     " \"from\": {\"airportCode\": \"value\"},\n" +
                     " \"to\": {\"airportCode\": \"value\"},\n" +
                     " \"departureDate\": \"yyyy-mm-dd\",\n" +
-                    " \"numberOfPassengers\": value (value - mast be bigger then 0)")
+                    " \"numberOfPassengers\": value (value - mast be bigger then 0), \n" +
+                    " \"categoryOfSeats\": \"value\"} "
+    )
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "returned SearchResult"),
             @ApiResponse(code = 400, message = "search return error. Check validField "),
@@ -43,5 +46,9 @@ public interface SearchControllerApi {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate,
 
             @ApiParam(name = "numberOfPassengers", value = "numberOfPassengers")
-            @RequestParam(value = "numberOfPassengers") Integer numberOfPassengers);
+            @RequestParam(value = "numberOfPassengers") Integer numberOfPassengers,
+
+            @ApiParam(name = "categoryOfSeats", value = "categoryOfSeats")
+            @RequestParam(value = "categoryOfSeats") CategoryType categoryOfSeats);
+
 }
