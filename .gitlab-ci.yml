@@ -27,7 +27,7 @@ maven_build:
       - .m2/repository
   script:
     - echo "Compiling the code..."
-    - mvn $MAVEN_CLI_OPTS clean install
+    - 'mvn $MAVEN_CLI_OPTS clean install'
     - echo "Compile complete."
   only:
     - merge_requests
