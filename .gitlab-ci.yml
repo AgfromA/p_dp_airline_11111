@@ -16,7 +16,6 @@ variables:
    --errors
    --fail-at-end
    --show-version
-   --no-transfer-progress
 
 image: maven:3.6.0-jdk-11-slim
 
