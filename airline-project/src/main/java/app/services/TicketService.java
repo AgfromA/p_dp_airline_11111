@@ -1,9 +1,13 @@
 package app.services;
 
 import app.dto.TicketDto;
+import app.entities.Booking;
+import app.entities.FlightSeat;
+import app.entities.Passenger;
 import app.entities.Ticket;
 
 import app.exceptions.EntityNotFoundException;
+import app.exceptions.TicketNumberException;
 import app.mappers.TicketMapper;
 import app.repositories.BookingRepository;
 import app.repositories.FlightRepository;
@@ -17,6 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -65,13 +72,31 @@ public class TicketService {
                     + timezoneDto.getBookingId());
         }
         var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
-        ticket.setPassenger(passengerRepository.findByEmail(ticket.getPassenger().getEmail()));
+        List<Passenger> passengers = passengerRepository.findByEmail(ticket.getPassenger().getEmail());
+        if (passengers.isEmpty()) {
+            // Email not found, handle the situation accordingly
+        } else if (passengers.size() == 1) {
+            Passenger passenger = passengers.get(0);
+            ticket.setPassenger(passenger);
+        } else {
+            // Multiple passengers found with the same email, handle the situation accordingly
+        }
         ticket.setFlightSeat(flightSeatRepository
                 .findFlightSeatByFlightAndSeat(
                         ticket.getFlightSeat().getFlight().getCode(),
-                        ticket.getFlightSeat().getSeat().getSeatNumber()
-                ).orElse(null));
-        ticket.setBooking(bookingRepository.findByFlightSeat(ticket.getFlightSeat()).orElse(null));
+                        ticket.getFlightSeat().getSeat().getSeatNumber()).orElse(null));
+        if (ticketRepository.existsByTicketNumber(ticket.getTicketNumber())) {
+            throw new TicketNumberException(ticket);
+        } else {
+            ticket.setTicketNumber(generateTicketNumber());
+        }
+        if (ticket.getFlightSeat() != null) {
+            Long flightSeatId = ticket.getFlightSeat().getId();
+            if (flightSeatId != null) {
+                Optional<Booking> booking = bookingRepository.findByFlightSeat(ticket.getFlightSeat());
+                ticket.setBooking(booking.orElse(null));
+            }
+        }
         return ticketRepository.save(ticket);
     }
 
@@ -105,5 +130,25 @@ public class TicketService {
 
     public List<Ticket> findByFlightSeatId(Long id) {
         return ticketRepository.findByFlightSeatId(id);
+    }
+
+
+    private String generateTicketNumber() {
+        Random random = new Random();
+        StringBuilder ticketNumberBuilder = new StringBuilder();
+
+        for (int i = 0; i < 2; i++) {
+            char letter = (char) (random.nextInt(26) + 'A');
+            ticketNumberBuilder.append(letter);
+        }
+
+        ticketNumberBuilder.append("-");
+
+        for (int i = 0; i < 4; i++) {
+            int digit = random.nextInt(10);
+            ticketNumberBuilder.append(digit);
+        }
+
+        return ticketNumberBuilder.toString();
     }
 }
