@@ -35,7 +35,7 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_tickets")
-    @SequenceGenerator(name = "seq_tickets", initialValue = 1000, allocationSize = 1)
+    @SequenceGenerator(name = "seq_tickets", allocationSize = 1)
     private Long id;
 
     @Column(name = "ticket_number")
@@ -46,14 +46,13 @@ public class Ticket {
     @JsonView
     private Passenger passenger;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "flight_id")
-    @JsonView
-    @JsonBackReference
-    private Flight flight;
-
     @OneToOne
     @JoinColumn(name = "flight_seat_id")
     @JsonView
     private FlightSeat flightSeat;
+
+    @OneToOne
+    @JoinColumn(name = "booking_id")
+    @JsonView
+    private Booking booking;
 }

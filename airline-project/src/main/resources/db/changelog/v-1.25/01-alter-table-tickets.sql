@@ -1,0 +1,2 @@
+ALTER TABLE tickets
+DROP COLUMN IF EXISTS flight_id;

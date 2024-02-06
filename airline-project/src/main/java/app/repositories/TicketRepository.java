@@ -13,11 +13,9 @@ import java.util.List;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT ticket FROM Ticket ticket LEFT JOIN FETCH ticket.passenger passenger " +
-            "LEFT JOIN FETCH ticket.flight flight LEFT JOIN FETCH ticket.flightSeat flightSeat " +
-            "LEFT JOIN FETCH flight.aircraft aircraft LEFT JOIN FETCH aircraft.seatSet seatSet " +
+            "LEFT JOIN FETCH ticket.flightSeat flightSeat " +
             "WHERE ticket.ticketNumber = ?1")
     Ticket findByTicketNumberContainingIgnoreCase(String ticketNumber);
-
 
     Ticket findTicketById(long id);
 
@@ -28,5 +26,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "DELETE FROM Ticket t WHERE t.passenger.id = :passengerId")
     void deleteTicketByPassengerId(@Param("passengerId") long passengerId);
 
-    List<Ticket> findByFlightId(long id);
+    List<Ticket> findByFlightSeatId(long id);
 }

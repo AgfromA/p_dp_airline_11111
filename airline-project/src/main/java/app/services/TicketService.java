@@ -54,20 +54,15 @@ public class TicketService {
             throw new EntityNotFoundException("Operation was not finished because Passenger was not found with id = "
                     + timezoneDto.getPassengerId());
         }
-        if (flightService.getFlight(timezoneDto.getFlightId()).isEmpty()) {
-            throw new EntityNotFoundException("Operation was not finished because Flight was not found with id = "
-                    + timezoneDto.getFlightId());
-        }
         if (flightSeatService.getFlightSeat(timezoneDto.getFlightSeatId()).isEmpty()) {
             throw new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = "
                     + timezoneDto.getFlightSeatId());
         }
         var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService);
         ticket.setPassenger(passengerRepository.findByEmail(ticket.getPassenger().getEmail()));
-        ticket.setFlight(flightRepository.findByCodeWithLinkedEntities(ticket.getFlight().getCode()));
         ticket.setFlightSeat(flightSeatRepository
                 .findFlightSeatByFlightAndSeat(
-                        ticket.getFlight().getCode(),
+                        ticket.getFlightSeat().getFlight().getCode(),
                         ticket.getFlightSeat().getSeat().getSeatNumber()
                 ).orElse(null));
         return ticketRepository.save(ticket);
@@ -77,9 +72,6 @@ public class TicketService {
     public Ticket updateTicketById(Long id, TicketDto timezoneDto) {
         var updatedTicket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService);
         updatedTicket.setId(id);
-        if (updatedTicket.getFlight() == null) {
-            updatedTicket.setFlight(ticketRepository.findTicketById(id).getFlight());
-        }
         if (updatedTicket.getTicketNumber() == null) {
             updatedTicket.setTicketNumber(ticketRepository.findTicketById(updatedTicket.getId()).getTicketNumber());
         }
@@ -101,7 +93,7 @@ public class TicketService {
         ticketRepository.deleteTicketByPassengerId(passengerId);
     }
 
-    public List<Ticket> findByFlightId(Long id) {
-        return ticketRepository.findByFlightId(id);
+    public List<Ticket> findByFlightSeatId(Long id) {
+        return ticketRepository.findByFlightSeatId(id);
     }
 }
