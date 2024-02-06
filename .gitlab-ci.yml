@@ -1,0 +1,11 @@
+stages:
+  - build
+
+maven_build:
+  stage: build
+  script:
+    - echo "Compiling the code..."
+    - mvn clean install
+    - echo "Compile complete."
+  only:
+    - merge_requests
