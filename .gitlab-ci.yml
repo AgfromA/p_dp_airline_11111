@@ -1,5 +1,9 @@
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 stages:
   - build
+  - test
 
 maven_build:
   stage: build
