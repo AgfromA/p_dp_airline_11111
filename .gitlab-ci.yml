@@ -7,9 +7,13 @@ stages:
 
 maven_build:
   stage: build
+  image: maven:3.6.0-jdk-11-slim
+  cache:
+    paths:
+      - .m2/repository
   script:
     - echo "Compiling the code..."
-    # - mvn clean install
+    - mvn clean install
     - echo "Compile complete."
   only:
     - merge_requests
