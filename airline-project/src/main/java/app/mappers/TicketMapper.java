@@ -2,6 +2,7 @@ package app.mappers;
 
 import app.dto.TicketDto;
 import app.entities.Ticket;
+import app.services.BookingService;
 import app.services.FlightSeatService;
 import app.services.FlightService;
 import app.services.PassengerService;
@@ -31,10 +32,12 @@ public interface TicketMapper {
 
     @Mapping(target = "passenger", expression = "java(passengerService.getPassenger(ticketDto.getPassengerId()).get())")
     @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeat(ticketDto.getFlightSeatId()).get())")
+    @Mapping(target = "booking", expression = "java(bookingService.getBooking(ticketDto.getBookingId()).get())")
     Ticket toEntity(TicketDto ticketDto,
                     @Context PassengerService passengerService,
                     @Context FlightService flightService,
-                    @Context FlightSeatService flightSeatService);
+                    @Context FlightSeatService flightSeatService,
+                    @Context BookingService bookingService);
 
     default List<TicketDto> toDtoList(List<Ticket> ticketList) {
         return ticketList.stream()
@@ -45,9 +48,10 @@ public interface TicketMapper {
     default List<Ticket> toEntityList(List<TicketDto> ticketDtoList,
                                       PassengerService passengerService,
                                       FlightService flightService,
-                                      FlightSeatService flightSeatService) {
+                                      FlightSeatService flightSeatService,
+                                      BookingService bookingService) {
         return ticketDtoList.stream()
-                .map(ticketDto -> toEntity(ticketDto, passengerService, flightService, flightSeatService))
+                .map(ticketDto -> toEntity(ticketDto, passengerService, flightService, flightSeatService, bookingService))
                 .collect(Collectors.toList());
     }
 }

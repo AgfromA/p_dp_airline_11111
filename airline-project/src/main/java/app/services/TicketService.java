@@ -5,6 +5,7 @@ import app.entities.Ticket;
 
 import app.exceptions.EntityNotFoundException;
 import app.mappers.TicketMapper;
+import app.repositories.BookingRepository;
 import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.repositories.PassengerRepository;
@@ -23,12 +24,13 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final PassengerRepository passengerRepository;
-    private final FlightRepository flightRepository;
+    private final BookingRepository bookingRepository;
     private final FlightSeatRepository flightSeatRepository;
     private final TicketMapper ticketMapper;
     private final PassengerService passengerService;
     private final FlightService flightService;
     private final FlightSeatService flightSeatService;
+    private final BookingService bookingService;
 
     public List<TicketDto> getAllTickets() {
         return ticketMapper.toDtoList(ticketRepository.findAll());
@@ -58,19 +60,24 @@ public class TicketService {
             throw new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = "
                     + timezoneDto.getFlightSeatId());
         }
-        var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService);
+        if (bookingService.getBooking(timezoneDto.getBookingId()).isEmpty()) {
+            throw new EntityNotFoundException("Operation was not finished because Booking was not found with id = "
+                    + timezoneDto.getBookingId());
+        }
+        var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
         ticket.setPassenger(passengerRepository.findByEmail(ticket.getPassenger().getEmail()));
         ticket.setFlightSeat(flightSeatRepository
                 .findFlightSeatByFlightAndSeat(
                         ticket.getFlightSeat().getFlight().getCode(),
                         ticket.getFlightSeat().getSeat().getSeatNumber()
                 ).orElse(null));
+        ticket.setBooking(bookingRepository.findByFlightSeat(ticket.getFlightSeat()).orElse(null));
         return ticketRepository.save(ticket);
     }
 
     @Transactional
     public Ticket updateTicketById(Long id, TicketDto timezoneDto) {
-        var updatedTicket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService);
+        var updatedTicket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService,bookingService);
         updatedTicket.setId(id);
         if (updatedTicket.getTicketNumber() == null) {
             updatedTicket.setTicketNumber(ticketRepository.findTicketById(updatedTicket.getId()).getTicketNumber());
@@ -80,6 +87,9 @@ public class TicketService {
         }
         if (updatedTicket.getFlightSeat() == null) {
             updatedTicket.setFlightSeat(ticketRepository.findTicketById(id).getFlightSeat());
+        }
+        if (updatedTicket.getFlightSeat() == null) {
+            updatedTicket.setBooking(ticketRepository.findTicketById(id).getBooking());
         }
         return ticketRepository.save(updatedTicket);
     }

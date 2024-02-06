@@ -2,6 +2,7 @@ package app.services;
 
 import app.dto.BookingDto;
 import app.entities.Booking;
+import app.entities.FlightSeat;
 import app.enums.BookingStatus;
 import app.exceptions.BookedFlightSeatException;
 import app.mappers.BookingMapper;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -91,4 +93,8 @@ public class BookingService {
             bookingRepository.save(booking);
         }
     }
+    public Optional<Booking> getBooking(Long id) {
+        return bookingRepository.findById(id);
+    }
+
 }

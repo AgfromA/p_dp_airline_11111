@@ -1,6 +1,8 @@
 package app.repositories;
 
 import app.entities.Booking;
+import app.entities.FlightSeat;
+import app.entities.Ticket;
 import app.enums.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,6 +23,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> getAllBooksForEmailNotification(LocalDateTime departureIn, LocalDateTime gap);
 
     Optional<Booking> findByBookingNumber(String number);
+
+    Optional<Booking> findByFlightSeat(FlightSeat flightSeat);
 
     @Modifying
     @Query(value = "DELETE FROM Booking b WHERE b.passenger.id = :passengerId")

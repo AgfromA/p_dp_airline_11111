@@ -16,4 +16,10 @@
         <tagDatabase tag="v-1.25-alter-table-tickets"/>
     </changeSet>
 
+    <include file="03-update-values-table-tickets.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.25.3" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.25-update-values-table-tickets"/>
+    </changeSet>
+
 </databaseChangeLog>
