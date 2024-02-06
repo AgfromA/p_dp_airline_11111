@@ -97,6 +97,7 @@ public class TicketService {
                 ticket.setBooking(booking.orElse(null));
             }
         }
+        ticket.setId(null);
         return ticketRepository.save(ticket);
     }
 

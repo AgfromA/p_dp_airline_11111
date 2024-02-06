@@ -20,7 +20,7 @@ public class TicketDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @NotBlank(message = "Field should not be empty")
     private String ticketNumber;
     @NotNull
     private Long passengerId;
