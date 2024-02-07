@@ -22,7 +22,6 @@ public class TicketDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotNull(message = "Ticket number cannot be null")
     private String ticketNumber;
 
     @NotNull(message = "Passenger ID cannot be null")

@@ -11,8 +11,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 
 @Slf4j
@@ -59,14 +61,14 @@ public class TicketRestController implements TicketRestApi {
     }
 
     @Override
-    public ResponseEntity<TicketDto> createTicket(TicketDto ticketDTO) {
+    public ResponseEntity<TicketDto> createTicket(@Valid @RequestBody TicketDto ticketDTO) {
         log.info("create: new Ticket: {}", ticketDTO);
         var savedTicket = ticketService.saveTicket(ticketDTO);
         return new ResponseEntity<>(ticketMapper.toDto(savedTicket), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<?> updateTicketById(Long id, TicketDto ticketDTO) {
+    public ResponseEntity<?> updateTicketById(Long id,@Valid @RequestBody TicketDto ticketDTO) {
         log.info("update: Ticket with id: {}", id);
         var ticket = ticketService.updateTicketById(id, ticketDTO);
         return new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK);

@@ -82,13 +82,17 @@ public class TicketService {
             // Multiple passengers found with the same email, handle the situation accordingly
         }
         ticket.setFlightSeat(flightSeatRepository
-                .findFlightSeatByFlightAndSeat(
-                        ticket.getFlightSeat().getFlight().getCode(),
+                .findFirstFlightSeatByFlightIdAndSeat(
+                        ticket.getFlightSeat().getFlight().getId(),
                         ticket.getFlightSeat().getSeat().getSeatNumber()).orElse(null));
         if (ticketRepository.existsByTicketNumber(ticket.getTicketNumber())) {
             throw new TicketNumberException(ticket);
         } else {
-            ticket.setTicketNumber(generateTicketNumber());
+            String generatedTicketNumber = generateTicketNumber();
+            if (generatedTicketNumber == null) {
+                throw new IllegalArgumentException("Ticket number cannot be null");
+            }
+            ticket.setTicketNumber(generatedTicketNumber);
         }
         if (ticket.getFlightSeat() != null) {
             Long flightSeatId = ticket.getFlightSeat().getId();

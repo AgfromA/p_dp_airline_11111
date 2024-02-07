@@ -35,10 +35,10 @@ public interface FlightSeatRepository extends CrudRepository<FlightSeat, Long> {
     @Query("SELECT fs FROM FlightSeat fs " +
             "JOIN FETCH fs.flight f " +
             "JOIN FETCH fs.seat s " +
-            "WHERE f.code = :flightCode " +
+            "WHERE f.id = :flightId " +
             "AND s.seatNumber = :seatNumber ")
-    Optional<FlightSeat> findFlightSeatByFlightAndSeat(@Param("flightCode") String flightCode,
-                                                       @Param("seatNumber") String seatNumber);
+    Optional<FlightSeat> findFirstFlightSeatByFlightIdAndSeat(@Param("flightId") Long flightId,
+                                                              @Param("seatNumber") String seatNumber);
 
     Set<FlightSeat> findFlightSeatsBySeat(Seat seat);
 
