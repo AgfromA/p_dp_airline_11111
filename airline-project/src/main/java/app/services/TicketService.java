@@ -17,6 +17,7 @@ import app.repositories.FlightSeatRepository;
 import app.repositories.PassengerRepository;
 import app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -79,7 +80,13 @@ public class TicketService {
             throw new FlightSeatNotPaidException();
         }
 
+        Optional<Ticket> existingTicket = ticketRepository.findByBookingId(timezoneDto.getBookingId());
+        if (existingTicket.isPresent()) {
+            ticketMapper.toDto(existingTicket.get());
+        }
+
         var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
+
         List<Passenger> passengers = passengerRepository.findByEmail(ticket.getPassenger().getEmail());
         if (passengers.isEmpty()) {
             // Email not found, handle the situation accordingly
@@ -110,6 +117,29 @@ public class TicketService {
             }
         }
         ticket.setId(null);
+        return ticketRepository.save(ticket);
+    }
+
+ @Transactional
+    public Ticket createPaidTicket(Long bookingId)  {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("\"Booking not found with ID: " + bookingId));
+
+        if (booking.getBookingStatus() != BookingStatus.PAID) {
+            throw new FlightSeatNotPaidException();
+        }
+
+            List<Ticket> tickets = ticketRepository.findAllByBookingId(bookingId);
+            if (tickets.size() > 1) {
+                return tickets.get(0);
+        }
+
+        Ticket ticket = new Ticket();
+        ticket.setBooking(booking);
+        ticket.setPassenger(booking.getPassenger());
+        ticket.setFlightSeat(booking.getFlightSeat());
+        ticket.setTicketNumber(generateTicketNumber());
+
         return ticketRepository.save(ticket);
     }
 

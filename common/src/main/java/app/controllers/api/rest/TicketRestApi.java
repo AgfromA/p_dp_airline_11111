@@ -47,6 +47,16 @@ public interface TicketRestApi {
             )
             @RequestBody @Valid TicketDto ticketDTO);
 
+    @ApiOperation(value = "Create new Paid Ticket")
+    @ApiResponse(code = 201, message = "Paid Ticket created")
+    @PostMapping("/{bookingId}")
+    ResponseEntity<TicketDto> createPaidTicket(
+            @ApiParam(
+                    name = "id",
+                    value = "Ticket.id"
+            )
+            @PathVariable Long bookingId);
+
     @ApiOperation(value = "Edit Ticket by \"id\"")
     @ApiResponse(code = 200, message = "Ticket has been updated")
     @PatchMapping("/{id}")

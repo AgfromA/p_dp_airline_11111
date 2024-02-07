@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -64,6 +65,12 @@ public class TicketRestController implements TicketRestApi {
     public ResponseEntity<TicketDto> createTicket(@Valid @RequestBody TicketDto ticketDTO) {
         log.info("create: new Ticket: {}", ticketDTO);
         var savedTicket = ticketService.saveTicket(ticketDTO);
+        return new ResponseEntity<>(ticketMapper.toDto(savedTicket), HttpStatus.CREATED);
+    }
+    @Override
+    public ResponseEntity<TicketDto> createPaidTicket(@PathVariable Long bookingId) {
+        var savedTicket = ticketService.createPaidTicket(bookingId);
+        log.info("Paid ticket created with ID: {}", savedTicket.getId());
         return new ResponseEntity<>(ticketMapper.toDto(savedTicket), HttpStatus.CREATED);
     }
 
