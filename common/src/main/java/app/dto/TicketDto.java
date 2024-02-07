@@ -1,6 +1,7 @@
 package app.dto;
 
 import app.enums.Airport;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,32 +21,46 @@ public class TicketDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    @NotBlank(message = "Field should not be empty")
+
+    @NotNull(message = "Ticket number cannot be null")
     private String ticketNumber;
-    @NotNull
+
+    @NotNull(message = "Passenger ID cannot be null")
     private Long passengerId;
+
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 128, message = "Firstname size cannot be less than 2 and more than 128 characters")
     private String firstName;
+
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 128, message = "Lastname size cannot be less than 2 and more than 128 characters")
     private String lastName;
+
     @NotBlank(message = "Flight code cannot be empty")
     @Size(min = 2, max = 15, message = "Length of flight code should be between 2 and 15 characters")
     private String code;
-    @NotNull
+
+    @NotNull(message = "Departure airport cannot be null")
     private Airport from;
-    @NotNull
+
+    @NotNull(message = "Arrival airport cannot be null")
     private Airport to;
-    @NotNull
+
+    @NotNull(message = "Departure date and time cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime departureDateTime;
-    @NotNull
+
+    @NotNull(message = "Arrival date and time cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime arrivalDateTime;
-    @NotNull
+
+    @NotNull(message = "Flight seat ID cannot be null")
     private Long flightSeatId;
+
     @NotBlank(message = "Field seat number cannot be null")
     @Size(min = 2, max = 5, message = "Seat number must be between 2 and 5 characters")
     private String seatNumber;
-    @NotNull
+
+    @NotNull(message = "Booking ID cannot be null")
     private Long bookingId;
 }

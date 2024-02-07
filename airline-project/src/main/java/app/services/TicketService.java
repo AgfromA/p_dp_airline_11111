@@ -103,18 +103,40 @@ public class TicketService {
 
     @Transactional
     public Ticket updateTicketById(Long id, TicketDto timezoneDto) {
-        var updatedTicket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService,bookingService);
+        var updatedTicket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
         updatedTicket.setId(id);
+
+        // Проверяем, был ли изменен passengerId в ticketDto
+        if (timezoneDto.getPassengerId() == null) {
+            // Если passengerId не указан, возвращаем текущего passenger
+            updatedTicket.setPassenger(ticketRepository.findTicketById(id).getPassenger());
+        } else {
+            // Проверяем, был ли изменен passengerId в связанном Booking
+            Booking booking = ticketRepository.findTicketById(id).getBooking();
+            if (booking != null && !booking.getPassenger().getId().equals(timezoneDto.getPassengerId())) {
+                throw new IllegalArgumentException("Passenger cannot be changed because it is already assigned to a booking.");
+            }
+        }
+
+        // Проверяем, был ли изменен flightSeatId в ticketDto
+        if (timezoneDto.getFlightSeatId() == null) {
+            // Если flightSeatId не указан, возвращаем текущий flightSeat
+            updatedTicket.setFlightSeat(ticketRepository.findTicketById(id).getFlightSeat());
+        } else {
+            // Проверяем, был ли изменен flightSeatId в связанном Booking
+            Booking booking = ticketRepository.findTicketById(id).getBooking();
+            if (booking != null && !booking.getFlightSeat().getId().equals(timezoneDto.getFlightSeatId())) {
+                throw new IllegalArgumentException("FlightSeat cannot be changed because it is already assigned to a booking.");
+            }
+        }
+
+        // Устанавливаем номер билета, если он не указан
         if (updatedTicket.getTicketNumber() == null) {
             updatedTicket.setTicketNumber(ticketRepository.findTicketById(updatedTicket.getId()).getTicketNumber());
         }
-        if (updatedTicket.getPassenger() == null) {
-            updatedTicket.setPassenger(ticketRepository.findTicketById(id).getPassenger());
-        }
-        if (updatedTicket.getFlightSeat() == null) {
-            updatedTicket.setFlightSeat(ticketRepository.findTicketById(id).getFlightSeat());
-        }
-        if (updatedTicket.getFlightSeat() == null) {
+
+        // Устанавливаем booking, если flightSeat не указан
+        if (updatedTicket.getFlightSeat() != null && updatedTicket.getBooking() == null) {
             updatedTicket.setBooking(ticketRepository.findTicketById(id).getBooking());
         }
         return ticketRepository.save(updatedTicket);

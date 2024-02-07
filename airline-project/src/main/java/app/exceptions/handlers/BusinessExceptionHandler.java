@@ -3,6 +3,7 @@ package app.exceptions.handlers;
 import app.exceptions.BookedFlightSeatException;
 import app.exceptions.EntityNotFoundException;
 import app.exceptions.SearchControllerException;
+import app.exceptions.TicketNumberException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,6 +24,10 @@ public class BusinessExceptionHandler {
 
     @ExceptionHandler(BookedFlightSeatException.class)
     public ResponseEntity<String> handleBookedFlightSeatException(BookedFlightSeatException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(TicketNumberException.class)
+    public ResponseEntity<String> handleTicketNumberException(TicketNumberException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
