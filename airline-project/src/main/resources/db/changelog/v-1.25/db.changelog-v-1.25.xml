@@ -38,4 +38,9 @@
     <changeSet id="1.25.6" author="irina-inozemtseva">
         <tagDatabase tag="v-1.25-filling-table-passengers"/>
     </changeSet>
+    <include file="07-update-values-table-booking.sql" relativeToChangelogFile="true"/>
+    <changeSet id="1.25.7" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.25-update-values-table-booking"/>
+    </changeSet>
+
 </databaseChangeLog>

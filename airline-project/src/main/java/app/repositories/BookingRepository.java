@@ -25,11 +25,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Optional<Booking> findByBookingNumber(String number);
 
     Optional<Booking> findByFlightSeat(FlightSeat flightSeat);
+    Optional<Booking> findByFlightSeatId(Long flightSeatId);
 
     @Modifying
     @Query(value = "DELETE FROM Booking b WHERE b.passenger.id = :passengerId")
     void deleteBookingByPassengerId(@Param("passengerId") long passengerId);
 
     List<Booking> findByBookingStatusAndCreateTime(BookingStatus status, LocalDateTime createTime);
+
 
 }

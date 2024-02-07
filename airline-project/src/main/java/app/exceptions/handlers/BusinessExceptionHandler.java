@@ -2,6 +2,7 @@ package app.exceptions.handlers;
 
 import app.exceptions.BookedFlightSeatException;
 import app.exceptions.EntityNotFoundException;
+import app.exceptions.FlightSeatNotPaidException;
 import app.exceptions.SearchControllerException;
 import app.exceptions.TicketNumberException;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,10 @@ public class BusinessExceptionHandler {
     }
     @ExceptionHandler(TicketNumberException.class)
     public ResponseEntity<String> handleTicketNumberException(TicketNumberException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(FlightSeatNotPaidException.class)
+    public ResponseEntity<String> handleFlightSeatNotPaidException(FlightSeatNotPaidException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

@@ -96,5 +96,7 @@ public class BookingService {
     public Optional<Booking> getBooking(Long id) {
         return bookingRepository.findById(id);
     }
-
+    public Optional<Booking> getBookingByFlightSeatId(Long flightSeatId) {
+        return bookingRepository.findByFlightSeatId(flightSeatId);
+    }
 }

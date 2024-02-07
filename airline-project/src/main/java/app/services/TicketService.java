@@ -6,7 +6,9 @@ import app.entities.FlightSeat;
 import app.entities.Passenger;
 import app.entities.Ticket;
 
+import app.enums.BookingStatus;
 import app.exceptions.EntityNotFoundException;
+import app.exceptions.FlightSeatNotPaidException;
 import app.exceptions.TicketNumberException;
 import app.mappers.TicketMapper;
 import app.repositories.BookingRepository;
@@ -71,6 +73,12 @@ public class TicketService {
             throw new EntityNotFoundException("Operation was not finished because Booking was not found with id = "
                     + timezoneDto.getBookingId());
         }
+        // Check if the booking for the flightSeat is paid
+        Optional<Booking> bookingCheck = bookingService.getBookingByFlightSeatId(timezoneDto.getFlightSeatId());
+        if (bookingCheck.isEmpty() || bookingCheck.get().getBookingStatus() != BookingStatus.PAID) {
+            throw new FlightSeatNotPaidException();
+        }
+
         var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
         List<Passenger> passengers = passengerRepository.findByEmail(ticket.getPassenger().getEmail());
         if (passengers.isEmpty()) {
