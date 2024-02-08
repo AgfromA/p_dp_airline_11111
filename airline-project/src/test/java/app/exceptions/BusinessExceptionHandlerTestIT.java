@@ -30,12 +30,12 @@ public class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
     void testHandleSearchControllerException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/search")
                         .param("airportFrom", "AAQ")
-                        .param("airportTo", "ABA")
+                        .param("airportTo", (String) null)
                         .param("departureDate", "2022-01-01")
                         .param("returnDate", "2022-01-10")
-                        .param("numberOfPassengers", "0")) // Количество пассажиров устанавливаем 0
+                        .param("numberOfPassengers", "2")) // Количество пассажиров устанавливаем 0
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("NumberOfPassengers is incorrect"));
+                .andExpect(MockMvcResultMatchers.content().string("Required request parameter 'airportTo' for method parameter type Airport is not present"));
     }
 
 
