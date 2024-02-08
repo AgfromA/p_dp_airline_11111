@@ -13,9 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -122,7 +127,22 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Post new passenger")
     void shouldAddNewPassenger() throws Exception {
-        var passenger = createPassenger();
+
+        Passenger passenger = new Passenger();
+        passenger.setFirstName("Igor");
+        passenger.setLastName("Igorev");
+        passenger.setPhoneNumber("89033333355");
+        passenger.setEmail("igorev@mail.ru");
+        passenger.setBirthDate(LocalDate.parse("2001-12-11"));
+
+        Passport passport = new Passport();
+        passport.setGender(Gender.MALE);
+        passport.setSerialNumberPassport("1810 322300");
+        passport.setPassportIssuingCountry("Russia");
+        passport.setPassportIssuingDate(LocalDate.parse("2014-12-01"));
+        passport.setMiddleName("Igor");
+        passenger.setPassport(passport);
+
         passenger.setId(0L);
         var passengerDto = passengerMapper.toDto(passenger);
 
@@ -304,5 +324,37 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                         .param("serialNumberPassport", serialNumberPassport))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+
+    // Пытаемся добавить пассажира с таким же email
+    @Test
+    void shouldAddPassengerWithDublicateEmail() throws Exception {
+        var passenger2 = new Passenger();
+        passenger2.setFirstName("Bob");
+        passenger2.setLastName("Bobbov");
+        passenger2.setPhoneNumber("89033333553");
+        passenger2.setEmail("cartman@mail.ru");
+        passenger2.setBirthDate(LocalDate.parse("2010-12-11"));
+
+        Passport passport = new Passport();
+        passport.setGender(Gender.MALE);
+        passport.setSerialNumberPassport("1810 303400");
+        passport.setPassportIssuingCountry("Russia");
+        passport.setPassportIssuingDate(LocalDate.parse("2004-12-11"));
+        passport.setMiddleName("Bobo");
+        passenger2.setPassport(passport);
+
+        var passengerDto = passengerMapper.toDto(passenger2);
+
+        mockMvc.perform(
+                        post("http://localhost:8080/api/passengers")
+                                .content(objectMapper.writeValueAsString(passengerDto))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.content().string("Email already exists"));
     }
 }

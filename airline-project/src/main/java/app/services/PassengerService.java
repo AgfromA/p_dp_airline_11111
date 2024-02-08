@@ -5,6 +5,7 @@ import app.entities.Passenger;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.PassengerMapper;
 import app.repositories.PassengerRepository;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -72,11 +73,20 @@ public class PassengerService {
     }
 
     public Optional<PassengerDto> getPassengerDto(Long id) {
-        return passengerRepository.findById(id).map(passengerMapper::toDto);
+        Optional<PassengerDto> passengerOptional = passengerRepository.findById(id).map(passengerMapper::toDto);
+        if (passengerOptional.isPresent()){
+            return passengerOptional;
+        } else throw new EntityNotFoundException("Operation was not finished because Passenger was not found with id = " + id);
+
     }
 
     @Transactional
     public PassengerDto createPassenger(PassengerDto passengerDto) {
+        // Проверка на уникальность email
+        Passenger existingPassenger = passengerRepository.findByEmail(passengerDto.getEmail());
+        if (existingPassenger != null) {
+            throw new ConstraintViolationException("Email already exists", null);
+        }
         passengerDto.setId(null);
         var passenger = passengerMapper.toEntity(passengerDto);
         return passengerMapper.toDto(passengerRepository.save(passenger));
