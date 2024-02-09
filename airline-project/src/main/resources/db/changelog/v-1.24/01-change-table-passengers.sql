@@ -1,5 +1,7 @@
 DELETE FROM passengers;
 
+ALTER TABLE passengers ADD CONSTRAINT unique_email_constraint UNIQUE (email);
+
 INSERT INTO passengers(first_name, last_name, middle_name, birth_date, gender, email, phone_number,
                        serial_number_passport, passport_issuing_date, passport_issuing_country)
 VALUES ('Пассажирка', 'Петровна', 'Иванова', TO_DATE('1986/03/30', 'YYYY/MM/DD'), 'FEMALE', 'ivanova@mail.ru',

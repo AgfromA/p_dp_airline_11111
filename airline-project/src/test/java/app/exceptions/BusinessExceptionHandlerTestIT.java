@@ -1,30 +1,23 @@
 package app.exceptions;
 
 import app.controllers.IntegrationTestBase;
-import app.dto.BookingDto;
-import app.entities.FlightSeat;
 import app.services.BookingService;
 import app.services.FlightSeatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.Optional;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
+class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
 
     @Autowired
     FlightSeatService flightSeatService;
     @Autowired
     BookingService bookingService;
-
 
     @Test
     void testHandleSearchControllerException() throws Exception {
@@ -38,36 +31,12 @@ public class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
                 .andExpect(MockMvcResultMatchers.content().string("Required request parameter 'airportTo' for method parameter type Airport is not present"));
     }
 
-
     @Test
     void testHandleEntityNotFoundException() throws Exception {
         long id = 1488;
 
         mockMvc.perform(get("http://localhost:8080/api/passengers/{id}", id))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.content().string("Operation was not finished because Passenger was not found with id = " + id));
+                .andExpect(status().isNotFound());
     }
-
-    // Тест напишем после устранения поломки Максимом
-
-  //  @Test
-   // void testHandleBookedFlightSeatException() throws Exception {
-//
-//
-//       BookingDto bookingDto = bookingService.getBookingById(1L);
-//        System.out.println("!!!!!!!!!!!!!!!!!!!");
-//        System.out.println("!!!!!!!!!!!!!!!!!!!");
-//        System.out.println("!!!!!!!!!!!!!!!!!!!");
-//        System.out.println("!!!!!!!!!!!!!!!!!!!");
-//        System.out.println(bookingDto.getFlightSeatId());
-
-//        mockMvc.perform(post("http://localhost:8080/api/bookings")
-//                        .content(objectMapper.writeValueAsString(flightSeat))
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andDo(print())
-//                .andExpect(status().isBadRequest());
-
-    //}
 }

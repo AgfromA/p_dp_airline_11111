@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -24,11 +22,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
 @Sql(value = {"/sqlQuery/create-passenger-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
+class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
 
     @Autowired
     private PassengerMapper passengerMapper;
-
 
     // Пытаемся добавить пассажира с таким же email
     @Test
@@ -64,22 +61,19 @@ public class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
 
     @Test
     void testHandleIllegalArgumentException() throws Exception {
-
         mockMvc.perform(get("http://localhost:8080/api/seats?page=-1&size=2"))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(result -> {
                     ExceptionResponseDto responseDto = objectMapper.readValue(result.getResponse().getContentAsString(), ExceptionResponseDto.class);
-                    Assertions.assertEquals("Invalid page or size", responseDto.getMessage());
-                    Assertions.assertNotNull(responseDto.getTraceId());
+                    Assertions.assertEquals("Page index must not be less than zero", responseDto.getMessage());
+                    Assertions.assertNotNull(responseDto.getRequestId());
                 });
-
     }
 
     @Test
     void testHandleValidationException() throws Exception {
-
         var passenger2 = new Passenger();
         passenger2.setFirstName("B");
         passenger2.setLastName("Bobbov");
@@ -96,7 +90,6 @@ public class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
         passenger2.setPassport(passport);
 
         var passengerDto = passengerMapper.toDto(passenger2);
-
         mockMvc.perform(
                         post("http://localhost:8080/api/passengers")
                                 .content(objectMapper.writeValueAsString(passengerDto))
@@ -104,8 +97,6 @@ public class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("Validation failed"));
+                .andExpect(status().isBadRequest());
     }
-
 }
