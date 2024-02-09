@@ -11,18 +11,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
+import java.util.Random;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 
@@ -38,12 +37,14 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Autowired
     private PassengerRepository passengerRepository;
 
+    private final Random random = new Random();
+
     public Passenger createPassenger() {
         Passenger passenger = new Passenger();
         passenger.setFirstName("Andrey");
         passenger.setLastName("Ivanov");
         passenger.setPhoneNumber("89033333333");
-        passenger.setEmail("ivanov@mail.ru");
+        passenger.setEmail(random.nextInt() + "@mail.ru");
         passenger.setBirthDate(LocalDate.parse("2000-12-11"));
 
         Passport passport = new Passport();
@@ -122,7 +123,22 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Post new passenger")
     void shouldAddNewPassenger() throws Exception {
-        var passenger = createPassenger();
+
+        Passenger passenger = new Passenger();
+        passenger.setFirstName("Igor");
+        passenger.setLastName("Igorev");
+        passenger.setPhoneNumber("89033333355");
+        passenger.setEmail("igorev@mail.ru");
+        passenger.setBirthDate(LocalDate.parse("2001-12-11"));
+
+        Passport passport = new Passport();
+        passport.setGender(Gender.MALE);
+        passport.setSerialNumberPassport("1810 322300");
+        passport.setPassportIssuingCountry("Russia");
+        passport.setPassportIssuingDate(LocalDate.parse("2014-12-01"));
+        passport.setMiddleName("Igor");
+        passenger.setPassport(passport);
+
         passenger.setId(0L);
         var passengerDto = passengerMapper.toDto(passenger);
 
@@ -304,5 +320,36 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                         .param("serialNumberPassport", serialNumberPassport))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+
+    // Пытаемся добавить пассажира с таким же email
+    @Test
+    void shouldAddPassengerWithDublicateEmail() throws Exception {
+        var passenger2 = new Passenger();
+        passenger2.setFirstName("Bob");
+        passenger2.setLastName("Bobbov");
+        passenger2.setPhoneNumber("89033333553");
+        passenger2.setEmail("cartman@mail.ru");
+        passenger2.setBirthDate(LocalDate.parse("2010-12-11"));
+
+        Passport passport = new Passport();
+        passport.setGender(Gender.MALE);
+        passport.setSerialNumberPassport("1810 303400");
+        passport.setPassportIssuingCountry("Russia");
+        passport.setPassportIssuingDate(LocalDate.parse("2004-12-11"));
+        passport.setMiddleName("Bobo");
+        passenger2.setPassport(passport);
+
+        var passengerDto = passengerMapper.toDto(passenger2);
+
+        mockMvc.perform(
+                        post("http://localhost:8080/api/passengers")
+                                .content(objectMapper.writeValueAsString(passengerDto))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("Email already exists"));
     }
 }

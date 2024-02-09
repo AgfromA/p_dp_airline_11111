@@ -2,6 +2,7 @@ package app.services;
 
 import app.dto.PassengerDto;
 import app.entities.Passenger;
+import app.exceptions.DuplicateFieldException;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.PassengerMapper;
 import app.repositories.PassengerRepository;
@@ -77,6 +78,7 @@ public class PassengerService {
 
     @Transactional
     public PassengerDto createPassenger(PassengerDto passengerDto) {
+        checkEmailUnique(passengerDto.getEmail());
         passengerDto.setId(null);
         var passenger = passengerMapper.toEntity(passengerDto);
         return passengerMapper.toDto(passengerRepository.save(passenger));
@@ -99,7 +101,8 @@ public class PassengerService {
         if (passengerDto.getPhoneNumber() != null) {
             existingPassenger.setPhoneNumber(passengerDto.getPhoneNumber());
         }
-        if (passengerDto.getEmail() != null) {
+        if (passengerDto.getEmail() != null && !passengerDto.getEmail().equals(existingPassenger.getEmail())) {
+            checkEmailUnique(passengerDto.getEmail());
             existingPassenger.setEmail(passengerDto.getEmail());
         }
         if (passengerDto.getPassport() != null) {
@@ -114,5 +117,12 @@ public class PassengerService {
         bookingService.deleteBookingByPassengerId(id);
         ticketService.deleteTicketByPassengerId(id);
         passengerRepository.deleteById(id);
+    }
+
+    private void checkEmailUnique(String email) {
+        Passenger existingPassenger = passengerRepository.findByEmail(email);
+        if (existingPassenger != null) {
+            throw new DuplicateFieldException("Email already exists");
+        }
     }
 }
