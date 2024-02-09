@@ -6,6 +6,7 @@ import app.exceptions.FlightSeatNotPaidException;
 import app.exceptions.SearchControllerException;
 import app.exceptions.TicketNumberException;
 import org.springframework.http.HttpStatus;
+import app.exceptions.BusinessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class BusinessExceptionHandler {
 
-    @ExceptionHandler(SearchControllerException.class)
-    public ResponseEntity<String> handleSearchException(SearchControllerException e) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<String> handleSearchException(BusinessException e) {
         return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
     }
 

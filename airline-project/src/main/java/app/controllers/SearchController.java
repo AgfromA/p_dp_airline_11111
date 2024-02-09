@@ -2,7 +2,6 @@ package app.controllers;
 
 import app.controllers.api.SearchControllerApi;
 import app.dto.search.SearchResult;
-import app.entities.Category;
 import app.enums.Airport;
 import app.enums.CategoryType;
 import app.exceptions.SearchControllerException;
@@ -40,26 +39,26 @@ public class SearchController implements SearchControllerApi {
         if (from == null || to == null) {
             errorMessage = "Destination.from is null or Destination.to is null";
             log.info(errorMessage);
-            throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
+            throw new SearchControllerException(errorMessage);
         }
         log.debug("incoming numberOfPassengers = {}", LogsUtils.objectToJson(numberOfPassengers));
         if (numberOfPassengers == null || numberOfPassengers < 1) {
             errorMessage = "NumberOfPassengers is incorrect";
             log.info(errorMessage);
-            throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
+            throw new SearchControllerException(errorMessage);
         }
         log.debug("incoming categoryOfSeats = {}", LogsUtils.objectToJson(categoryOfSeats));
         if (categoryOfSeats == null) {
             errorMessage = "categoryOfSeats is incorrect";
             log.info(errorMessage);
-            throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
+            throw new SearchControllerException(errorMessage);
         }
         log.debug("incoming departureDate = {}", LogsUtils.objectToJson(departureDate));
         log.debug("incoming returnDate = {}", LogsUtils.objectToJson(returnDate));
         if (returnDate != null && !(returnDate.isAfter(departureDate))) {
             errorMessage = "DepartureDate must be earlier then ReturnDate";
             log.info(errorMessage);
-            throw new SearchControllerException(errorMessage, HttpStatus.BAD_REQUEST);
+            throw new SearchControllerException(errorMessage);
         }
         try {
             SearchResult searchResult = searchService.search(from, to, departureDate, returnDate, numberOfPassengers,
@@ -73,7 +72,7 @@ public class SearchController implements SearchControllerApi {
             return new ResponseEntity<>(searchResult, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Search result error = {}", e.getMessage());
-            throw new SearchControllerException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

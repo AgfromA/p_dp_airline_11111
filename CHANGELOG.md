@@ -3,6 +3,7 @@
 ## [Unreleased]
 - #task_number - short task description
 - #360 Добавлена возможность выбора категории при поиске билетов, изменен расчет totalPrice.
+- #366 exception handling refactoring
 
 ## [1.1.1] - 3.02.2024
 - #380 Пагинация, контроллеры GET возвращают объект Page<T>
