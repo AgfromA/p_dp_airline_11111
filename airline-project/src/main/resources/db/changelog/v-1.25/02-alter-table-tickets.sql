@@ -1,2 +1,0 @@
-ALTER TABLE tickets
-    ADD COLUMN IF NOT EXISTS booking_id BIGINT;

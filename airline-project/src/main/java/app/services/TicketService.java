@@ -87,15 +87,10 @@ public class TicketService {
 
         var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
 
-        List<Passenger> passengers = passengerRepository.findByEmail(ticket.getPassenger().getEmail());
-        if (passengers.isEmpty()) {
-            // Email not found, handle the situation accordingly
-        } else if (passengers.size() == 1) {
-            Passenger passenger = passengers.get(0);
-            ticket.setPassenger(passenger);
-        } else {
-            // Multiple passengers found with the same email, handle the situation accordingly
-        }
+        var passenger = passengerRepository.findByEmail(ticket.getPassenger().getEmail()).orElse(null);
+
+        ticket.setPassenger(passenger);
+
         ticket.setFlightSeat(flightSeatRepository
                 .findFirstFlightSeatByFlightIdAndSeat(
                         ticket.getFlightSeat().getFlight().getId(),
@@ -122,16 +117,12 @@ public class TicketService {
 
  @Transactional
     public Ticket createPaidTicket(Long bookingId)  {
+
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("\"Booking not found with ID: " + bookingId));
 
         if (booking.getBookingStatus() != BookingStatus.PAID) {
             throw new FlightSeatNotPaidException();
-        }
-
-            List<Ticket> tickets = ticketRepository.findAllByBookingId(bookingId);
-            if (tickets.size() > 1) {
-                return tickets.get(0);
         }
 
         Ticket ticket = new Ticket();
@@ -192,11 +183,6 @@ public class TicketService {
     public void deleteTicketByPassengerId(long passengerId) {
         ticketRepository.deleteTicketByPassengerId(passengerId);
     }
-
-    public List<Ticket> findByFlightSeatId(Long id) {
-        return ticketRepository.findByFlightSeatId(id);
-    }
-
 
     private String generateTicketNumber() {
         Random random = new Random();

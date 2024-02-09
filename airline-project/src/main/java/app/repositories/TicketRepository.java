@@ -28,10 +28,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "DELETE FROM Ticket t WHERE t.passenger.id = :passengerId")
     void deleteTicketByPassengerId(@Param("passengerId") long passengerId);
 
-    List<Ticket> findByFlightSeatId(long id);
-
     boolean existsByTicketNumber(String ticketNumber);
     Optional<Ticket> findByBookingId (long bookingId);
 
-    List<Ticket> findAllByBookingId(long id);
 }

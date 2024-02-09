@@ -46,11 +46,9 @@ public class TicketDto {
     private Airport to;
 
     @NotNull(message = "Departure date and time cannot be null")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime departureDateTime;
 
     @NotNull(message = "Arrival date and time cannot be null")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime arrivalDateTime;
 
     @NotNull(message = "Flight seat ID cannot be null")
