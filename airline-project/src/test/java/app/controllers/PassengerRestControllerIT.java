@@ -11,23 +11,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.Random;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
 
@@ -43,12 +37,14 @@ class PassengerRestControllerIT extends IntegrationTestBase {
     @Autowired
     private PassengerRepository passengerRepository;
 
+    private final Random random = new Random();
+
     public Passenger createPassenger() {
         Passenger passenger = new Passenger();
         passenger.setFirstName("Andrey");
         passenger.setLastName("Ivanov");
         passenger.setPhoneNumber("89033333333");
-        passenger.setEmail("ivanov@mail.ru");
+        passenger.setEmail(random.nextInt() + "@mail.ru");
         passenger.setBirthDate(LocalDate.parse("2000-12-11"));
 
         Passport passport = new Passport();
@@ -351,10 +347,9 @@ class PassengerRestControllerIT extends IntegrationTestBase {
                         post("http://localhost:8080/api/passengers")
                                 .content(objectMapper.writeValueAsString(passengerDto))
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                )
+                                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().string("Email already exists"));
     }
 }

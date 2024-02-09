@@ -54,7 +54,7 @@ class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().string("Email already exists"));
     }
 
