@@ -10,15 +10,21 @@
         <tagDatabase tag="v-1.26-alter-table-tickets"/>
     </changeSet>
 
-    <include file="02-update-values-table-booking.sql" relativeToChangelogFile="true"/>
+    <include file="02-filling-table-passengers.sql" relativeToChangelogFile="true"/>
 
     <changeSet id="1.26.2" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.26-filling-table-passengers"/>
+    </changeSet>
+
+    <include file="03-update-values-table-booking.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.26.3" author="irina-inozemtseva">
         <tagDatabase tag="v-1.26-update-values-table-booking"/>
     </changeSet>
 
-    <include file="03-filling-table-tickets.sql" relativeToChangelogFile="true"/>
+    <include file="04-filling-table-tickets.sql" relativeToChangelogFile="true"/>
 
-    <changeSet id="1.26.3" author="irina-inozemtseva">
+    <changeSet id="1.26.4" author="irina-inozemtseva">
         <tagDatabase tag="v-1.26-filling-table-tickets"/>
     </changeSet>
 

@@ -37,6 +37,7 @@ public interface PassengerRepository extends JpaRepository<Passenger, Long> {
     @Query(value = "SELECT passengers FROM Passenger passengers WHERE passengers.email LIKE %?1%")
     Page<Passenger> findByEmail(Pageable pageable, String email);
 
-    @Query("SELECT p FROM Passenger p WHERE p.email = :email")
-    Optional <Passenger> findByEmail(@Param("email") String email);
+    Passenger findByEmail(String email);
+//    @Query("SELECT p FROM Passenger p WHERE p.email = :email")
+//    Optional <Passenger> findByEmail(@Param("email") String email);
 }

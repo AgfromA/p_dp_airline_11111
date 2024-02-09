@@ -10,14 +10,13 @@ import app.enums.BookingStatus;
 import app.exceptions.EntityNotFoundException;
 import app.exceptions.FlightSeatNotPaidException;
 import app.exceptions.TicketNumberException;
+import app.exceptions.UnPaidBookingException;
 import app.mappers.TicketMapper;
 import app.repositories.BookingRepository;
-import app.repositories.FlightRepository;
 import app.repositories.FlightSeatRepository;
 import app.repositories.PassengerRepository;
 import app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -77,7 +75,7 @@ public class TicketService {
         // Check if the booking for the flightSeat is paid
         Optional<Booking> bookingCheck = bookingService.getBookingByFlightSeatId(timezoneDto.getFlightSeatId());
         if (bookingCheck.isEmpty() || bookingCheck.get().getBookingStatus() != BookingStatus.PAID) {
-            throw new FlightSeatNotPaidException();
+            throw new FlightSeatNotPaidException(timezoneDto.getFlightSeatId());
         }
 
         Optional<Ticket> existingTicket = ticketRepository.findByBookingId(timezoneDto.getBookingId());
@@ -87,7 +85,7 @@ public class TicketService {
 
         var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
 
-        var passenger = passengerRepository.findByEmail(ticket.getPassenger().getEmail()).orElse(null);
+        var passenger = passengerRepository.findByEmail(ticket.getPassenger().getEmail());
 
         ticket.setPassenger(passenger);
 
@@ -122,7 +120,7 @@ public class TicketService {
                 .orElseThrow(() -> new IllegalArgumentException("\"Booking not found with ID: " + bookingId));
 
         if (booking.getBookingStatus() != BookingStatus.PAID) {
-            throw new FlightSeatNotPaidException();
+            throw new UnPaidBookingException(bookingId);
         }
 
         Ticket ticket = new Ticket();
