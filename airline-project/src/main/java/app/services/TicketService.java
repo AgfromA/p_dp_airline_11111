@@ -2,8 +2,6 @@ package app.services;
 
 import app.dto.TicketDto;
 import app.entities.Booking;
-import app.entities.FlightSeat;
-import app.entities.Passenger;
 import app.entities.Ticket;
 
 import app.enums.BookingStatus;
@@ -113,22 +111,22 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
- @Transactional
-    public Ticket createPaidTicket(Long bookingId)  {
+    @Transactional
+    public Ticket createPaidTicket(Long bookingId) {
 
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new IllegalArgumentException("\"Booking not found with ID: " + bookingId));
+        var booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking with ID " + bookingId + " not found"));
+
+        var ticket = new Ticket();
 
         if (booking.getBookingStatus() != BookingStatus.PAID) {
             throw new UnPaidBookingException(bookingId);
+        } else {
+            ticket.setBooking(booking);
+            ticket.setPassenger(booking.getPassenger());
+            ticket.setFlightSeat(booking.getFlightSeat());
+            ticket.setTicketNumber(generateTicketNumber());
         }
-
-        Ticket ticket = new Ticket();
-        ticket.setBooking(booking);
-        ticket.setPassenger(booking.getPassenger());
-        ticket.setFlightSeat(booking.getFlightSeat());
-        ticket.setTicketNumber(generateTicketNumber());
-
         return ticketRepository.save(ticket);
     }
 
