@@ -5,6 +5,7 @@ import app.entities.Booking;
 import app.entities.Ticket;
 
 import app.enums.BookingStatus;
+import app.exceptions.DuplicateFieldException;
 import app.exceptions.EntityNotFoundException;
 import app.exceptions.FlightSeatNotPaidException;
 import app.exceptions.TicketNumberException;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -70,44 +70,51 @@ public class TicketService {
             throw new EntityNotFoundException("Operation was not finished because Booking was not found with id = "
                     + timezoneDto.getBookingId());
         }
-        // Check if the booking for the flightSeat is paid
-        Optional<Booking> bookingCheck = bookingService.getBookingByFlightSeatId(timezoneDto.getFlightSeatId());
+        // Проверяем, оплачено ли место на рейсе
+        var bookingCheck = bookingService.getBookingByFlightSeatId(timezoneDto.getFlightSeatId());
         if (bookingCheck.isEmpty() || bookingCheck.get().getBookingStatus() != BookingStatus.PAID) {
             throw new FlightSeatNotPaidException(timezoneDto.getFlightSeatId());
         }
-
-        Optional<Ticket> existingTicket = ticketRepository.findByBookingId(timezoneDto.getBookingId());
-        if (existingTicket.isPresent()) {
-            ticketMapper.toDto(existingTicket.get());
-        }
-
+        // Преобразуем DTO в сущность билета
         var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
 
+        // Находим пассажира по электронной почте и устанавливаем его в билет
         var passenger = passengerRepository.findByEmail(ticket.getPassenger().getEmail());
-
         ticket.setPassenger(passenger);
 
+        // Находим место на рейсе по идентификатору рейса и номеру места и устанавливаем его в билет
         ticket.setFlightSeat(flightSeatRepository
                 .findFirstFlightSeatByFlightIdAndSeat(
                         ticket.getFlightSeat().getFlight().getId(),
                         ticket.getFlightSeat().getSeat().getSeatNumber()).orElse(null));
+
+        // Генерируем номер билета
+        String generatedTicketNumber = generateTicketNumber();
+
+        // Проверяем, существует ли билет с указанным номером
         if (ticketRepository.existsByTicketNumber(ticket.getTicketNumber())) {
             throw new TicketNumberException(ticket);
         } else {
-            String generatedTicketNumber = generateTicketNumber();
-            if (generatedTicketNumber == null) {
-                throw new IllegalArgumentException("Ticket number cannot be null");
-            }
             ticket.setTicketNumber(generatedTicketNumber);
         }
+
+        // Проверяем, существует ли уже билет с указанным идентификатором бронирования
+        var existingTicket = ticketRepository.findByBookingId(timezoneDto.getBookingId());
+        if (existingTicket.isPresent()) {
+            throw new DuplicateFieldException("Ticket with bookingId " + timezoneDto.getBookingId() + " already exists!");
+        }
+
+        // Устанавливаем бронирование в билет
         if (ticket.getFlightSeat() != null) {
-            Long flightSeatId = ticket.getFlightSeat().getId();
+            var flightSeatId = ticket.getFlightSeat().getId();
             if (flightSeatId != null) {
-                Optional<Booking> booking = bookingRepository.findByFlightSeat(ticket.getFlightSeat());
+                var booking = bookingRepository.findByFlightSeat(ticket.getFlightSeat());
                 ticket.setBooking(booking.orElse(null));
             }
         }
+
         ticket.setId(null);
+
         return ticketRepository.save(ticket);
     }
 
