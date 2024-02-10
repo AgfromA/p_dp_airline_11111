@@ -25,6 +25,17 @@ VALUES (2, '5134', 'Airbus A320-200', 2011, 4300);
 INSERT INTO aircrafts (id, aircraft_number, model, model_year, flight_range)
 VALUES (3, '35283', 'Boeing 737-800', 2008, 5765);
 
+INSERT INTO booking(id, booking_data_time, passenger_id, flight_seat_id, booking_status)
+VALUES (1, '2024-02-05 11:51:26.444777', 1, 1, 'PAID');
+INSERT INTO booking(id, booking_data_time, passenger_id, flight_seat_id, booking_status)
+VALUES (2, '2024-02-05 11:51:26.444777', 2, 2, 'PAID');
+INSERT INTO booking(id, booking_data_time, passenger_id, flight_seat_id, booking_status)
+VALUES (3, '2024-02-05 11:51:26.444777', 3, 3, 'PAID');
+INSERT INTO booking(id, booking_data_time, passenger_id, flight_seat_id, booking_status)
+VALUES (4, '2024-02-05 11:51:26.444777', 4, 4, 'PAID');
+INSERT INTO booking(id, booking_data_time, passenger_id, flight_seat_id, booking_status)
+VALUES (5, '2024-02-05 11:51:26.444777', 4, 5, 'PAID');
+
 
 INSERT INTO seats (id, seat_number, is_near_emergency_exit, is_locked_back, category_id, aircraft_id)
 VALUES (1, '1A', false, true,
@@ -124,12 +135,13 @@ VALUES (3, 650, true, true, (SELECT flights.id FROM flights WHERE flights.id = 1
         (SELECT seats.id FROM seats WHERE seats.id = 3));
 
 
-INSERT INTO tickets (id, ticket_number, flight_id, passenger_id, flight_seat_id)
+INSERT INTO tickets (id, ticket_number, passenger_id, flight_seat_idm, booking_id)
 VALUES (1, 'SD-2222',
-        (SELECT flights.id FROM flights WHERE flights.id = 1),
         (SELECT passengers.id FROM passengers WHERE passengers.id = 4),
-        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 2));
-INSERT INTO tickets (id, ticket_number, flight_id, passenger_id, flight_seat_id)
-VALUES (2, 'ZX-3333', (SELECT flights.id FROM flights WHERE flights.id = 1),
+        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 2)),
+         (SELECT booking.id FROM booking WHERE booking.id = 1);
+INSERT INTO tickets (id, ticket_number, passenger_id, flight_seat_id, booking_id)
+VALUES (2, 'ZX-3333',
         (SELECT passengers.id FROM passengers WHERE passengers.id = 5),
-        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 3));
+        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 3)),
+        (SELECT booking.id FROM booking WHERE booking.id = 1);
