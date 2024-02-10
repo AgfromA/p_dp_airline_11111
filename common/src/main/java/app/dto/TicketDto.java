@@ -1,7 +1,6 @@
 package app.dto;
 
 import app.enums.Airport;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -60,4 +59,5 @@ public class TicketDto {
 
     @NotNull(message = "Booking ID cannot be null")
     private Long bookingId;
+
 }

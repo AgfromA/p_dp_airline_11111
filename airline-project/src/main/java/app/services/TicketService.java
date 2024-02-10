@@ -163,6 +163,20 @@ public class TicketService {
             Booking booking = ticketRepository.findTicketById(id).getBooking();
             if (booking != null && !booking.getFlightSeat().getId().equals(timezoneDto.getFlightSeatId())) {
                 throw new IllegalArgumentException("FlightSeat cannot be changed because it is already assigned to a booking.");
+            } else {
+                // Проверяем, соответствуют ли данные в поле flightSeatId данным в id flightseat
+                var flightSeatId = timezoneDto.getFlightSeatId();
+                var flightSeat = flightSeatRepository.findById(flightSeatId)
+                        .orElseThrow(() -> new EntityNotFoundException("FlightSeat with ID " + flightSeatId + " not found"));
+                var flight = flightSeat.getFlight();
+
+                // Устанавливаем данные из flightSeat в ticket
+                updatedTicket.getFlightSeat().getFlight().setCode(flight.getCode());
+                updatedTicket.getFlightSeat().setSeat(flightSeat.getSeat());
+                updatedTicket.getFlightSeat().getFlight().setFrom(flight.getFrom());
+                updatedTicket.getFlightSeat().getFlight().setTo(flight.getTo());
+                updatedTicket.getFlightSeat().getFlight().setDepartureDateTime(flight.getDepartureDateTime());
+                updatedTicket.getFlightSeat().getFlight().setArrivalDateTime(flight.getArrivalDateTime());
             }
         }
 
