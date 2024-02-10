@@ -60,4 +60,7 @@ public class TicketDto {
     @NotNull(message = "Booking ID cannot be null")
     private Long bookingId;
 
+    private LocalDateTime boardingStartTime;
+    
+    private LocalDateTime boardingEndTime;
 }
