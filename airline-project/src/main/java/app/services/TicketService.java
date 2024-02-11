@@ -177,7 +177,7 @@ public class TicketService {
     }
 
     // Проверяет, был ли изменен пассажир билета
-    private void validatePassengerChange(Ticket existingTicket, Long newPassengerId) {
+    public void validatePassengerChange(Ticket existingTicket, Long newPassengerId) {
         Booking booking = existingTicket.getBooking();
         if (booking != null && !booking.getPassenger().getId().equals(newPassengerId)) {
             throw new IllegalArgumentException("Passenger cannot be changed because it is already assigned to a booking!");
@@ -185,7 +185,7 @@ public class TicketService {
     }
 
     // Проверяет, было ли изменено место на рейсе билета
-    private void validateFlightSeatChange(Ticket existingTicket, Long newFlightSeatId) {
+    public void validateFlightSeatChange(Ticket existingTicket, Long newFlightSeatId) {
         Booking booking = existingTicket.getBooking();
         if (booking != null && !booking.getFlightSeat().getId().equals(newFlightSeatId)) {
             throw new IllegalArgumentException("FlightSeat cannot be changed because it is already assigned to a booking!");
@@ -221,7 +221,7 @@ public class TicketService {
         ticketRepository.deleteTicketByPassengerId(passengerId);
     }
 
-    private String generateTicketNumber() {
+    public String generateTicketNumber() {
         Random random = new Random();
         StringBuilder ticketNumberBuilder = new StringBuilder();
 

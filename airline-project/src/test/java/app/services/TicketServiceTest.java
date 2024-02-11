@@ -1,5 +1,7 @@
 package app.services;
 
+import app.controllers.rest.BookingRestController;
+import app.dto.BookingDto;
 import app.dto.TicketDto;
 import app.entities.Booking;
 import app.entities.Destination;
@@ -11,9 +13,11 @@ import app.entities.Ticket;
 import app.enums.Airport;
 import app.enums.BookingStatus;
 import app.mappers.TicketMapper;
+import app.repositories.BookingRepository;
 import app.repositories.FlightSeatRepository;
 import app.repositories.PassengerRepository;
 import app.repositories.TicketRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,13 +25,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
@@ -45,6 +53,8 @@ public class TicketServiceTest {
     private FlightSeatService flightSeatService;
     @Mock
     private FlightSeatRepository flightSeatRepository;
+    @Mock
+    private BookingRepository bookingRepository;
     @Mock
     private FlightService flightService;
     @Mock
@@ -310,26 +320,15 @@ public class TicketServiceTest {
         flight.setFrom(fromVnukovo);
         flight.setTo(toKoltcovo);
 
-
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(3L);
         flightSeat.setFlight(flight);
         flightSeat.setSeat(seat);
-        flightSeat.setIsSold(false);
-        flightSeat.setIsRegistered(false);
-        flightSeat.setIsBooked(false);
 
         List<FlightSeat> flightSeats = new ArrayList<>();
         flightSeats.add(flightSeat);
 
         flight.setSeats(flightSeats);
-
-        flight.setDepartureDateTime(
-                LocalDateTime.of(2023, 4, 1, 1, 0, 0)
-        );
-        flight.setArrivalDateTime(
-                LocalDateTime.of(2023, 4, 1, 2, 0, 0)
-        );
 
         when(flightSeatService.getFlightSeat(timezoneDto.getFlightSeatId())).thenReturn(Optional.of(flightSeat));
 
@@ -359,5 +358,269 @@ public class TicketServiceTest {
         assertEquals(result.getPassenger(),savedTicket.getPassenger());
         assertEquals(result.getFlightSeat(),savedTicket.getFlightSeat());
         assertEquals(result.getBooking(),savedTicket.getBooking());
+    }
+    @DisplayName("7 createPaidTicket (), Positive test create paid ticket")
+    @Test
+    void shouldCreatePaidTicket() {
+        TicketDto timezoneDto = new TicketDto();
+        timezoneDto.setPassengerId(1L);
+        timezoneDto.setFlightSeatId(3L);
+        timezoneDto.setBookingId(1L);
+
+        Passenger passenger = new Passenger();
+        passenger.setId(1L);
+        passenger.setEmail("test@example.com");
+        passenger.setLastName("Теплицын");
+        passenger.setFirstName("Марк");
+
+        Seat seat = new Seat();
+        seat.setId(1L);
+        seat.setSeatNumber("1A");
+
+        Destination fromVnukovo = new Destination();
+        fromVnukovo.setId(1L);
+        fromVnukovo.setAirportCode(Airport.VKO);
+
+        Destination toKoltcovo = new Destination();
+        toKoltcovo.setId(2L);
+        toKoltcovo.setAirportCode(Airport.SVX);
+
+        Flight flight = new Flight();
+        flight.setId(1L);
+        flight.setCode("VKOSVX");
+        flight.setFrom(fromVnukovo);
+        flight.setTo(toKoltcovo);
+
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(3L);
+        flightSeat.setFlight(flight);
+        flightSeat.setSeat(seat);
+
+        List<FlightSeat> flightSeats = new ArrayList<>();
+        flightSeats.add(flightSeat);
+
+        flight.setSeats(flightSeats);
+
+        Booking booking = new Booking();
+        booking.setBookingStatus(BookingStatus.PAID);
+        booking.setPassenger(passenger);
+        booking.setFlightSeat(flightSeat);
+        booking.setId(1L);
+
+        Ticket savedTicket = new Ticket();
+        savedTicket.setTicketNumber("LL-4000");
+        savedTicket.setPassenger(passenger);
+        savedTicket.setFlightSeat(flightSeat);
+        savedTicket.setBooking(booking);
+
+        when(bookingRepository.findById(booking.getId())).thenReturn(Optional.of(booking));
+
+        when(ticketRepository.save(any(Ticket.class))).thenReturn(savedTicket);
+
+        Ticket result = ticketService.createPaidTicket(booking.getId());
+        System.out.println(result);
+        assertNotNull(result);
+        assertEquals(booking.getPassenger(), result.getPassenger());
+        assertEquals(booking.getFlightSeat(), result.getFlightSeat());
+    }
+    @Disabled
+    @DisplayName("8 updateTicket (), Positive test update ticket")
+    @Test
+    public void shouldUpdateTicket() {
+
+        Passenger passenger = new Passenger();
+        passenger.setId(1L);
+        passenger.setEmail("test@example.com");
+        passenger.setLastName("Теплицын");
+        passenger.setFirstName("Марк");
+
+        Passenger passengerUpdated = new Passenger();
+        passengerUpdated.setId(2L);
+        passengerUpdated.setEmail("promo@example.com");
+        passengerUpdated.setLastName("Ермаков");
+        passengerUpdated.setFirstName("Степан");
+
+        Seat seat = new Seat();
+        seat.setId(1L);
+        seat.setSeatNumber("1A");
+
+        Destination fromVnukovo = new Destination();
+        fromVnukovo.setId(1L);
+        fromVnukovo.setAirportCode(Airport.VKO);
+
+        Destination toKoltcovo = new Destination();
+        toKoltcovo.setId(2L);
+        toKoltcovo.setAirportCode(Airport.SVX);
+
+        Flight flight = new Flight();
+        flight.setId(1L);
+        flight.setCode("VKOSVX");
+        flight.setFrom(fromVnukovo);
+        flight.setTo(toKoltcovo);
+
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(3L);
+        flightSeat.setFlight(flight);
+        flightSeat.setSeat(seat);
+
+        List<FlightSeat> flightSeats = new ArrayList<>();
+        flightSeats.add(flightSeat);
+
+        flight.setSeats(flightSeats);
+
+        Flight flightUpdated = new Flight();
+        flightUpdated.setId(2L);
+        flightUpdated.setCode("VKOSVX");
+        flightUpdated.setFrom(fromVnukovo);
+        flightUpdated.setTo(toKoltcovo);
+
+        FlightSeat flightSeatUpdated = new FlightSeat();
+        flightSeatUpdated.setId(5L);
+        flightSeatUpdated.setFlight(flightUpdated);
+        flightSeatUpdated.setSeat(seat);
+
+        List<FlightSeat> flightSeats2 = new ArrayList<>();
+        flightSeats2.add(flightSeatUpdated);
+
+        flightUpdated.setSeats(flightSeats2);
+
+        Booking booking = new Booking();
+        booking.setBookingStatus(BookingStatus.PAID);
+        booking.setPassenger(passenger);
+        booking.setFlightSeat(flightSeat);
+        booking.setId(1L);
+
+        Booking bookingUpdated = new Booking();
+        bookingUpdated.setId(1L);
+        bookingUpdated.setBookingStatus(BookingStatus.PAID);
+        bookingUpdated.setPassenger(passengerUpdated);
+        bookingUpdated.setFlightSeat(flightSeatUpdated);
+
+        Ticket existingTicket = new Ticket();
+        existingTicket.setId(208L);
+        existingTicket.setBooking(booking);
+        existingTicket.setPassenger(passenger);
+        existingTicket.setFlightSeat(flightSeat);
+        existingTicket.setTicketNumber("HH-4000");
+
+        when(ticketRepository.findTicketById(existingTicket.getId())).thenReturn(existingTicket);
+
+        TicketDto timezoneDto = new TicketDto();
+        timezoneDto.setPassengerId(6L);
+        timezoneDto.setFlightSeatId(3L);
+        timezoneDto.setBookingId(1L);
+
+        Ticket updatedTicket = new Ticket();
+        updatedTicket.setBooking(bookingUpdated);
+        updatedTicket.setPassenger(passengerUpdated);
+        updatedTicket.setFlightSeat(flightSeatUpdated);
+        updatedTicket.setTicketNumber(existingTicket.getTicketNumber());
+
+        when(ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService)).thenReturn(updatedTicket);
+
+        when(bookingService.getBookingByFlightSeatId(flightSeat.getId())).thenReturn(Optional.of(bookingUpdated));
+
+        Ticket result = ticketService.updateTicketById(existingTicket.getId(), timezoneDto);
+
+        assertNotNull(result);
+    }
+
+    @DisplayName("9 validatePassengerChange (), Positive test existing Ticket has booking and same passenger id")
+    @Test
+    public void shouldValidatePassengerChange() {
+
+        Ticket existingTicket = new Ticket();
+        Booking booking = new Booking();
+        Passenger passenger = new Passenger();
+        passenger.setId(1L);
+        booking.setPassenger(passenger);
+        existingTicket.setBooking(booking);
+        Long newPassengerId = 1L;
+
+        assertDoesNotThrow(() -> ticketService.validatePassengerChange(existingTicket, newPassengerId));
+    }
+
+    @DisplayName("10 validatePassengerChange (), Negative test existing Ticket has booking and different passenger id")
+    @Test
+    public void shouldValidatePassengerChange2() {
+        Ticket existingTicket = new Ticket();
+        Booking booking = new Booking();
+        Passenger passenger = new Passenger();
+        passenger.setId(1L);
+        booking.setPassenger(passenger);
+        existingTicket.setBooking(booking);
+        Long newPassengerId = 2L;
+
+        assertThrows(IllegalArgumentException.class, () -> ticketService.validatePassengerChange(existingTicket, newPassengerId));
+    }
+
+    @DisplayName("11 validateFlightSeatChange (), Positive test existing Ticket has booking and same flightSeat id")
+    @Test
+    public void shouldValidateFlightSeatChange() {
+        Ticket existingTicket = new Ticket();
+        Booking booking = new Booking();
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(1L);
+        booking.setFlightSeat(flightSeat);
+        existingTicket.setBooking(booking);
+        Long newFlightSeatId = 1L;
+
+        assertDoesNotThrow(() -> ticketService.validateFlightSeatChange(existingTicket, newFlightSeatId));
+    }
+    @DisplayName("11 validateFlightSeatChange (), Negative test existing Ticket has booking and different flightSeat id")
+    @Test
+    public void shouldValidateFlightSeatChange2() {
+        Ticket existingTicket = new Ticket();
+        Booking booking = new Booking();
+        FlightSeat flightSeat = new FlightSeat();
+        flightSeat.setId(1L);
+        booking.setFlightSeat(flightSeat);
+        existingTicket.setBooking(booking);
+        Long newFlightSeatId = 2L;
+
+        assertThrows(IllegalArgumentException.class, () -> ticketService.validateFlightSeatChange(existingTicket, newFlightSeatId));
+    }
+    @DisplayName("12 getFlightSeatIdsByPassengerId (), Positive test return an array of flight seat IDs for a valid passenger ID")
+    @Test
+    public void shouldReturnFlightSeatIdByPassengerId() {
+        long passengerId = 1;
+        long[] expected = {1, 2, 3};
+        when(ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId)).thenReturn(expected);
+
+        long[] result = ticketService.getFlightSeatIdsByPassengerId(passengerId);
+
+        assertArrayEquals(expected, result);
+    }
+    @DisplayName("13 getFlightSeatIdsByPassengerId (), Negative test return an empty array for a passenger with no tickets")
+    @Test
+    public void shouldReturnFlightSeatIdByPassengerId2() {
+        long passengerId = 1;
+        long[] expected = {};
+        when(ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId)).thenReturn(expected);
+
+        long[] result = ticketService.getFlightSeatIdsByPassengerId(passengerId);
+
+        assertArrayEquals(expected, result);
+    }
+
+    @DisplayName("14 deleteTicketByPassengerId (), Positive test delete all tickets associated with a passenger ID")
+    @Test
+    public void ShouldDeleteAllTicketByPassengerId() {
+        long passengerId = 1;
+
+        ticketService.deleteTicketByPassengerId(passengerId);
+
+        verify(ticketRepository, times(1)).deleteTicketByPassengerId(passengerId);
+    }
+    @DisplayName("15 generateUniqueTicketNumberWithCorrectFormat(), Positive test generates a unique ticket number")
+    @Test
+    public void ShouldGenerateUniqueTicketNumberWithCorrectFormat() {
+        String ticketNumber = ticketService.generateTicketNumber();
+
+        assertTrue(ticketNumber.matches("[A-Z]{2}-\\d{4}"));
+
+        String anotherTicketNumber = ticketService.generateTicketNumber();
+
+        assertNotEquals(ticketNumber, anotherTicketNumber);
     }
 }
