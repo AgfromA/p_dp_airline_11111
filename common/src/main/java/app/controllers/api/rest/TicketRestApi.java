@@ -27,7 +27,10 @@ public interface TicketRestApi {
             @RequestParam(value = "size", required = false) Integer size);
 
     @ApiOperation(value = "Get Ticket by ticketNumber")
-    @ApiResponse(code = 200, message = "Found the ticket")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Found the ticket"),
+            @ApiResponse(code = 404, message = "Ticket not found")
+    })
     @GetMapping("/{ticketNumber}")
     ResponseEntity<TicketDto> getTicketByTicketNumber(
             @ApiParam(
@@ -48,7 +51,10 @@ public interface TicketRestApi {
             @RequestBody @Valid TicketDto ticketDTO);
 
     @ApiOperation(value = "Create new Paid Ticket")
-    @ApiResponse(code = 201, message = "Paid Ticket created")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Paid Ticket created"),
+            @ApiResponse(code = 404, message = "Ticket not found")
+    })
     @PostMapping("/{bookingId}")
     ResponseEntity<TicketDto> createPaidTicket(
             @ApiParam(
@@ -58,7 +64,10 @@ public interface TicketRestApi {
             @PathVariable Long bookingId);
 
     @ApiOperation(value = "Edit Ticket by \"id\"")
-    @ApiResponse(code = 200, message = "Ticket has been updated")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ticket has been updated"),
+            @ApiResponse(code = 404, message = "Ticket not found")
+    })
     @PatchMapping("/{id}")
     ResponseEntity<?> updateTicketById(
             @ApiParam(
@@ -72,7 +81,10 @@ public interface TicketRestApi {
             @RequestBody @Valid TicketDto ticketDTO);
 
     @ApiOperation(value = "Delete Ticket by \"id\"")
-    @ApiResponse(code = 200, message = "Ticket has been removed")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ticket has been removed"),
+            @ApiResponse(code = 404, message = "Ticket not found")
+    })
     @DeleteMapping("/{id}")
     ResponseEntity<HttpStatus> deleteTicketById(
             @ApiParam(
