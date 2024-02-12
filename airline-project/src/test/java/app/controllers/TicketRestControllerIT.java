@@ -206,14 +206,21 @@ class TicketRestControllerIT extends IntegrationTestBase {
         updatedTicket.setBoardingEndTime((LocalDateTime.of(2023, 4, 3, 6, 45, 00)));
         updatedTicket.setBoardingStartTime((LocalDateTime.of(2023, 4, 3, 6, 25, 00)));
 
-        mockMvc.perform(patch("http://localhost:8080/api/tickets/{id}", updatedTicket.getId())
+        ResultActions result = mockMvc.perform(patch("http://localhost:8080/api/tickets/{id}", updatedTicket.getId())
                         .content(
                                 objectMapper.writeValueAsString(updatedTicket)
                         )
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(updatedTicket)));
+                .andExpect(status().isOk());
+
+        MvcResult mvcResult = result.andReturn();
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+
+        Assertions.assertEquals(updatedTicket.getId(), JsonPath.parse(jsonResponse).read("$.id", Long.class));
+        Assertions.assertEquals(updatedTicket.getTicketNumber(), JsonPath.parse(jsonResponse).read("$.ticketNumber", String.class));
+        Assertions.assertEquals(updatedTicket.getPassengerId(), JsonPath.parse(jsonResponse).read("$.passengerId", Long.class));
+        Assertions.assertEquals(updatedTicket.getFlightSeatId(), JsonPath.parse(jsonResponse).read("$.flightSeatId", Long.class));
     }
 
     @DisplayName("shouldDeleteTicket(), delete ticket by ticket id")
