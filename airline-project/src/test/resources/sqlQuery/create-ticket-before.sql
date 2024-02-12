@@ -1,7 +1,7 @@
 INSERT INTO destination (id, airport_code, airport_name, city_name, country_name, timezone)
 VALUES (1, 'VKO', 'Внуково', 'Москва', 'Россия', 'GMT +3');
 INSERT INTO destination (id, airport_code, airport_name, city_name, country_name, timezone)
-VALUES (2, 'OMS', 'Омск', 'Омск', 'Россия', 'GMT +6');
+VALUES (2, 'OMS', 'Омск', 'Омск', 'Россия', 'GMT +3');
 
 
 INSERT INTO category (id, category_type)
