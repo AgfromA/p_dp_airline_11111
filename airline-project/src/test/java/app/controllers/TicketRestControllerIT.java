@@ -1,22 +1,29 @@
 package app.controllers;
 
-import app.entities.Ticket;
+import app.dto.TicketDto;
+import app.entities.Booking;
 import app.mappers.TicketMapper;
 import app.repositories.TicketRepository;
+import app.services.BookingService;
 import app.services.TicketService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDateTime;
+
+import static app.enums.Airport.OMS;
+import static app.enums.Airport.VKO;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
@@ -29,6 +36,8 @@ class TicketRestControllerIT extends IntegrationTestBase {
     private TicketService ticketService;
     @Autowired
     private TicketRepository ticketRepository;
+    @Autowired
+    private BookingService bookingService;
     @Autowired
     private TicketMapper ticketMapper;
 
@@ -77,21 +86,45 @@ class TicketRestControllerIT extends IntegrationTestBase {
                 .andExpect(content().json(objectMapper.writeValueAsString(ticketService
                         .getAllTickets(pageable.getPageNumber(), pageable.getPageSize()))));
     }
-    // Пагинация 2.0
 
+    @DisplayName("createTicket(), successfully creates ticket and checks automatic id and ticketNumber generation")
     @Test
-    void createTicket_test() throws Exception {
-        Ticket newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
-        newTicket.setTicketNumber("SJ-9346");
+    void shouldCreateTicket() throws Exception {
+        var newTicket = new TicketDto();
+        newTicket.setFlightSeatId(1L);
+        newTicket.setPassengerId(1L);
+        newTicket.setBookingId(1L);
+        newTicket.setFirstName("John1");
+        newTicket.setLastName("Simons1");
+        newTicket.setFrom(VKO);
+        newTicket.setTo(OMS);
+        newTicket.setCode("VKOOMS");
+        newTicket.setSeatNumber("1A");
+        newTicket.setArrivalDateTime(LocalDateTime.of(2023, 04, 01, 11, 20, 00));
+        newTicket.setDepartureDateTime(LocalDateTime.of(2023, 04, 01, 17, 50, 00));
         newTicket.setId(null);
-        var ticketDTO = ticketMapper.toDto(newTicket);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
-                        .content(objectMapper.writeValueAsString(ticketDTO))
+                        .content(objectMapper.writeValueAsString(newTicket))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.ticketNumber").isNotEmpty());
+    }
+
+    @DisplayName("createPaidTicket(), successfully creates ticket by booking id")
+    @Test
+    void shouldCreatePaidTicket() throws Exception {
+        var bookingDto = bookingService.getBookingDto(2L).get();
+        mockMvc.perform(post("http://localhost:8080/api/tickets/{id}", bookingDto.getId())
+                        .content(objectMapper.writeValueAsString(bookingDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.ticketNumber").isNotEmpty());
     }
 
     @Test
