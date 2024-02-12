@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.dto.BookingDto;
 import app.dto.TicketDto;
 import app.enums.BookingStatus;
 import app.mappers.TicketMapper;
@@ -218,5 +219,72 @@ class TicketRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(delete("http://localhost:8080/api/tickets/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("shouldNotContainNullValuesInPatchRequest(), checking for the impossibility of setting field values to NULL during a PATCH request")
+    void shouldNotContainNullValuesInPatchRequest() throws Exception {
+        var ticketDTO = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+        ticketDTO.setTicketNumber("ZX-2222");
+
+        ticketDTO.setFlightSeatId(3L);
+        ticketDTO.setBookingId(3L);
+        ticketDTO.setPassengerId(3L);
+        ticketDTO.setSeatNumber(null);
+
+        mockMvc.perform(patch("http://localhost:8080/api/tickets/{id}", ticketDTO.getId())
+                        .content(
+                                objectMapper.writeValueAsString(ticketDTO)
+                        )
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+    @DisplayName("shouldNotContainNullValuesInPostRequest(), checking for the impossibility of setting field values to NULL during a POST request")
+    @Test
+    void shouldNotContainNullValuesInPostRequest() throws Exception {
+        var newTicket = new TicketDto();
+        newTicket.setFlightSeatId(1L);
+        newTicket.setPassengerId(1L);
+        newTicket.setBookingId(1L);
+        newTicket.setFirstName("John1");
+        newTicket.setLastName("Simons1");
+        newTicket.setFrom(VKO);
+        newTicket.setTo(OMS);
+        newTicket.setCode(null);
+        newTicket.setSeatNumber("1A");
+        newTicket.setArrivalDateTime(LocalDateTime.of(2023, 04, 01, 11, 20, 00));
+        newTicket.setDepartureDateTime(LocalDateTime.of(2023, 04, 01, 17, 50, 00));
+        newTicket.setId(null);
+        mockMvc.perform(post("http://localhost:8080/api/tickets")
+                        .content(objectMapper.writeValueAsString(newTicket))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+    @DisplayName("shouldNotCreatePaidTicketIfBookingNotExist(), return 404 - Not found , when try creates ticket by not exist booking id")
+    @Test
+    void shouldNotCreatePaidTicketIfBookingNotExist() throws Exception {
+        var bookingDto = new BookingDto();
+        bookingDto.setId(10L);
+        mockMvc.perform(post("http://localhost:8080/api/tickets/{id}", bookingDto.getId())
+                        .content(objectMapper.writeValueAsString(bookingDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+    @DisplayName("shouldNotCreateUnPaidTicket(), return 400 - bad request, when try creates ticket by booking id," +
+            "that has status not paid")
+    @Test
+    void shouldNotCreateUnPaidTicket() throws Exception {
+        var bookingDto = bookingService.getBookingDto(5L).get();
+        mockMvc.perform(post("http://localhost:8080/api/tickets/{id}", bookingDto.getId())
+                        .content(objectMapper.writeValueAsString(bookingDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }

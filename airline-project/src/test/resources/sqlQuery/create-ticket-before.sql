@@ -121,3 +121,20 @@ VALUES ('Merf', 'Merfov', 'Merfovich', TO_DATE('2006/11/08', 'YYYY/MM/DD'), 'MAL
 INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
 VALUES (4, 650, true, false, (SELECT flights.id FROM flights WHERE flights.id = 2),
         (SELECT seats.id FROM seats WHERE seats.id = 4));
+
+--not paid
+INSERT INTO passengers (first_name, last_name, middle_name, birth_date, gender, email, phone_number,
+                        serial_number_passport, passport_issuing_date, passport_issuing_country, id)
+VALUES ('Gosha200', 'Goshanov', 'Goshanovich', TO_DATE('1996/10/08', 'YYYY/MM/DD'), 'MALE',
+        'goshachelovek@mail.ru', '79121881111',
+        '0011 001850', TO_DATE('2006/01/10', 'YYYY/MM/DD'), 'Россия', 5);
+
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
+VALUES (5, 650, true, false, (SELECT flights.id FROM flights WHERE flights.id = 2),
+        (SELECT seats.id FROM seats WHERE seats.id = 5));
+
+INSERT INTO booking(id, booking_data_time, passenger_id, flight_seat_id, booking_status)
+VALUES (5, '2024-02-05 11:51:26.444777',
+        (SELECT passengers.id FROM passengers WHERE passengers.id = 5),
+        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 5),
+        'NOT_PAID');
