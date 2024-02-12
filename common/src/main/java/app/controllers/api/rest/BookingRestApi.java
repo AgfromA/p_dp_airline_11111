@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+
 
 @RequestMapping("/api/bookings")
 @Api(tags = "Booking REST")
@@ -42,38 +43,25 @@ public interface BookingRestApi {
             @ApiResponse(code = 201, message = "Booking found"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDto> getBookingById(
+    ResponseEntity<BookingDto> getBooking(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"
             )
-            @PathVariable("id") Long id);
-
-    @GetMapping("/number")
-    @ApiOperation(value = "Get Booking by bookingNumber")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Booking found"),
-            @ApiResponse(code = 404, message = "Booking not found")
-    })
-    ResponseEntity<BookingDto> getBookingByBookingNumber(
-            @ApiParam(
-                    value = "bookingNumber",
-                    example = "SV-221122",
-                    required = true)
-            @RequestParam(value = "bookingNumber") String bookingNumber);
+            @PathVariable("id") @Min(1) Long id);
 
     @PostMapping
     @ApiOperation(value = "Create new Booking")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Booking created"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Booking not created"),
     })
     ResponseEntity<BookingDto> createBooking(
             @ApiParam(
                     name = "booking",
                     value = "Booking model"
             )
-            @RequestBody @Valid BookingDto bookingDTO);
+            @RequestBody @Valid BookingDto bookingDto);
 
     @PatchMapping("/{id}")
     @ApiOperation(value = "Update Booking by \"id\"")
@@ -82,17 +70,17 @@ public interface BookingRestApi {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<BookingDto> updateBookingById(
+    ResponseEntity<BookingDto> updateBooking(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"
             )
-            @PathVariable("id") Long id,
+            @PathVariable("id") @Min(1) Long id,
             @ApiParam(
                     name = "Booking",
                     value = "Booking model"
             )
-            @RequestBody @Valid BookingDto bookingDTO);
+            @RequestBody @Valid BookingDto bookingDto);
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete Booking by \"id\"")
@@ -100,10 +88,10 @@ public interface BookingRestApi {
             @ApiResponse(code = 204, message = "Booking deleted"),
             @ApiResponse(code = 404, message = "Booking not found")
     })
-    ResponseEntity<HttpStatus> deleteBookingById(
+    ResponseEntity<HttpStatus> deleteBooking(
             @ApiParam(
                     name = "id",
                     value = "Booking.id"
             )
-            @PathVariable("id") Long id);
+            @PathVariable("id") @Min(1) Long id);
 }

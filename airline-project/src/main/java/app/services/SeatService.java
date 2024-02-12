@@ -133,6 +133,7 @@ public class SeatService {
                 "Operation was not finished because Seat was not found with id = " + seatId)
         );
     }
+
     public Set<Seat> findByAircraftId(Long id) {
        return seatRepository.findByAircraftId(id);
     }

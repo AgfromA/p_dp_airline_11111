@@ -86,9 +86,7 @@ public class PassengerService {
 
     @Transactional
     public PassengerDto updatePassenger(Long id, PassengerDto passengerDto) {
-        var existingPassenger = passengerRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Operation was not finished because Passenger was not found with id = " + id)
-        );
+        var existingPassenger = checkIfPassengerExists(id);
         if (passengerDto.getFirstName() != null) {
             existingPassenger.setFirstName(passengerDto.getFirstName());
         }
@@ -114,9 +112,13 @@ public class PassengerService {
     @Transactional
     public void deletePassenger(Long id) {
         flightSeatService.makeFlightSeatNotSold(ticketService.getFlightSeatIdsByPassengerId(id));
-        bookingService.deleteBookingByPassengerId(id);
         ticketService.deleteTicketByPassengerId(id);
         passengerRepository.deleteById(id);
+    }
+
+    public Passenger checkIfPassengerExists(Long passengerId) {
+        return passengerRepository.findById(passengerId).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Passenger was not found with id = " + passengerId));
     }
 
     private void checkEmailUnique(String email) {

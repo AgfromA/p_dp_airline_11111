@@ -20,6 +20,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -88,11 +89,11 @@ class PaymentRestControllerIT extends IntegrationTestBase {
     // Пагинация 2.0
 
     @Test
-    public void shouldSavePayment() throws Exception {
+    void shouldSavePayment() throws Exception {
         var paymentRequest = new PaymentRequest();
         paymentRequest.setBookingsId(Arrays.asList(6001L, 6002L));
         var booking = new BookingDto();
-        when(bookingService.getBookingById(anyLong())).thenReturn(booking);
+        when(bookingService.getBookingDto(anyLong())).thenReturn(Optional.of(booking));
 
         var httpHeaders = new HttpHeaders();
         httpHeaders.set("url", "testUrl");

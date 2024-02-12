@@ -10,28 +10,28 @@ VALUES ('Пётр2', 'Петров2', 'Петрович2', TO_DATE('1986/01/11',
         '1121 111121', TO_DATE('2006/01/11', 'YYYY/MM/DD'), 'Россия', 1001);
 
 
-INSERT INTO booking (id, booking_number, booking_data_time, passenger_id, flight_seat_id, create_time, booking_status)
-VALUES (6001, '000000001', NOW(),
+INSERT INTO booking (id,  booking_data_time, passenger_id, flight_seat_id, booking_status)
+VALUES (6001,  NOW(),
            -- for Get
         (SELECT passengers.id FROM passengers WHERE passengers.id = 1001),
         (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 1),
-        NOW(),
+
         'NOT_PAID'),
        -- for Edit
-       (6002, '000000002', NOW(),
+       (6002, NOW(),
         (SELECT passengers.id FROM passengers WHERE passengers.id = 1002),
         (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 2),
-        NOW(),
+
         'NOT_PAID'),
        -- for Delete
-       (6003, '000000003', NOW(),
+       (6003, NOW(),
         (SELECT passengers.id FROM passengers WHERE passengers.id = 1002),
         (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 2),
-        NOW(),
+
         'NOT_PAID'),
         -- for Edit 2
-       (6004, '000000004', NOW(),
+       (6004,  NOW(),
         (SELECT passengers.id FROM passengers WHERE passengers.id = 1001),
         (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 5),
-        NOW(),
+
         'NOT_PAID');

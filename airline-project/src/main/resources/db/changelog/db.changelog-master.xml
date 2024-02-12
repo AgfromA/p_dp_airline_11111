@@ -151,6 +151,10 @@
         <tagDatabase tag="v-1.24"/>
     </changeSet>
 
+    <include file="v-1.25/db.changelog-v-1.25.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1.25" author="maxim-zhuravlev">
+        <tagDatabase tag="v-1.25"/>
+    </changeSet>
 
 </databaseChangeLog>
 

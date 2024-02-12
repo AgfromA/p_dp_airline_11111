@@ -31,8 +31,8 @@ public class PaymentService {
     @Transactional
     public ResponseEntity<PaymentResponse> createPayment(PaymentRequest paymentRequest) {
         paymentRequest.getBookingsId().forEach(id -> {
-            var bookingFromDb = bookingService.getBookingById(id);
-            if (bookingFromDb == null) {
+            var bookingFromDb = bookingService.getBookingDto(id);
+            if (bookingFromDb.isEmpty()) {
                 throw new NoSuchElementException(String.format("booking with id=%d not exists", id));
             }
         });

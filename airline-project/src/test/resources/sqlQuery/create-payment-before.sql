@@ -35,11 +35,11 @@ values (5001, 'BUSINESS'),
        (5002, 'ECONOMY');
 
 
-INSERT INTO booking (id, booking_number, booking_data_time, passenger_id)
-VALUES (6001, '000000001', NOW(),
+INSERT INTO booking (id,  booking_data_time, passenger_id)
+VALUES (6001, NOW(),
         (SELECT passengers.id FROM passengers WHERE passengers.id = 1001)),
 
-       (6002, '000000002', NOW(),
+       (6002, NOW(),
         (SELECT passengers.id FROM passengers WHERE passengers.id = 1002));
 
 
