@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "DELETE FROM Ticket t WHERE t.passenger.id = :passengerId")
     void deleteTicketByPassengerId(@Param("passengerId") long passengerId);
 
+    List<Ticket> findByFlightId(long id);
+
+    @Query(value = "SELECT ticket FROM Ticket ticket LEFT JOIN FETCH ticket.flightSeat flightSeat " +
+            "LEFT JOIN FETCH flightSeat.flight flight " +
+            "LEFT JOIN FETCH ticket.passenger WHERE flight.departureDateTime BETWEEN ?2 AND ?1")
+    List<Ticket> getAllTicketsForEmailNotification(LocalDateTime departureIn, LocalDateTime gap);
     boolean existsByTicketNumber(String ticketNumber);
     Optional<Ticket> findByBookingId (long bookingId);
 

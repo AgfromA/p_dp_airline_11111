@@ -2,7 +2,6 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.BookingRestApi;
 import app.dto.BookingDto;
-import app.enums.BookingStatus;
 import app.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +24,8 @@ public class BookingRestController implements BookingRestApi {
 
     @Override
     public ResponseEntity<Page<BookingDto>> getAllBookings(Integer page, Integer size) {
-        log.info("getAll: search all Bookings");
+        log.info("getAllBookings:");
         if (page == null || size == null) {
-            log.info("getAll: get all list Bookings");
             return createUnPagedResponse();
         }
 
@@ -38,67 +36,38 @@ public class BookingRestController implements BookingRestApi {
     }
 
     private ResponseEntity<Page<BookingDto>> createUnPagedResponse() {
-        var bookings = bookingService.findAll();
+        var bookings = bookingService.getAllBookings();
         if (bookings.isEmpty()) {
-            log.info("getAll: Bookings not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll:found {} Bookings", bookings.size());
+            log.info("getAllBookings: count: {}", bookings.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(bookings)));
         }
     }
 
     @Override
-    public ResponseEntity<BookingDto> getBookingById(Long id) {
-        log.info("getById: search Booking by id = {}", id);
-        var booking = bookingService.getBookingById(id);
-        if (booking == null) {
-            log.info("getById: not found Booking with id = {}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(booking, HttpStatus.OK);
+    public ResponseEntity<BookingDto> getBooking(Long id) {
+        log.info("getBooking: id = {}", id);
+        var booking = bookingService.getBookingDto(id);
+        return booking.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override
-    public ResponseEntity<BookingDto> getBookingByBookingNumber(String bookingNumber) {
-        log.info("getByNumber: search Booking by number = {}", bookingNumber);
-        var booking = bookingService.getBookingByNumber(bookingNumber);
-        if (booking == null) {
-            log.info("getByNumber: not found Booking with number = {}", bookingNumber);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(booking, HttpStatus.OK);
+    public ResponseEntity<BookingDto> createBooking(BookingDto bookingDto) {
+        log.info("createBooking:");
+        return new ResponseEntity<>(bookingService.saveBooking(bookingDto), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<BookingDto> createBooking(BookingDto bookingDTO) {
-        log.info("create: creating a new Booking");
-        bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
-        return new ResponseEntity<>(bookingService.saveBooking(bookingDTO), HttpStatus.CREATED);
-    }
-
-    @Override
-    public ResponseEntity<BookingDto> updateBookingById(Long id, BookingDto bookingDTO) {
+    public ResponseEntity<BookingDto> updateBooking(Long id, BookingDto bookingDto) {
         log.info("update: edit Booking with id = {}", id);
-        var booking = bookingService.getBookingById(id);
-        if (booking == null) {
-            log.info("update: not found Booking with id = {}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        bookingDTO.setBookingStatus(booking.getBookingStatus());
-        bookingDTO.setId(id);
-        return new ResponseEntity<>(bookingService.saveBooking(bookingDTO), HttpStatus.OK);
+        return new ResponseEntity<>(bookingService.updateBooking(id, bookingDto), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<HttpStatus> deleteBookingById(Long id) {
-        log.info("deleteAircraftById: deleting a Booking with id = {}", id);
-        try {
-            bookingService.deleteBookingById(id);
-        } catch (Exception e) {
-            log.error("deleteAircraftById: error of deleting - Booking with id = {} not found", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<HttpStatus> deleteBooking(Long id) {
+        log.info("deleteBooking: by id = {}", id);
+        bookingService.deleteBookingById(id);
+        return ResponseEntity.ok().build();
     }
 }

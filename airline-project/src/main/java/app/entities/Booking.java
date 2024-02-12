@@ -1,8 +1,8 @@
 package app.entities;
-
 import app.enums.BookingStatus;
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"bookingNumber", "passenger"})
+@EqualsAndHashCode(of = {"id", "passenger", "flightSeat"})
 public class Booking {
 
     @Id
@@ -24,24 +24,21 @@ public class Booking {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "booking_number", unique = true, nullable = false)
-    private String bookingNumber;
-
-    @Column(name = "booking_data_time")
-    private LocalDateTime bookingDate;
-
     @OneToOne
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
+    @Column(name = "booking_data_time")
+    @NotNull(message = "Field bookingDate cannot be null")
+    private LocalDateTime bookingDate;
+
     @OneToOne
     @JoinColumn(name = "flight_seat_id")
+    @NotNull(message = "Field flightSeat cannot be null")
     private FlightSeat flightSeat;
-
-    @Column (name = "create_time")
-    private LocalDateTime createTime;
 
     @Column(name = "booking_status")
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Field bookingStatus cannot be null")
     private BookingStatus bookingStatus;
 }

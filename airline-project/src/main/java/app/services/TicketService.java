@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -238,5 +239,9 @@ public class TicketService {
         }
 
         return ticketNumberBuilder.toString();
+    }
+
+    public List<Ticket> getAllTicketsForEmailNotification(LocalDateTime departureIn, LocalDateTime gap) {
+        return ticketRepository.getAllTicketsForEmailNotification(departureIn, gap);
     }
 }

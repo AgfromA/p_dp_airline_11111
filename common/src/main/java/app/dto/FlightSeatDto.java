@@ -1,10 +1,7 @@
 package app.dto;
 
 import app.enums.CategoryType;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotNull;
