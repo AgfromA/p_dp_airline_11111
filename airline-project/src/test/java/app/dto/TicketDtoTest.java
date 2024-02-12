@@ -33,7 +33,6 @@ public class TicketDtoTest extends EntityTest {
         ticketJson.put("passengerId", 4);
         ticketJson.put("firstName", "TestName");
         ticketJson.put("lastName", "TestLastName");
-        ticketJson.put("flightId", 1);
         ticketJson.put("code", "XXX");
         ticketJson.put("from", Airport.AER);
         ticketJson.put("to", Airport.AAQ);
@@ -41,6 +40,7 @@ public class TicketDtoTest extends EntityTest {
         ticketJson.put("arrivalDateTime", "2023-01-20T17:02:05.003992");
         ticketJson.put("flightSeatId", 1);
         ticketJson.put("seatNumber", "1A");
+        ticketJson.put("bookingId", 3);
         return ticketJson;
     }
 
@@ -55,20 +55,6 @@ public class TicketDtoTest extends EntityTest {
             throw new RuntimeException(e + "Exception during mapping from JSON");
         }
         Assertions.assertTrue(isSetWithViolationIsEmpty(validator, ticketDTO));
-    }
-
-    @Test
-    public void nullTicketNumberFieldShouldNotValidate() {
-
-        TicketDto ticketDTO;
-        var ticketJson = initJsonObject();
-        ticketJson.replace("ticketNumber", null);
-        try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e + "Exception during mapping from JSON");
-        }
-        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, ticketDTO));
     }
 
     @Test
@@ -133,20 +119,6 @@ public class TicketDtoTest extends EntityTest {
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("lastName", "I");
-        try {
-            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e + "Exception during mapping from JSON");
-        }
-        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, ticketDTO));
-    }
-
-    @Test
-    public void nullFlightIdFieldShouldNotValidate() {
-
-        TicketDto ticketDTO;
-        var ticketJson = initJsonObject();
-        ticketJson.replace("flightId", null);
         try {
             ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
@@ -245,6 +217,20 @@ public class TicketDtoTest extends EntityTest {
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
         ticketJson.replace("flightSeatId", null);
+        try {
+            ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e + "Exception during mapping from JSON");
+        }
+        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, ticketDTO));
+    }
+
+    @Test
+    public void nullBookingIdFieldShouldNotValidate() {
+
+        TicketDto ticketDTO;
+        var ticketJson = initJsonObject();
+        ticketJson.replace("bookingId", null);
         try {
             ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {

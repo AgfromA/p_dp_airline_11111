@@ -15,6 +15,7 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,7 @@ class TicketMapperTest {
         flight.setCode("TEST123");
         flight.setFrom(destinationFrom);
         flight.setTo(destinationTo);
+        flight.setDepartureDateTime(LocalDateTime.of(2024,2,12,12,00,00));
         when(flightServiceMock.getFlight(2001L)).thenReturn(Optional.of(flight));
 
         FlightSeat flightSeat = new FlightSeat();
@@ -102,6 +104,9 @@ class TicketMapperTest {
         Assertions.assertEquals(ticket.getBooking().getPassenger().getFirstName(), ticketDTO.getFirstName());
         Assertions.assertEquals(ticket.getBooking().getPassenger().getLastName(), ticketDTO.getLastName());
         Assertions.assertEquals(ticket.getBooking().getFlightSeat().getId(), ticketDTO.getFlightSeatId());
+
+        Assertions.assertEquals(ticket.getFlightSeat().getFlight().getDepartureDateTime().minusMinutes(40), ticketDTO.getBoardingStartTime());
+        Assertions.assertEquals(ticket.getFlightSeat().getFlight().getDepartureDateTime().minusMinutes(20), ticketDTO.getBoardingEndTime());
     }
 
     @Test
@@ -204,6 +209,7 @@ class TicketMapperTest {
         flight.setCode("TEST123");
         flight.setFrom(destinationFrom);
         flight.setTo(destinationTo);
+        flight.setDepartureDateTime(LocalDateTime.of(2024,2,12,12,00,00));
         when(flightServiceMock.getFlight(2001L)).thenReturn(Optional.of(flight));
 
         FlightSeat flightSeat = new FlightSeat();
@@ -254,6 +260,9 @@ class TicketMapperTest {
         Assertions.assertEquals(ticketList.get(0).getBooking().getPassenger().getFirstName(), ticketDtoList.get(0).getFirstName());
         Assertions.assertEquals(ticketList.get(0).getBooking().getPassenger().getId(), ticketDtoList.get(0).getPassengerId());
         Assertions.assertEquals(ticketList.get(0).getBooking().getFlightSeat().getId(), ticketDtoList.get(0).getFlightSeatId());
+
+        Assertions.assertEquals(ticketList.get(0).getFlightSeat().getFlight().getDepartureDateTime().minusMinutes(40), ticketDtoList.get(0).getBoardingStartTime());
+        Assertions.assertEquals(ticketList.get(0).getFlightSeat().getFlight().getDepartureDateTime().minusMinutes(20), ticketDtoList.get(0).getBoardingEndTime());
     }
 
     @Test
@@ -339,5 +348,4 @@ class TicketMapperTest {
         Assertions.assertEquals(ticketDtoList.get(0).getFirstName(), ticketList.get(0).getBooking().getPassenger().getFirstName());
         Assertions.assertEquals(ticketDtoList.get(0).getFlightSeatId(), ticketList.get(0).getBooking().getFlightSeat().getId());
     }
-
 }
