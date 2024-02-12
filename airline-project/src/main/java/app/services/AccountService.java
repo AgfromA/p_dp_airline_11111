@@ -1,7 +1,11 @@
 package app.services;
 
 import app.dto.AccountDto;
+import app.entities.Account;
+import app.exceptions.DuplicateFieldException;
+import app.exceptions.EntityNotFoundException;
 import app.mappers.AccountMapper;
+import app.mappers.RoleMapper;
 import app.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,11 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AccountService {
 
@@ -22,45 +24,60 @@ public class AccountService {
     private final PasswordEncoder encoder;
     private final RoleService roleService;
     private final AccountMapper accountMapper;
+    private final RoleMapper roleMapper;
 
     public List<AccountDto> findAll() {
         return accountMapper.toDtoList(accountRepository.findAll());
     }
 
+    @Transactional
     public AccountDto saveAccount(AccountDto accountDTO) {
+        checkEmailUnique(accountDTO.getEmail());
         accountDTO.setPassword(encoder.encode(accountDTO.getPassword()));
         accountDTO.setRoles(roleService.saveRolesToUser(accountDTO));
         if (accountDTO.getAnswerQuestion() != null) {
             accountDTO.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
         var account = accountMapper.toEntity(accountDTO);
+        account.setId(null);
         return accountMapper.toDto(accountRepository.saveAndFlush(account));
     }
 
-    public Optional<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
-        var optionalSavedAccount = getAccountById(id);
-        AccountDto savedAccount;
-        if (optionalSavedAccount.isEmpty()) {
-            return optionalSavedAccount;
-        } else {
-            savedAccount = optionalSavedAccount.get();
+    @Transactional
+    public AccountDto updateAccount(Long id, AccountDto accountDTO) {
+        var existingAccount = accountRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Account was not found with id = " + id)
+        );
+        if (accountDTO.getFirstName() != null) {
+            existingAccount.setFirstName(accountDTO.getFirstName());
         }
-        savedAccount.setFirstName(accountDTO.getFirstName());
-        savedAccount.setLastName(accountDTO.getLastName());
-        savedAccount.setBirthDate(accountDTO.getBirthDate());
-        savedAccount.setPhoneNumber(accountDTO.getPhoneNumber());
-        savedAccount.setEmail(accountDTO.getEmail());
-        savedAccount.setRoles(roleService.saveRolesToUser(accountDTO));
-        savedAccount.setSecurityQuestion(accountDTO.getSecurityQuestion());
-        if (!accountDTO.getPassword().equals(savedAccount.getPassword())) {
-            savedAccount.setPassword(encoder.encode(accountDTO.getPassword()));
+        if (accountDTO.getLastName() != null) {
+            existingAccount.setLastName(accountDTO.getLastName());
         }
-        if (!accountDTO.getAnswerQuestion().equals(savedAccount.getAnswerQuestion())) {
-            savedAccount.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
+        if (accountDTO.getEmail() != null && !accountDTO.getEmail().equals(existingAccount.getEmail())) {
+            checkEmailUnique(accountDTO.getEmail());
+            existingAccount.setEmail(accountDTO.getEmail());
         }
-        return Optional.of(accountMapper
-                .toDto(accountRepository
-                        .save(accountMapper.toEntity(savedAccount))));
+        if (accountDTO.getBirthDate() != null) {
+            existingAccount.setBirthDate(accountDTO.getBirthDate());
+        }
+        if (accountDTO.getPhoneNumber() != null) {
+            existingAccount.setPhoneNumber(accountDTO.getPhoneNumber());
+        }
+        if (accountDTO.getPassword() != null) {
+            existingAccount.setPassword(encoder.encode(accountDTO.getPassword()));
+        }
+        if (accountDTO.getSecurityQuestion() != null) {
+            existingAccount.setSecurityQuestion(accountDTO.getSecurityQuestion());
+        }
+        if (accountDTO.getAnswerQuestion() != null) {
+            existingAccount.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
+        }
+        if (accountDTO.getRoles() != null) {
+            existingAccount.setRoles(new HashSet<>(roleMapper
+                    .toEntityList(new ArrayList<>(roleService.saveRolesToUser(accountDTO)))));
+        }
+        return accountMapper.toDto(accountRepository.save(existingAccount));
     }
 
     @Transactional(readOnly = true)
@@ -79,13 +96,19 @@ public class AccountService {
         return accountMapper.toDto(accountRepository.getAccountByEmail(email));
     }
 
+    @Transactional
     public Optional<AccountDto> deleteAccountById(Long id) {
         var optionalSavedAccount = getAccountById(id);
-        if (optionalSavedAccount.isEmpty()) {
-            return optionalSavedAccount;
-        } else {
+        if (optionalSavedAccount.isPresent()) {
             accountRepository.deleteById(id);
-            return optionalSavedAccount;
+        }
+        return optionalSavedAccount;
+    }
+
+    private void checkEmailUnique(String email) {
+        Account existingAccount = accountRepository.getAccountByEmail(email);
+        if (existingAccount != null) {
+            throw new DuplicateFieldException("Email already exists");
         }
     }
 }

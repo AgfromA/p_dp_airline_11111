@@ -6,22 +6,19 @@ import app.dto.RoleDto;
 import app.security.JwtProviderLite;
 import app.services.AccountService;
 import app.services.RoleService;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
-@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class AccountRestController implements AccountRestApi {
@@ -65,11 +62,10 @@ public class AccountRestController implements AccountRestApi {
 
     @Override
     public ResponseEntity<AccountDto> getAccount(Long id) {
-        log.info("getById: get Account by id. id = {}", id);
+        log.info("getAccount: by id: {}", id);
         var account = accountService.getAccountById(id);
-        return account.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(account.get(), HttpStatus.OK);
+        return account.map(accountDto -> new ResponseEntity<>(accountDto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -78,28 +74,33 @@ public class AccountRestController implements AccountRestApi {
         String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
-            String username = jwtProvider.extractClaims(token).get().getSubject();
-            var authAccount = accountService.getAccountByEmail(username);
-            return ResponseEntity.ok(authAccount);
+            Optional<Claims> claimsOptional = jwtProvider.extractClaims(token);
+            if (claimsOptional.isPresent()) {
+                String username = claimsOptional.get().getSubject();
+                var authAccount = accountService.getAccountByEmail(username);
+                return ResponseEntity.ok(authAccount);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @Override
     public ResponseEntity<AccountDto> createAccount(AccountDto accountDTO) {
-        log.info("create: create new Account with email={}", accountDTO.getEmail());
-        return ResponseEntity.ok((accountService.saveAccount(accountDTO)));
+        log.info("createAccount: with email: {}", accountDTO.getEmail());
+        return new ResponseEntity<>(accountService.saveAccount(accountDTO), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
-        log.info("update: update Account with id = {}", id);
-        return new ResponseEntity<>(accountService.updateAccount(id, accountDTO).get(), HttpStatus.OK);
+        log.info("updateAccount: by id: {}", id);
+        return new ResponseEntity<>(accountService.updateAccount(id, accountDTO), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Void> deleteAccount(Long id) {
-        log.info("deleteAircraftById: deleteAircraftById Account with id = {}", id);
+        log.info("deleteAccount: by id: {}", id);
         var user = accountService.getAccountById(id);
         if (user.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -114,6 +115,6 @@ public class AccountRestController implements AccountRestApi {
         if (allRolesFromDb.isEmpty()) {
             return new ResponseEntity<>(Collections.emptySet(), HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.ok(allRolesFromDb);
+        return new ResponseEntity<>(allRolesFromDb, HttpStatus.OK);
     }
 }

@@ -33,10 +33,12 @@ public class AccountDto {
 
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 128, message = "Size first_name cannot be less than 2 and more than 128 characters")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$", message = "First name must contain only letters")
     private String firstName;
 
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 128, message = "Size last_name cannot be less than 2 and more than 128 characters")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$", message = "Last name must contain only letters")
     private String lastName;
 
     @NotNull(message = "Field should not be empty")
@@ -46,6 +48,8 @@ public class AccountDto {
 
     @Email
     @NotBlank(message = "The field cannot be empty")
+    @Size(max = 256, message = "Size email cannot be more than 256 characters")
+    @Pattern(regexp = "^[\\w.-]+@[a-zA-Z_-]+\\.[a-zA-Z]{2,}$", message = "Email address must adhere to the standard format: example@example.com")
     private String email;
 
     @NotBlank(message = "Field should not be empty")
@@ -53,14 +57,15 @@ public class AccountDto {
     private String phoneNumber;
 
     @NotBlank(message = "The field cannot be empty")
-    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,}", message = "min 8 characters, 1 uppercase latter" +
+    @Pattern(regexp = "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,}", message = "min 8 characters, 1 uppercase latter" +
             "1 lowercase latter, at least 1 number, 1 special character")
     private String password;
 
-    @NotBlank(message = "The field cannot be empty")
+    @NotBlank(message = "Field should not be empty")
+    @Size(max = 256, message = "Size security question cannot be more than 256 characters")
     private String securityQuestion;
 
-    @NotBlank(message = "The field cannot be empty")
+    @NotBlank(message = "Field should not be empty")
     private String answerQuestion;
 
     private Set<RoleDto> roles;
