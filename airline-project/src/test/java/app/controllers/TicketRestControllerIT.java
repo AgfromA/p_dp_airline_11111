@@ -7,17 +7,23 @@ import app.mappers.TicketMapper;
 import app.repositories.TicketRepository;
 import app.services.BookingService;
 import app.services.TicketService;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 
 import static app.enums.Airport.OMS;
 import static app.enums.Airport.VKO;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.AdditionalMatchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -185,7 +191,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         bookingDto.setPassengerId(4L);
         bookingDto.setBookingStatus(BookingStatus.PAID);
         bookingDto.setBookingDate(LocalDateTime.of(2023, 3, 27, 11, 20, 00));
-        bookingService.updateBooking(3L,bookingDto);
+        bookingService.updateBooking(3L, bookingDto);
 
         updatedTicket.setFlightSeatId(4L);
         updatedTicket.setPassengerId(4L);
@@ -200,7 +206,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         updatedTicket.setArrivalDateTime(LocalDateTime.of(2023, 4, 3, 7, 55, 00));
         updatedTicket.setDepartureDateTime(LocalDateTime.of(2023, 4, 3, 7, 5, 00));
         updatedTicket.setBoardingEndTime((LocalDateTime.of(2023, 4, 3, 6, 45, 00)));
-       updatedTicket.setBoardingStartTime((LocalDateTime.of(2023, 4, 3, 6, 25, 00)));
+        updatedTicket.setBoardingStartTime((LocalDateTime.of(2023, 4, 3, 6, 25, 00)));
 
         mockMvc.perform(patch("http://localhost:8080/api/tickets/{id}", updatedTicket.getId())
                         .content(
@@ -240,6 +246,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
     @DisplayName("shouldNotContainNullValuesInPostRequest(), checking for the impossibility of setting field values to NULL during a POST request")
     @Test
     void shouldNotContainNullValuesInPostRequest() throws Exception {
@@ -263,6 +270,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
     @DisplayName("shouldNotCreatePaidTicketIfBookingNotExist(), return 404 - Not found , when try creates ticket by not exist booking id")
     @Test
     void shouldNotCreatePaidTicketIfBookingNotExist() throws Exception {
@@ -275,6 +283,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
     @DisplayName("shouldNotCreateUnPaidTicket(), return 400 - bad request, when try creates ticket by booking id," +
             "that has status not paid")
     @Test
@@ -286,5 +295,85 @@ class TicketRestControllerIT extends IntegrationTestBase {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("shouldIgnoreIdInPatchRequest(), ignore id in PATCH request")
+    @Test
+    void shouldIgnoreIdInPatchRequest() throws Exception {
+        var updatedTicket = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+        var bookingDto = bookingService.getBookingDto(3L).get();
+        bookingDto.setFlightSeatId(4L);
+        bookingDto.setPassengerId(4L);
+        bookingDto.setBookingStatus(BookingStatus.PAID);
+        bookingDto.setBookingDate(LocalDateTime.of(2023, 3, 27, 11, 20, 00));
+        bookingService.updateBooking(3L, bookingDto);
+
+        updatedTicket.setId(100L);
+        updatedTicket.setFlightSeatId(4L);
+        updatedTicket.setPassengerId(4L);
+        updatedTicket.setBookingId(3L);
+        updatedTicket.setFirstName("Merf");
+        updatedTicket.setLastName("Merfov");
+        updatedTicket.setFrom(OMS);
+        updatedTicket.setTo(VKO);
+        updatedTicket.setCode("OMSVKO");
+        updatedTicket.setSeatNumber("1D");
+        updatedTicket.setTicketNumber("ZZ-8888");
+        updatedTicket.setArrivalDateTime(LocalDateTime.of(2023, 4, 3, 7, 55, 0));
+        updatedTicket.setDepartureDateTime(LocalDateTime.of(2023, 4, 3, 7, 5, 0));
+        updatedTicket.setBoardingEndTime((LocalDateTime.of(2023, 4, 3, 6, 45, 0)));
+        updatedTicket.setBoardingStartTime((LocalDateTime.of(2023, 4, 3, 6, 25, 0)));
+
+        ResultActions result = mockMvc.perform(patch("http://localhost:8080/api/tickets/{id}", 3L)
+                        .content(
+                                objectMapper.writeValueAsString(updatedTicket)
+                        )
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(3L))
+                .andExpect(jsonPath("$.ticketNumber").isNotEmpty())
+                .andExpect(jsonPath("$.passengerId").value(updatedTicket.getPassengerId()))
+                .andExpect(jsonPath("$.flightSeatId").value(updatedTicket.getFlightSeatId()))
+                .andExpect(jsonPath("$.bookingId").value(updatedTicket.getBookingId()));
+
+        MvcResult mvcResult = result.andReturn();
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        Long idFromResponse = JsonPath.parse(jsonResponse).read("$.id", Long.class);
+
+        Assertions.assertNotEquals(updatedTicket.getId(), idFromResponse);
+    }
+
+    @DisplayName("shouldIgnoreIdInPostRequest(), ignore id in POST request")
+    @Test
+    void shouldIgnoreIdInPostRequest() throws Exception {
+        var newTicket = new TicketDto();
+        newTicket.setId(100L);
+        newTicket.setFlightSeatId(1L);
+        newTicket.setPassengerId(1L);
+        newTicket.setBookingId(1L);
+        newTicket.setFirstName("John1");
+        newTicket.setLastName("Simons1");
+        newTicket.setFrom(VKO);
+        newTicket.setTo(OMS);
+        newTicket.setCode("VKOOMS");
+        newTicket.setSeatNumber("1A");
+        newTicket.setArrivalDateTime(LocalDateTime.of(2023, 04, 01, 11, 20, 00));
+        newTicket.setDepartureDateTime(LocalDateTime.of(2023, 04, 01, 17, 50, 00));
+
+        ResultActions result = mockMvc.perform(post("http://localhost:8080/api/tickets")
+                        .content(objectMapper.writeValueAsString(newTicket))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists());
+
+        MvcResult mvcResult = result.andReturn();
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        Long idFromResponse = JsonPath.parse(jsonResponse).read("$.id", Long.class);
+
+        Assertions.assertNotEquals(newTicket.getId(), idFromResponse);
+
     }
 }
