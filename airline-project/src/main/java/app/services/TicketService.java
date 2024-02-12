@@ -154,7 +154,7 @@ public class TicketService {
         // Проверяем, был ли изменен идентификатор пассажира
         if (timezoneDto.getPassengerId() != null) {
             validatePassengerChange(existingTicket, timezoneDto.getPassengerId());
-            setPassengerData(updatedTicket,timezoneDto.getPassengerId());
+            setPassengerData(updatedTicket, timezoneDto.getPassengerId());
         } else {
             updatedTicket.setPassenger(existingTicket.getPassenger());
         }
@@ -170,7 +170,7 @@ public class TicketService {
         // Устанавливаем номер билета, если не указан
         if (updatedTicket.getTicketNumber() == null) {
             updatedTicket.setTicketNumber(existingTicket.getTicketNumber());
-        } else  if (ticketRepository.existsByTicketNumber(timezoneDto.getTicketNumber())) {
+        } else if (ticketRepository.existsByTicketNumber(timezoneDto.getTicketNumber())) {
             throw new TicketNumberException(updatedTicket);
         }
 
@@ -211,6 +211,7 @@ public class TicketService {
         ticket.getFlightSeat().getFlight().setDepartureDateTime(flight.getDepartureDateTime());
         ticket.getFlightSeat().getFlight().setArrivalDateTime(flight.getArrivalDateTime());
     }
+
     // Устанавливает данные пассажира
     private void setPassengerData(Ticket ticket, Long passengerId) {
         var passenger = passengerRepository.findById(passengerId)
@@ -218,6 +219,7 @@ public class TicketService {
         ticket.getPassenger().setFirstName(passenger.getFirstName());
         ticket.getPassenger().setLastName(passenger.getLastName());
     }
+
     public long[] getFlightSeatIdsByPassengerId(long passengerId) {
         return ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId);
     }

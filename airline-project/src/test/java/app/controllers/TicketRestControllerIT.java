@@ -294,11 +294,12 @@ class TicketRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
     @DisplayName("shouldReturnCreatedPaidTicketIfAlreadyExists(), return ticket from db (in db ticket have already exist with such booking id)")
     @Test
     void shouldReturnCreatedPaidTicketIfAlreadyExists() throws Exception {
         var bookingDto = bookingService.getBookingDto(6L).get();
-        ResultActions result =   mockMvc.perform(post("http://localhost:8080/api/tickets/{id}", bookingDto.getId())
+        ResultActions result = mockMvc.perform(post("http://localhost:8080/api/tickets/{id}", bookingDto.getId())
                         .content(objectMapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

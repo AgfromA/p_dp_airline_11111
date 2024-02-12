@@ -67,6 +67,7 @@ public class TicketRestController implements TicketRestApi {
         var savedTicket = ticketService.saveTicket(ticketDTO);
         return new ResponseEntity<>(ticketMapper.toDto(savedTicket), HttpStatus.CREATED);
     }
+
     @Override
     public ResponseEntity<TicketDto> createPaidTicket(@PathVariable Long bookingId) {
         var savedTicket = ticketService.createPaidTicket(bookingId);
@@ -75,7 +76,7 @@ public class TicketRestController implements TicketRestApi {
     }
 
     @Override
-    public ResponseEntity<?> updateTicketById(Long id,@Valid @RequestBody TicketDto ticketDTO) {
+    public ResponseEntity<?> updateTicketById(Long id, @Valid @RequestBody TicketDto ticketDTO) {
         log.info("update: Ticket with id: {}", id);
         var ticket = ticketService.updateTicketById(id, ticketDTO);
         return new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK);

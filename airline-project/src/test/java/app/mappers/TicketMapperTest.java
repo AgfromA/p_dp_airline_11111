@@ -55,7 +55,7 @@ class TicketMapperTest {
         flight.setCode("TEST123");
         flight.setFrom(destinationFrom);
         flight.setTo(destinationTo);
-        flight.setDepartureDateTime(LocalDateTime.of(2024,2,12,12,00,00));
+        flight.setDepartureDateTime(LocalDateTime.of(2024, 2, 12, 12, 00, 00));
         when(flightServiceMock.getFlight(2001L)).thenReturn(Optional.of(flight));
 
         FlightSeat flightSeat = new FlightSeat();
@@ -166,7 +166,7 @@ class TicketMapperTest {
 
         ticketDTO.setBookingId(1111L);
 
-        Ticket ticket = ticketMapper.toEntity(ticketDTO, passengerServiceMock, flightServiceMock,flightSeatServiceMock, bookingServiceMock);
+        Ticket ticket = ticketMapper.toEntity(ticketDTO, passengerServiceMock, flightServiceMock, flightSeatServiceMock, bookingServiceMock);
 
         Assertions.assertNotNull(ticket);
         Assertions.assertEquals(ticketDTO.getId(), ticket.getId());
@@ -209,7 +209,7 @@ class TicketMapperTest {
         flight.setCode("TEST123");
         flight.setFrom(destinationFrom);
         flight.setTo(destinationTo);
-        flight.setDepartureDateTime(LocalDateTime.of(2024,2,12,12,00,00));
+        flight.setDepartureDateTime(LocalDateTime.of(2024, 2, 12, 12, 00, 00));
         when(flightServiceMock.getFlight(2001L)).thenReturn(Optional.of(flight));
 
         FlightSeat flightSeat = new FlightSeat();

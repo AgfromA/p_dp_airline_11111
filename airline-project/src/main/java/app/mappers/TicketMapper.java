@@ -27,10 +27,10 @@ public interface TicketMapper {
     @Mapping(target = "arrivalDateTime", expression = "java(ticket.getFlightSeat().getFlight().getArrivalDateTime())")
     @Mapping(target = "flightSeatId", expression = "java(ticket.getFlightSeat().getId())")
     @Mapping(target = "seatNumber", expression = "java(ticket.getFlightSeat().getSeat().getSeatNumber())")
-    @Mapping(target = "bookingId",expression ="java(ticket.getBooking().getId())")
-    @Mapping(target = "boardingStartTime",expression ="java(ticket.getFlightSeat().getFlight().getDepartureDateTime()." +
+    @Mapping(target = "bookingId", expression = "java(ticket.getBooking().getId())")
+    @Mapping(target = "boardingStartTime", expression = "java(ticket.getFlightSeat().getFlight().getDepartureDateTime()." +
             "minusMinutes(40))")
-    @Mapping(target = "boardingEndTime",expression ="java(ticket.getFlightSeat().getFlight().getDepartureDateTime()." +
+    @Mapping(target = "boardingEndTime", expression = "java(ticket.getFlightSeat().getFlight().getDepartureDateTime()." +
             "minusMinutes(20))")
     TicketDto toDto(Ticket ticket);
 

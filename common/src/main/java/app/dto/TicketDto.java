@@ -61,6 +61,6 @@ public class TicketDto {
     private Long bookingId;
 
     private LocalDateTime boardingStartTime;
-    
+
     private LocalDateTime boardingEndTime;
 }
