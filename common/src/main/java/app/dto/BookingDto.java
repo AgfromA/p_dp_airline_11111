@@ -1,13 +1,12 @@
 package app.dto;
 
 import app.enums.BookingStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import org.springframework.data.annotation.ReadOnlyProperty;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -17,24 +16,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BookingDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private long id;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String bookingNumber;
-
     @NotNull
-    private LocalDateTime bookingDate;
-
-    @NotNull
+    @Min(1)
     private Long passengerId;
 
-    @JsonIgnore
-    private LocalDateTime createTime;
+    @ReadOnlyProperty
+    private LocalDateTime bookingDate;
 
-    @JsonIgnore
+    @ReadOnlyProperty
     private BookingStatus bookingStatus;
 
     @NotNull
+    @Min(1)
     private Long flightSeatId;
 }

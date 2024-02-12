@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #374 Рефакторинг BookingRestController
 - #360 Добавлена возможность выбора категории при поиске билетов, изменен расчет totalPrice.
 - #366 exception handling refactoring
 
