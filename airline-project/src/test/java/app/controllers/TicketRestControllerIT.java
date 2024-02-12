@@ -22,8 +22,6 @@ import java.time.LocalDateTime;
 
 import static app.enums.Airport.OMS;
 import static app.enums.Airport.VKO;
-import static org.junit.Assert.assertNotEquals;
-import static org.mockito.AdditionalMatchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -295,6 +293,28 @@ class TicketRestControllerIT extends IntegrationTestBase {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+    @DisplayName("shouldReturnCreatedPaidTicketIfAlreadyExists(), return ticket from db (in db ticket have already exist with such booking id)")
+    @Test
+    void shouldReturnCreatedPaidTicketIfAlreadyExists() throws Exception {
+        var bookingDto = bookingService.getBookingDto(6L).get();
+        ResultActions result =   mockMvc.perform(post("http://localhost:8080/api/tickets/{id}", bookingDto.getId())
+                        .content(objectMapper.writeValueAsString(bookingDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(6L))
+                .andExpect(jsonPath("$.ticketNumber").value("BB-1111"));
+
+        MvcResult mvcResult = result.andReturn();
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        var ticket = ticketService.getTicketByTicketNumber("BB-1111");
+
+        Assertions.assertEquals(ticket.getId(), JsonPath.parse(jsonResponse).read("$.id", Long.class));
+        Assertions.assertEquals(ticket.getTicketNumber(), JsonPath.parse(jsonResponse).read("$.ticketNumber", String.class));
+        Assertions.assertEquals(ticket.getPassenger().getId(), JsonPath.parse(jsonResponse).read("$.passengerId", Long.class));
+        Assertions.assertEquals(ticket.getFlightSeat().getId(), JsonPath.parse(jsonResponse).read("$.flightSeatId", Long.class));
     }
 
     @DisplayName("shouldIgnoreIdInPatchRequest(), ignore id in PATCH request")

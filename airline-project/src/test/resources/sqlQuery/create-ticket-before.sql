@@ -138,3 +138,27 @@ VALUES (5, '2024-02-05 11:51:26.444777',
         (SELECT passengers.id FROM passengers WHERE passengers.id = 5),
         (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 5),
         'NOT_PAID');
+
+--already existed ticket
+
+INSERT INTO passengers (first_name, last_name, middle_name, birth_date, gender, email, phone_number,
+                        serial_number_passport, passport_issuing_date, passport_issuing_country, id)
+VALUES ('Holland', 'Hollany', 'Hollanych', TO_DATE('1992/10/08', 'YYYY/MM/DD'), 'MALE',
+        'hollaholland@mail.ru', '79121881111',
+        '0012 001850', TO_DATE('2003/01/10', 'YYYY/MM/DD'), 'Россия', 6);
+
+INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
+VALUES (6, 650, true, false, (SELECT flights.id FROM flights WHERE flights.id = 2),
+        (SELECT seats.id FROM seats WHERE seats.id = 6));
+
+INSERT INTO booking(id, booking_data_time, passenger_id, flight_seat_id, booking_status)
+VALUES (6, '2024-02-05 11:51:26.444777',
+        (SELECT passengers.id FROM passengers WHERE passengers.id = 6),
+        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 6),
+        'PAID');
+
+INSERT INTO tickets (id, ticket_number, passenger_id, flight_seat_id, booking_id)
+VALUES (6, 'BB-1111',
+        (SELECT passengers.id FROM passengers WHERE passengers.id = 6),
+        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 6),
+        (SELECT booking.id FROM booking WHERE booking.id = 6));
