@@ -128,6 +128,11 @@ public class TicketService {
 
         var ticket = new Ticket();
 
+        var existingTicket = ticketRepository.findByBookingId(bookingId);
+        if (existingTicket.isPresent()) {
+            return existingTicket.get();
+        }
+
         if (booking.getBookingStatus() != BookingStatus.PAID) {
             throw new UnPaidBookingException(bookingId);
         } else {
