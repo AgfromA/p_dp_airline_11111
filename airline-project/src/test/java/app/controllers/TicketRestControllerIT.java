@@ -3,6 +3,7 @@ package app.controllers;
 import app.dto.BookingDto;
 import app.dto.TicketDto;
 import app.enums.BookingStatus;
+import app.exceptions.EntityNotFoundException;
 import app.mappers.TicketMapper;
 import app.repositories.TicketRepository;
 import app.services.BookingService;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 
 import static app.enums.Airport.OMS;
 import static app.enums.Airport.VKO;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -165,6 +167,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
     @Test
     void shouldUpdateTicketNumberInTicket() throws Exception {
         var ticketDTO = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+
         ticketDTO.setTicketNumber("ZX-2222");
         long numberOfTicket = ticketRepository.count();
 
@@ -177,6 +180,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(ticketDTO)))
                 .andExpect(result -> assertThat(ticketRepository.count(), equalTo(numberOfTicket)));
+
     }
 
     @DisplayName("shouldUpdatePassengerAndFlightSeatInTicket(), update field Passenger and flightSeat, that assigned to a booking" +
@@ -184,6 +188,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
     @Test
     void shouldUpdatePassengerAndFlightSeatInTicket() throws Exception {
         var updatedTicket = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+
         var bookingDto = bookingService.getBookingDto(3L).get();
         bookingDto.setFlightSeatId(4L);
         bookingDto.setPassengerId(4L);
@@ -221,6 +226,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         Assertions.assertEquals(updatedTicket.getTicketNumber(), JsonPath.parse(jsonResponse).read("$.ticketNumber", String.class));
         Assertions.assertEquals(updatedTicket.getPassengerId(), JsonPath.parse(jsonResponse).read("$.passengerId", Long.class));
         Assertions.assertEquals(updatedTicket.getFlightSeatId(), JsonPath.parse(jsonResponse).read("$.flightSeatId", Long.class));
+
     }
 
     @DisplayName("shouldDeleteTicket(), delete ticket by ticket id")
@@ -230,6 +236,19 @@ class TicketRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(delete("http://localhost:8080/api/tickets/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        Assertions.assertThrows(EntityNotFoundException.class, () -> ticketService.checkIfTicketExist(id));
+    }
+
+    @DisplayName("shouldThrowEntityNotFoundException(), throws EntityNotFoundException when ticket with given id does not exist")
+    @Test
+    void shouldThrowEntityNotFoundException() throws Exception {
+        long nonExistingId = 1000500L;
+
+        mockMvc.perform(delete("http://localhost:8080/api/tickets/{id}", nonExistingId))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
     }
 
     @Test

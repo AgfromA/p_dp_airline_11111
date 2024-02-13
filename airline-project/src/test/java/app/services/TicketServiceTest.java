@@ -45,13 +45,9 @@ class TicketServiceTest {
     @Mock
     private PassengerService passengerService;
     @Mock
-    private PassengerRepository passengerRepository;
-    @Mock
     private FlightSeatService flightSeatService;
     @Mock
     private FlightSeatRepository flightSeatRepository;
-    @Mock
-    private BookingRepository bookingRepository;
     @Mock
     private FlightService flightService;
     @Mock
@@ -278,10 +274,10 @@ class TicketServiceTest {
     @DisplayName("5 deleteTicketById(), Positive test delete ticket by ticket id")
     @Test
     void shouldDeleteTicketById() {
-        var bookingId = 1L;
-        when(ticketRepository.findByBookingId(bookingId)).thenReturn(Optional.of(new Ticket()));
-        ticketService.deleteTicketById(bookingId);
-        verify(ticketRepository, times(1)).deleteById(bookingId);
+        var ticketId = 1L;
+        when(ticketRepository.findTicketById(ticketId)).thenReturn(Optional.of(new Ticket()));
+        ticketService.deleteTicketById(ticketId);
+        verify(ticketRepository, times(1)).deleteById(ticketId);
     }
 
     @DisplayName("6 saveTicket(), Positive test save ticket")
@@ -358,9 +354,9 @@ class TicketServiceTest {
         assertEquals(result.getBooking(), savedTicket.getBooking());
     }
 
-    @DisplayName("7 createPaidTicket(), Positive test create paid ticket")
+    @DisplayName("7 generatePaidTicket(), Positive test generate paid ticket")
     @Test
-    void shouldCreatePaidTicket() {
+    void shouldGeneratePaidTicket() {
 
         Passenger passenger = new Passenger();
         passenger.setId(1L);

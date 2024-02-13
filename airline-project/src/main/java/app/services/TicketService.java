@@ -159,8 +159,8 @@ public class TicketService {
         return ticketRepository.getAllTicketsForEmailNotification(departureIn, gap);
     }
 
-    private Ticket checkIfTicketExist(Long ticketId) {
-        return ticketRepository.findByBookingId(ticketId).orElseThrow(
+    public Ticket checkIfTicketExist(Long ticketId) {
+        return ticketRepository.findTicketById(ticketId).orElseThrow(
                 () -> new EntityNotFoundException("Operation was not finished because Ticket was not found with id = " + ticketId)
         );
     }

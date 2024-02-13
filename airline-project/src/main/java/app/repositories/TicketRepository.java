@@ -19,7 +19,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "WHERE ticket.ticketNumber = ?1")
     Ticket findByTicketNumberContainingIgnoreCase(String ticketNumber);
 
-    Ticket findTicketById(long id);
+    Optional<Ticket> findTicketById(long id);
 
     @Query(value = "SELECT t.flightSeat.id FROM Ticket t WHERE t.passenger.id = :passengerId")
     long[] findArrayOfFlightSeatIdByPassengerId(@Param("passengerId") long passengerId);
@@ -36,5 +36,4 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     boolean existsByTicketNumber(String ticketNumber);
 
     Optional<Ticket> findByBookingId(long bookingId);
-
 }
