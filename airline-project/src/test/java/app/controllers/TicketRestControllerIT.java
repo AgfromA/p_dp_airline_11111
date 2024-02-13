@@ -108,7 +108,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         newTicket.setLastName("Simons1");
         newTicket.setFrom(VKO);
         newTicket.setTo(OMS);
-        newTicket.setCode("VKOOMS");
+        newTicket.setFlightCode("VKOOMS");
         newTicket.setSeatNumber("1A");
         newTicket.setArrivalDateTime(LocalDateTime.of(2023, 04, 01, 11, 20, 00));
         newTicket.setDepartureDateTime(LocalDateTime.of(2023, 04, 01, 17, 50, 00));
@@ -149,7 +149,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
                 .andExpect(jsonPath("$.passengerId").exists())
                 .andExpect(jsonPath("$.firstName").exists())
                 .andExpect(jsonPath("$.lastName").exists())
-                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.flightCode").exists())
                 .andExpect(jsonPath("$.from").exists())
                 .andExpect(jsonPath("$.to").exists())
                 .andExpect(jsonPath("$.departureDateTime").exists())
@@ -198,7 +198,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         updatedTicket.setLastName("Merfov");
         updatedTicket.setFrom(OMS);
         updatedTicket.setTo(VKO);
-        updatedTicket.setCode("OMSVKO");
+        updatedTicket.setFlightCode("OMSVKO");
         updatedTicket.setSeatNumber("1D");
         updatedTicket.setTicketNumber("ZZ-8888");
         updatedTicket.setArrivalDateTime(LocalDateTime.of(2023, 4, 3, 7, 55, 00));
@@ -263,7 +263,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         newTicket.setLastName("Simons1");
         newTicket.setFrom(VKO);
         newTicket.setTo(OMS);
-        newTicket.setCode(null);
+        newTicket.setFlightCode(null);
         newTicket.setSeatNumber("1A");
         newTicket.setArrivalDateTime(LocalDateTime.of(2023, 04, 01, 11, 20, 00));
         newTicket.setDepartureDateTime(LocalDateTime.of(2023, 04, 01, 17, 50, 00));
@@ -344,7 +344,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         updatedTicket.setLastName("Merfov");
         updatedTicket.setFrom(OMS);
         updatedTicket.setTo(VKO);
-        updatedTicket.setCode("OMSVKO");
+        updatedTicket.setFlightCode("OMSVKO");
         updatedTicket.setSeatNumber("1D");
         updatedTicket.setTicketNumber("ZZ-8888");
         updatedTicket.setArrivalDateTime(LocalDateTime.of(2023, 4, 3, 7, 55, 0));
@@ -384,7 +384,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
         newTicket.setLastName("Simons1");
         newTicket.setFrom(VKO);
         newTicket.setTo(OMS);
-        newTicket.setCode("VKOOMS");
+        newTicket.setFlightCode("VKOOMS");
         newTicket.setSeatNumber("1A");
         newTicket.setArrivalDateTime(LocalDateTime.of(2023, 04, 01, 11, 20, 00));
         newTicket.setDepartureDateTime(LocalDateTime.of(2023, 04, 01, 17, 50, 00));

@@ -20,7 +20,7 @@ public interface TicketMapper {
     @Mapping(target = "passengerId", expression = "java(ticket.getPassenger().getId())")
     @Mapping(target = "firstName", expression = "java(ticket.getPassenger().getFirstName())")
     @Mapping(target = "lastName", expression = "java(ticket.getPassenger().getLastName())")
-    @Mapping(target = "code", expression = "java(ticket.getFlightSeat().getFlight().getCode())")
+    @Mapping(target = "flightCode", expression = "java(ticket.getFlightSeat().getFlight().getCode())")
     @Mapping(target = "from", expression = "java(ticket.getFlightSeat().getFlight().getFrom().getAirportCode())")
     @Mapping(target = "to", expression = "java(ticket.getFlightSeat().getFlight().getTo().getAirportCode())")
     @Mapping(target = "departureDateTime", expression = "java(ticket.getFlightSeat().getFlight().getDepartureDateTime())")

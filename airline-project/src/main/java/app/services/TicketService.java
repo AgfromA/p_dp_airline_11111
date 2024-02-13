@@ -1,19 +1,11 @@
 package app.services;
 
 import app.dto.TicketDto;
-import app.entities.Booking;
 import app.entities.Ticket;
 
 import app.enums.BookingStatus;
-import app.exceptions.DuplicateFieldException;
-import app.exceptions.EntityNotFoundException;
-import app.exceptions.FlightSeatNotPaidException;
-import app.exceptions.TicketNumberException;
-import app.exceptions.UnPaidBookingException;
+import app.exceptions.*;
 import app.mappers.TicketMapper;
-import app.repositories.BookingRepository;
-import app.repositories.FlightSeatRepository;
-import app.repositories.PassengerRepository;
 import app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,14 +22,12 @@ import java.util.Random;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final PassengerRepository passengerRepository;
-    private final BookingRepository bookingRepository;
-    private final FlightSeatRepository flightSeatRepository;
     private final TicketMapper ticketMapper;
     private final PassengerService passengerService;
     private final FlightService flightService;
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
+    private final Random random = new Random();
 
     public List<TicketDto> getAllTickets() {
         return ticketMapper.toDtoList(ticketRepository.findAll());
@@ -54,201 +44,124 @@ public class TicketService {
 
     @Transactional
     public void deleteTicketById(Long id) {
+        checkIfTicketExist(id);
         ticketRepository.deleteById(id);
     }
 
     @Transactional
-    public Ticket saveTicket(TicketDto timezoneDto) {
-        if (passengerService.getPassenger(timezoneDto.getPassengerId()).isEmpty()) {
-            throw new EntityNotFoundException("Operation was not finished because Passenger was not found with id = "
-                    + timezoneDto.getPassengerId());
-        }
-        if (flightSeatService.getFlightSeat(timezoneDto.getFlightSeatId()).isEmpty()) {
-            throw new EntityNotFoundException("Operation was not finished because FlightSeat was not found with id = "
-                    + timezoneDto.getFlightSeatId());
-        }
-        if (bookingService.getBooking(timezoneDto.getBookingId()).isEmpty()) {
-            throw new EntityNotFoundException("Operation was not finished because Booking was not found with id = "
-                    + timezoneDto.getBookingId());
-        }
-        // Проверяем, оплачено ли место на рейсе
-        var bookingCheck = bookingService.getBookingByFlightSeatId(timezoneDto.getFlightSeatId());
-        if (bookingCheck.isEmpty() || bookingCheck.get().getBookingStatus() != BookingStatus.PAID) {
-            throw new FlightSeatNotPaidException(timezoneDto.getFlightSeatId());
-        }
-        // Преобразуем DTO в сущность билета
-        var ticket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
+    public Ticket saveTicket(TicketDto ticketDto) {
+        ticketDto.setId(null);
 
-        // Находим пассажира по электронной почте и устанавливаем его в билет
-        var passenger = passengerRepository.findByEmail(ticket.getPassenger().getEmail());
-        ticket.setPassenger(passenger);
+        passengerService.checkIfPassengerExists(ticketDto.getPassengerId());
+        flightSeatService.checkIfFlightSeatExist(ticketDto.getFlightSeatId());
+        var booking = bookingService.checkIfBookingExist(ticketDto.getBookingId());
 
-        // Находим место на рейсе по идентификатору рейса и номеру места и устанавливаем его в билет
-        ticket.setFlightSeat(flightSeatRepository
-                .findFirstFlightSeatByFlightIdAndSeat(
-                        ticket.getFlightSeat().getFlight().getId(),
-                        ticket.getFlightSeat().getSeat().getSeatNumber()).orElse(null));
-
-        // Генерируем номер билета
-        String generatedTicketNumber = generateTicketNumber();
-
-        // Проверяем, существует ли билет с указанным номером
-        if (ticketRepository.existsByTicketNumber(ticket.getTicketNumber()) ||
-                ticketRepository.existsByTicketNumber(generatedTicketNumber)) {
-            throw new TicketNumberException(ticket);
-        } else {
-            ticket.setTicketNumber(generatedTicketNumber);
-        }
-
-        // Проверяем, существует ли уже билет с указанным идентификатором бронирования
-        var existingTicket = ticketRepository.findByBookingId(timezoneDto.getBookingId());
+        var existingTicket = ticketRepository.findByBookingId(ticketDto.getBookingId());
         if (existingTicket.isPresent()) {
-            throw new DuplicateFieldException("Ticket with bookingId " + timezoneDto.getBookingId() + " already exists!");
+            throw new DuplicateFieldException("Ticket with bookingId " + ticketDto.getBookingId() + " already exists!");
+        }
+        if (!booking.getFlightSeat().getId().equals(ticketDto.getFlightSeatId())) {
+            throw new WrongArgumentException("Ticket should have the same flightSeatId as Booking with bookingId " + ticketDto.getBookingId());
+        }
+        if (!booking.getPassenger().getId().equals(ticketDto.getPassengerId())) {
+            throw new WrongArgumentException("Ticket should have the same passengerId as Booking with bookingId " + ticketDto.getBookingId());
+        }
+        if (booking.getBookingStatus() != BookingStatus.PAID) {
+            throw new FlightSeatNotPaidException(ticketDto.getFlightSeatId());
+        }
+        if (ticketDto.getTicketNumber() != null && ticketRepository.existsByTicketNumber(ticketDto.getTicketNumber())) {
+            throw new TicketNumberException(ticketDto.getTicketNumber());
+        } else {
+            ticketDto.setTicketNumber(generateTicketNumber());
         }
 
-        // Устанавливаем бронирование в билет
-        if (ticket.getFlightSeat() != null) {
-            var flightSeatId = ticket.getFlightSeat().getId();
-            if (flightSeatId != null) {
-                var booking = bookingRepository.findByFlightSeat(ticket.getFlightSeat());
-                ticket.setBooking(booking.orElse(null));
-            }
-        }
-
-        ticket.setId(null);
-
+        var ticket = ticketMapper.toEntity(ticketDto, passengerService, flightService, flightSeatService, bookingService);
         return ticketRepository.save(ticket);
     }
 
     @Transactional
-    public Ticket createPaidTicket(Long bookingId) {
-
-        var booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new EntityNotFoundException("Booking with ID " + bookingId + " not found"));
-
-        var ticket = new Ticket();
-
+    public Ticket generatePaidTicket(Long bookingId) {
         var existingTicket = ticketRepository.findByBookingId(bookingId);
         if (existingTicket.isPresent()) {
             return existingTicket.get();
         }
+        var booking = bookingService.checkIfBookingExist(bookingId);
 
         if (booking.getBookingStatus() != BookingStatus.PAID) {
             throw new UnPaidBookingException(bookingId);
         } else {
+            var ticket = new Ticket();
             ticket.setBooking(booking);
             ticket.setPassenger(booking.getPassenger());
             ticket.setFlightSeat(booking.getFlightSeat());
             ticket.setTicketNumber(generateTicketNumber());
+            return ticketRepository.save(ticket);
         }
-        return ticketRepository.save(ticket);
     }
 
     @Transactional
-    public Ticket updateTicketById(Long id, TicketDto timezoneDto) {
-        var updatedTicket = ticketMapper.toEntity(timezoneDto, passengerService, flightService, flightSeatService, bookingService);
-        updatedTicket.setId(id);
+    public Ticket updateTicketById(Long id, TicketDto ticketDto) {
+        var existingTicket = checkIfTicketExist(id);
+        var existingBooking = existingTicket.getBooking();
 
-        Ticket existingTicket = ticketRepository.findTicketById(id);
-
-        // Проверяем, был ли изменен идентификатор пассажира
-        if (timezoneDto.getPassengerId() != null) {
-            validatePassengerChange(existingTicket, timezoneDto.getPassengerId());
-            setPassengerData(updatedTicket, timezoneDto.getPassengerId());
-        } else {
-            updatedTicket.setPassenger(existingTicket.getPassenger());
+        if (ticketDto.getBookingId() != existingBooking.getId()) {
+            throw new WrongArgumentException("Ticket's Booking can't be changed");
         }
-
-        // Проверяем, был ли изменен идентификатор места на рейсе
-        if (timezoneDto.getFlightSeatId() != null) {
-            validateFlightSeatChange(existingTicket, timezoneDto.getFlightSeatId());
-            setFlightSeatData(updatedTicket, timezoneDto.getFlightSeatId());
-        } else {
-            updatedTicket.setFlightSeat(existingTicket.getFlightSeat());
+        if (ticketDto.getPassengerId() != null
+                && !ticketDto.getPassengerId().equals(existingTicket.getPassenger().getId())
+                && ticketDto.getPassengerId().equals(existingBooking.getPassenger().getId())) {
+            // FIXME надо бы эксепшн выбраисывать, если пришедший айди пассажира не совпадает с айди пассажира у связанного бронирования
+            existingTicket.setPassenger(existingBooking.getPassenger());
         }
-
-        // Устанавливаем номер билета, если не указан
-        if (updatedTicket.getTicketNumber() == null) {
-            updatedTicket.setTicketNumber(existingTicket.getTicketNumber());
-        } else if (ticketRepository.existsByTicketNumber(timezoneDto.getTicketNumber())) {
-            throw new TicketNumberException(updatedTicket);
+        if (ticketDto.getFlightSeatId() != null
+                && !ticketDto.getFlightSeatId().equals(existingTicket.getFlightSeat().getId())
+                && ticketDto.getFlightSeatId().equals(existingBooking.getFlightSeat().getId())) {
+            // FIXME надо бы эксепшн выбраисывать, если пришедший айди сиденья не совпадает с айди сиденья у связанного бронирования
+            existingTicket.setFlightSeat(existingBooking.getFlightSeat());
         }
-
-        // Устанавливаем бронирование, если указано место на рейсе, но не указано бронирование
-        if (updatedTicket.getFlightSeat() != null && updatedTicket.getBooking() == null) {
-            updatedTicket.setBooking(existingTicket.getBooking());
+        if (ticketDto.getTicketNumber() != null
+                && !ticketDto.getTicketNumber().equals(existingTicket.getTicketNumber())
+                && !ticketRepository.existsByTicketNumber(ticketDto.getTicketNumber())) {
+            existingTicket.setTicketNumber(ticketDto.getTicketNumber());
         }
-
-        return ticketRepository.save(updatedTicket);
-    }
-
-    // Проверяет, был ли изменен пассажир билета
-    public void validatePassengerChange(Ticket existingTicket, Long newPassengerId) {
-        Booking booking = existingTicket.getBooking();
-        if (booking != null && !booking.getPassenger().getId().equals(newPassengerId)) {
-            throw new IllegalArgumentException("Passenger cannot be changed because it is already assigned to a booking!");
-        }
-    }
-
-    // Проверяет, было ли изменено место на рейсе билета
-    public void validateFlightSeatChange(Ticket existingTicket, Long newFlightSeatId) {
-        Booking booking = existingTicket.getBooking();
-        if (booking != null && !booking.getFlightSeat().getId().equals(newFlightSeatId)) {
-            throw new IllegalArgumentException("FlightSeat cannot be changed because it is already assigned to a booking!");
-        }
-    }
-
-    // Устанавливает данные места на рейсе в билете
-    private void setFlightSeatData(Ticket ticket, Long flightSeatId) {
-        var flightSeat = flightSeatRepository.findById(flightSeatId)
-                .orElseThrow(() -> new EntityNotFoundException("FlightSeat with ID " + flightSeatId + " not found"));
-        var flight = flightSeat.getFlight();
-
-        ticket.getFlightSeat().getFlight().setCode(flight.getCode());
-        ticket.getFlightSeat().setSeat(flightSeat.getSeat());
-        ticket.getFlightSeat().getFlight().setFrom(flight.getFrom());
-        ticket.getFlightSeat().getFlight().setTo(flight.getTo());
-        ticket.getFlightSeat().getFlight().setDepartureDateTime(flight.getDepartureDateTime());
-        ticket.getFlightSeat().getFlight().setArrivalDateTime(flight.getArrivalDateTime());
-    }
-
-    // Устанавливает данные пассажира
-    private void setPassengerData(Ticket ticket, Long passengerId) {
-        var passenger = passengerRepository.findById(passengerId)
-                .orElseThrow(() -> new EntityNotFoundException("Passenger with ID " + passengerId + " not found"));
-        ticket.getPassenger().setFirstName(passenger.getFirstName());
-        ticket.getPassenger().setLastName(passenger.getLastName());
+        return ticketRepository.save(existingTicket);
     }
 
     public long[] getFlightSeatIdsByPassengerId(long passengerId) {
         return ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId);
     }
 
-    @Transactional
     public void deleteTicketByPassengerId(long passengerId) {
         ticketRepository.deleteTicketByPassengerId(passengerId);
     }
 
     public String generateTicketNumber() {
-        Random random = new Random();
-        StringBuilder ticketNumberBuilder = new StringBuilder();
+        StringBuilder ticketNumberBuilder;
+        do {
+            ticketNumberBuilder = new StringBuilder();
 
-        for (int i = 0; i < 2; i++) {
-            char letter = (char) (random.nextInt(26) + 'A');
-            ticketNumberBuilder.append(letter);
-        }
+            for (int i = 0; i < 2; i++) {
+                char letter = (char) (random.nextInt(26) + 'A');
+                ticketNumberBuilder.append(letter);
+            }
 
-        ticketNumberBuilder.append("-");
+            ticketNumberBuilder.append("-");
 
-        for (int i = 0; i < 4; i++) {
-            int digit = random.nextInt(10);
-            ticketNumberBuilder.append(digit);
-        }
-
+            for (int i = 0; i < 4; i++) {
+                int digit = random.nextInt(10);
+                ticketNumberBuilder.append(digit);
+            }
+        } while (ticketRepository.existsByTicketNumber(ticketNumberBuilder.toString()));
         return ticketNumberBuilder.toString();
     }
 
     public List<Ticket> getAllTicketsForEmailNotification(LocalDateTime departureIn, LocalDateTime gap) {
         return ticketRepository.getAllTicketsForEmailNotification(departureIn, gap);
+    }
+
+    private Ticket checkIfTicketExist(Long ticketId) {
+        return ticketRepository.findByBookingId(ticketId).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Ticket was not found with id = " + ticketId)
+        );
     }
 }

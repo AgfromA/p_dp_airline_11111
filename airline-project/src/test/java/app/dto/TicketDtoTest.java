@@ -13,7 +13,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.IOException;
 
-public class TicketDtoTest extends EntityTest {
+class TicketDtoTest extends EntityTest {
 
     private Validator validator;
     private ObjectMapper mapper;
@@ -33,7 +33,7 @@ public class TicketDtoTest extends EntityTest {
         ticketJson.put("passengerId", 4);
         ticketJson.put("firstName", "TestName");
         ticketJson.put("lastName", "TestLastName");
-        ticketJson.put("code", "XXX");
+        ticketJson.put("flightCode", "XXX");
         ticketJson.put("from", Airport.AER);
         ticketJson.put("to", Airport.AAQ);
         ticketJson.put("departureDateTime", "2023-01-20T17:02:05.003992");
@@ -45,7 +45,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void validTicketShouldValidate() {
+    void validTicketShouldValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -58,7 +58,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullPassengerIdFieldShouldNotValidate() {
+    void nullPassengerIdFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -72,7 +72,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullPassengerFirstNameFieldShouldNotValidate() {
+    void nullPassengerFirstNameFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -86,7 +86,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void shortPassengerFirstNameFieldShouldNotValidate() {
+    void shortPassengerFirstNameFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         JSONObject ticketJson = initJsonObject();
@@ -100,7 +100,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullPassengerLastNameFieldShouldNotValidate() {
+    void nullPassengerLastNameFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -114,7 +114,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void shortPassengerLastNameFieldShouldNotValidate() {
+    void shortPassengerLastNameFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -128,11 +128,11 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullCodeFieldShouldNotValidate() {
+    void nullCodeFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
-        ticketJson.replace("code", null);
+        ticketJson.replace("flightCode", null);
         try {
             ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
@@ -142,11 +142,11 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void shortCodeFieldShouldNotValidate() {
+    void shortCodeFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
-        ticketJson.replace("code", "1");
+        ticketJson.replace("flightCode", "1");
         try {
             ticketDTO = mapper.readValue(ticketJson.toString(), TicketDto.class);
         } catch (IOException e) {
@@ -156,7 +156,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullFromFieldShouldNotValidate() {
+    void nullFromFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -170,7 +170,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullToFieldShouldNotValidate() {
+    void nullToFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -184,7 +184,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullDepartureDateTimeFieldShouldNotValidate() {
+    void nullDepartureDateTimeFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -198,7 +198,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullArrivalDateTimeFieldShouldNotValidate() {
+    void nullArrivalDateTimeFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -212,7 +212,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullFlightSeatIdFieldShouldNotValidate() {
+    void nullFlightSeatIdFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -226,7 +226,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullBookingIdFieldShouldNotValidate() {
+    void nullBookingIdFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -240,7 +240,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullSeatNumberFieldShouldNotValidate() {
+    void nullSeatNumberFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();
@@ -254,7 +254,7 @@ public class TicketDtoTest extends EntityTest {
     }
 
     @Test
-    public void shortSeatNumberFieldShouldNotValidate() {
+    void shortSeatNumberFieldShouldNotValidate() {
 
         TicketDto ticketDTO;
         var ticketJson = initJsonObject();

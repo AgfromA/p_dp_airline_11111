@@ -36,7 +36,7 @@ public class TicketDto {
 
     @NotBlank(message = "Flight code cannot be empty")
     @Size(min = 2, max = 15, message = "Length of flight code should be between 2 and 15 characters")
-    private String code;
+    private String flightCode;
 
     @NotNull(message = "Departure airport cannot be null")
     private Airport from;

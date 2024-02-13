@@ -32,7 +32,7 @@ public interface TicketRestApi {
             @ApiResponse(code = 404, message = "Ticket not found")
     })
     @GetMapping("/{ticketNumber}")
-    ResponseEntity<TicketDto> getTicketByTicketNumber(
+    ResponseEntity<TicketDto> getTicketByNumber(
             @ApiParam(
                     name = "ticketNumber",
                     value = "ticketNumber",
@@ -48,15 +48,15 @@ public interface TicketRestApi {
                     name = "ticket",
                     value = "Ticket model"
             )
-            @RequestBody @Valid TicketDto ticketDTO);
+            @RequestBody @Valid TicketDto ticketDto);
 
-    @ApiOperation(value = "Create new Paid Ticket")
+    @ApiOperation(value = "Generate new Paid Ticket by existing paid Booking")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Paid Ticket created"),
             @ApiResponse(code = 404, message = "Ticket not found")
     })
     @PostMapping("/{bookingId}")
-    ResponseEntity<TicketDto> createPaidTicket(
+    ResponseEntity<TicketDto> generatePaidTicket(
             @ApiParam(
                     name = "id",
                     value = "Ticket.id"
@@ -69,7 +69,7 @@ public interface TicketRestApi {
             @ApiResponse(code = 404, message = "Ticket not found")
     })
     @PatchMapping("/{id}")
-    ResponseEntity<?> updateTicketById(
+    ResponseEntity<?> updateTicket(
             @ApiParam(
                     name = "id",
                     value = "Ticket.id"
@@ -78,7 +78,7 @@ public interface TicketRestApi {
                     name = "ticket",
                     value = "Ticket model"
             )
-            @RequestBody @Valid TicketDto ticketDTO);
+            @RequestBody @Valid TicketDto ticketDto);
 
     @ApiOperation(value = "Delete Ticket by \"id\"")
     @ApiResponses(value = {
