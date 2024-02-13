@@ -6,7 +6,7 @@
 - #360 Добавлена возможность выбора категории при поиске билетов, изменен расчет totalPrice.
 - #366 exception handling refactoring
 - #372 Рефакторинг Ticket API
-- #373 Рефакторинг AccountRestController
+- #373 Рефакторинг  AccountRestController
 
 ## [1.1.1] - 3.02.2024
 - #380 Пагинация, контроллеры GET возвращают объект Page<T>
