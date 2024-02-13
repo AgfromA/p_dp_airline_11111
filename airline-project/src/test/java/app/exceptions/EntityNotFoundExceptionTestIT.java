@@ -40,7 +40,7 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
         var newTicket = ticketService.getTicketByTicketNumber("ZX-3333");
         newTicket.setTicketNumber("SJ-9346");
         var ticketDTO = ticketMapper.toDto(newTicket);
-        ticketDTO.setFlightId(0L);
+        ticketDTO.setFlightSeatId(0L);
         mockMvc.perform(post("http://localhost:8080/api/tickets")
                         .content(objectMapper.writeValueAsString(ticketDTO))
                         .contentType(MediaType.APPLICATION_JSON)

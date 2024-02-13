@@ -124,13 +124,3 @@ INSERT INTO flight_seats (id, fare, is_registered, is_sold, flight_id, seat_id)
 VALUES (3, 650, true, true, (SELECT flights.id FROM flights WHERE flights.id = 1),
         (SELECT seats.id FROM seats WHERE seats.id = 3));
 
-
-INSERT INTO tickets (id, ticket_number, flight_id, passenger_id, flight_seat_id)
-VALUES (1, 'SD-2222',
-        (SELECT flights.id FROM flights WHERE flights.id = 1),
-        (SELECT passengers.id FROM passengers WHERE passengers.id = 4),
-        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 2));
-INSERT INTO tickets (id, ticket_number, flight_id, passenger_id, flight_seat_id)
-VALUES (2, 'ZX-3333', (SELECT flights.id FROM flights WHERE flights.id = 1),
-        (SELECT passengers.id FROM passengers WHERE passengers.id = 5),
-        (SELECT flight_seats.id FROM flight_seats WHERE flight_seats.id = 3));

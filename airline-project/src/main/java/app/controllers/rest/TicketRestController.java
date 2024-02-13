@@ -26,9 +26,8 @@ public class TicketRestController implements TicketRestApi {
 
     @Override
     public ResponseEntity<Page<TicketDto>> getAllTickets(Integer page, Integer size) {
-        log.info("getAll: get all Tickets");
+        log.info("getAllTickets:");
         if (page == null || size == null) {
-            log.info("getAll: get all List Tickets");
             return createUnPagedResponse();
         }
 
@@ -41,17 +40,16 @@ public class TicketRestController implements TicketRestApi {
     private ResponseEntity<Page<TicketDto>> createUnPagedResponse() {
         var tickets = ticketService.getAllTickets();
         if (tickets.isEmpty()) {
-            log.error("getAll: Tickets not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll: found: {} Tickets", tickets.size());
+            log.info("getAllTickets: count: {}", tickets.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(tickets)));
         }
     }
 
     @Override
-    public ResponseEntity<TicketDto> getTicketByTicketNumber(String ticketNumber) {
-        log.info("getByNumber: Ticket by ticketNumber: {}", ticketNumber);
+    public ResponseEntity<TicketDto> getTicketByNumber(String ticketNumber) {
+        log.info("getTicketByNumber: by ticketNumber: {}", ticketNumber);
         var ticket = ticketService.getTicketByTicketNumber(ticketNumber);
         return ticket != null
                 ? new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK)
@@ -59,28 +57,29 @@ public class TicketRestController implements TicketRestApi {
     }
 
     @Override
-    public ResponseEntity<TicketDto> createTicket(TicketDto ticketDTO) {
-        log.info("create: new Ticket: {}", ticketDTO);
-        var savedTicket = ticketService.saveTicket(ticketDTO);
+    public ResponseEntity<TicketDto> createTicket(TicketDto ticketDto) {
+        log.info("createTicket:");
+        var savedTicket = ticketService.saveTicket(ticketDto);
         return new ResponseEntity<>(ticketMapper.toDto(savedTicket), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<?> updateTicketById(Long id, TicketDto ticketDTO) {
-        log.info("update: Ticket with id: {}", id);
-        var ticket = ticketService.updateTicketById(id, ticketDTO);
-        return new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK);
+    public ResponseEntity<TicketDto> generatePaidTicket(Long bookingId) {
+        log.info("generatePaidTicket: by bookingId: {}", bookingId);
+        var savedTicket = ticketService.generatePaidTicket(bookingId);
+        return new ResponseEntity<>(ticketMapper.toDto(savedTicket), HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<?> updateTicket(Long id, TicketDto ticketDto) {
+        log.info("updateTicket: by id: {}", id);
+        return ResponseEntity.ok(ticketMapper.toDto(ticketService.updateTicketById(id, ticketDto)));
     }
 
     @Override
     public ResponseEntity<HttpStatus> deleteTicketById(Long id) {
-        try {
-            ticketService.deleteTicketById(id);
-            log.info("delete: Ticket. id: {}", id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            log.error("delete: Ticket with id: {} not found.", id);
-            return ResponseEntity.notFound().build();
-        }
+        log.info("deleteTicketById: by id: {}", id);
+        ticketService.deleteTicketById(id);
+        return ResponseEntity.ok().build();
     }
 }

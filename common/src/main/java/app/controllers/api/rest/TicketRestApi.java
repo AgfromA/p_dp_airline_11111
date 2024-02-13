@@ -27,9 +27,12 @@ public interface TicketRestApi {
             @RequestParam(value = "size", required = false) Integer size);
 
     @ApiOperation(value = "Get Ticket by ticketNumber")
-    @ApiResponse(code = 200, message = "Found the ticket")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Found the ticket"),
+            @ApiResponse(code = 404, message = "Ticket not found")
+    })
     @GetMapping("/{ticketNumber}")
-    ResponseEntity<TicketDto> getTicketByTicketNumber(
+    ResponseEntity<TicketDto> getTicketByNumber(
             @ApiParam(
                     name = "ticketNumber",
                     value = "ticketNumber",
@@ -45,12 +48,28 @@ public interface TicketRestApi {
                     name = "ticket",
                     value = "Ticket model"
             )
-            @RequestBody @Valid TicketDto ticketDTO);
+            @RequestBody @Valid TicketDto ticketDto);
+
+    @ApiOperation(value = "Generate new Paid Ticket by existing paid Booking")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Paid Ticket created"),
+            @ApiResponse(code = 404, message = "Ticket not found")
+    })
+    @PostMapping("/{bookingId}")
+    ResponseEntity<TicketDto> generatePaidTicket(
+            @ApiParam(
+                    name = "id",
+                    value = "Ticket.id"
+            )
+            @PathVariable Long bookingId);
 
     @ApiOperation(value = "Edit Ticket by \"id\"")
-    @ApiResponse(code = 200, message = "Ticket has been updated")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ticket has been updated"),
+            @ApiResponse(code = 404, message = "Ticket not found")
+    })
     @PatchMapping("/{id}")
-    ResponseEntity<?> updateTicketById(
+    ResponseEntity<?> updateTicket(
             @ApiParam(
                     name = "id",
                     value = "Ticket.id"
@@ -59,10 +78,13 @@ public interface TicketRestApi {
                     name = "ticket",
                     value = "Ticket model"
             )
-            @RequestBody @Valid TicketDto ticketDTO);
+            @RequestBody @Valid TicketDto ticketDto);
 
     @ApiOperation(value = "Delete Ticket by \"id\"")
-    @ApiResponse(code = 200, message = "Ticket has been removed")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ticket has been removed"),
+            @ApiResponse(code = 404, message = "Ticket not found")
+    })
     @DeleteMapping("/{id}")
     ResponseEntity<HttpStatus> deleteTicketById(
             @ApiParam(

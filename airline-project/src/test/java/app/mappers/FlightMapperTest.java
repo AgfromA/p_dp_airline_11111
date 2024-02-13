@@ -94,7 +94,6 @@ class FlightMapperTest {
         Flight flight = new Flight();
         flight.setId(1L);
         flight.setSeats(flightSeatList);
-        flight.setTicket(ticketList);
         flight.setCode("qwerty123");
         flight.setFrom(destinationFrom);
         flight.setTo(destinationTo);
@@ -153,7 +152,6 @@ class FlightMapperTest {
         ticketList.add(ticket1);
         ticketList.add(ticket2);
 
-        when(ticketServiceMock.findByFlightId(flightDto.getId())).thenReturn(ticketList);
 
         Booking booking1 = new Booking();
         booking1.setId(3001L);
@@ -184,7 +182,6 @@ class FlightMapperTest {
         Assertions.assertNotNull(flight);
         Assertions.assertEquals(flight.getId(), flightDto.getId());
         Assertions.assertEquals(flight.getSeats(), flightSeatList);
-        Assertions.assertEquals(flight.getTicket(), ticketList);
         Assertions.assertEquals(flight.getCode(), flightDto.getCode());
         Assertions.assertEquals(flight.getFrom().getAirportCode(), flightDto.getAirportFrom());
         Assertions.assertEquals(flight.getTo().getAirportCode(), flightDto.getAirportTo());
@@ -254,7 +251,6 @@ class FlightMapperTest {
         Flight flight = new Flight();
         flight.setId(1L);
         flight.setSeats(flightSeatList);
-        flight.setTicket(ticketList);
         flight.setCode("qwerty123");
         flight.setFrom(destinationFrom);
         flight.setTo(destinationTo);
@@ -317,7 +313,6 @@ class FlightMapperTest {
         ticketList.add(ticket1);
         ticketList.add(ticket2);
 
-        when(ticketServiceMock.findByFlightId(flightDto.getId())).thenReturn(ticketList);
 
         Booking booking1 = new Booking();
         booking1.setId(3001L);
@@ -350,7 +345,6 @@ class FlightMapperTest {
         Assertions.assertEquals(flightList.size(), flightDtoList.size());
         Assertions.assertEquals(flightList.get(0).getId(), flightDtoList.get(0).getId());
         Assertions.assertEquals(flightList.get(0).getSeats(), flightSeatList);
-        Assertions.assertEquals(flightList.get(0).getTicket(), ticketList);
         Assertions.assertEquals(flightList.get(0).getCode(), flightDtoList.get(0).getCode());
         Assertions.assertEquals(flightList.get(0).getFrom().getAirportCode(), flightDtoList.get(0).getAirportFrom());
         Assertions.assertEquals(flightList.get(0).getTo().getAirportCode(), flightDtoList.get(0).getAirportTo());
