@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public interface FlightMapper {
 
     @Mapping(target = "seats", expression = "java(flightSeatService.findByFlightId(flightDto.getId()))")
-    @Mapping(target = "ticket", expression = "java(ticketService.findByFlightId(flightDto.getId()))")
     @Mapping(target = "from", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportFrom()))")
     @Mapping(target = "to", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportTo()))")
     @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraft(flightDto.getAircraftId()))")

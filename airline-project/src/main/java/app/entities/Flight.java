@@ -33,11 +33,6 @@ public class Flight {
     @JsonManagedReference
     private List<FlightSeat> seats;
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @JsonManagedReference
-    private List<Ticket> ticket;
-
     @Column(name = "code")
     private String code;
 
@@ -60,4 +55,5 @@ public class Flight {
     @Enumerated(EnumType.STRING)
     @Column(name = "flight_status")
     private FlightStatus flightStatus;
+
 }

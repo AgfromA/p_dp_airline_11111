@@ -5,8 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface PassengerRepository extends JpaRepository<Passenger, Long> {
@@ -36,4 +38,6 @@ public interface PassengerRepository extends JpaRepository<Passenger, Long> {
     Page<Passenger> findByEmail(Pageable pageable, String email);
 
     Passenger findByEmail(String email);
+//    @Query("SELECT p FROM Passenger p WHERE p.email = :email")
+//    Optional <Passenger> findByEmail(@Param("email") String email);
 }

@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <include file="01-alter-table-tickets.sql" relativeToChangelogFile="true"/>
 
-    <include file="01-alter-table-account.sql" relativeToChangelogFile="true"/>
-    <changeSet id="1.26.1" author="ravil-munipov">
-        <tagDatabase tag="01-alter-table-account"/>
+    <changeSet id="1.26.1" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.26-alter-table-tickets"/>
     </changeSet>
 
-</databaseChangeLog>
+    <include file="02-filling-table-passengers.sql" relativeToChangelogFile="true"/>
 
+    <changeSet id="1.26.2" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.26-filling-table-passengers"/>
+    </changeSet>
+
+    <include file="03-update-values-table-booking.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.26.3" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.26-update-values-table-booking"/>
+    </changeSet>
+
+    <include file="04-filling-table-tickets.sql" relativeToChangelogFile="true"/>
+
+    <changeSet id="1.26.4" author="irina-inozemtseva">
+        <tagDatabase tag="v-1.26-filling-table-tickets"/>
+    </changeSet>
+
+
+
+</databaseChangeLog>

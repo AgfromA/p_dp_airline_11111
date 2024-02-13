@@ -20,32 +20,47 @@ public class TicketDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    @NotBlank(message = "Field should not be empty")
+
     private String ticketNumber;
-    @NotNull
+
+    @NotNull(message = "Passenger ID cannot be null")
     private Long passengerId;
+
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 128, message = "Firstname size cannot be less than 2 and more than 128 characters")
     private String firstName;
+
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 128, message = "Lastname size cannot be less than 2 and more than 128 characters")
     private String lastName;
-    @NotNull
-    private Long flightId;
+
     @NotBlank(message = "Flight code cannot be empty")
     @Size(min = 2, max = 15, message = "Length of flight code should be between 2 and 15 characters")
-    private String code;
-    @NotNull
+    private String flightCode;
+
+    @NotNull(message = "Departure airport cannot be null")
     private Airport from;
-    @NotNull
+
+    @NotNull(message = "Arrival airport cannot be null")
     private Airport to;
-    @NotNull
+
+    @NotNull(message = "Departure date and time cannot be null")
     private LocalDateTime departureDateTime;
-    @NotNull
+
+    @NotNull(message = "Arrival date and time cannot be null")
     private LocalDateTime arrivalDateTime;
-    @NotNull
+
+    @NotNull(message = "Flight seat ID cannot be null")
     private Long flightSeatId;
+
     @NotBlank(message = "Field seat number cannot be null")
     @Size(min = 2, max = 5, message = "Seat number must be between 2 and 5 characters")
     private String seatNumber;
+
+    @NotNull(message = "Booking ID cannot be null")
+    private Long bookingId;
+
+    private LocalDateTime boardingStartTime;
+
+    private LocalDateTime boardingEndTime;
 }

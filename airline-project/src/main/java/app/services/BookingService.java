@@ -43,7 +43,8 @@ public class BookingService {
 
     @Transactional
     public BookingDto saveBooking(BookingDto bookingDto) {
-        bookingDto.setBookingStatus(BookingStatus.NOT_PAID);
+        // TODO После реализации платежей заменить на NOT_PAID
+        bookingDto.setBookingStatus(BookingStatus.PAID);
 
         passengerService.checkIfPassengerExists(bookingDto.getPassengerId());
         flightSeatService.checkIfFlightSeatExist(bookingDto.getFlightSeatId());
@@ -106,7 +107,7 @@ public class BookingService {
         flightSeat.setIsBooked(true);
     }
 
-    private Booking checkIfBookingExist(Long bookingId) {
+    public Booking checkIfBookingExist(Long bookingId) {
         return bookingRepository.findById(bookingId).orElseThrow(
                 () -> new EntityNotFoundException("Booking with ID: " + bookingId + " not found"));
     }
@@ -116,5 +117,11 @@ public class BookingService {
         flightSeatDto.setIsBooked(false);
 
         flightSeatService.editFlightSeat(flightSeat.getId(), flightSeatDto);
+    }
+    public Optional<Booking> getBooking(Long id) {
+        return bookingRepository.findById(id);
+    }
+    public Optional<Booking> getBookingByFlightSeatId(Long flightSeatId) {
+        return bookingRepository.findByFlightSeatId(flightSeatId);
     }
 }
