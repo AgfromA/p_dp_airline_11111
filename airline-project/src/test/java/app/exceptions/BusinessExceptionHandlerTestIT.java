@@ -1,16 +1,20 @@
 package app.exceptions;
 
 import app.controllers.IntegrationTestBase;
+
 import app.services.BookingService;
 import app.services.FlightSeatService;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
 
@@ -18,6 +22,7 @@ class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
     FlightSeatService flightSeatService;
     @Autowired
     BookingService bookingService;
+
 
     @Test
     void testHandleSearchControllerException() throws Exception {
@@ -28,7 +33,7 @@ class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
                         .param("returnDate", "2022-01-10")
                         .param("numberOfPassengers", "2")) // Количество пассажиров устанавливаем 0
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("Required request parameter 'airportTo' for method parameter type Airport is not present"));
+                .andExpect(jsonPath("$.requestId").exists());
     }
 
     @Test
@@ -39,4 +44,5 @@ class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
 }
