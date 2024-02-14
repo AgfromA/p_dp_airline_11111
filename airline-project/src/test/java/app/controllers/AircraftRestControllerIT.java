@@ -1,6 +1,7 @@
 package app.controllers;
 
 import app.dto.AircraftDto;
+import app.dto.BookingDto;
 import app.mappers.AircraftMapper;
 import app.repositories.AircraftRepository;
 import app.services.AircraftService;
@@ -371,5 +372,46 @@ class AircraftRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(delete("http://localhost:8080/api/aircrafts/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id самолета при POST запросе")
+    void shouldNotChangeIdByUserFromPostRequest() throws Exception {
+
+        var aircraftDto = new AircraftDto();
+        aircraftDto.setId(33L);
+        aircraftDto.setAircraftNumber("ABC123");
+        aircraftDto.setModel("Boeing 777");
+        aircraftDto.setModelYear(2020);
+        aircraftDto.setFlightRange(5000);
+
+        mockMvc.perform(post("http://localhost:8080/api/aircrafts")
+                        .content(objectMapper.writeValueAsString(aircraftDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(not(33)));
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id самолета при PATCH запросе")
+    void shouldNotChangeIdByUserFromPatchRequest() throws Exception {
+
+        var aircraftDto = new AircraftDto();
+        aircraftDto.setId(33L);
+        aircraftDto.setAircraftNumber("ABC123");
+        aircraftDto.setModel("Boeing 777");
+        aircraftDto.setModelYear(2020);
+        aircraftDto.setFlightRange(5000);
+        var id = 1L;
+
+        mockMvc.perform(patch("http://localhost:8080/api/aircrafts/{id}", id)
+                        .content(objectMapper.writeValueAsString(aircraftDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
     }
 }

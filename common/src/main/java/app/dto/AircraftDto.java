@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode
 @NoArgsConstructor
 public class AircraftDto {
+
     @ReadOnlyProperty
     private Long id;
 

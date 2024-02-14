@@ -1,11 +1,15 @@
 package app.controllers;
 
+import app.dto.FlightDto;
 import app.dto.FlightSeatDto;
+import app.dto.SeatDto;
 import app.entities.Aircraft;
+import app.entities.Category;
 import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.entities.Seat;
 import app.enums.Airport;
+import app.enums.CategoryType;
 import app.enums.FlightStatus;
 import app.mappers.FlightSeatMapper;
 import app.repositories.AircraftRepository;
@@ -16,6 +20,7 @@ import app.repositories.FlightSeatRepository;
 import app.repositories.SeatRepository;
 import app.services.FlightSeatService;
 import app.services.FlightService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +30,13 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
@@ -54,6 +61,8 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     private SeatRepository seatRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private FlightSeatMapper flightSeatMapper;
 
     public FlightSeat createFlightSeat() {
         var aircraft = new Aircraft();
@@ -239,5 +248,38 @@ class FlightSeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id места в самолете при POST запросе")
+    void shouldNotChangeIdByUserFromPostRequest() throws Exception {
+        FlightSeatDto flightSeatDto = flightSeatMapper.toDto(createFlightSeat(), flightService);
+        flightSeatDto.setId(33L);
+
+        mockMvc.perform(post("http://localhost:8080/api/flight-seats")
+                        .content(objectMapper.writeValueAsString(flightSeatDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(not(33)));
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id места в самолете при PATCH запросе")
+    void shouldNotChangeIdByUserFromPatchRequest() throws Exception {
+
+        FlightSeatDto flightSeatDto = flightSeatMapper.toDto(createFlightSeat(), flightService);
+        flightSeatDto.setId(33L);
+        var id = 1L;
+
+        mockMvc.perform(patch("http://localhost:8080/api/flight-seats/{id}", id)
+                        .content(objectMapper.writeValueAsString(flightSeatDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(not(33)));
     }
 }
