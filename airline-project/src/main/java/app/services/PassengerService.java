@@ -79,7 +79,6 @@ public class PassengerService {
     @Transactional
     public PassengerDto createPassenger(PassengerDto passengerDto) {
         checkEmailUnique(passengerDto.getEmail());
-        passengerDto.setId(null);
         var passenger = passengerMapper.toEntity(passengerDto);
         return passengerMapper.toDto(passengerRepository.save(passenger));
     }
