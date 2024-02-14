@@ -146,17 +146,17 @@ class AccountControllerIT extends IntegrationTestBase {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[?(@ == 'firstName: First name must contain only letters')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'firstName: Field should not be empty')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'firstName: Size first_name cannot be less than 2 and more than 128 characters')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'lastName: Last name must contain only letters')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'birthDate: Date of birth can not be a future time')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'phoneNumber: Size phone cannot be less than 6 and more than 64 characters')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'email: Email address must adhere to the standard format: example@example.com')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'password: min 8 characters, 1 uppercase latter1 lowercase latter, " +
-                                    "at least 1 number, 1 special character')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'securityQuestion: Field should not be empty')]").exists())
-                .andExpect(jsonPath("$[?(@ == 'answerQuestion: Field should not be empty')]").exists());
+                .andExpect(jsonPath("$.firstName[?(@ == 'First name must contain only letters')]").exists())
+                .andExpect(jsonPath("$.firstName[?(@ == 'Field should not be empty')]").exists())
+                .andExpect(jsonPath("$.lastName[?(@ == 'Last name must contain only letters')]").exists())
+                .andExpect(jsonPath("$.birthDate[?(@ == 'Date of birth can not be a future time')]").exists())
+                .andExpect(jsonPath("$.phoneNumber[?(@ == 'Size phone cannot be less than 6 and more than 64 characters')]").exists())
+                .andExpect(jsonPath("$.email[?(@ == 'Email address must adhere to the standard format: example@example.com')]").exists())
+                .andExpect(jsonPath("$.password[?(@ == 'min 8 characters, 1 uppercase latter1 lowercase latter, at least 1 number, 1 special character')]").exists())
+                .andExpect(jsonPath("$.securityQuestion[?(@ == 'Field should not be empty')]").exists())
+                .andExpect(jsonPath("$.answerQuestion[?(@ == 'Field should not be empty')]").exists())
+                .andExpect(jsonPath("$.RequestID").exists())
+                .andExpect(jsonPath("$.RequestID").isNotEmpty());
     }
 
     @Test

@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
@@ -97,6 +98,10 @@ class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.firstName[?(@ == 'Size first_name cannot be less " +
+                                    "than 2 and more than 128 characters')]").exists())
+                .andExpect(jsonPath("$.RequestID").exists())
+                .andExpect(jsonPath("$.RequestID").isNotEmpty());
     }
 }
