@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class BookingDto {
 
     @ReadOnlyProperty
-    private long id;
+    private Long id;
 
     @NotNull
     @Min(1)

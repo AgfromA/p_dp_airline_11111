@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.ReadOnlyProperty;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 

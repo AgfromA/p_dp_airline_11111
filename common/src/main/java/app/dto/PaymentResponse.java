@@ -4,6 +4,7 @@ import app.enums.Currency;
 import app.enums.State;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PaymentResponse {
 
+    @ReadOnlyProperty
     private Long id;
 
 
