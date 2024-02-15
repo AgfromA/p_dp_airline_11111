@@ -49,7 +49,7 @@ public class BookingRestController implements BookingRestApi {
     public ResponseEntity<BookingDto> getBooking(Long id) {
         log.info("getBooking: id = {}", id);
         var booking = bookingService.getBookingDto(id);
-        return booking.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return booking.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @Override

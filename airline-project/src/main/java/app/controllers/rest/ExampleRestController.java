@@ -52,7 +52,7 @@ public class ExampleRestController implements ExampleRestApi {
     public ResponseEntity<ExampleDto> get(Long id) {
         return exampleService.findById(id)
                 .map(value -> ResponseEntity.ok(value))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ExampleRestController implements ExampleRestApi {
     public ResponseEntity<ExampleDto> update(Long id, ExampleDto exampleDto) {
         return exampleService.update(id, exampleDto)
                 .map(example -> ResponseEntity.ok(exampleDto))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Override

@@ -22,12 +22,12 @@ import static org.mockito.Mockito.when;
 
 class AccountMapperTest {
 
-    private AccountMapper accountMapper = Mappers.getMapper(AccountMapper.class);
+    private final AccountMapper accountMapper = Mappers.getMapper(AccountMapper.class);
     @Mock
     private RoleService roleServiceMock = Mockito.mock(RoleService.class);
 
     @Test
-    public void shouldConvertAccountToAccountDTO() throws Exception {
+    void shouldConvertAccountToAccountDTO() {
         Role role = new Role();
         role.setId(1L);
         role.setName("ROLE_MANAGER");
@@ -63,7 +63,7 @@ class AccountMapperTest {
     }
 
     @Test
-    public void shouldConvertAccountDTOToAccount() throws Exception {
+    void shouldConvertAccountDTOToAccount() {
         RoleDto role = new RoleDto();
         role.setId(1L);
         role.setName("ROLE_MANAGER");
@@ -99,7 +99,7 @@ class AccountMapperTest {
     }
 
     @Test
-    public void shouldConvertAccountListToAccountDTOList() throws Exception {
+    void shouldConvertAccountListToAccountDTOList() {
         List<Account> accountList = new ArrayList<>();
         Role role = new Role();
         role.setId(1L);
@@ -163,7 +163,7 @@ class AccountMapperTest {
     }
 
     @Test
-    public void shouldConvertAccountDTOListToAccountList() throws Exception {
+    void shouldConvertAccountDTOListToAccountList() {
         List<AccountDto> accountDtoList = new ArrayList<>();
         RoleDto role = new RoleDto();
         role.setId(1L);

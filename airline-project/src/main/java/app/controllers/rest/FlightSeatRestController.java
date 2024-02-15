@@ -59,7 +59,7 @@ public class FlightSeatRestController implements FlightSeatRestApi {
     public ResponseEntity<FlightSeatDto> getFlightSeat(Long id) {
         log.info("getFlightSeat: by id: {}", id);
         var flightSeat = flightSeatService.getFlightSeatDto(id);
-        return flightSeat.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return flightSeat.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @Override

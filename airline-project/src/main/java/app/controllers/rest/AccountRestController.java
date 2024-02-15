@@ -12,16 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
-@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class AccountRestController implements AccountRestApi {
@@ -32,44 +28,31 @@ public class AccountRestController implements AccountRestApi {
 
     @Override
     public ResponseEntity<Page<AccountDto>> getAllAccounts(Integer page, Integer size) {
-        log.info("getAll: get all Accounts");
+        log.info("getAllAccounts:");
         if (page == null || size == null) {
-            log.info("getAll: get all List Accounts");
             return createUnPagedResponse();
         }
-        var accounts = accountService.getPage(page, size);
+        var accounts = accountService.getAllAccounts(page, size);
         return accounts.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : createPagedResponse(accounts);
+                : ResponseEntity.ok(accounts);
     }
 
     private ResponseEntity<Page<AccountDto>> createUnPagedResponse() {
-        var account = accountService.findAll();
+        var account = accountService.getAllAccounts();
         if (account.isEmpty()) {
-            log.info("getAll: Accounts not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("getAll: found {} Accounts", account.size());
+            log.info("getAllAccounts: count {}", account.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(account)));
         }
     }
 
-    private ResponseEntity<Page<AccountDto>> createPagedResponse(Page<AccountDto> accountPage) {
-        var accountDTOPage = new PageImpl<>(
-                new ArrayList<>(accountPage.getContent()),
-                accountPage.getPageable(),
-                accountPage.getTotalElements()
-        );
-        return ResponseEntity.ok(accountDTOPage);
-    }
-
     @Override
     public ResponseEntity<AccountDto> getAccount(Long id) {
-        log.info("getById: get Account by id. id = {}", id);
+        log.info("getAccount: by id: {}", id);
         var account = accountService.getAccountById(id);
-        return account.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(account.get(), HttpStatus.OK);
+        return account.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @Override
@@ -78,34 +61,35 @@ public class AccountRestController implements AccountRestApi {
         String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
-            String username = jwtProvider.extractClaims(token).get().getSubject();
-            var authAccount = accountService.getAccountByEmail(username);
-            return ResponseEntity.ok(authAccount);
+            var claimsOptional = jwtProvider.extractClaims(token);
+            if (claimsOptional.isPresent()) {
+                String username = claimsOptional.get().getSubject();
+                var authAccount = accountService.getAccountByEmail(username);
+                return ResponseEntity.ok(authAccount);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @Override
     public ResponseEntity<AccountDto> createAccount(AccountDto accountDTO) {
-        log.info("create: create new Account with email={}", accountDTO.getEmail());
-        return ResponseEntity.ok((accountService.saveAccount(accountDTO)));
+        log.info("createAccount:");
+        return new ResponseEntity<>(accountService.createAccount(accountDTO), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
-        log.info("update: update Account with id = {}", id);
-        return new ResponseEntity<>(accountService.updateAccount(id, accountDTO).get(), HttpStatus.OK);
+        log.info("updateAccount: by id: {}", id);
+        return ResponseEntity.ok(accountService.updateAccount(id, accountDTO));
     }
 
     @Override
     public ResponseEntity<Void> deleteAccount(Long id) {
-        log.info("deleteAircraftById: deleteAircraftById Account with id = {}", id);
-        var user = accountService.getAccountById(id);
-        if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        accountService.deleteAccountById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        log.info("deleteAccount: by id: {}", id);
+        accountService.deleteAccount(id);
+        return ResponseEntity.ok().build();
     }
 
     @Override
@@ -114,6 +98,6 @@ public class AccountRestController implements AccountRestApi {
         if (allRolesFromDb.isEmpty()) {
             return new ResponseEntity<>(Collections.emptySet(), HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.ok(allRolesFromDb);
+        return new ResponseEntity<>(allRolesFromDb, HttpStatus.OK);
     }
 }
