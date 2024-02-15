@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.dto.AircraftDto;
 import app.dto.DestinationDto;
 import app.entities.Destination;
 import app.enums.Airport;
@@ -8,6 +9,7 @@ import app.repositories.DestinationRepository;
 import app.services.DestinationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,13 +23,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static app.enums.Airport.CNN;
 import static app.enums.Airport.RAT;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
@@ -218,5 +223,43 @@ class DestinationControllerIT extends IntegrationTestBase {
         map.put("last", last);
 
         return mapper.writeValueAsString(map);
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id места назначения при POST запросе")
+    void shouldNotChangeIdByUserFromPostRequest() throws Exception {
+
+        var destinationDto = new DestinationDto();
+        destinationDto.setId(33L);
+        destinationDto.setAirportCode(CNN);
+        destinationDto.setTimezone("GMT +9");
+
+
+        mockMvc.perform(post("http://localhost:8080/api/destinations")
+                        .content(objectMapper.writeValueAsString(destinationDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(not(33)));
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id места назначения при PATCH запросе")
+    void shouldNotChangeIdByUserFromPatchRequest() throws Exception {
+
+        var destinationDto = new DestinationDto();
+        destinationDto.setId(33L);
+        destinationDto.setAirportCode(CNN);
+        destinationDto.setTimezone("GMT +9");
+        var id = 2L;
+
+        mockMvc.perform(patch("http://localhost:8080/api/destinations/{id}", id)
+                        .content(objectMapper.writeValueAsString(destinationDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(2));
     }
 }

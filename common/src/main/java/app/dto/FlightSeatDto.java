@@ -12,6 +12,7 @@ import javax.validation.constraints.PositiveOrZero;
 @EqualsAndHashCode
 @NoArgsConstructor
 public class FlightSeatDto {
+
     @ReadOnlyProperty
     private Long id;
 

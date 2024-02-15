@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.ReadOnlyProperty;
-
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -17,10 +16,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDto {
+
     @ReadOnlyProperty
     private Long id;
+
     @NotBlank(message = "The field can not be empty")
     private String name;
-
-
 }

@@ -2,18 +2,24 @@ package app.controllers;
 
 import app.dto.AircraftDto;
 import app.dto.SeatDto;
+import app.entities.Passport;
 import app.enums.CategoryType;
+import app.enums.Gender;
 import app.mappers.SeatMapper;
 import app.repositories.SeatRepository;
 import app.services.AircraftService;
 import app.services.CategoryService;
 import app.services.SeatService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.time.LocalDate;
+
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -303,6 +309,48 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
+    }
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id места в самолете при POST запросе")
+    void shouldNotChangeIdByUserFromPostRequest() throws Exception {
+        var seatDTO = new SeatDto();
+        seatDTO.setId(33L);
+        seatDTO.setSeatNumber("1B");
+        seatDTO.setIsLockedBack(true);
+        seatDTO.setIsNearEmergencyExit(false);
+        seatDTO.setCategory(CategoryType.ECONOMY);
+        seatDTO.setAircraftId(1L);
+
+        mockMvc.perform(post("http://localhost:8080/api/seats")
+                        .content(objectMapper.writeValueAsString(seatDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(not(33)));
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id пассажира при PATCH запросе")
+    void shouldNotChangeIdByUserFromPatchRequest() throws Exception {
+        var seatDTO = new SeatDto();
+        seatDTO.setId(33L);
+        seatDTO.setSeatNumber("1B");
+        seatDTO.setIsLockedBack(true);
+        seatDTO.setIsNearEmergencyExit(false);
+        seatDTO.setCategory(CategoryType.ECONOMY);
+        seatDTO.setAircraftId(1L);
+
+        var id = 1L;
+
+        mockMvc.perform(patch("http://localhost:8080/api/seats/{id}", id)
+                        .content(objectMapper.writeValueAsString(seatDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(not(33)));
     }
 
 }

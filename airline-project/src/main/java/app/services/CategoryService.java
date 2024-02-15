@@ -1,6 +1,5 @@
 package app.services;
 
-import app.dto.AccountDto;
 import app.entities.Category;
 import app.enums.CategoryType;
 import app.repositories.CategoryRepository;
