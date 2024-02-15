@@ -26,12 +26,18 @@ public class AccountService {
     private final AccountMapper accountMapper;
     private final RoleMapper roleMapper;
 
-    public List<AccountDto> findAll() {
+    public List<AccountDto> getAllAccounts() {
         return accountMapper.toDtoList(accountRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
+    public Page<AccountDto> getAllAccounts(Integer page, Integer size) {
+        return accountRepository.findAll(PageRequest.of(page, size))
+                .map(accountMapper::toDto);
+    }
+
     @Transactional
-    public AccountDto saveAccount(AccountDto accountDTO) {
+    public AccountDto createAccount(AccountDto accountDTO) {
         checkEmailUnique(accountDTO.getEmail());
         accountDTO.setPassword(encoder.encode(accountDTO.getPassword()));
         accountDTO.setRoles(roleService.saveRolesToUser(accountDTO));
@@ -39,15 +45,12 @@ public class AccountService {
             accountDTO.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
         var account = accountMapper.toEntity(accountDTO);
-        account.setId(null);
         return accountMapper.toDto(accountRepository.saveAndFlush(account));
     }
 
     @Transactional
     public AccountDto updateAccount(Long id, AccountDto accountDTO) {
-        var existingAccount = accountRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Operation was not finished because Account was not found with id = " + id)
-        );
+        var existingAccount = checkIfAccountSeatExist(id);
         if (accountDTO.getFirstName() != null) {
             existingAccount.setFirstName(accountDTO.getFirstName());
         }
@@ -81,12 +84,6 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AccountDto> getPage(Integer page, Integer size) {
-        var pageRequest = PageRequest.of(page, size);
-        return accountRepository.findAll(pageRequest).map(accountMapper::toDto);
-    }
-
-    @Transactional(readOnly = true)
     public Optional<AccountDto> getAccountById(Long id) {
         return accountRepository.findById(id).map(accountMapper::toDto);
     }
@@ -97,12 +94,9 @@ public class AccountService {
     }
 
     @Transactional
-    public Optional<AccountDto> deleteAccountById(Long id) {
-        var optionalSavedAccount = getAccountById(id);
-        if (optionalSavedAccount.isPresent()) {
-            accountRepository.deleteById(id);
-        }
-        return optionalSavedAccount;
+    public void deleteAccount(Long id) {
+        checkIfAccountSeatExist(id);
+        accountRepository.deleteById(id);
     }
 
     private void checkEmailUnique(String email) {
@@ -110,5 +104,11 @@ public class AccountService {
         if (existingAccount != null) {
             throw new DuplicateFieldException("Email already exists");
         }
+    }
+
+    private Account checkIfAccountSeatExist(Long accountId) {
+        return accountRepository.findById(accountId).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Account was not found with id = " + accountId)
+        );
     }
 }

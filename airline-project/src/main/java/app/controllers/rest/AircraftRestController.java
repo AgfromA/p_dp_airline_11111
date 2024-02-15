@@ -49,7 +49,7 @@ public class AircraftRestController implements AircraftRestApi {
     public ResponseEntity<AircraftDto> getAircraft(Long id) {
         log.info("getAircraft: by id={}", id);
         var aircraft = aircraftService.getAircraftDto(id);
-        return aircraft.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return aircraft.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @Override

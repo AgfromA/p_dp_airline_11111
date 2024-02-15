@@ -30,15 +30,15 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, List<String>>> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, List<String>> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            String field = error.getField();
-            String message = error.getDefaultMessage();
-            errors.computeIfAbsent(field, k -> new ArrayList<>()).add(message);
-        });
-        errors.computeIfAbsent("RequestID", k -> new ArrayList<>()).add(getRequestId());
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ExceptionResponseDto> handleValidationException(MethodArgumentNotValidException ex) {
+        var errors = new HashMap<String, List<String>>();
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors
+                        .computeIfAbsent(error.getField(), k -> new ArrayList<>())
+                        .add(error.getDefaultMessage())
+                );
+        var responseDto = new ExceptionResponseDto(errors.toString(), getRequestId());
+        return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

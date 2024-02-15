@@ -55,7 +55,7 @@ class AccountServiceTest {
 
         when(accountMapper.toDtoList(accountList)).thenReturn(expectedAccountDtoList);
 
-        List<AccountDto> actualAccountDtoList = accountService.findAll();
+        List<AccountDto> actualAccountDtoList = accountService.getAllAccounts();
 
         assertNotNull(actualAccountDtoList);
         assertEquals(expectedAccountDtoList, actualAccountDtoList);
@@ -71,7 +71,7 @@ class AccountServiceTest {
         when(accountRepository.findAll(any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(List.of(account)));
 
-        Page<AccountDto> result = accountService.getPage(0, 10);
+        Page<AccountDto> result = accountService.getAllAccounts(0, 10);
 
         assertNotNull(result);
         assertTrue(result.hasContent());
@@ -94,7 +94,7 @@ class AccountServiceTest {
         when(accountMapper.toEntity(accountDto)).thenReturn(account);
         when(accountRepository.saveAndFlush(account)).thenReturn(account);
 
-        AccountDto result = accountService.saveAccount(accountDto);
+        AccountDto result = accountService.createAccount(accountDto);
 
         assertEquals(accountDto, result);
         verify(accountRepository, times(1)).saveAndFlush(account);
@@ -113,7 +113,7 @@ class AccountServiceTest {
         when(accountRepository.getAccountByEmail(email)).thenReturn(account);
 
         Exception exception = assertThrows(DuplicateFieldException.class, () -> {
-            accountService.saveAccount(accountDto);
+            accountService.createAccount(accountDto);
         });
         assertEquals("Email already exists", exception.getMessage());
     }
@@ -259,11 +259,9 @@ class AccountServiceTest {
         account.setId(id);
 
         when(accountRepository.findById(id)).thenReturn(Optional.of(account));
-        when(accountMapper.toDto(account)).thenReturn(accountDto);
 
-        Optional<AccountDto> result = accountService.deleteAccountById(id);
+        accountService.deleteAccount(id);
 
-        assertEquals(Optional.of(accountDto), result);
         verify(accountRepository, times(1)).findById(id);
         verify(accountRepository, times(1)).deleteById(id);
     }
@@ -274,9 +272,8 @@ class AccountServiceTest {
 
         when(accountRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<AccountDto> result = accountService.deleteAccountById(id);
+        assertThrows(EntityNotFoundException.class, () -> accountService.deleteAccount(id));
 
-        assertFalse(result.isPresent());
         verify(accountRepository, times(1)).findById(id);
         verify(accountRepository, times(0)).deleteById(id);
     }

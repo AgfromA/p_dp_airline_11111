@@ -62,7 +62,7 @@ public class PassengerRestController implements PassengerRestApi {
     public ResponseEntity<PassengerDto> getPassenger(Long id) {
         log.info("getPassenger: by id: {}", id);
         var passenger = passengerService.getPassengerDto(id);
-        return passenger.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return passenger.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @Override
