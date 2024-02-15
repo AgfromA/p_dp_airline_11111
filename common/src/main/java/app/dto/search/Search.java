@@ -1,7 +1,5 @@
 package app.dto.search;
 
-
-import app.entities.Category;
 import app.enums.Airport;
 import app.enums.CategoryType;
 import com.fasterxml.jackson.annotation.JsonFormat;

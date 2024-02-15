@@ -1,6 +1,5 @@
 package app.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,5 +34,4 @@ public class TimezoneDto {
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 9, message = "GMT winter name must be between 2 and 7 characters")
     private String gmtWinter;
-
 }

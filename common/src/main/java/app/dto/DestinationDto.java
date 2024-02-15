@@ -24,9 +24,4 @@ public class DestinationDto {
     @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 9, message = "Timezone must be between 2 and 9 characters")
     private String timezone;
-
 }
-
-
-
-

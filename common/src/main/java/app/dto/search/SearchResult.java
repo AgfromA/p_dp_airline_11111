@@ -1,6 +1,5 @@
 package app.dto.search;
 
-import app.dto.FlightDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +10,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-
 /**
  * Найденные рейсы.
  */
-
 @Getter
 @Setter
 @ToString

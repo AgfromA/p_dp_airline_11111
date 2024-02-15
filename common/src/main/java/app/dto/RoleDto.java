@@ -22,6 +22,4 @@ public class RoleDto {
 
     @NotBlank(message = "The field can not be empty")
     private String name;
-
-
 }
