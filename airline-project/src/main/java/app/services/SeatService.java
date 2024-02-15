@@ -45,7 +45,6 @@ public class SeatService {
     public SeatDto saveSeat(SeatDto seatDto) {
         checkIfAircraftExists(seatDto.getAircraftId());
         var seat = seatMapper.toEntity(seatDto, categoryService, aircraftService);
-        seat.setId(null);
         return seatMapper.toDto(seatRepository.save(seat));
     }
 

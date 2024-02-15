@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.Setter;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-
-
 @Data
 @Setter
 public class ExampleDto {

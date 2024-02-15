@@ -31,5 +31,4 @@ public class SeatDto {
 //    @NotNull(message = "Field aircraft cannot be null")
 // эта проверка осталась в сущности, т.к. при сохранении многих Seat по aircraftID это поле сеттится отдельно.
     private Long aircraftId;
-
 }

@@ -2,13 +2,12 @@ package app.dto;
 
 import app.entities.Passport;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+import org.springframework.data.annotation.ReadOnlyProperty;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -20,7 +19,7 @@ import java.time.LocalDate;
 @JsonTypeName(value = "passenger")
 public class PassengerDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     private Long id;
 
     @NotBlank(message = "Field should not be empty")

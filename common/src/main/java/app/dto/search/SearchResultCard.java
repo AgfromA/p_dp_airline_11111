@@ -8,6 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SearchResultCard {
+
     private Integer totalPrice;
 
     private SearchResultCardData dataTo;

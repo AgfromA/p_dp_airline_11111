@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.dto.DestinationDto;
 import app.dto.FlightDto;
 import app.entities.Aircraft;
 import app.entities.Flight;
@@ -9,6 +10,7 @@ import app.enums.Airport;
 import app.enums.FlightStatus;
 import app.repositories.*;
 import app.services.FlightService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,12 @@ import org.springframework.test.context.jdbc.Sql;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static app.enums.Airport.CNN;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -234,5 +239,53 @@ class FlightRestControllerIT extends IntegrationTestBase {
                         .content(objectMapper.writeValueAsString(flightDTO)))
                 .andExpect(status().isNotFound());
 
+    }
+
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id полета при POST запросе")
+    void shouldNotChangeIdByUserFromPostRequest() throws Exception {
+
+        var flightDTO = new FlightDto();
+        flightDTO.setId(33L);
+        flightDTO.setCode("VKOVOG");
+        flightDTO.setAirportTo(Airport.VKO);
+        flightDTO.setAirportFrom(Airport.VOG);
+        flightDTO.setArrivalDateTime(LocalDateTime.of(2023, 10, 23, 10, 50, 0));
+        flightDTO.setDepartureDateTime(LocalDateTime.of(2023, 10, 23, 8, 15, 0));
+        flightDTO.setAircraftId(1L);
+        flightDTO.setFlightStatus(FlightStatus.DELAYED);
+
+        mockMvc.perform(post("http://localhost:8080/api/flights")
+                        .content(objectMapper.writeValueAsString(flightDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(not(33)));
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия возможности у пользователя изменить id полета при PATCH запросе")
+    void shouldNotChangeIdByUserFromPatchRequest() throws Exception {
+
+        var flightDTO = new FlightDto();
+        flightDTO.setId(33L);
+        flightDTO.setCode("VKOVOG");
+        flightDTO.setAirportTo(Airport.VKO);
+        flightDTO.setAirportFrom(Airport.VOG);
+        flightDTO.setArrivalDateTime(LocalDateTime.of(2023, 10, 23, 10, 50, 0));
+        flightDTO.setDepartureDateTime(LocalDateTime.of(2023, 10, 23, 8, 15, 0));
+        flightDTO.setAircraftId(1L);
+        flightDTO.setFlightStatus(FlightStatus.DELAYED);
+        var id = 1L;
+
+        mockMvc.perform(patch("http://localhost:8080/api/flights/{id}", id)
+                        .content(objectMapper.writeValueAsString(flightDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
     }
 }

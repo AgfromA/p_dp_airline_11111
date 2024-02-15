@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class SearchResultCardData {
+
     private Airport airportFrom;
 
     private Airport airportTo;
