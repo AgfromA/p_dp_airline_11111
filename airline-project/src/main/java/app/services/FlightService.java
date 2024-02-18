@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import net.sf.geographiclib.Geodesic;
 import net.sf.geographiclib.GeodesicData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,17 +26,24 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class FlightService {
 
-    @Lazy // FIXME костыль
-    @Autowired
+
     private FlightSeatService flightSeatService;
-    @Lazy // FIXME костыль
-    @Autowired
     private TicketService ticketService;
     private final FlightRepository flightRepository;
     private final AircraftService aircraftService;
     private final DestinationService destinationService;
     private final FlightMapper flightMapper;
     private static final Pattern LAT_LONG_PATTERN = Pattern.compile("([-+]?\\d{1,2}\\.\\d+),\\s+([-+]?\\d{1,3}\\.\\d+)");
+
+    @Autowired
+    public FlightService(FlightSeatService flightSeatService, TicketService ticketService, FlightRepository flightRepository, AircraftService aircraftService, DestinationService destinationService, FlightMapper flightMapper) {
+        this.flightSeatService = flightSeatService;
+        this.ticketService = ticketService;
+        this.flightRepository = flightRepository;
+        this.aircraftService = aircraftService;
+        this.destinationService = destinationService;
+        this.flightMapper = flightMapper;
+    }
 
     public List<FlightDto> getAllFlights() {
         var flights = flightRepository.findAll();
@@ -61,9 +67,9 @@ public class FlightService {
         return flightRepository.findById(id).map(flight -> flightMapper.toDto(flight, this));
     }
 
+    @Transactional
     public FlightDto createFlight(FlightDto flightDto) {
-        // FIXME заменить на аннотацию в ДТО
-        flightDto.setSeats(null);
+
         flightDto.setFlightStatus(FlightStatus.ON_TIME);
         aircraftService.checkIfAircraftExists(flightDto.getAircraftId());
 
@@ -72,6 +78,7 @@ public class FlightService {
         return flightMapper.toDto(savedFlight, this);
     }
 
+    @Transactional
     public FlightDto updateFlight(Long id, FlightDto flightDto) {
         var flight = checkIfFlightExists(id);
         if (flightDto.getCode() != null) {
@@ -99,6 +106,7 @@ public class FlightService {
         return flightMapper.toDto(updatedFlight, this);
     }
 
+    @Transactional
     public void deleteFlightById(Long id) {
         checkIfFlightExists(id);
         flightRepository.deleteById(id);

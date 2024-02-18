@@ -6,6 +6,7 @@ import app.mappers.RoleMapper;
 import app.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class RoleService {
         return roleMapper.toDto(roleRepository.findByName(name));
     }
 
+    @Transactional
     public Set<RoleDto> saveRolesToUser(AccountDto user) {
         var userRoles = new HashSet<RoleDto>();
         user.getRoles().forEach(a -> {

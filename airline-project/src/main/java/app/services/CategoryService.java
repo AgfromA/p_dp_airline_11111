@@ -32,7 +32,6 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     public Page<Category> getPage(Integer page, Integer size) {
         var pageRequest = PageRequest.of(page, size);
         return categoryRepository.findAll(pageRequest);
