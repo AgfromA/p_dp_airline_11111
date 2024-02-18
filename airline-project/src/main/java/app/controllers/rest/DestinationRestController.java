@@ -26,19 +26,18 @@ public class DestinationRestController implements DestinationRestApi {
     @Override
     public ResponseEntity<Page<DestinationDto>> getAllDestinations(Integer page, Integer size, String cityName,
                                                                    String countryName, String timezone) {
-        log.info("get all Destinations");
+        log.info("getAllDestinations:");
         if (page == null || size == null) {
-            log.info("get all List Destinations");
             return createUnPagedResponse();
         }
 
         Page<DestinationDto> destinations;
         if (cityName == null && countryName == null && timezone == null) {
             destinations = destinationService.getAllDestinations(page, size);
-            log.info("get all Destinations: found {} Destination", destinations.getNumberOfElements());
+            log.info("getAllDestinations: count: {}", destinations.getNumberOfElements());
         } else {
             destinations = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
-            log.info("get all Destinations by cityName or countryName or timezone. countryName: {}. cityName: {}. timezone: {} found {} Destination",
+            log.info("getAllDestinations: countryName: {}. cityName: {}. timezone: {} found {}",
                     countryName, cityName, timezone, destinations.getNumberOfElements());
         }
         return destinations.isEmpty()
@@ -49,23 +48,22 @@ public class DestinationRestController implements DestinationRestApi {
     private ResponseEntity<Page<DestinationDto>> createUnPagedResponse() {
         var destinations = destinationService.getAllDestinationDTO();
         if (destinations.isEmpty()) {
-            log.info("Destinations not found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            log.info("found {} Destinations", destinations.size());
+            log.info("getAllDestinations: count: {}", destinations.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(destinations)));
         }
     }
 
     @Override
     public ResponseEntity<DestinationDto> createDestination(DestinationDto destinationDTO) {
-        log.info("create: new Destination: {}", LogsUtils.objectToJson(destinationDTO));
+        log.info("createDestination:");
         return new ResponseEntity<>(destinationService.saveDestination(destinationDTO), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<DestinationDto> updateDestinationById(Long id, DestinationDto destinationDTO) {
-        log.info("update: Destination with id: {}", id);
+    public ResponseEntity<DestinationDto> updateDestination(Long id, DestinationDto destinationDTO) {
+        log.info("updateDestination: by id: {}", id);
         destinationService.updateDestinationById(id, destinationDTO);
         var updatedDestinationDTO = destinationService.getDestinationById(id);
         if (updatedDestinationDTO != null) {
@@ -76,8 +74,8 @@ public class DestinationRestController implements DestinationRestApi {
     }
 
     @Override
-    public ResponseEntity<HttpStatus> deleteDestinationById(Long id) {
-        log.info("delete: Destination with id: {}", id);
+    public ResponseEntity<HttpStatus> deleteDestination(Long id) {
+        log.info("deleteDestinationById: by id: {}", id);
         destinationService.deleteDestinationById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

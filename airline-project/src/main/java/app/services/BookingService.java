@@ -43,8 +43,7 @@ public class BookingService {
 
     @Transactional
     public BookingDto saveBooking(BookingDto bookingDto) {
-        // TODO После реализации платежей заменить на NOT_PAID
-        bookingDto.setBookingStatus(BookingStatus.PAID);
+        bookingDto.setBookingStatus(BookingStatus.NOT_PAID);
 
         passengerService.checkIfPassengerExists(bookingDto.getPassengerId());
         flightSeatService.checkIfFlightSeatExist(bookingDto.getFlightSeatId());

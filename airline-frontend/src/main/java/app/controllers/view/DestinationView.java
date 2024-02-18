@@ -279,7 +279,7 @@ public class DestinationView extends VerticalLayout {
                     editor.cancel();
                 if (grid.getDataProvider().isInMemory() && grid.getDataProvider().getClass() == ListDataProvider.class) {
                     ListDataProvider<DestinationDto> dataProvider = (ListDataProvider<DestinationDto>) grid.getDataProvider();
-                    destinationClient.deleteDestinationById(destination.getId());
+                    destinationClient.deleteDestination(destination.getId());
                     Notification.show("Destination deleted successfully.", 3000, Notification.Position.TOP_CENTER);
                     dataProvider.getItems().remove(destination);
                 }
@@ -349,7 +349,7 @@ public class DestinationView extends VerticalLayout {
 
     private boolean isEditedDestination(Long id, DestinationDto destinationDto) {
         try {
-            destinationClient.updateDestinationById(id, destinationDto);
+            destinationClient.updateDestination(id, destinationDto);
             return true;
         } catch (FeignException.BadRequest ex) {
             log.error(ex.getMessage());

@@ -1,6 +1,5 @@
-package app.schedulers;
+package app.services.schedulers;
 
-import app.schedulers.interfaces.BookingScheduler;
 import app.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -8,10 +7,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class BookingSchedulerImpl implements BookingScheduler {
+public class BookingScheduler {
 
     private final BookingService bookingService;
-    @Override
+
     @Scheduled(fixedRate = 600000)
     public void scheduleBookingAndFlightSeatStatus() {
         bookingService.updateBookingAndFlightSeatStatusIfExpired();

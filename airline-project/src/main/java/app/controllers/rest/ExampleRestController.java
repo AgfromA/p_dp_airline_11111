@@ -50,9 +50,7 @@ public class ExampleRestController implements ExampleRestApi {
 
     @Override
     public ResponseEntity<ExampleDto> get(Long id) {
-        return exampleService.findById(id)
-                .map(value -> ResponseEntity.ok(value))
-                .orElse(ResponseEntity.notFound().build());
+        return exampleService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @Override

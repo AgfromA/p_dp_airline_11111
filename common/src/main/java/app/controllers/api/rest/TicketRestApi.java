@@ -2,6 +2,8 @@ package app.controllers.api.rest;
 
 import app.dto.TicketDto;
 import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -10,86 +12,36 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-
-@Api(tags = "Ticket REST")
-@Tag(name = "Ticket REST", description = "API для операций с билетами")
+@Api(tags = "Ticket API")
+@Tag(name = "Ticket API", description = "API для операций с билетами. Создается после бронирования (Booking)")
 @RequestMapping("/api/tickets")
 public interface TicketRestApi {
 
     @GetMapping
-    @ApiOperation(value = "Get list of all Tickets")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Tickets found"),
-            @ApiResponse(code = 204, message = "Tickets not found")
-    })
+    @Operation(summary = "Получение всех сущностей с пагинацией/без пагинации")
     ResponseEntity<Page<TicketDto>> getAllTickets(
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "size", required = false) Integer size);
+            @Parameter(name = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size);
 
-    @ApiOperation(value = "Get Ticket by ticketNumber")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Found the ticket"),
-            @ApiResponse(code = 404, message = "Ticket not found")
-    })
+    @Operation(summary = "Получение билета по его номеру")
     @GetMapping("/{ticketNumber}")
-    ResponseEntity<TicketDto> getTicketByNumber(
-            @ApiParam(
-                    name = "ticketNumber",
-                    value = "ticketNumber",
-                    example = "SD-2222"
-            )
-            @PathVariable("ticketNumber") String ticketNumber);
+    ResponseEntity<TicketDto> getTicketByNumber(@Parameter(description = "Номер билета", example = "SD-2222") @PathVariable("ticketNumber") String ticketNumber);
 
-    @ApiOperation(value = "Create new Ticket")
-    @ApiResponse(code = 201, message = "Ticket created")
+    @Operation(summary = "Создание сущности", description = "Если ticketNumber не был передан в запросе, то он будет сгенерирован бекендом. ticketNumber должен быть уникальным. Билет будет создан только в случае, если связанное бронирование оплачено. Для одного бронирования может быть создан только один билет. Поля билета должны быть такие же, как у связанного бронирования")
     @PostMapping
-    ResponseEntity<TicketDto> createTicket(
-            @ApiParam(
-                    name = "ticket",
-                    value = "Ticket model"
-            )
-            @RequestBody @Valid TicketDto ticketDto);
+    ResponseEntity<TicketDto> createTicket(@Parameter(description = "Билет") @RequestBody @Valid TicketDto ticketDto);
 
-    @ApiOperation(value = "Generate new Paid Ticket by existing paid Booking")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Paid Ticket created"),
-            @ApiResponse(code = 404, message = "Ticket not found")
-    })
+    @Operation(summary = "Создание билета для указанного бронирования", description = "Билет будет создан только в случае, если бронирование оплачено")
     @PostMapping("/{bookingId}")
-    ResponseEntity<TicketDto> generatePaidTicket(
-            @ApiParam(
-                    name = "id",
-                    value = "Ticket.id"
-            )
-            @PathVariable Long bookingId);
+    ResponseEntity<TicketDto> generatePaidTicket(@Parameter(description = "ID бронирования") @PathVariable("bookingId") Long bookingId);
 
-    @ApiOperation(value = "Edit Ticket by \"id\"")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ticket has been updated"),
-            @ApiResponse(code = 404, message = "Ticket not found")
-    })
+    @Operation(summary = "Изменение сущности", description = "ID бронирования не может быть изменено")
     @PatchMapping("/{id}")
     ResponseEntity<?> updateTicket(
-            @ApiParam(
-                    name = "id",
-                    value = "Ticket.id"
-            ) @PathVariable Long id,
-            @ApiParam(
-                    name = "ticket",
-                    value = "Ticket model"
-            )
-            @RequestBody @Valid TicketDto ticketDto);
+            @Parameter(description = "ID сущности") @PathVariable Long id,
+            @Parameter(description = "Билет") @RequestBody @Valid TicketDto ticketDto);
 
-    @ApiOperation(value = "Delete Ticket by \"id\"")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ticket has been removed"),
-            @ApiResponse(code = 404, message = "Ticket not found")
-    })
+    @Operation(summary = "Удаление сущности")
     @DeleteMapping("/{id}")
-    ResponseEntity<HttpStatus> deleteTicketById(
-            @ApiParam(
-                    name = "id",
-                    value = "Ticket.id"
-            )
-            @PathVariable Long id);
+    ResponseEntity<HttpStatus> deleteTicketById(@Parameter(description = "ID сущности") @PathVariable Long id);
 }

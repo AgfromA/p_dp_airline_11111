@@ -5,6 +5,8 @@ import app.controllers.domain.JwtResponse;
 import app.controllers.domain.RefreshJwtRequest;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,55 +23,19 @@ import javax.servlet.http.HttpServletRequest;
 public interface JwtControllerApi {
 
     @PostMapping("/login")
-    @ApiOperation(value = "Login and get token")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Got tokens"),
-            @ApiResponse(code = 500, message = "Authentication exception")
-    })
-    ResponseEntity<JwtResponse> login(
-            @ApiParam(
-                    name = "request",
-                    value = "JwtRequest model"
-            )
-            @RequestBody JwtRequest authRequest) throws AuthException;
+    @Operation(summary = "Login and get token")
+    ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) throws AuthException;
 
     @PostMapping("/token")
-    @ApiOperation(value = "Get new access token")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Got an access token"),
-            @ApiResponse(code = 401, message = "Mismatch refresh token")
-    })
-    ResponseEntity<JwtResponse> getNewAccessToken(
-            @ApiParam(
-                    name = "request",
-                    value = "RefreshJwtRequest model"
-            )
-            @RequestBody RefreshJwtRequest request) throws AuthException;
+    @Operation(summary = "Get new access token")
+    ResponseEntity<JwtResponse> getNewAccessToken(@RequestBody RefreshJwtRequest request) throws AuthException;
 
     @PostMapping("/refresh")
-    @ApiOperation(value = "Get new token")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Got tokens"),
-            @ApiResponse(code = 401, message = "Mismatch refresh token")
-    })
-    ResponseEntity<JwtResponse> getNewRefreshToken(
-            @ApiParam(
-                    name = "request",
-                    value = "RefreshJwtRequest model"
-            )
-            @RequestBody RefreshJwtRequest request) throws AuthException;
+    @Operation(summary = "Get new token")
+    ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody RefreshJwtRequest request) throws AuthException;
 
     @Hidden
     @GetMapping("/login")
-    @ApiOperation(value = "Get login page")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Got login page"),
-            @ApiResponse(code = 401, message = "Not enough rights")
-    })
-    String loginPage(
-            @ApiParam(
-                    name = "request",
-                    value = "HttpServletRequest"
-            )
-            HttpServletRequest request);
+    @Operation(summary = "Get login page")
+    String loginPage(@Parameter(description = "request") HttpServletRequest request);
 }

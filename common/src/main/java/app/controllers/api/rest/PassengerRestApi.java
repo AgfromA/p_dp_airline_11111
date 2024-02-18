@@ -2,98 +2,46 @@ package app.controllers.api.rest;
 
 import app.dto.PassengerDto;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Api(tags = "Passenger REST")
-@Tag(name = "Passenger REST", description = "API для операций с пассажирами")
+@Api(tags = "Passenger API")
+@Tag(name = "Passenger API", description = "API для операций с пассажирами")
 public interface PassengerRestApi {
 
-    @ApiOperation(value = "Get list of all Passengers filtered")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Passenger found"),
-            @ApiResponse(code = 400, message = "Passenger not found")
-    })
+    @Operation(summary = "Получение всех сущностей с пагинацией/без пагинации")
     @RequestMapping(value = "/api/passengers", method = RequestMethod.GET)
     ResponseEntity<Page<PassengerDto>> getAllPassengers(
-            @PageableDefault(sort = {"id"})
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "size", required = false) Integer size,
-            @RequestParam(value = "firstName", required = false) String firstName,
-            @RequestParam(value = "lastName", required = false) String lastName,
-            @RequestParam(value = "email", required = false) String email,
-            @RequestParam(value = "serialNumberPassport", required = false) String serialNumberPassport
+            @Parameter(name = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size,
+            @Parameter(description = "Имя") @RequestParam(value = "firstName", required = false) String firstName,
+            @Parameter(description = "Фамилия") @RequestParam(value = "lastName", required = false) String lastName,
+            @Parameter(description = "Email") @RequestParam(value = "email", required = false) String email,
+            @Parameter(description = "Номер паспорта") @RequestParam(value = "serialNumberPassport", required = false) String serialNumberPassport
     );
 
-    @ApiOperation(value = "Get Passenger by \"id\"")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Passenger found"),
-            @ApiResponse(code = 404, message = "Passenger not found")
-    })
+    @Operation(summary = "Получение сущности")
     @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.GET)
-    ResponseEntity<PassengerDto> getPassenger(
-            @ApiParam(
-                    name = "id",
-                    value = "User.id",
-                    required = true
-            )
-            @PathVariable Long id);
+    ResponseEntity<PassengerDto> getPassenger(@Parameter(description = "ID сущности") @PathVariable Long id);
 
-    @ApiOperation(value = "Create new Passenger", notes = "Create method requires in model field \"@type\": \"Passenger\"")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Passenger created"),
-            @ApiResponse(code = 400, message = "Bad request")
-    })
+    @Operation(summary = "Создание сущности")
     @RequestMapping(value = "/api/passengers", method = RequestMethod.POST)
-    ResponseEntity<PassengerDto> createPassenger(
-            @ApiParam(
-                    name = "Passenger",
-                    value = "Passenger model",
-                    required = true
-            )
-            @RequestBody @Valid PassengerDto passengerDTO);
+    ResponseEntity<PassengerDto> createPassenger(@Parameter(description = "Пассажир", required = true) @RequestBody @Valid PassengerDto passengerDTO);
 
-    @ApiOperation(value = "Edit Passenger", notes = "Update method requires in model field \"@type\": \"Passenger\"")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Passenger updated"),
-            @ApiResponse(code = 404, message = "Passenger not found")
-    })
+    @Operation(summary = "Изменение сущности")
     @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.PATCH)
     ResponseEntity<PassengerDto> updatePassenger(
-            @ApiParam(
-                    name = "id",
-                    value = "Passenger.id",
-                    required = true
-            )
-            @PathVariable(value = "id") Long id,
-            @ApiParam(
-                    name = "Passenger",
-                    value = "Passenger model"
-            )
-            @RequestBody
-            @Valid PassengerDto passengerDTO);
+            @Parameter(description = "ID сущности", required = true) @PathVariable Long id,
+            @Parameter(description = "Пассажир") @RequestBody @Valid PassengerDto passengerDTO);
 
-    @ApiOperation(value = "Delete Passenger by \"id\"")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Passenger deleted"),
-            @ApiResponse(code = 404, message = "Passenger not found")
-    })
+    @Operation(summary = "Удаление сущности")
     @RequestMapping(value = "/api/passengers/{id}", method = RequestMethod.DELETE)
-    ResponseEntity<HttpStatus> deletePassenger(
-            @ApiParam(
-                    name = "id",
-                    value = "User.id",
-                    required = true
-            )
-            @PathVariable Long id);
+    ResponseEntity<HttpStatus> deletePassenger(@Parameter(description = "ID сущности", required = true) @PathVariable Long id);
 }
