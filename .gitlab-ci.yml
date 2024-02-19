@@ -1,9 +1,9 @@
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 stages:
   - build
   - test
-
-include:
-  - template: Code-Quality.gitlab-ci.yml
 
 build:
   stage: build
@@ -32,8 +32,3 @@ build:
     - echo "Compiling the code..."
     - 'mvn $MAVEN_CLI_OPTS clean install'
     - echo "Compile complete."
-  only:
-    - merge_requests
-
-code_quality:
-  stage: test
