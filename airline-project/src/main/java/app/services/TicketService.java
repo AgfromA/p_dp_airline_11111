@@ -7,9 +7,11 @@ import app.enums.BookingStatus;
 import app.exceptions.*;
 import app.mappers.TicketMapper;
 import app.repositories.TicketRepository;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
@@ -175,11 +177,11 @@ public class TicketService {
 
     public void getTicketPdfByTicketId(Long ticketId) {
         var ticket = checkIfTicketExist(ticketId);
-        try {
-            // Путь к файлу PDF, который будет создан
-            String pathToPdf =
-                    "C:\\Users\\zumag\\p_dp_airline_1\\airline-project\\src\\main\\resources\\ticket.pdf";
+        // Путь к файлу PDF, который будет создан
+        String pathToPdf =
+                "airline-project\\src\\main\\resources\\ticketsPdf\\ticket" + ticket.getTicketNumber() + ".pdf";
 
+        try {
             // Создание нового документа PDF
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(pathToPdf));
@@ -187,69 +189,77 @@ public class TicketService {
 
             // Добавление заголовка
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-            headerFont.setSize(18);
+            headerFont.setSize(30);
+            headerFont.setColor(BaseColor.GREEN);
             Paragraph header = new Paragraph("S7 Airline Ticket", headerFont);
+            header.setAlignment(Element.ALIGN_CENTER);
             document.add(header);
 
             // Добавление информации о рейсе
             Font flightInfoFont = FontFactory.getFont(FontFactory.HELVETICA);
-            flightInfoFont.setSize(26);
-            Chunk flightNumberChunk = new Chunk("Flight Number: ", flightInfoFont);
+            flightInfoFont.setColor(BaseColor.ORANGE);
+            flightInfoFont.setSize(18);
+            Font flightDetailsFont = FontFactory.getFont(FontFactory.HELVETICA);
+            flightDetailsFont.setColor(BaseColor.BLACK);
+            flightDetailsFont.setSize(16);
+
+            Chunk flightNumberChunk = new Chunk("Flight Number:  ", flightInfoFont);
             var flightNumberInDb = ticket.getFlightSeat().getFlight().getCode();
-            Chunk flightNumberValue = new Chunk(flightNumberInDb, flightInfoFont);
-            Paragraph flightNumber = new Paragraph();
+            Chunk flightNumberValue = new Chunk(flightNumberInDb, flightDetailsFont);
+            Paragraph flightNumber = new Paragraph(60);
             flightNumber.add(flightNumberChunk);
             flightNumber.add(flightNumberValue);
             document.add(flightNumber);
 
+
             // Добавление информации о дате и аэропортах
-            Chunk departureAirportChunk = new Chunk("Departure Airport: ", flightInfoFont);
+            Chunk departureAirportChunk = new Chunk("Departure Airport:  ", flightInfoFont);
             var departureAirportInDb = ticket.getFlightSeat().getFlight().getFrom().getAirportCode().toString();
-            Chunk departureAirportValue = new Chunk(departureAirportInDb, flightInfoFont);
-            Paragraph departureAirport = new Paragraph();
+            Chunk departureAirportValue = new Chunk(departureAirportInDb, flightDetailsFont);
+            Paragraph departureAirport = new Paragraph(30);
             departureAirport.add(departureAirportChunk);
             departureAirport.add(departureAirportValue);
             document.add(departureAirport);
 
-            Chunk arrivalAirportChunk = new Chunk("Arrival Airport: ", flightInfoFont);
+            Chunk arrivalAirportChunk = new Chunk("Arrival Airport:  ", flightInfoFont);
             var arrivalAirportInDb = ticket.getFlightSeat().getFlight().getTo().getAirportCode().toString();
-            Chunk arrivalAirportValue = new Chunk(arrivalAirportInDb, flightInfoFont);
-            Paragraph arrivalAirport = new Paragraph();
+            Chunk arrivalAirportValue = new Chunk(arrivalAirportInDb, flightDetailsFont);
+            Paragraph arrivalAirport = new Paragraph(30);
             arrivalAirport.add(arrivalAirportChunk);
             arrivalAirport.add(arrivalAirportValue);
             document.add(arrivalAirport);
 
             // Добавление информации о пассажире
-            Chunk passengerNameChunk = new Chunk("Passenger Name: ", flightInfoFont);
+            Chunk passengerNameChunk = new Chunk("Passenger name:  ", flightInfoFont);
             var passengerNameInDb = ticket.getPassenger().getFirstName();
-            Chunk passengerNameValue = new Chunk(passengerNameInDb, flightInfoFont);
-            Paragraph passengerName = new Paragraph();
+            Chunk passengerNameValue = new Chunk(passengerNameInDb, flightDetailsFont);
+            Paragraph passengerName = new Paragraph(30);
             passengerName.add(passengerNameChunk);
             passengerName.add(passengerNameValue);
             document.add(passengerName);
 
-            Chunk passengerSurnameChunk = new Chunk("Passenger Surname: ", flightInfoFont);
+            Chunk passengerSurnameChunk = new Chunk("Passenger surname:  ", flightInfoFont);
             var passengerSurnameInDb = ticket.getPassenger().getLastName();
-            Chunk passengerSurnameValue = new Chunk(passengerSurnameInDb, flightInfoFont);
-            Paragraph passengerSurname = new Paragraph();
-            passengerName.add(passengerSurnameChunk);
-            passengerName.add(passengerSurnameValue);
+            Chunk passengerSurnameValue = new Chunk(passengerSurnameInDb, flightDetailsFont);
+            Paragraph passengerSurname = new Paragraph(30);
+            passengerSurname.add(passengerSurnameChunk);
+            passengerSurname.add(passengerSurnameValue);
             document.add(passengerSurname);
 
             // Добавление информации о номере места
-            Chunk seatNumberChunk = new Chunk("Seat Number: ", flightInfoFont);
+            Chunk seatNumberChunk = new Chunk("Seat Number:  ", flightInfoFont);
             var seatNumberInDb = ticket.getFlightSeat().getSeat().getSeatNumber();
-            Chunk seatNumberValue = new Chunk(seatNumberInDb, flightInfoFont);
-            Paragraph seatNumber = new Paragraph();
+            Chunk seatNumberValue = new Chunk(seatNumberInDb, flightDetailsFont);
+            Paragraph seatNumber = new Paragraph(30);
             seatNumber.add(seatNumberChunk);
             seatNumber.add(seatNumberValue);
             document.add(seatNumber);
 
             // Добавление информации о цене билета
-            Chunk ticketPriceChunk = new Chunk("Ticket Price: ", flightInfoFont);
+            Chunk ticketPriceChunk = new Chunk("Ticket Price:  ", flightInfoFont);
             var ticketPriceInDb = ticket.getFlightSeat().getFare().toString();
-            Chunk ticketPriceValue = new Chunk(ticketPriceInDb, flightInfoFont);
-            Paragraph ticketPrice = new Paragraph();
+            Chunk ticketPriceValue = new Chunk(ticketPriceInDb, flightDetailsFont);
+            Paragraph ticketPrice = new Paragraph(30);
             ticketPrice.add(ticketPriceChunk);
             ticketPrice.add(ticketPriceValue);
             document.add(ticketPrice);
