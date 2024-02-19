@@ -8,5 +8,6 @@ UPDATE passengers SET first_name='Maria', middle_name='Popova', last_name='Ivano
 UPDATE passengers SET first_name='German', middle_name='Sevostyanov', last_name='Petrovich' where id=20;
 UPDATE passengers SET first_name='Kirill', middle_name='Zotov', last_name='Borisovich' where id=21;
 UPDATE passengers SET first_name='Pavel', middle_name='Dorohov', last_name='Ivanovich' where id=22;
-UPDATE passengers SET first_name='Sergei', middle_name='Makarov', last_name='Sergeevich' where id=24;
-UPDATE passengers SET first_name='Daria', middle_name='Ivanova', last_name='Petrovna' where id=25;
+UPDATE passengers SET first_name='Sergei', middle_name='Makarov', last_name='Sergeevich' where id=23;
+UPDATE passengers SET first_name='Daria', middle_name='Ivanova', last_name='Petrovna' where id=24;
+UPDATE passengers SET first_name='Irina', middle_name='Inozemceva', last_name='Vadimovna' where id=24;

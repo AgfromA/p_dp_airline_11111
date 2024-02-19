@@ -14,7 +14,9 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -177,25 +179,24 @@ public class TicketService {
 
     public void getTicketPdfByTicketId(Long ticketId) {
         var ticket = checkIfTicketExist(ticketId);
-        // Путь к файлу PDF, который будет создан
         String pathToPdf =
                 "airline-project\\src\\main\\resources\\ticketsPdf\\ticket" + ticket.getTicketNumber() + ".pdf";
 
         try {
-            // Создание нового документа PDF
-            Document document = new Document();
+
+            Rectangle pageSize = new Rectangle(PageSize.A4);
+            pageSize.setBackgroundColor(new BaseColor(173,  216,  230));
+            Document document = new Document(pageSize);
             PdfWriter.getInstance(document, new FileOutputStream(pathToPdf));
             document.open();
 
-            // Добавление заголовка
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-            headerFont.setSize(30);
+            headerFont.setSize(35);
             headerFont.setColor(BaseColor.GREEN);
             Paragraph header = new Paragraph("S7 Airline Ticket", headerFont);
             header.setAlignment(Element.ALIGN_CENTER);
             document.add(header);
 
-            // Добавление информации о рейсе
             Font flightInfoFont = FontFactory.getFont(FontFactory.HELVETICA);
             flightInfoFont.setColor(BaseColor.ORANGE);
             flightInfoFont.setSize(18);
@@ -212,8 +213,6 @@ public class TicketService {
             flightNumber.add(flightNumberValue);
             document.add(flightNumber);
 
-
-            // Добавление информации о дате и аэропортах
             Chunk departureAirportChunk = new Chunk("Departure Airport:  ", flightInfoFont);
             var departureAirportInDb = ticket.getFlightSeat().getFlight().getFrom().getAirportCode().toString();
             Chunk departureAirportValue = new Chunk(departureAirportInDb, flightDetailsFont);
@@ -250,7 +249,6 @@ public class TicketService {
             arrivalTime.add(arrivalTimeValue);
             document.add(arrivalTime);
 
-            // Добавление информации о пассажире
             Chunk passengerNameChunk = new Chunk("Passenger name:  ", flightInfoFont);
             var passengerNameInDb = ticket.getPassenger().getFirstName();
             Chunk passengerNameValue = new Chunk(passengerNameInDb, flightDetailsFont);
@@ -261,7 +259,7 @@ public class TicketService {
             document.add(passengerName);
 
             Chunk passengerSurnameChunk = new Chunk("Passenger surname:  ", flightInfoFont);
-            var passengerSurnameInDb = ticket.getPassenger().getLastName();
+            var passengerSurnameInDb = ticket.getPassenger().getPassport().getMiddleName();
             Chunk passengerSurnameValue = new Chunk(passengerSurnameInDb, flightDetailsFont);
             Paragraph passengerSurname = new Paragraph(30);
             passengerSurname.setIndentationLeft(50);
@@ -269,16 +267,15 @@ public class TicketService {
             passengerSurname.add(passengerSurnameValue);
             document.add(passengerSurname);
 
-//            Chunk passengerPassportDetailsChunk = new Chunk("Passenger surname:  ", flightInfoFont);
-//            var passengerSurnameInDb = ticket.getPassenger().getLastName();
-//            Chunk passengerSurnameValue = new Chunk(passengerSurnameInDb, flightDetailsFont);
-//            Paragraph passengerSurname = new Paragraph(30);
-//            passengerSurname.setIndentationLeft(50);
-//            passengerSurname.add(passengerSurnameChunk);
-//            passengerSurname.add(passengerSurnameValue);
-//            document.add(passengerSurname);
+            Chunk passengerPassportDetailsChunk = new Chunk("Passport:  ", flightInfoFont);
+            var passengerPassportInDb = ticket.getPassenger().getPassport().getSerialNumberPassport();
+            Chunk passengerPassportValue = new Chunk(passengerPassportInDb, flightDetailsFont);
+            Paragraph passengerPassport = new Paragraph(30);
+            passengerPassport.setIndentationLeft(50);
+            passengerPassport.add(passengerPassportDetailsChunk);
+            passengerPassport.add(passengerPassportValue);
+            document.add(passengerPassport);
 
-            // Добавление информации о номере места
             Chunk seatNumberChunk = new Chunk("Seat Number:  ", flightInfoFont);
             var seatNumberInDb = ticket.getFlightSeat().getSeat().getSeatNumber();
             Chunk seatNumberValue = new Chunk(seatNumberInDb, flightDetailsFont);
@@ -288,7 +285,6 @@ public class TicketService {
             seatNumber.add(seatNumberValue);
             document.add(seatNumber);
 
-            // Добавление информации о цене билета
             Chunk ticketPriceChunk = new Chunk("Ticket Price:  ", flightInfoFont);
             var ticketPriceInDb = ticket.getFlightSeat().getFare().toString();
             Chunk ticketPriceValue = new Chunk(ticketPriceInDb, flightDetailsFont);
@@ -298,7 +294,6 @@ public class TicketService {
             ticketPrice.add(ticketPriceValue);
             document.add(ticketPrice);
 
-            // Закрытие документа
             document.close();
 
         } catch (DocumentException | IOException e) {
