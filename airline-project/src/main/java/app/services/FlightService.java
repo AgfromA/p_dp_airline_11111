@@ -61,9 +61,9 @@ public class FlightService {
         return flightRepository.findById(id).map(flight -> flightMapper.toDto(flight, this));
     }
 
+    @Transactional
     public FlightDto createFlight(FlightDto flightDto) {
-        // FIXME заменить на аннотацию в ДТО
-        flightDto.setSeats(null);
+
         flightDto.setFlightStatus(FlightStatus.ON_TIME);
         aircraftService.checkIfAircraftExists(flightDto.getAircraftId());
 
@@ -72,6 +72,7 @@ public class FlightService {
         return flightMapper.toDto(savedFlight, this);
     }
 
+    @Transactional
     public FlightDto updateFlight(Long id, FlightDto flightDto) {
         var flight = checkIfFlightExists(id);
         if (flightDto.getCode() != null) {
@@ -99,6 +100,7 @@ public class FlightService {
         return flightMapper.toDto(updatedFlight, this);
     }
 
+    @Transactional
     public void deleteFlightById(Long id) {
         checkIfFlightExists(id);
         flightRepository.deleteById(id);

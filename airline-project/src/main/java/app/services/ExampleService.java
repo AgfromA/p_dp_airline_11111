@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,11 +32,13 @@ public class ExampleService {
         return exampleRepository.findById(id).map(exampleMapper::toDto);
     }
 
+    @Transactional
     public ExampleDto save(ExampleDto exampleDto) {
         var example = exampleMapper.toEntity(exampleDto);
         return exampleMapper.toDto(exampleRepository.save(example));
     }
 
+    @Transactional
     public Optional<ExampleDto> update(Long id, ExampleDto exampleDto) {
         var example = exampleMapper.toEntity(exampleDto);
         var optionalSavedExample = findById(id);
@@ -51,6 +54,7 @@ public class ExampleService {
         return Optional.of(exampleMapper.toDto(exampleRepository.save(exampleMapper.toEntity(savedExample))));
     }
 
+    @Transactional
     public Optional<ExampleDto> delete(Long id) {
         var optionalSavedExample = findById(id);
         if (optionalSavedExample.isEmpty()) {

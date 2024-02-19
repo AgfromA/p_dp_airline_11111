@@ -30,7 +30,6 @@ public class AccountService {
         return accountMapper.toDtoList(accountRepository.findAll());
     }
 
-    @Transactional(readOnly = true)
     public Page<AccountDto> getAllAccounts(Integer page, Integer size) {
         return accountRepository.findAll(PageRequest.of(page, size))
                 .map(accountMapper::toDto);
@@ -83,12 +82,10 @@ public class AccountService {
         return accountMapper.toDto(accountRepository.save(existingAccount));
     }
 
-    @Transactional(readOnly = true)
     public Optional<AccountDto> getAccountById(Long id) {
         return accountRepository.findById(id).map(accountMapper::toDto);
     }
 
-    @Transactional(readOnly = true)
     public AccountDto getAccountByEmail(String email) {
         return accountMapper.toDto(accountRepository.getAccountByEmail(email));
     }
