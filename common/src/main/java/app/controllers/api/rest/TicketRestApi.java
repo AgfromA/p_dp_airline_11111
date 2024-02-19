@@ -27,6 +27,12 @@ public interface TicketRestApi {
     @GetMapping("/{ticketNumber}")
     ResponseEntity<TicketDto> getTicketByNumber(@Parameter(description = "Номер билета", example = "SD-2222") @PathVariable("ticketNumber") String ticketNumber);
 
+
+    @Operation(summary = "Получение PDF билета по его ID")
+    @GetMapping("/ticket/{id}")
+    ResponseEntity<TicketDto> getTicketPdfByTicketId(@Parameter(description = "ID билета")
+                                                @PathVariable("id") Long ticketId);
+
     @Operation(summary = "Создание сущности", description = "Если ticketNumber не был передан в запросе, то он будет сгенерирован бекендом. ticketNumber должен быть уникальным. Билет будет создан только в случае, если связанное бронирование оплачено. Для одного бронирования может быть создан только один билет. Поля билета должны быть такие же, как у связанного бронирования")
     @PostMapping
     ResponseEntity<TicketDto> createTicket(@Parameter(description = "Билет") @RequestBody @Valid TicketDto ticketDto);

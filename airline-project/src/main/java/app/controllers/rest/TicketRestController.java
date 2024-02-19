@@ -57,6 +57,12 @@ public class TicketRestController implements TicketRestApi {
     }
 
     @Override
+    public ResponseEntity<TicketDto> getTicketPdfByTicketId(Long ticketId) {
+        ticketService.getTicketPdfByTicketId(ticketId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
     public ResponseEntity<TicketDto> createTicket(TicketDto ticketDto) {
         log.info("createTicket:");
         var savedTicket = ticketService.saveTicket(ticketDto);
