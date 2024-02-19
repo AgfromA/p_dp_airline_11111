@@ -143,6 +143,7 @@ public class TicketService {
         return ticketRepository.findArrayOfFlightSeatIdByPassengerId(passengerId);
     }
 
+    @Transactional
     public void deleteTicketByPassengerId(long passengerId) {
         ticketRepository.deleteTicketByPassengerId(passengerId);
     }

@@ -28,6 +28,7 @@ public class DestinationService {
         return destinationRepository.findAll(PageRequest.of(page, size)).map(destinationMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     public Page<DestinationDto> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
         if (cityName != null && !cityName.isEmpty()) {
             return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName)
@@ -62,6 +63,7 @@ public class DestinationService {
         return destinationRepository.findDestinationByAirportCode(airportCode).orElse(null);
     }
 
+    @Transactional
     public void deleteDestinationById(Long id) {
         destinationRepository.deleteById(id);
     }
