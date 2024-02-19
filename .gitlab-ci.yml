@@ -1,6 +1,3 @@
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
 services:
  - name: docker:dind
    command: ["--tls=false"]
@@ -8,6 +5,9 @@ services:
 stages:
   - build
   - test
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
 
 variables:
  DOCKER_HOST: "tcp://docker:2375"
@@ -27,7 +27,7 @@ variables:
 image: maven:3.6.0-jdk-11-slim
 
 maven_build:
-  stage: test
+  stage: build
   cache:
     paths:
       - .m2/repository
