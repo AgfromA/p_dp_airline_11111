@@ -4,12 +4,14 @@ import app.dto.BookingDto;
 import app.dto.FlightSeatDto;
 import app.entities.Booking;
 import app.entities.FlightSeat;
+import app.entities.Ticket;
 import app.enums.BookingStatus;
 import app.exceptions.BookedFlightSeatException;
 import app.exceptions.EntityNotFoundException;
 import app.exceptions.SoldFlightSeatException;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
+import app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,8 @@ public class BookingService {
     private final FlightSeatService flightSeatService;
     private final BookingMapper bookingMapper;
     private final PassengerService passengerService;
+    private final TicketRepository ticketRepository;
+    private final Random random = new Random();
 
     public List<BookingDto> getAllBookings() {
         return bookingMapper.toDtoList(bookingRepository.findAll());
@@ -63,6 +68,25 @@ public class BookingService {
         // TODO После реализации платежей запретить управление статусом бронирования
         if (bookingDto.getBookingStatus() != null && !bookingDto.getBookingStatus().equals(booking.getBookingStatus())) {
             booking.setBookingStatus(bookingDto.getBookingStatus());
+        }
+        if(bookingDto.getBookingStatus() == BookingStatus.PAID){
+            Optional<Ticket> existingTicket = ticketRepository.findByBookingId(booking.getId());
+            if (!existingTicket.isPresent()) {
+                Ticket ticket = new Ticket();
+
+                passengerService.checkIfPassengerExists(bookingDto.getPassengerId());
+                flightSeatService.checkIfFlightSeatExist(bookingDto.getFlightSeatId());
+
+                Booking updatingBooking = bookingMapper.toEntity(bookingDto, passengerService, flightSeatService);
+
+                ticket.setBooking(updatingBooking);
+                ticket.setTicketNumber(generateTicketNumber());
+                ticket.setPassenger(updatingBooking.getPassenger());
+                ticket.setFlightSeat(updatingBooking.getFlightSeat());
+
+                ticketRepository.save(ticket);
+            }
+
         }
         if (bookingDto.getFlightSeatId() != null && !bookingDto.getFlightSeatId().equals(booking.getFlightSeat().getId())) {
             unbookFlightSeat(booking.getFlightSeat());
@@ -122,5 +146,24 @@ public class BookingService {
     }
     public Optional<Booking> getBookingByFlightSeatId(Long flightSeatId) {
         return bookingRepository.findByFlightSeatId(flightSeatId);
+    }
+    private String generateTicketNumber() {
+        StringBuilder ticketNumberBuilder;
+        do {
+            ticketNumberBuilder = new StringBuilder();
+
+            for (int i = 0; i < 2; i++) {
+                char letter = (char) (random.nextInt(26) + 'A');
+                ticketNumberBuilder.append(letter);
+            }
+
+            ticketNumberBuilder.append("-");
+
+            for (int i = 0; i < 4; i++) {
+                int digit = random.nextInt(10);
+                ticketNumberBuilder.append(digit);
+            }
+        } while (ticketRepository.existsByTicketNumber(ticketNumberBuilder.toString()));
+        return ticketNumberBuilder.toString();
     }
 }

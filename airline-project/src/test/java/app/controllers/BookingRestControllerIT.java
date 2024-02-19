@@ -2,7 +2,12 @@ package app.controllers;
 
 
 import app.dto.BookingDto;
+import app.entities.Booking;
+import app.entities.Ticket;
+import app.enums.BookingStatus;
+import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
+import app.repositories.TicketRepository;
 import app.services.BookingService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.Optional;
+
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -29,6 +39,10 @@ class BookingRestControllerIT extends IntegrationTestBase {
     private BookingService bookingService;
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
+    @Autowired
+    private BookingMapper bookingMapper;
 
     @Test
     @DisplayName("Получение всех бронирований")
@@ -359,5 +373,42 @@ class BookingRestControllerIT extends IntegrationTestBase {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+    @Test
+    @DisplayName("Создание билета при установке статуса бронирования в PAID")
+    void shouldCreateTicketWhenBookingStatusIsPaid() throws Exception {
+        var bookingDto = new BookingDto();
+        bookingDto.setBookingStatus(BookingStatus.NOT_PAID);
+        bookingDto.setPassengerId(1L);
+        bookingDto.setFlightSeatId(5L);
+
+        MvcResult postResult = mockMvc.perform(post("http://localhost:8080/api/bookings")
+                        .content(objectMapper.writeValueAsString(bookingDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String postResponseContent = postResult.getResponse().getContentAsString();
+        var createdBookingDto = objectMapper.readValue(postResponseContent, BookingDto.class);
+        Long bookingId = createdBookingDto.getId();
+
+        Optional<Booking> bookingFromDb = bookingRepository.findById(bookingId);
+        if (bookingFromDb.isPresent()) {
+            Booking booking = bookingFromDb.get();
+            BookingDto bookingDto1 = bookingMapper.toDto(booking);
+            bookingDto1.setBookingStatus(BookingStatus.PAID);
+
+            mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", bookingId)
+                            .content(objectMapper.writeValueAsString(bookingDto1))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+            Optional<Ticket> savedTicket = ticketRepository.findByBookingId(bookingId);
+            assertTrue(savedTicket.isPresent());
+        }
     }
 }
