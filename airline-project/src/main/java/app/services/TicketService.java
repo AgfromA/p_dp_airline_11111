@@ -207,6 +207,7 @@ public class TicketService {
             var flightNumberInDb = ticket.getFlightSeat().getFlight().getCode();
             Chunk flightNumberValue = new Chunk(flightNumberInDb, flightDetailsFont);
             Paragraph flightNumber = new Paragraph(60);
+            flightNumber.setIndentationLeft(50);
             flightNumber.add(flightNumberChunk);
             flightNumber.add(flightNumberValue);
             document.add(flightNumber);
@@ -217,23 +218,44 @@ public class TicketService {
             var departureAirportInDb = ticket.getFlightSeat().getFlight().getFrom().getAirportCode().toString();
             Chunk departureAirportValue = new Chunk(departureAirportInDb, flightDetailsFont);
             Paragraph departureAirport = new Paragraph(30);
+            departureAirport.setIndentationLeft(50);
             departureAirport.add(departureAirportChunk);
             departureAirport.add(departureAirportValue);
             document.add(departureAirport);
+
+            Chunk departureTimeChunk = new Chunk("Departure time:  ", flightInfoFont);
+            var departureTimeInDb = ticket.getFlightSeat().getFlight().getDepartureDateTime().toString();
+            Chunk departureTimeValue = new Chunk(departureTimeInDb, flightDetailsFont);
+            Paragraph departureTime = new Paragraph(30);
+            departureTime.setIndentationLeft(50);
+            departureTime.add(departureTimeChunk);
+            departureTime.add(departureTimeValue);
+            document.add(departureTime);
 
             Chunk arrivalAirportChunk = new Chunk("Arrival Airport:  ", flightInfoFont);
             var arrivalAirportInDb = ticket.getFlightSeat().getFlight().getTo().getAirportCode().toString();
             Chunk arrivalAirportValue = new Chunk(arrivalAirportInDb, flightDetailsFont);
             Paragraph arrivalAirport = new Paragraph(30);
+            arrivalAirport.setIndentationLeft(50);
             arrivalAirport.add(arrivalAirportChunk);
             arrivalAirport.add(arrivalAirportValue);
             document.add(arrivalAirport);
+
+            Chunk arrivalTimeChunk = new Chunk("Arrival time:  ", flightInfoFont);
+            var arrivalTimeInDb = ticket.getFlightSeat().getFlight().getArrivalDateTime().toString();
+            Chunk arrivalTimeValue = new Chunk(arrivalTimeInDb, flightDetailsFont);
+            Paragraph arrivalTime = new Paragraph(30);
+            arrivalTime.setIndentationLeft(50);
+            arrivalTime.add(arrivalTimeChunk);
+            arrivalTime.add(arrivalTimeValue);
+            document.add(arrivalTime);
 
             // Добавление информации о пассажире
             Chunk passengerNameChunk = new Chunk("Passenger name:  ", flightInfoFont);
             var passengerNameInDb = ticket.getPassenger().getFirstName();
             Chunk passengerNameValue = new Chunk(passengerNameInDb, flightDetailsFont);
             Paragraph passengerName = new Paragraph(30);
+            passengerName.setIndentationLeft(50);
             passengerName.add(passengerNameChunk);
             passengerName.add(passengerNameValue);
             document.add(passengerName);
@@ -242,15 +264,26 @@ public class TicketService {
             var passengerSurnameInDb = ticket.getPassenger().getLastName();
             Chunk passengerSurnameValue = new Chunk(passengerSurnameInDb, flightDetailsFont);
             Paragraph passengerSurname = new Paragraph(30);
+            passengerSurname.setIndentationLeft(50);
             passengerSurname.add(passengerSurnameChunk);
             passengerSurname.add(passengerSurnameValue);
             document.add(passengerSurname);
+
+//            Chunk passengerPassportDetailsChunk = new Chunk("Passenger surname:  ", flightInfoFont);
+//            var passengerSurnameInDb = ticket.getPassenger().getLastName();
+//            Chunk passengerSurnameValue = new Chunk(passengerSurnameInDb, flightDetailsFont);
+//            Paragraph passengerSurname = new Paragraph(30);
+//            passengerSurname.setIndentationLeft(50);
+//            passengerSurname.add(passengerSurnameChunk);
+//            passengerSurname.add(passengerSurnameValue);
+//            document.add(passengerSurname);
 
             // Добавление информации о номере места
             Chunk seatNumberChunk = new Chunk("Seat Number:  ", flightInfoFont);
             var seatNumberInDb = ticket.getFlightSeat().getSeat().getSeatNumber();
             Chunk seatNumberValue = new Chunk(seatNumberInDb, flightDetailsFont);
             Paragraph seatNumber = new Paragraph(30);
+            seatNumber.setIndentationLeft(50);
             seatNumber.add(seatNumberChunk);
             seatNumber.add(seatNumberValue);
             document.add(seatNumber);
@@ -260,6 +293,7 @@ public class TicketService {
             var ticketPriceInDb = ticket.getFlightSeat().getFare().toString();
             Chunk ticketPriceValue = new Chunk(ticketPriceInDb, flightDetailsFont);
             Paragraph ticketPrice = new Paragraph(30);
+            ticketPrice.setIndentationLeft(50);
             ticketPrice.add(ticketPriceChunk);
             ticketPrice.add(ticketPriceValue);
             document.add(ticketPrice);
