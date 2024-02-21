@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.dto.BookingDto;
 import app.dto.TicketDto;
+import app.entities.Ticket;
 import app.enums.BookingStatus;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.TicketMapper;
@@ -14,16 +15,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.time.LocalDateTime;
 
 import static app.enums.Airport.OMS;
 import static app.enums.Airport.VKO;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -423,4 +433,29 @@ class TicketRestControllerIT extends IntegrationTestBase {
         Assertions.assertNotEquals(newTicket.getId(), idFromResponse);
 
     }
+
+    @Test
+    @DisplayName("should return the PDF of the ticket using the ticket number")
+    void shouldGetTicketPdfByTicketNumber() throws Exception {
+        String ticketNumber = "SD-2222";
+//      String pathToTestPdfTicket = "airline-project\\src\\test\\resources\\pdf\\S7TicketTest.pdf";
+//      String pathToTestPdfTicket = "airline-project\\src\\main\\resources\\ticketsPdf\\ticketSD-2222.pdf";
+
+//        when(ticketService.getPathToTicketPdfByTicketNumber(ticketNumber)).thenReturn(pathToTestPdfTicket);
+        mockMvc.perform(get("http://localhost:8080/api/tickets/pdf/{ticketNumber}", ticketNumber)
+                        .contentType(MediaType.APPLICATION_PDF_VALUE))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("should don't return the PDF of ticket, because ticket is null")
+    void shouldDoNotGetTicketPdfByTicketNumber() throws Exception {
+        String ticketNumber = "SD-2522";
+        mockMvc.perform(get("http://localhost:8080/api/tickets/pdf/{ticketNumber}", ticketNumber)
+                        .contentType(MediaType.APPLICATION_PDF_VALUE))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
 }

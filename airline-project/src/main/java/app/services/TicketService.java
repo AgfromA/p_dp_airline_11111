@@ -183,7 +183,7 @@ public class TicketService {
         );
     }
 
-    public String getTicketPdfByTicketNumber(String ticketNumber) {
+    public String getPathToTicketPdfByTicketNumber(String ticketNumber) {
         var ticket = ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
         String pathToPdf =
                 "airline-project\\src\\main\\resources\\ticketsPdf\\ticket" + ticket.getTicketNumber() + ".pdf";
@@ -311,7 +311,6 @@ public class TicketService {
     private void deletePdfTicketInServer(String pathToPdfTicket) {
         File fileToDelete = new File(pathToPdfTicket);
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
         executor.schedule(() -> {
             try {
                 Files.deleteIfExists(fileToDelete.toPath());

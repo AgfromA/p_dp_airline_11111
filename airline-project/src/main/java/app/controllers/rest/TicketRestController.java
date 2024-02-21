@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 @Slf4j
@@ -68,10 +67,10 @@ public class TicketRestController implements TicketRestApi {
         if (ticket == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        var pathToPdf = ticketService.getTicketPdfByTicketNumber(ticketNumber);
+        var pathToPdf = ticketService.getPathToTicketPdfByTicketNumber(ticketNumber);
         FileInputStream fileInputStream = new FileInputStream(pathToPdf);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=S7ticket.pdf");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=S7-Ticket.pdf");
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(new InputStreamResource(fileInputStream));
