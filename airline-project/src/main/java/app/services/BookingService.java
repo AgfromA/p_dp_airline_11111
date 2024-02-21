@@ -150,9 +150,11 @@ public class BookingService {
 
         flightSeatService.editFlightSeat(flightSeat.getId(), flightSeatDto);
     }
+
     public Optional<Booking> getBooking(Long id) {
         return bookingRepository.findById(id);
     }
+
     public Optional<Booking> getBookingByFlightSeatId(Long flightSeatId) {
         return bookingRepository.findByFlightSeatId(flightSeatId);
     }
