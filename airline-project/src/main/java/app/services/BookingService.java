@@ -156,23 +156,4 @@ public class BookingService {
     public Optional<Booking> getBookingByFlightSeatId(Long flightSeatId) {
         return bookingRepository.findByFlightSeatId(flightSeatId);
     }
-    private String generateTicketNumber() {
-        StringBuilder ticketNumberBuilder;
-        do {
-            ticketNumberBuilder = new StringBuilder();
-
-            for (int i = 0; i < 2; i++) {
-                char letter = (char) (random.nextInt(26) + 'A');
-                ticketNumberBuilder.append(letter);
-            }
-
-            ticketNumberBuilder.append("-");
-
-            for (int i = 0; i < 4; i++) {
-                int digit = random.nextInt(10);
-                ticketNumberBuilder.append(digit);
-            }
-        } while (ticketRepository.existsByTicketNumber(ticketNumberBuilder.toString()));
-        return ticketNumberBuilder.toString();
-    }
 }
