@@ -12,7 +12,11 @@ import app.exceptions.SoldFlightSeatException;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import app.repositories.TicketRepository;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,6 +36,10 @@ public class BookingService {
     private final BookingMapper bookingMapper;
     private final PassengerService passengerService;
     private final TicketRepository ticketRepository;
+
+    @Lazy
+    @Autowired
+    private TicketService ticketService;
     private final Random random = new Random();
 
     public List<BookingDto> getAllBookings() {
@@ -80,7 +88,7 @@ public class BookingService {
                 Booking updatingBooking = bookingMapper.toEntity(bookingDto, passengerService, flightSeatService);
 
                 ticket.setBooking(updatingBooking);
-                ticket.setTicketNumber(generateTicketNumber());
+                ticket.setTicketNumber(ticketService.generateTicketNumber());
                 ticket.setPassenger(updatingBooking.getPassenger());
                 ticket.setFlightSeat(updatingBooking.getFlightSeat());
 
