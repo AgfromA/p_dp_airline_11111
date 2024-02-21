@@ -6,13 +6,18 @@ import app.mappers.TicketMapper;
 import app.services.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Slf4j
@@ -57,9 +62,19 @@ public class TicketRestController implements TicketRestApi {
     }
 
     @Override
-    public ResponseEntity<TicketDto> getTicketPdfByTicketId(Long ticketId) {
-        ticketService.getTicketPdfByTicketId(ticketId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<InputStreamResource> getTicketPdfByTicketNumber(String ticketNumber) throws FileNotFoundException {
+        log.info("getTicketPdfByTicketNumber: by ticketNumber: {}", ticketNumber);
+        var ticket = ticketService.getTicketByTicketNumber(ticketNumber);
+        if (ticket == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        var pathToPdf = ticketService.getTicketPdfByTicketNumber(ticketNumber);
+        FileInputStream fileInputStream = new FileInputStream(pathToPdf);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=S7ticket.pdf");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(fileInputStream));
     }
 
     @Override

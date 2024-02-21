@@ -24,11 +24,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -178,15 +183,14 @@ public class TicketService {
         );
     }
 
-    public void getTicketPdfByTicketId(Long ticketId) {
-        var ticket = checkIfTicketExist(ticketId);
+    public String getTicketPdfByTicketNumber(String ticketNumber) {
+        var ticket = ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
         String pathToPdf =
                 "airline-project\\src\\main\\resources\\ticketsPdf\\ticket" + ticket.getTicketNumber() + ".pdf";
 
         try {
-
             Rectangle pageSize = new Rectangle(PageSize.A4);
-            pageSize.setBackgroundColor(new BaseColor(173,  216,  230));
+            pageSize.setBackgroundColor(new BaseColor(173, 216, 230));
             Document document = new Document(pageSize);
             PdfWriter.getInstance(document, new FileOutputStream(pathToPdf));
             document.open();
@@ -296,9 +300,26 @@ public class TicketService {
             document.add(ticketPrice);
 
             document.close();
+            deletePdfTicketInServer(pathToPdf);
 
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
+        return pathToPdf;
+    }
+
+    private void deletePdfTicketInServer(String pathToPdfTicket) {
+        File fileToDelete = new File(pathToPdfTicket);
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+        executor.schedule(() -> {
+            try {
+                Files.deleteIfExists(fileToDelete.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                executor.shutdown();
+            }
+        },  1, TimeUnit.MINUTES);
     }
 }

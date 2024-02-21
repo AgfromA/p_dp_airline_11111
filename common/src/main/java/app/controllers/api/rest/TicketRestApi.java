@@ -5,12 +5,15 @@ import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
 
 @Api(tags = "Ticket API")
 @Tag(name = "Ticket API", description = "API для операций с билетами. Создается после бронирования (Booking)")
@@ -29,9 +32,10 @@ public interface TicketRestApi {
 
 
     @Operation(summary = "Получение PDF билета по его ID")
-    @GetMapping("/ticket/{id}")
-    ResponseEntity<TicketDto> getTicketPdfByTicketId(@Parameter(description = "ID билета")
-                                                @PathVariable("id") Long ticketId);
+    @GetMapping(value = "/pdf/{ticketNumber}", produces = MediaType.APPLICATION_PDF_VALUE)
+    ResponseEntity<InputStreamResource> getTicketPdfByTicketNumber
+            (@Parameter(description = "Номер билета")
+             @PathVariable("ticketNumber") String ticketNumber) throws FileNotFoundException;
 
     @Operation(summary = "Создание сущности", description = "Если ticketNumber не был передан в запросе, то он будет сгенерирован бекендом. ticketNumber должен быть уникальным. Билет будет создан только в случае, если связанное бронирование оплачено. Для одного бронирования может быть создан только один билет. Поля билета должны быть такие же, как у связанного бронирования")
     @PostMapping

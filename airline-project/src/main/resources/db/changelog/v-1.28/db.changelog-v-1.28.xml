@@ -11,4 +11,9 @@
         <tagDatabase tag="01-update-table-passengers"/>
     </changeSet>
 
+    <include file="02-alter-table-tickets.sql" relativeToChangelogFile="true"/>
+    <changeSet id="1.28.2" author="maxim-zhuravlev">
+        <tagDatabase tag="02-alter-table-tickets"/>
+    </changeSet>
+
 </databaseChangeLog>
