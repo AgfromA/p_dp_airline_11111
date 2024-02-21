@@ -40,6 +40,7 @@ public class BookingService {
     @Lazy
     @Autowired
     private TicketService ticketService;
+
     private final Random random = new Random();
 
     public List<BookingDto> getAllBookings() {
