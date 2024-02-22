@@ -14,7 +14,7 @@ springdoc:
 app:
   feign:
     config:
-      name: Project
+      name: arline-generator
       url: http://localhost:8080
 
 feign:
