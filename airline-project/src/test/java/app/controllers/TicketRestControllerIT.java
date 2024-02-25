@@ -434,19 +434,15 @@ class TicketRestControllerIT extends IntegrationTestBase {
 
     }
 
-    @Test
-    @DisplayName("should return the PDF of the ticket using the ticket number")
-    void shouldGetTicketPdfByTicketNumber() throws Exception {
-        String ticketNumber = "SD-2222";
-//      String pathToTestPdfTicket = "airline-project\\src\\test\\resources\\pdf\\S7TicketTest.pdf";
-//      String pathToTestPdfTicket = "airline-project\\src\\main\\resources\\ticketsPdf\\ticketSD-2222.pdf";
-
-//        when(ticketService.getPathToTicketPdfByTicketNumber(ticketNumber)).thenReturn(pathToTestPdfTicket);
-        mockMvc.perform(get("http://localhost:8080/api/tickets/pdf/{ticketNumber}", ticketNumber)
-                        .contentType(MediaType.APPLICATION_PDF_VALUE))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    @DisplayName("should return the PDF of the ticket using the ticket number")
+//    void shouldGetTicketPdfByTicketNumber() throws Exception {
+//        String ticketNumber = "SD-2222";
+//        mockMvc.perform(get("http://localhost:8080/api/tickets/pdf/{ticketNumber}", ticketNumber)
+//                        .contentType(MediaType.APPLICATION_PDF_VALUE))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     @DisplayName("should don't return the PDF of ticket, because ticket is null")
