@@ -54,19 +54,15 @@ public class TicketRestController implements TicketRestApi {
     @Override
     public ResponseEntity<TicketDto> getTicketByNumber(String ticketNumber) {
         log.info("getTicketByNumber: by ticketNumber: {}", ticketNumber);
-        var ticket = ticketService.getTicketByTicketNumber(ticketNumber);
-        return ticket != null
-                ? new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ticketService
+                .getTicketByTicketNumber(ticketNumber)
+                .map(value -> new ResponseEntity<>(ticketMapper.toDto(value), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public ResponseEntity<InputStreamResource> getTicketPdfByTicketNumber(String ticketNumber) throws FileNotFoundException {
-        log.info("getTicketPdfByTicketNumber: by ticketNumber: {}", ticketNumber);
-        var ticket = ticketService.getTicketByTicketNumber(ticketNumber);
-        if (ticket == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<InputStreamResource> getPdfByTicketNumber(String ticketNumber) throws FileNotFoundException {
+        log.info("getPdfByTicketNumber: by ticketNumber: {}", ticketNumber);
         var pathToPdf = ticketService.getPathToTicketPdfByTicketNumber(ticketNumber);
         FileInputStream fileInputStream = new FileInputStream(pathToPdf);
         HttpHeaders headers = new HttpHeaders();

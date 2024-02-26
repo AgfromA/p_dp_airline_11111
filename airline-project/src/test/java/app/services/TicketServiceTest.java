@@ -264,9 +264,9 @@ class TicketServiceTest {
         ticket.setPassenger(passenger);
         ticket.setFlightSeat(flightSeat);
 
-        when(ticketRepository.findByTicketNumberContainingIgnoreCase(ticket.getTicketNumber())).thenReturn(ticket);
+        when(ticketRepository.findByTicketNumberContainingIgnoreCase(ticket.getTicketNumber())).thenReturn(Optional.of(ticket));
 
-        var result = ticketService.getTicketByTicketNumber(ticket.getTicketNumber());
+        var result = ticketService.getTicketByTicketNumber(ticket.getTicketNumber()).get();
 
         assertEquals(ticket, result);
     }

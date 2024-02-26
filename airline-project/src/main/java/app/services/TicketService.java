@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -56,7 +57,7 @@ public class TicketService {
                 .map(ticketMapper::toDto);
     }
 
-    public Ticket getTicketByTicketNumber(String ticketNumber) {
+    public Optional<Ticket> getTicketByTicketNumber(String ticketNumber) {
         return ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
     }
 
@@ -184,7 +185,9 @@ public class TicketService {
     }
 
     public String getPathToTicketPdfByTicketNumber(String ticketNumber) {
-        var ticket = ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
+        var ticket = getTicketByTicketNumber(ticketNumber).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Ticket was not found with ticketNumber = " + ticketNumber)
+        );
         String pathToPdf =
                 "airline-project\\src\\main\\resources\\ticketsPdf\\ticket" + ticket.getTicketNumber() + ".pdf";
 
@@ -197,13 +200,13 @@ public class TicketService {
 
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
             headerFont.setSize(35);
-            headerFont.setColor(BaseColor.GREEN);
+            headerFont.setColor(BaseColor.RED);
             Paragraph header = new Paragraph("S7 Airline Ticket", headerFont);
             header.setAlignment(Element.ALIGN_CENTER);
             document.add(header);
 
             Font flightInfoFont = FontFactory.getFont(FontFactory.HELVETICA);
-            flightInfoFont.setColor(BaseColor.ORANGE);
+            flightInfoFont.setColor(BaseColor.BLACK);
             flightInfoFont.setSize(18);
             Font flightDetailsFont = FontFactory.getFont(FontFactory.HELVETICA);
             flightDetailsFont.setColor(BaseColor.BLACK);
@@ -308,6 +311,7 @@ public class TicketService {
         return pathToPdf;
     }
 
+    // TODO заменить вызов на @Scheduled
     private void deletePdfTicketInServer(String pathToPdfTicket) {
         File fileToDelete = new File(pathToPdfTicket);
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -319,6 +323,6 @@ public class TicketService {
             } finally {
                 executor.shutdown();
             }
-        },  1, TimeUnit.MINUTES);
+        }, 1, TimeUnit.MINUTES);
     }
 }
