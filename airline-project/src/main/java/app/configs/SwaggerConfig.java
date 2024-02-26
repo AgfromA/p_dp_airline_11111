@@ -8,11 +8,13 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @OpenAPIDefinition(info = @Info(title = "S7 Airlines API", version = "1.1.2",
         description = "UI для работы с API проекта S7 Airlines."))
 @Configuration
-public class SwaggerConfig {
+public class SwaggerConfig implements WebMvcConfigurer {
 
     @Bean
     public OpenAPI customizeOpenAPI() {
@@ -27,5 +29,10 @@ public class SwaggerConfig {
                                 .scheme("bearer")
                                 .bearerFormat("JWT")));
 
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/", "/swagger-ui/index.html");
     }
 }
