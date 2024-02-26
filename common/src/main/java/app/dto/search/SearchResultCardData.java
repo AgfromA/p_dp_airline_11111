@@ -1,10 +1,7 @@
 package app.dto.search;
 
 import app.enums.Airport;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +9,8 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SearchResultCardData {
 
     private Airport airportFrom;
