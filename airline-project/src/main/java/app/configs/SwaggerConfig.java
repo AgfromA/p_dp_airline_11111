@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @OpenAPIDefinition(info = @Info(title = "S7 Airlines API", version = "1.1.2",
         description = "UI для работы с API проекта S7 Airlines."))
 @Configuration
-public class SwaggerConfig implements WebMvcConfigurer{
+public class SwaggerConfig implements WebMvcConfigurer {
 
     @Bean
     public OpenAPI customizeOpenAPI() {
@@ -30,6 +30,7 @@ public class SwaggerConfig implements WebMvcConfigurer{
                                 .bearerFormat("JWT")));
 
     }
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addRedirectViewController("/", "/swagger-ui/index.html");
