@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
+
     @Query("SELECT ticket FROM Ticket ticket LEFT JOIN FETCH ticket.passenger passenger " +
             "LEFT JOIN FETCH ticket.flightSeat flightSeat " +
             "WHERE ticket.ticketNumber = ?1")
-    Ticket findByTicketNumberContainingIgnoreCase(String ticketNumber);
+    Optional<Ticket> findByTicketNumberContainingIgnoreCase(String ticketNumber);
 
     Optional<Ticket> findTicketById(long id);
 

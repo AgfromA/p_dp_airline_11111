@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #396 - создание pdf файла билета
 - #355 Добавлен модуль логгирования airline-logger-starter
 
 ## [1.1.2] - 18.02.2024

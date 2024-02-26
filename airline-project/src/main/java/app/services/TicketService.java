@@ -7,15 +7,34 @@ import app.enums.BookingStatus;
 import app.exceptions.*;
 import app.mappers.TicketMapper;
 import app.repositories.TicketRepository;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +57,7 @@ public class TicketService {
                 .map(ticketMapper::toDto);
     }
 
-    public Ticket getTicketByTicketNumber(String ticketNumber) {
+    public Optional<Ticket> getTicketByTicketNumber(String ticketNumber) {
         return ticketRepository.findByTicketNumberContainingIgnoreCase(ticketNumber);
     }
 
@@ -163,5 +182,147 @@ public class TicketService {
         return ticketRepository.findTicketById(ticketId).orElseThrow(
                 () -> new EntityNotFoundException("Operation was not finished because Ticket was not found with id = " + ticketId)
         );
+    }
+
+    public String getPathToTicketPdfByTicketNumber(String ticketNumber) {
+        var ticket = getTicketByTicketNumber(ticketNumber).orElseThrow(
+                () -> new EntityNotFoundException("Operation was not finished because Ticket was not found with ticketNumber = " + ticketNumber)
+        );
+        String pathToPdf =
+                "airline-project\\src\\main\\resources\\ticketsPdf\\ticket" + ticket.getTicketNumber() + ".pdf";
+
+        try {
+            Rectangle pageSize = new Rectangle(PageSize.A4);
+            pageSize.setBackgroundColor(new BaseColor(173, 216, 230));
+            Document document = new Document(pageSize);
+            PdfWriter.getInstance(document, new FileOutputStream(pathToPdf));
+            document.open();
+
+            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+            headerFont.setSize(35);
+            headerFont.setColor(BaseColor.RED);
+            Paragraph header = new Paragraph("S7 Airline Ticket", headerFont);
+            header.setAlignment(Element.ALIGN_CENTER);
+            document.add(header);
+
+            Font flightInfoFont = FontFactory.getFont(FontFactory.HELVETICA);
+            flightInfoFont.setColor(BaseColor.BLACK);
+            flightInfoFont.setSize(18);
+            Font flightDetailsFont = FontFactory.getFont(FontFactory.HELVETICA);
+            flightDetailsFont.setColor(BaseColor.BLACK);
+            flightDetailsFont.setSize(16);
+
+            Chunk flightNumberChunk = new Chunk("Flight Number:  ", flightInfoFont);
+            var flightNumberInDb = ticket.getFlightSeat().getFlight().getCode();
+            Chunk flightNumberValue = new Chunk(flightNumberInDb, flightDetailsFont);
+            Paragraph flightNumber = new Paragraph(60);
+            flightNumber.setIndentationLeft(50);
+            flightNumber.add(flightNumberChunk);
+            flightNumber.add(flightNumberValue);
+            document.add(flightNumber);
+
+            Chunk departureAirportChunk = new Chunk("Departure Airport:  ", flightInfoFont);
+            var departureAirportInDb = ticket.getFlightSeat().getFlight().getFrom().getAirportCode().toString();
+            Chunk departureAirportValue = new Chunk(departureAirportInDb, flightDetailsFont);
+            Paragraph departureAirport = new Paragraph(30);
+            departureAirport.setIndentationLeft(50);
+            departureAirport.add(departureAirportChunk);
+            departureAirport.add(departureAirportValue);
+            document.add(departureAirport);
+
+            Chunk departureTimeChunk = new Chunk("Departure time:  ", flightInfoFont);
+            var departureTimeInDb = ticket.getFlightSeat().getFlight().getDepartureDateTime().toString();
+            Chunk departureTimeValue = new Chunk(departureTimeInDb, flightDetailsFont);
+            Paragraph departureTime = new Paragraph(30);
+            departureTime.setIndentationLeft(50);
+            departureTime.add(departureTimeChunk);
+            departureTime.add(departureTimeValue);
+            document.add(departureTime);
+
+            Chunk arrivalAirportChunk = new Chunk("Arrival Airport:  ", flightInfoFont);
+            var arrivalAirportInDb = ticket.getFlightSeat().getFlight().getTo().getAirportCode().toString();
+            Chunk arrivalAirportValue = new Chunk(arrivalAirportInDb, flightDetailsFont);
+            Paragraph arrivalAirport = new Paragraph(30);
+            arrivalAirport.setIndentationLeft(50);
+            arrivalAirport.add(arrivalAirportChunk);
+            arrivalAirport.add(arrivalAirportValue);
+            document.add(arrivalAirport);
+
+            Chunk arrivalTimeChunk = new Chunk("Arrival time:  ", flightInfoFont);
+            var arrivalTimeInDb = ticket.getFlightSeat().getFlight().getArrivalDateTime().toString();
+            Chunk arrivalTimeValue = new Chunk(arrivalTimeInDb, flightDetailsFont);
+            Paragraph arrivalTime = new Paragraph(30);
+            arrivalTime.setIndentationLeft(50);
+            arrivalTime.add(arrivalTimeChunk);
+            arrivalTime.add(arrivalTimeValue);
+            document.add(arrivalTime);
+
+            Chunk passengerNameChunk = new Chunk("Passenger name:  ", flightInfoFont);
+            var passengerNameInDb = ticket.getPassenger().getFirstName();
+            Chunk passengerNameValue = new Chunk(passengerNameInDb, flightDetailsFont);
+            Paragraph passengerName = new Paragraph(30);
+            passengerName.setIndentationLeft(50);
+            passengerName.add(passengerNameChunk);
+            passengerName.add(passengerNameValue);
+            document.add(passengerName);
+
+            Chunk passengerSurnameChunk = new Chunk("Passenger surname:  ", flightInfoFont);
+            var passengerSurnameInDb = ticket.getPassenger().getPassport().getMiddleName();
+            Chunk passengerSurnameValue = new Chunk(passengerSurnameInDb, flightDetailsFont);
+            Paragraph passengerSurname = new Paragraph(30);
+            passengerSurname.setIndentationLeft(50);
+            passengerSurname.add(passengerSurnameChunk);
+            passengerSurname.add(passengerSurnameValue);
+            document.add(passengerSurname);
+
+            Chunk passengerPassportDetailsChunk = new Chunk("Passport:  ", flightInfoFont);
+            var passengerPassportInDb = ticket.getPassenger().getPassport().getSerialNumberPassport();
+            Chunk passengerPassportValue = new Chunk(passengerPassportInDb, flightDetailsFont);
+            Paragraph passengerPassport = new Paragraph(30);
+            passengerPassport.setIndentationLeft(50);
+            passengerPassport.add(passengerPassportDetailsChunk);
+            passengerPassport.add(passengerPassportValue);
+            document.add(passengerPassport);
+
+            Chunk seatNumberChunk = new Chunk("Seat Number:  ", flightInfoFont);
+            var seatNumberInDb = ticket.getFlightSeat().getSeat().getSeatNumber();
+            Chunk seatNumberValue = new Chunk(seatNumberInDb, flightDetailsFont);
+            Paragraph seatNumber = new Paragraph(30);
+            seatNumber.setIndentationLeft(50);
+            seatNumber.add(seatNumberChunk);
+            seatNumber.add(seatNumberValue);
+            document.add(seatNumber);
+
+            Chunk ticketPriceChunk = new Chunk("Ticket Price:  ", flightInfoFont);
+            var ticketPriceInDb = ticket.getFlightSeat().getFare().toString();
+            Chunk ticketPriceValue = new Chunk(ticketPriceInDb, flightDetailsFont);
+            Paragraph ticketPrice = new Paragraph(30);
+            ticketPrice.setIndentationLeft(50);
+            ticketPrice.add(ticketPriceChunk);
+            ticketPrice.add(ticketPriceValue);
+            document.add(ticketPrice);
+
+            document.close();
+            deletePdfTicketInServer(pathToPdf);
+
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+        }
+        return pathToPdf;
+    }
+
+    // TODO заменить вызов на @Scheduled
+    private void deletePdfTicketInServer(String pathToPdfTicket) {
+        File fileToDelete = new File(pathToPdfTicket);
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.schedule(() -> {
+            try {
+                Files.deleteIfExists(fileToDelete.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                executor.shutdown();
+            }
+        }, 1, TimeUnit.MINUTES);
     }
 }
