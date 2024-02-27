@@ -11,6 +11,9 @@ import app.exceptions.SoldFlightSeatException;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,10 @@ public class BookingService {
     private final FlightSeatService flightSeatService;
     private final BookingMapper bookingMapper;
     private final PassengerService passengerService;
+
+    @Lazy
+    @Autowired
+    private TicketService ticketService;
 
     public List<BookingDto> getAllBookings() {
         return bookingMapper.toDtoList(bookingRepository.findAll());
@@ -75,7 +82,11 @@ public class BookingService {
             var passenger = passengerService.checkIfPassengerExists(bookingDto.getPassengerId());
             booking.setPassenger(passenger);
         }
-        return bookingMapper.toDto(bookingRepository.save(booking));
+        var savedBooking = bookingRepository.save(booking);
+        if (savedBooking.getBookingStatus() == BookingStatus.PAID) {
+            ticketService.generatePaidTicket(savedBooking.getId());
+        }
+        return bookingMapper.toDto(savedBooking);
     }
 
     @Transactional
@@ -111,7 +122,7 @@ public class BookingService {
                 () -> new EntityNotFoundException("Booking with ID: " + bookingId + " not found"));
     }
 
-    private void unbookFlightSeat(FlightSeat flightSeat){
+    private void unbookFlightSeat(FlightSeat flightSeat) {
         var flightSeatDto = new FlightSeatDto();
         flightSeatDto.setIsBooked(false);
 
