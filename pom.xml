@@ -16,7 +16,7 @@
         <module>airline-gateway</module>
         <module>airline-security</module>
         <module>airline-generator</module>
-        <module>airline-logger-starter</module>
+        <module>airline-microservice-starter</module>
     </modules>
 
     <dependencies>
