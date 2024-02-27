@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.dto.BookingDto;
 import app.dto.TicketDto;
+import app.entities.Ticket;
 import app.enums.BookingStatus;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.TicketMapper;
@@ -14,16 +15,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.time.LocalDateTime;
 
 import static app.enums.Airport.OMS;
 import static app.enums.Airport.VKO;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -166,7 +176,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
     @DisplayName("shouldUpdateTicketNumberInTicket(), update TicketNumber in ticket")
     @Test
     void shouldUpdateTicketNumberInTicket() throws Exception {
-        var ticketDTO = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+        var ticketDTO = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333").get());
 
         ticketDTO.setTicketNumber("ZX-2222");
         long numberOfTicket = ticketRepository.count();
@@ -187,7 +197,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
             "only after updating these fields in the booking")
     @Test
     void shouldUpdatePassengerAndFlightSeatInTicket() throws Exception {
-        var updatedTicket = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+        var updatedTicket = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333").get());
 
         var bookingDto = bookingService.getBookingDto(3L).get();
         bookingDto.setFlightSeatId(4L);
@@ -254,7 +264,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("shouldNotContainNullValuesInPatchRequest(), checking for the impossibility of setting field values to NULL during a PATCH request")
     void shouldNotContainNullValuesInPatchRequest() throws Exception {
-        var ticketDTO = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+        var ticketDTO = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333").get());
         ticketDTO.setTicketNumber("ZX-2222");
 
         ticketDTO.setFlightSeatId(3L);
@@ -336,7 +346,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
 
         MvcResult mvcResult = result.andReturn();
         String jsonResponse = mvcResult.getResponse().getContentAsString();
-        var ticket = ticketService.getTicketByTicketNumber("BB-1111");
+        var ticket = ticketService.getTicketByTicketNumber("BB-1111").get();
 
         Assertions.assertEquals(ticket.getId(), JsonPath.parse(jsonResponse).read("$.id", Long.class));
         Assertions.assertEquals(ticket.getTicketNumber(), JsonPath.parse(jsonResponse).read("$.ticketNumber", String.class));
@@ -347,7 +357,7 @@ class TicketRestControllerIT extends IntegrationTestBase {
     @DisplayName("shouldIgnoreIdInPatchRequest(), ignore id in PATCH request")
     @Test
     void shouldIgnoreIdInPatchRequest() throws Exception {
-        var updatedTicket = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333"));
+        var updatedTicket = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333").get());
         var bookingDto = bookingService.getBookingDto(3L).get();
         bookingDto.setFlightSeatId(4L);
         bookingDto.setPassengerId(4L);
@@ -422,5 +432,15 @@ class TicketRestControllerIT extends IntegrationTestBase {
 
         Assertions.assertNotEquals(newTicket.getId(), idFromResponse);
 
+    }
+
+    @Test
+    @DisplayName("should don't return the PDF of ticket, because ticket is null")
+    void shouldDoNotGetTicketPdfByTicketNumber() throws Exception {
+        String ticketNumber = "SD-2522";
+        mockMvc.perform(get("http://localhost:8080/api/tickets/pdf/{ticketNumber}", ticketNumber)
+                        .contentType(MediaType.APPLICATION_PDF_VALUE))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }

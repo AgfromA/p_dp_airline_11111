@@ -55,7 +55,6 @@ public class PaymentService {
         return paymentRepository.findById(id).orElse(null);
     }
 
-    @Transactional(readOnly = true)
     public Page<Payment> pagePagination(int page, int count) {
         return paymentRepository.findAll(PageRequest.of(page, count));
     }

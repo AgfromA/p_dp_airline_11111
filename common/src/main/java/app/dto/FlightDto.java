@@ -2,6 +2,7 @@ package app.dto;
 
 import app.enums.Airport;
 import app.enums.FlightStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class FlightDto {
     @Size(min = 2, max = 15, message = "Length of Flight code should be between 2 and 15 characters")
     private String code;
 
+    @JsonIgnore
     private List<FlightSeatDto> seats;
 
     private Airport airportFrom;

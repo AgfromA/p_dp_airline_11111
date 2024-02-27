@@ -41,6 +41,7 @@ public class FlightSeatService {
                 .map(entity -> flightSeatMapper.toDto(entity, flightService));
     }
 
+    @Transactional(readOnly = true)
     public Page<FlightSeatDto> getAllFlightSeatsFiltered(Integer page, Integer size, Long flightId, Boolean isSold, Boolean isRegistered) {
         var pageable = PageRequest.of(page, size);
         if (Boolean.FALSE.equals(isSold) && Boolean.FALSE.equals(isRegistered)) {
@@ -107,6 +108,7 @@ public class FlightSeatService {
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flight.getId()).size();
     }
 
+    @Transactional
     public void deleteFlightSeatById(Long id) {
         flightService.checkIfFlightExists(id);
         flightSeatRepository.deleteById(id);

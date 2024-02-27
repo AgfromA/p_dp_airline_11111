@@ -6,13 +6,17 @@ import app.mappers.TicketMapper;
 import app.services.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 @Slf4j
@@ -50,10 +54,22 @@ public class TicketRestController implements TicketRestApi {
     @Override
     public ResponseEntity<TicketDto> getTicketByNumber(String ticketNumber) {
         log.info("getTicketByNumber: by ticketNumber: {}", ticketNumber);
-        var ticket = ticketService.getTicketByTicketNumber(ticketNumber);
-        return ticket != null
-                ? new ResponseEntity<>(ticketMapper.toDto(ticket), HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ticketService
+                .getTicketByTicketNumber(ticketNumber)
+                .map(value -> new ResponseEntity<>(ticketMapper.toDto(value), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public ResponseEntity<InputStreamResource> getPdfByTicketNumber(String ticketNumber) throws FileNotFoundException {
+        log.info("getPdfByTicketNumber: by ticketNumber: {}", ticketNumber);
+        var pathToPdf = ticketService.getPathToTicketPdfByTicketNumber(ticketNumber);
+        FileInputStream fileInputStream = new FileInputStream(pathToPdf);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=S7-Ticket.pdf");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(fileInputStream));
     }
 
     @Override

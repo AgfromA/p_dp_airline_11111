@@ -21,12 +21,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PassengerService {
 
-    @Lazy // FIXME костыль
-    @Autowired
-    private BookingService bookingService;
-    @Lazy // FIXME костыль
+    @Lazy// FIXME костыль
     @Autowired
     private TicketService ticketService;
+    @Autowired
     private final FlightSeatService flightSeatService;
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
@@ -40,6 +38,7 @@ public class PassengerService {
     }
 
     // FIXME страшновтая портянка. Отрефакторить
+    @Transactional(readOnly = true)
     public Page<PassengerDto> getAllPassengersFiltered(Pageable pageable,
                                                        String firstName,
                                                        String lastName,
