@@ -10,13 +10,26 @@ import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Это класс контроллера, который реализует отправку электронного письма, путем обращения к конечной точке,
+ * определенной в интерфейсе EmailControllerApi(@Link EmailControllerApi)
+ */
 @Hidden
 @RestController
 @RequiredArgsConstructor
 public class EmailController implements EmailControllerApi {
-
+    /**
+     * Определяется внедряемый экземпляр сервиса с логикой отправления электронного письма.
+     * Внедрение происходит благодаря использованию аннотации RequiredArgsConstructor
+     */
     private final MailSender mailSender;
 
+    /**
+     * Переопределяем метод из EmailControllerApi, с помощью которого будет осуществляться отправка электронного письма,
+     * путем обращения к конечной точке
+     * @param email данная переменная определяет электронную почту на которую будет отправлено электронное письмо
+     * @return возвращаем HTTP-ответ в виде ResponseEntity
+     */
     @Override
     public @ResponseBody ResponseEntity<String> sendEmail(String email) {
         try {

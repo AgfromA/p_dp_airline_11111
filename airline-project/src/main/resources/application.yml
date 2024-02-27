@@ -58,12 +58,20 @@ spring:
           ehcache:
             missing_cache_strategy: create
   mail:
-    host: smtp.yandex.ru
+    host: smtp.mail.ru
     port: 465
-    username: XXXX
-    password: XXXX
-
-    protocol: smtps
+    username: salamov2014@mail.ru
+    password: 9WUBtTLDQqP0C8HnbNbc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+    protocol: smtp
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
