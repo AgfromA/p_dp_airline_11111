@@ -374,6 +374,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
     @Test
     @DisplayName("Создание билета при установке статуса бронирования в PAID")
     void shouldCreateTicketWhenBookingStatusIsPaid() throws Exception {
@@ -394,21 +395,18 @@ class BookingRestControllerIT extends IntegrationTestBase {
         var createdBookingDto = objectMapper.readValue(postResponseContent, BookingDto.class);
         Long bookingId = createdBookingDto.getId();
 
-        Optional<Booking> bookingFromDb = bookingRepository.findById(bookingId);
-        if (bookingFromDb.isPresent()) {
-            Booking booking = bookingFromDb.get();
-            BookingDto bookingDto1 = bookingMapper.toDto(booking);
-            bookingDto1.setBookingStatus(BookingStatus.PAID);
+        Booking booking = bookingRepository.findById(bookingId).get();
+        BookingDto bookingDto1 = bookingMapper.toDto(booking);
+        bookingDto1.setBookingStatus(BookingStatus.PAID);
 
-            mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", bookingId)
-                            .content(objectMapper.writeValueAsString(bookingDto1))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON))
-                    .andDo(print())
-                    .andExpect(status().isOk());
+        mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", bookingId)
+                        .content(objectMapper.writeValueAsString(bookingDto1))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
 
-            Optional<Ticket> savedTicket = ticketRepository.findByBookingId(bookingId);
-            assertTrue(savedTicket.isPresent());
-        }
+        Optional<Ticket> savedTicket = ticketRepository.findByBookingId(bookingId);
+        assertTrue(savedTicket.isPresent());
     }
 }

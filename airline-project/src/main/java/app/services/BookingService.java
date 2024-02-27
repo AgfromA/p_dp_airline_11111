@@ -4,14 +4,12 @@ import app.dto.BookingDto;
 import app.dto.FlightSeatDto;
 import app.entities.Booking;
 import app.entities.FlightSeat;
-import app.entities.Ticket;
 import app.enums.BookingStatus;
 import app.exceptions.BookedFlightSeatException;
 import app.exceptions.EntityNotFoundException;
 import app.exceptions.SoldFlightSeatException;
 import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
-import app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -34,14 +31,10 @@ public class BookingService {
     private final FlightSeatService flightSeatService;
     private final BookingMapper bookingMapper;
     private final PassengerService passengerService;
-    private final TicketRepository ticketRepository;
-
 
     @Lazy
     @Autowired
     private TicketService ticketService;
-
-    private final Random random = new Random();
 
     public List<BookingDto> getAllBookings() {
         return bookingMapper.toDtoList(bookingRepository.findAll());
@@ -78,25 +71,6 @@ public class BookingService {
         if (bookingDto.getBookingStatus() != null && !bookingDto.getBookingStatus().equals(booking.getBookingStatus())) {
             booking.setBookingStatus(bookingDto.getBookingStatus());
         }
-        if(bookingDto.getBookingStatus() == BookingStatus.PAID){
-            Optional<Ticket> existingTicket = ticketRepository.findByBookingId(booking.getId());
-            if (!existingTicket.isPresent()) {
-                Ticket ticket = new Ticket();
-
-                passengerService.checkIfPassengerExists(bookingDto.getPassengerId());
-                flightSeatService.checkIfFlightSeatExist(bookingDto.getFlightSeatId());
-
-                Booking updatingBooking = bookingMapper.toEntity(bookingDto, passengerService, flightSeatService);
-
-                ticket.setBooking(updatingBooking);
-                ticket.setTicketNumber(ticketService.generateTicketNumber());
-                ticket.setPassenger(updatingBooking.getPassenger());
-                ticket.setFlightSeat(updatingBooking.getFlightSeat());
-
-                ticketRepository.save(ticket);
-            }
-
-        }
         if (bookingDto.getFlightSeatId() != null && !bookingDto.getFlightSeatId().equals(booking.getFlightSeat().getId())) {
             unbookFlightSeat(booking.getFlightSeat());
 
@@ -108,7 +82,11 @@ public class BookingService {
             var passenger = passengerService.checkIfPassengerExists(bookingDto.getPassengerId());
             booking.setPassenger(passenger);
         }
-        return bookingMapper.toDto(bookingRepository.save(booking));
+        var savedBooking = bookingRepository.save(booking);
+        if (savedBooking.getBookingStatus() == BookingStatus.PAID) {
+            ticketService.generatePaidTicket(savedBooking.getId());
+        }
+        return bookingMapper.toDto(savedBooking);
     }
 
     @Transactional
@@ -144,7 +122,7 @@ public class BookingService {
                 () -> new EntityNotFoundException("Booking with ID: " + bookingId + " not found"));
     }
 
-    private void unbookFlightSeat(FlightSeat flightSeat){
+    private void unbookFlightSeat(FlightSeat flightSeat) {
         var flightSeatDto = new FlightSeatDto();
         flightSeatDto.setIsBooked(false);
 
