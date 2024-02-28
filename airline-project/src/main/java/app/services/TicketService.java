@@ -29,16 +29,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class TicketService {
 
     private final TicketRepository ticketRepository;
@@ -48,6 +46,7 @@ public class TicketService {
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
     private final Random random = new Random();
+    private final List<String> createdPdfFiles = new ArrayList<>();
 
     public List<TicketDto> getAllTickets() {
         return ticketMapper.toDtoList(ticketRepository.findAll());
@@ -302,9 +301,8 @@ public class TicketService {
             ticketPrice.add(ticketPriceChunk);
             ticketPrice.add(ticketPriceValue);
             document.add(ticketPrice);
-
+            createdPdfFiles.add(pathToPdf);
             document.close();
-            deletePdfTicketInServer(pathToPdf);
 
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
@@ -312,18 +310,18 @@ public class TicketService {
         return pathToPdf;
     }
 
-    // TODO заменить вызов на @Scheduled
-    private void deletePdfTicketInServer(String pathToPdfTicket) {
-        File fileToDelete = new File(pathToPdfTicket);
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.schedule(() -> {
-            try {
-                Files.deleteIfExists(fileToDelete.toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                executor.shutdown();
+    @Scheduled(fixedRate = 60000)
+    public void deletePdfTicketInServer() {
+        if (!createdPdfFiles.isEmpty()) {
+            String pathToDelete = createdPdfFiles.remove(0);
+            File fileToDelete = new File(pathToDelete);
+            if (fileToDelete.exists()) {
+                try {
+                    Files.deleteIfExists(fileToDelete.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }, 1, TimeUnit.MINUTES);
+        }
     }
 }
