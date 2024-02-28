@@ -58,10 +58,10 @@ spring:
           ehcache:
             missing_cache_strategy: create
   mail:
-    host: smtp.mail.ru
+    host: smtp.gmail.com
     port: 465
-    username: salamov2014@mail.ru
-    password: 9WUBtTLDQqP0C8HnbNbc
+    username:
+    password:
     properties:
       mail:
         smtp:
