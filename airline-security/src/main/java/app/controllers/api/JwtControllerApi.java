@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.security.auth.message.AuthException;
 import javax.servlet.http.HttpServletRequest;
 
 @Api(tags = "JWT")
@@ -24,15 +23,15 @@ public interface JwtControllerApi {
 
     @PostMapping("/login")
     @Operation(summary = "Login and get token")
-    ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) throws AuthException;
+    ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest);
 
     @PostMapping("/token")
     @Operation(summary = "Get new access token")
-    ResponseEntity<JwtResponse> getNewAccessToken(@RequestBody RefreshJwtRequest request) throws AuthException;
+    ResponseEntity<JwtResponse> getNewAccessToken(@RequestBody RefreshJwtRequest request);
 
     @PostMapping("/refresh")
     @Operation(summary = "Get new token")
-    ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody RefreshJwtRequest request) throws AuthException;
+    ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody RefreshJwtRequest request);
 
     @Hidden
     @GetMapping("/login")

@@ -159,11 +159,12 @@ class BookingRestControllerIT extends IntegrationTestBase {
     @DisplayName("Получение бронирования по ID")
     void shouldGetBookingById() throws Exception {
         long id = 1;
+        var booking = bookingService.getBookingDto(id).get();
+        var json = objectMapper.writeValueAsString(booking);
         mockMvc.perform(get("http://localhost:8080/api/bookings/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper
-                        .writeValueAsString(bookingService.getBookingDto(id))));
+                .andExpect(content().json(json));
     }
 
     @Test
