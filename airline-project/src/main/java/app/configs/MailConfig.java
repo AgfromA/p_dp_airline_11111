@@ -9,9 +9,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 /**
- * Этот класс формирует бин JavaMailSender, используемого в
- * классе MailSender(@Link MailSender)
- *
+ * Конфигурационный класс, который создает бин JavaMailSender
+ * (интерфейс в Spring Framework, который предоставляет функциональность для отправки электронной почты),
+ * используемый в классе MailSender(@Link MailSender)
  */
 
 @Configuration
@@ -33,14 +33,14 @@ public class MailConfig {
 
     /**
      * Данное поле привязывается к значению
-     * username указанного в application.yml(@Link application.yml)
+     * username(электронной почты) указанного в application.yml(@Link application.yml)
      */
     @Value("${spring.mail.username}")
     private String username;
 
     /**
      * Данное поле привязывается к значению
-     * password указанного в application.yml(@Link application.yml)
+     * password(пароля) указанного в application.yml(@Link application.yml)
      */
     @Value("${spring.mail.password}")
     private String password;
@@ -62,10 +62,14 @@ public class MailConfig {
     private boolean smtpSsl;
 
     /**
-     * Данный метод создает бин JavaMailSender,
-     * который будет в дальнейшем использоваться в классе MailSender(@Link MailSender)
+     * Данный метод создает бин JavaMailSender-это интерфейс в Spring Framework,
+     * который предоставляет функциональность для отправки электронной почты,
+     * он будет в дальнейшем использоваться в классе MailSender(@Link MailSender).
+     * JavaMailSender подключается к SMTP((Simple Mail Transfer Protocol — это протокол передачи почты),
+     * который указан в проперти-файле application.yml(@Link application.yml)
      * @return бин JavaMailSender с заполненными полями,
-     * которые были ранее указаны в application.yml(@Link application.yml)
+     * которые были ранее указаны в application.yml(@Link application.yml), т.е. уже возвращается
+     * авторизованный JavaMailSender
      */
     @Bean
     public JavaMailSender javaMailSender() {
