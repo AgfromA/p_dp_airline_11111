@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-public class AircraftDtoTest extends EntityTest {
+class AircraftDtoTest extends EntityTest {
 
     private Validator validator;
 
@@ -19,7 +19,7 @@ public class AircraftDtoTest extends EntityTest {
     }
 
     @Test
-    public void blankAircraftNumberFieldShouldNotValidate() {
+    void blankAircraftNumberFieldShouldNotValidate() {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("");
@@ -32,7 +32,7 @@ public class AircraftDtoTest extends EntityTest {
     }
 
     @Test
-    public void notBlankAircraftNumberFieldShouldValidate() {
+    void notBlankAircraftNumberFieldShouldValidate() {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("435HA");
@@ -44,7 +44,7 @@ public class AircraftDtoTest extends EntityTest {
     }
 
     @Test
-    public void blankModelFieldShouldNotValidate() {
+    void blankModelFieldShouldNotValidate() {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("435HA");
@@ -56,7 +56,7 @@ public class AircraftDtoTest extends EntityTest {
     }
 
     @Test
-    public void notBlankModelFieldShouldValidate() {
+    void notBlankModelFieldShouldValidate() {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("435HA");
@@ -67,7 +67,7 @@ public class AircraftDtoTest extends EntityTest {
     }
 
     @Test
-    public void lessThanMinModelYearFieldShouldNotValidate() {
+    void lessThanMinModelYearFieldShouldNotValidate() {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("435HA");
@@ -78,7 +78,7 @@ public class AircraftDtoTest extends EntityTest {
     }
 
     @Test
-    public void moreThanMinModelYearFieldShouldNotValidate() {
+    void moreThanMinModelYearFieldShouldNotValidate() {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("435HA");
@@ -89,7 +89,7 @@ public class AircraftDtoTest extends EntityTest {
     }
 
     @Test
-    public void nullFlightRangeFieldShouldNotValidate() {
+    void nullFlightRangeFieldShouldNotValidate() {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("435HA");
@@ -100,7 +100,7 @@ public class AircraftDtoTest extends EntityTest {
     }
 
     @Test
-    public void notNullFlightRangeFieldShouldValidate() {
+    void notNullFlightRangeFieldShouldValidate() {
         var aircraft = new AircraftDto();
         aircraft.setId(1L);
         aircraft.setAircraftNumber("435HA");
