@@ -24,13 +24,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Stream;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -47,7 +48,7 @@ public class TicketService {
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
     private final Random random = new Random();
-    private final ConcurrentLinkedQueue<String> createdPdfFiles = new ConcurrentLinkedQueue<>();
+    private final String ticketPath = "airline-project\\src\\main\\resources\\";
 
 
     public List<TicketDto> getAllTickets() {
@@ -191,7 +192,7 @@ public class TicketService {
                 () -> new EntityNotFoundException("Operation was not finished because Ticket was not found with ticketNumber = " + ticketNumber)
         );
         String pathToPdf =
-                "airline-project\\src\\main\\resources\\ticketsPdf\\ticket" + ticket.getTicketNumber() + ".pdf";
+                ticketPath + ticket.getTicketNumber() + ".pdf";
 
         try {
             Rectangle pageSize = new Rectangle(PageSize.A4);
@@ -303,7 +304,6 @@ public class TicketService {
             ticketPrice.add(ticketPriceChunk);
             ticketPrice.add(ticketPriceValue);
             document.add(ticketPrice);
-            createdPdfFiles.add(pathToPdf);
             document.close();
 
         } catch (DocumentException | IOException e) {
@@ -313,17 +313,19 @@ public class TicketService {
     }
 
     @Scheduled(fixedRate = 60000)
-    public void deletePdfTicketInServer() {
-        while (!createdPdfFiles.isEmpty()){
-            String pathToDelete = createdPdfFiles.remove();
-            File fileToDelete = new File(pathToDelete);
-            if (fileToDelete.exists()) {
-                try {
-                    Files.deleteIfExists(fileToDelete.toPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    public void deleteAllPdfFilesInDirectory() {
+        Path path = Paths.get(ticketPath);
+        try (Stream<Path> stream = Files.walk(path)) {
+            stream.filter(filter -> filter.toString().toLowerCase().endsWith(".pdf"))
+                    .forEach(fo -> {
+                        try {
+                            Files.delete(fo);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
