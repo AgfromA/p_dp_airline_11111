@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,7 +47,8 @@ public class TicketService {
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
     private final Random random = new Random();
-    private final List<String> createdPdfFiles = new ArrayList<>();
+    private final ConcurrentLinkedQueue<String> createdPdfFiles = new ConcurrentLinkedQueue<>();
+
 
     public List<TicketDto> getAllTickets() {
         return ticketMapper.toDtoList(ticketRepository.findAll());
@@ -312,8 +314,8 @@ public class TicketService {
 
     @Scheduled(fixedRate = 60000)
     public void deletePdfTicketInServer() {
-        if (!createdPdfFiles.isEmpty()) {
-            String pathToDelete = createdPdfFiles.remove(0);
+        while (!createdPdfFiles.isEmpty()){
+            String pathToDelete = createdPdfFiles.remove();
             File fileToDelete = new File(pathToDelete);
             if (fileToDelete.exists()) {
                 try {
