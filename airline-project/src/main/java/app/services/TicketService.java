@@ -40,7 +40,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @RequiredArgsConstructor
 @EnableScheduling
 public class TicketService {
-
+    private static final String ticketPath = "airline-project\\src\\main\\resources\\";
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final PassengerService passengerService;
@@ -48,7 +48,6 @@ public class TicketService {
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
     private final Random random = new Random();
-    private final String ticketPath = "airline-project\\src\\main\\resources\\";
 
 
     public List<TicketDto> getAllTickets() {
