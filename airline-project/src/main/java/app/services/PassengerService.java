@@ -5,6 +5,7 @@ import app.entities.Passenger;
 import app.exceptions.DuplicateFieldException;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.PassengerMapper;
+import app.repositories.BookingRepository;
 import app.repositories.PassengerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class PassengerService {
     private final FlightSeatService flightSeatService;
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
+    private final BookingRepository bookingRepository;
 
     public List<PassengerDto> getAllPassengers() {
         return passengerMapper.toDtoList(passengerRepository.findAll());
@@ -111,6 +113,7 @@ public class PassengerService {
     public void deletePassenger(Long id) {
         flightSeatService.makeFlightSeatNotSold(ticketService.getFlightSeatIdsByPassengerId(id));
         ticketService.deleteTicketByPassengerId(id);
+        bookingRepository.deleteBookingByPassengerId(id);
         passengerRepository.deleteById(id);
     }
 
