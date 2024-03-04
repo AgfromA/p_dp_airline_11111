@@ -5,51 +5,63 @@ import app.dto.FlightSeatDto;
 import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.services.*;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface FlightMapper {
+public abstract class FlightMapper {
 
-    @Mapping(target = "seats", expression = "java(flightSeatService.findByFlightId(flightDto.getId()))")
+    @Autowired
+    protected AircraftService aircraftService;
+    @Autowired
+    protected DestinationService destinationService;
+    @Lazy
+    @Autowired
+    protected FlightSeatService flightSeatService;
+    @Autowired
+    protected FlightService flightService;
+    @Autowired
+    protected SeatService seatService;
+
+    @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraft(flightDto.getAircraftId()))")
     @Mapping(target = "from", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportFrom()))")
     @Mapping(target = "to", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportTo()))")
-    @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraft(flightDto.getAircraftId()))")
-    Flight toEntity(FlightDto flightDto,
-                    @Context AircraftService aircraftService,
-                    @Context DestinationService destinationService,
-                    @Context TicketService ticketService,
-                    @Context FlightSeatService flightSeatService);
+    @Mapping(target = "seats", expression = "java(flightSeatService.findByFlightId(flightDto.getId()))")
+    public abstract Flight toEntity(FlightDto flightDto);
 
-    @Mapping(target = "airportFrom", expression = "java(flight.getFrom().getAirportCode())")
-    @Mapping(target = "airportTo", expression = "java(flight.getTo().getAirportCode())")
-    @Mapping(target = "aircraftId", expression = "java(flight.getAircraft().getId())")
-    @Mapping(target = "seats", expression = "java(toFlightSeatsDtoList(flight.getSeats(), flightService))")
-    FlightDto toDto(Flight flight, @Context FlightService flightService);
+    @Mapping(target = "aircraftId", source = "aircraft.id")
+    @Mapping(target = "airportFrom", source = "from.airportCode")
+    @Mapping(target = "airportTo", source = "to.airportCode")
+    @Mapping(target = "seats", expression = "java(toFlightSeatsDtoList(flight.getSeats()))")
+    public abstract FlightDto toDto(Flight flight);
 
-    default List<FlightSeatDto> toFlightSeatsDtoList(List<FlightSeat> flightSeats, FlightService flightService) {
-        return flightSeats.stream().map(flightSeat -> Mappers.getMapper(FlightSeatMapper.class)
-                .toDto(flightSeat, flightService)).collect(Collectors.toList());
-    }
-
-    default List<Flight> toEntityList(List<FlightDto> flightDtoList, AircraftService aircraftService,
-                                      DestinationService destinationService, TicketService ticketService,
-                                      FlightSeatService flightSeatService) {
-
-        return flightDtoList.stream()
-                .map(flightDto -> toEntity(flightDto, aircraftService, destinationService, ticketService, flightSeatService))
+    public List<FlightSeatDto> toFlightSeatsDtoList(List<FlightSeat> flightSeats) {
+        if (flightSeats == null) {
+            return null;
+        }
+        return flightSeats.stream()
+                .map(flightSeat -> Mappers.getMapper(FlightSeatMapper.class).toDto(flightSeat))
                 .collect(Collectors.toList());
     }
 
-    default List<FlightDto> toDtoList(List<Flight> flights, FlightService flightService) {
+    public List<FlightDto> toDtoList(List<Flight> flights) {
         return flights.stream()
-                .map(flight -> toDto(flight, flightService))
+                .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public List<Flight> toEntityList(List<FlightDto> flightDtoList) {
+        return flightDtoList.stream()
+                .map(flightDto -> toEntity(flightDto))
+                .collect(Collectors.toList());
+
     }
 }

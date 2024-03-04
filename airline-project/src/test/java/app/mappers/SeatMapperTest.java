@@ -13,19 +13,23 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-
+@SpringBootTest
 public class SeatMapperTest {
 
+    @Autowired
     private final SeatMapper seatMapper = Mappers.getMapper(SeatMapper.class);
-    @Mock
-    private CategoryService categoryService = Mockito.mock(CategoryService.class);
-    @Mock
-    private AircraftService aircraftService = Mockito.mock(AircraftService.class);
+    @MockBean
+    private CategoryService categoryService;
+    @MockBean
+    private AircraftService aircraftService;
 
     @Test
     @DisplayName("Должен корректно конвертировать сущность в ДТО")
@@ -79,7 +83,7 @@ public class SeatMapperTest {
         seatDTO.setCategory(category.getCategoryType());
         seatDTO.setAircraftId(aircraft.getId());
 
-        Seat result = seatMapper.toEntity(seatDTO, categoryService, aircraftService);
+        Seat result = seatMapper.toEntity(seatDTO);
         Assertions.assertEquals(seatDTO.getId(), result.getId());
         Assertions.assertEquals(seatDTO.getSeatNumber(), result.getSeatNumber());
         Assertions.assertEquals(seatDTO.getIsNearEmergencyExit(), result.getIsNearEmergencyExit());
@@ -145,7 +149,7 @@ public class SeatMapperTest {
         seatDTO.setAircraftId(aircraft.getId());
         seatDtoList.add(seatDTO);
 
-        List<Seat> seatList = seatMapper.toEntityList(seatDtoList, categoryService, aircraftService);
+        List<Seat> seatList = seatMapper.toEntityList(seatDtoList);
         Assertions.assertEquals(seatDtoList.size(), seatList.size());
         Assertions.assertEquals(seatDtoList.get(0).getId(), seatList.get(0).getId());
         Assertions.assertEquals(seatDtoList.get(0).getSeatNumber(), seatList.get(0).getSeatNumber());

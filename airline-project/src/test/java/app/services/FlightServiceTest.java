@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class FlightServiceTest {
 
-    private final FlightService flightService = new FlightService(null, null, null, null);
+    private final FlightService flightService = new FlightService(null, null, null);
 
     @Test
     public void testGetDistance() {

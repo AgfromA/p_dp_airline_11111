@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,18 +25,20 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
 class TicketMapperTest {
-    TicketMapper ticketMapper = Mappers.getMapper(TicketMapper.class);
-    @Mock
-    private PassengerService passengerServiceMock = Mockito.mock(PassengerService.class);
-    @Mock
-    private FlightService flightServiceMock = Mockito.mock(FlightService.class);
+    @Autowired
+    private final TicketMapper ticketMapper = Mappers.getMapper(TicketMapper.class);
+    @MockBean
+    private PassengerService passengerServiceMock;
+    @MockBean
+    private FlightService flightServiceMock;
 
-    @Mock
-    private BookingService bookingServiceMock = Mockito.mock(BookingService.class);
+    @MockBean
+    private BookingService bookingServiceMock;
 
-    @Mock
-    private FlightSeatService flightSeatServiceMock = Mockito.mock(FlightSeatService.class);
+    @MockBean
+    private FlightSeatService flightSeatServiceMock;
 
     @Test
     @DisplayName("Должен корректно конвертировать сущность в ДТО")
@@ -166,7 +171,7 @@ class TicketMapperTest {
 
         ticketDTO.setBookingId(1111L);
 
-        Ticket ticket = ticketMapper.toEntity(ticketDTO, passengerServiceMock, flightServiceMock, flightSeatServiceMock, bookingServiceMock);
+        Ticket ticket = ticketMapper.toEntity(ticketDTO);
 
         Assertions.assertNotNull(ticket);
         Assertions.assertEquals(ticketDTO.getId(), ticket.getId());
@@ -324,7 +329,7 @@ class TicketMapperTest {
 
         ticketDtoList.add(ticketDTO);
 
-        List<Ticket> ticketList = ticketMapper.toEntityList(ticketDtoList, passengerServiceMock, flightServiceMock, flightSeatServiceMock, bookingServiceMock);
+        List<Ticket> ticketList = ticketMapper.toEntityList(ticketDtoList);
 
         Assertions.assertEquals(ticketDtoList.size(), ticketList.size());
         Assertions.assertEquals(ticketDtoList.get(0).getId(), ticketList.get(0).getId());

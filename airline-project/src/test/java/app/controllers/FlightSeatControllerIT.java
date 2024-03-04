@@ -224,7 +224,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
         long numberOfFlightSeat = flightSeatRepository.count();
 
         mockMvc.perform(patch("http://localhost:8080/api/flight-seats/{id}", id)
-                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).toDto(flightSeatBD, flightService)))
+                        .content(objectMapper.writeValueAsString(Mappers.getMapper(FlightSeatMapper.class).toDto(flightSeatBD)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -253,7 +253,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("Проверка отсутствия возможности у пользователя изменить id места в самолете при POST запросе")
     void shouldNotChangeIdByUserFromPostRequest() throws Exception {
-        FlightSeatDto flightSeatDto = flightSeatMapper.toDto(createFlightSeat(), flightService);
+        FlightSeatDto flightSeatDto = flightSeatMapper.toDto(createFlightSeat());
         flightSeatDto.setId(33L);
 
         mockMvc.perform(post("http://localhost:8080/api/flight-seats")
@@ -269,7 +269,7 @@ class FlightSeatControllerIT extends IntegrationTestBase {
     @DisplayName("Проверка отсутствия возможности у пользователя изменить id места в самолете при PATCH запросе")
     void shouldNotChangeIdByUserFromPatchRequest() throws Exception {
 
-        FlightSeatDto flightSeatDto = flightSeatMapper.toDto(createFlightSeat(), flightService);
+        FlightSeatDto flightSeatDto = flightSeatMapper.toDto(createFlightSeat());
         flightSeatDto.setId(33L);
         var id = 1L;
 

@@ -94,7 +94,7 @@ public class TicketService {
             ticketDto.setTicketNumber(generateTicketNumber());
         }
 
-        var ticket = ticketMapper.toEntity(ticketDto, passengerService, flightService, flightSeatService, bookingService);
+        var ticket = ticketMapper.toEntity(ticketDto);
         return ticketRepository.save(ticket);
     }
 

@@ -58,7 +58,7 @@ public class SeatServiceTest {
                 .thenReturn(aircraft);
         when(seatRepository.findByAircraftId(eq(AIRCRAFT_TEST_ID), any()))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
-        when(seatMapper.toEntity(any(), eq(categoryService), eq(aircraftService)))
+        when(seatMapper.toEntity(any()))
                 .thenAnswer(ans -> {
                     SeatDto seatDTO = ans.getArgument(0);
                     var seat = new Seat();
