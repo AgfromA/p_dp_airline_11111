@@ -6,7 +6,6 @@ import app.entities.FlightSeat;
 import app.entities.Seat;
 import app.services.FlightService;
 import app.services.SeatService;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;

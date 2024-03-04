@@ -1,15 +1,12 @@
 package app.controllers;
 
-import app.dto.FlightDto;
+
 import app.dto.FlightSeatDto;
-import app.dto.SeatDto;
 import app.entities.Aircraft;
-import app.entities.Category;
 import app.entities.Flight;
 import app.entities.FlightSeat;
 import app.entities.Seat;
 import app.enums.Airport;
-import app.enums.CategoryType;
 import app.enums.FlightStatus;
 import app.mappers.FlightSeatMapper;
 import app.repositories.AircraftRepository;

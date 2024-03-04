@@ -2,9 +2,7 @@ package app.controllers;
 
 import app.dto.AircraftDto;
 import app.dto.SeatDto;
-import app.entities.Passport;
 import app.enums.CategoryType;
-import app.enums.Gender;
 import app.mappers.SeatMapper;
 import app.repositories.SeatRepository;
 import app.services.AircraftService;

@@ -3,20 +3,14 @@ package app.mappers;
 import app.dto.BookingDto;
 import app.entities.Booking;
 
-import app.entities.FlightSeat;
-import app.entities.Passenger;
-import app.exceptions.EntityNotFoundException;
 import app.services.FlightSeatService;
 import app.services.PassengerService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Context;
 import org.mapstruct.MappingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
