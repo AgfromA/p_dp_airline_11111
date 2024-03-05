@@ -1,5 +1,6 @@
 package app.services;
 
+import app.clients.MailClient;
 import app.entities.Passenger;
 import app.entities.Ticket;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,10 @@ public class EmailNotificationServiceTest {
     @Mock
     TicketService ticketService;
     @Mock
-    MailSender mailSender;
+    MailClient mailClient;
     @InjectMocks
     EmailNotificationService emailNotificationService;
+
     @Test
     void testSendEmailNotification(){
         var testPassenger = new Passenger();
@@ -36,7 +38,6 @@ public class EmailNotificationServiceTest {
                 .thenReturn(List.of(testTicket));
         emailNotificationService.sendEmailNotification();
 
-        verify(mailSender, times(1)).sendEmail(eq("test@mail.ru"), anyString(), anyString());
-
+        verify(mailClient, times(1)).sendEmail(eq("test@mail.ru"), anyString(), anyString());
     }
 }

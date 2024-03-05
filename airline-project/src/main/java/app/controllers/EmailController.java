@@ -1,7 +1,7 @@
 package app.controllers;
 
+import app.clients.MailClient;
 import app.controllers.api.EmailControllerApi;
-import app.services.MailSender;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,27 +10,13 @@ import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Контроллер, который реализует отправку электронного письма, путем обращения к конечной точке,
- * определенной в интерфейсе EmailControllerApi(@Link EmailControllerApi)
- */
 @Hidden
 @RestController
 @RequiredArgsConstructor
 public class EmailController implements EmailControllerApi {
-    /**
-     * Определяется внедряемый экземпляр сервиса с логикой отправления электронного письма.
-     */
-    private final MailSender mailSender;
 
-    /**
-     * Переопределяем метод из интерфейса EmailControllerApi,
-     * с помощью которого будет осуществляться отправка электронного письма,
-     * путем обращения к конечной точке
-     * @param email данная переменная определяет электронную почту
-     * на которую будет отправлено электронное письмо
-     * @return возвращаем HTTP-ответ в виде ResponseEntity
-     */
+    private final MailClient mailSender;
+
     @Override
     public @ResponseBody ResponseEntity<String> sendEmail(String email) {
         try {
