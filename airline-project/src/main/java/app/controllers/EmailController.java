@@ -1,7 +1,7 @@
 package app.controllers;
 
+import app.clients.MailClient;
 import app.controllers.api.EmailControllerApi;
-import app.services.MailSender;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EmailController implements EmailControllerApi {
 
-    private final MailSender mailSender;
+    private final MailClient mailSender;
 
     @Override
     public @ResponseBody ResponseEntity<String> sendEmail(String email) {
