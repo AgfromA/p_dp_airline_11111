@@ -57,12 +57,20 @@ spring:
           ehcache:
             missing_cache_strategy: create
   mail:
-    host: smtp.yandex.ru
-    port: 465
-    username: XXXX
-    password: XXXX
-
-    protocol: smtps
+    host: smtp.gmail.com # Хост почтового сервера, с которого будут отправляться письма пользователям
+    port: 465 # Порт почтового сервера, с которого будут отправляться письма пользователям
+    username: # Логин для почтового ящика, с которого будут отправляться письма пользователям
+    password: # Пароль для почтового ящика, с которого будут отправляться письма пользователям
+    properties:
+      mail:
+        smtp:
+          auth: true # Использовать ли логин и пароль для аутентификации на почтовом сревере
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true # Шифровать ли соединение с почтовым сервером по протоколу SSL
+    protocol: smtp
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
