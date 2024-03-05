@@ -16,7 +16,7 @@ jwt:
 
 
 spring:
-  application.name: payment
+  application.name: airline-payment
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

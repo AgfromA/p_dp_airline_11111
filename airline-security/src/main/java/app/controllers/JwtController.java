@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.security.auth.message.AuthException;
 import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
@@ -22,13 +21,13 @@ public class JwtController implements JwtControllerApi {
     private final AuthService authService;
 
     @Override
-    public ResponseEntity<JwtResponse> login(JwtRequest authRequest) throws AuthException {
+    public ResponseEntity<JwtResponse> login(JwtRequest authRequest) {
         final var token = authService.login(authRequest);
         return ResponseEntity.ok(token);
     }
 
     @Override
-    public ResponseEntity<JwtResponse> getNewAccessToken(RefreshJwtRequest request) throws AuthException {
+    public ResponseEntity<JwtResponse> getNewAccessToken(RefreshJwtRequest request) {
         final var token = authService.getAccessToken(request.getRefreshToken());
         if (token.getAccessToken() != null) {
             log.info("getNewAccessToken: access token was generated");
@@ -40,7 +39,7 @@ public class JwtController implements JwtControllerApi {
     }
 
     @Override
-    public ResponseEntity<JwtResponse> getNewRefreshToken(RefreshJwtRequest request) throws AuthException {
+    public ResponseEntity<JwtResponse> getNewRefreshToken(RefreshJwtRequest request) {
         final var token = authService.refresh(request.getRefreshToken());
         if (token.getAccessToken() != null) {
             log.info("getNewRefreshToken: new tokens were generated");

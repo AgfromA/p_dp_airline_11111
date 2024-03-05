@@ -3,6 +3,8 @@
 ## [Unreleased]
 - #task_number - short task description
 - #396 - создание pdf файла билета
+- #403 Создание билета при обновлении бронирования в статус PAID
+- #355 Добавлен стартер airline-microservice-starter
 
 ## [1.1.2] - 18.02.2024
 - #374 Рефакторинг BookingRestController

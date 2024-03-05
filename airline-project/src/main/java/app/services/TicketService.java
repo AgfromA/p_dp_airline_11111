@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -122,7 +123,7 @@ public class TicketService {
         var existingTicket = checkIfTicketExist(id);
         var existingBooking = existingTicket.getBooking();
 
-        if (ticketDto.getBookingId() != existingBooking.getId()) {
+        if (!Objects.equals(ticketDto.getBookingId(), existingBooking.getId())) {
             throw new WrongArgumentException("Ticket's Booking can't be changed");
         }
         if (ticketDto.getPassengerId() != null

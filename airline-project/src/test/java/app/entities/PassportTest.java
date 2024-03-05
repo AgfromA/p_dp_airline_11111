@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-
 class PassportTest extends EntityTest {
 
     private Validator validator;
@@ -28,7 +27,7 @@ class PassportTest extends EntityTest {
     }
 
     @Test
-    public void testRightPassport() {
+    void testRightPassport() {
 
         var passport1 = new Passport("Test", Gender.FEMALE, "3333 333333",
                 LocalDate.of(2006, 3, 30), "Russia");
@@ -42,7 +41,7 @@ class PassportTest extends EntityTest {
     }
 
     @Test
-    public void testWrongPassport() {
+    void testWrongPassport() {
 
         var passport1 = new Passport("T", Gender.FEMALE, "333L 333333",
                 LocalDate.of(2006, 3, 30), "Russia");
@@ -76,7 +75,7 @@ class PassportTest extends EntityTest {
     }
 
     @Test
-    public void testWrongPassportJSON() {
+    void testWrongPassportJSON() {
         String passJson =
                 "{" +
                         "\"middleName\": \"Test\"," +

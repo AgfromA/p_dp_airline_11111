@@ -11,31 +11,34 @@ Configuration:
 
     RollingFile:
       - name: LogToRollingFile
-        fileName: logs/app.log
-        filePattern: "logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"
+        filePattern: "logs/app-%d{MM-dd-yyyy}-%i.log"
+        fileName: "logs/${spring:spring.application.name:-default}.log"
         PatternLayout:
-          pattern: "%5p [${spring.application.name:},%X{traceId},%X{spanId}] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+          pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${spring:spring.application.name} [%-5p] [%X{traceId},%X{spanId}] [%pid] --- [%t] %-25.50c{1}: %m%n%xwEx"
         Policies:
           SizeBasedTriggeringPolicy:
             size: 10MB
         DefaultRollOverStrategy:
-          max: 10
+          max: 1
 
   Loggers:
     Root:
       level: info
       AppenderRef:
-        ref: LogToConsole
+        - ref: LogToConsole
+        - ref: LogToRollingFile
 
     Logger:
       - name: info
         level: info
         additivity: false
         AppenderRef:
-          ref: LogToConsole
+          - ref: LogToConsole
+          - ref: LogToRollingFile
 
       - name: org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping
         level: debug
         additivity: false
         AppenderRef:
-          ref: LogToConsole
+          - ref: LogToConsole
+          - ref: LogToRollingFile

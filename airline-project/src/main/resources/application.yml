@@ -10,7 +10,6 @@ springdoc:
     enabled: true
     oauth2:
       enabled: true
-
 spring:
   security:
     oauth2:
@@ -20,7 +19,7 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
   application:
-    name: app
+    name: airline-project
   profiles:
     active: dev
   datasource:

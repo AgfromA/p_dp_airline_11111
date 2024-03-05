@@ -7,7 +7,7 @@ server:
 app:
   feign:
     config:
-      name: Project
+      name: airline-frontend
       url: http://localhost:8080
 
 feign:
