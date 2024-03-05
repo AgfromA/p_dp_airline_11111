@@ -36,5 +36,4 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     boolean existsByTicketNumber(String ticketNumber);
 
     Optional<Ticket> findByBookingId(long bookingId);
-
 }
