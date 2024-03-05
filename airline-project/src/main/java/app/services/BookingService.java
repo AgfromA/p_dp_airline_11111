@@ -136,4 +136,8 @@ public class BookingService {
     public Optional<Booking> getBookingByFlightSeatId(Long flightSeatId) {
         return bookingRepository.findByFlightSeatId(flightSeatId);
     }
+
+    public void deleteBookingByPassengerId(Long id) {
+        bookingRepository.deleteBookingByPassengerId(id);
+    }
 }

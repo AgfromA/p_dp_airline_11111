@@ -24,23 +24,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.stream.Stream;
+
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class TicketService {
-
+    private static final String ticketPath = "airline-project\\src\\main\\resources\\";
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final PassengerService passengerService;
@@ -48,6 +48,7 @@ public class TicketService {
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
     private final Random random = new Random();
+
 
     public List<TicketDto> getAllTickets() {
         return ticketMapper.toDtoList(ticketRepository.findAll());
@@ -190,7 +191,7 @@ public class TicketService {
                 () -> new EntityNotFoundException("Operation was not finished because Ticket was not found with ticketNumber = " + ticketNumber)
         );
         String pathToPdf =
-                "airline-project\\src\\main\\resources\\ticketsPdf\\ticket" + ticket.getTicketNumber() + ".pdf";
+                ticketPath + ticket.getTicketNumber() + ".pdf";
 
         try {
             Rectangle pageSize = new Rectangle(PageSize.A4);
@@ -302,9 +303,7 @@ public class TicketService {
             ticketPrice.add(ticketPriceChunk);
             ticketPrice.add(ticketPriceValue);
             document.add(ticketPrice);
-
             document.close();
-            deletePdfTicketInServer(pathToPdf);
 
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
@@ -312,18 +311,20 @@ public class TicketService {
         return pathToPdf;
     }
 
-    // TODO заменить вызов на @Scheduled
-    private void deletePdfTicketInServer(String pathToPdfTicket) {
-        File fileToDelete = new File(pathToPdfTicket);
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.schedule(() -> {
-            try {
-                Files.deleteIfExists(fileToDelete.toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                executor.shutdown();
-            }
-        }, 1, TimeUnit.MINUTES);
+    @Scheduled(fixedRate = 60000)
+    public void deleteAllPdfFilesInDirectory() {
+        Path path = Paths.get(ticketPath);
+        try (Stream<Path> stream = Files.walk(path)) {
+            stream.filter(filter -> filter.toString().toLowerCase().endsWith(".pdf"))
+                    .forEach(fo -> {
+                        try {
+                            Files.delete(fo);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

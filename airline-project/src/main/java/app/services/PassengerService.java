@@ -29,7 +29,8 @@ public class PassengerService {
     private final FlightSeatService flightSeatService;
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
-    private final BookingRepository bookingRepository;
+    @Lazy
+    private BookingService bookingRepository;
 
     public List<PassengerDto> getAllPassengers() {
         return passengerMapper.toDtoList(passengerRepository.findAll());
