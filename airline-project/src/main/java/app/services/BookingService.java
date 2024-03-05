@@ -30,8 +30,9 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final FlightSeatService flightSeatService;
     private final BookingMapper bookingMapper;
-    private final PassengerService passengerService;
-
+    @Lazy
+    @Autowired
+    private PassengerService passengerService;
     @Lazy
     @Autowired
     private TicketService ticketService;
@@ -93,6 +94,7 @@ public class BookingService {
     public void deleteBookingById(Long id) {
         Booking booking = checkIfBookingExist(id);
         unbookFlightSeat(booking.getFlightSeat());
+
         bookingRepository.deleteById(id);
     }
 
@@ -137,6 +139,7 @@ public class BookingService {
         return bookingRepository.findByFlightSeatId(flightSeatId);
     }
 
+    @Transactional
     public void deleteBookingByPassengerId(Long id) {
         bookingRepository.deleteBookingByPassengerId(id);
     }
