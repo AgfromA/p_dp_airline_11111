@@ -28,7 +28,9 @@ public class PassengerService {
     private final FlightSeatService flightSeatService;
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
-    private final BookingService bookingService;
+    @Lazy
+    @Autowired
+    private BookingService bookingService;
 
     public List<PassengerDto> getAllPassengers() {
         return passengerMapper.toDtoList(passengerRepository.findAll());
