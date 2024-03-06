@@ -33,12 +33,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @Service
 @RequiredArgsConstructor
-@EnableScheduling
 public class TicketService {
 
     private static final Path TICKET_PATH = Paths.get("airline-project", "src", "main", "resources");
@@ -49,7 +47,6 @@ public class TicketService {
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
     private final Random random = new Random();
-
 
     public List<TicketDto> getAllTickets() {
         return ticketMapper.toDtoList(ticketRepository.findAll());
