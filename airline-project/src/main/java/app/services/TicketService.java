@@ -40,7 +40,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 @RequiredArgsConstructor
 @EnableScheduling
 public class TicketService {
-    private static final String ticketPath = "airline-project\\src\\main\\resources\\";
+
+    private static final Path TICKET_PATH = Paths.get("airline-project", "src", "main", "resources");
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final PassengerService passengerService;
@@ -191,7 +192,7 @@ public class TicketService {
                 () -> new EntityNotFoundException("Operation was not finished because Ticket was not found with ticketNumber = " + ticketNumber)
         );
         String pathToPdf =
-                ticketPath + ticket.getTicketNumber() + ".pdf";
+                TICKET_PATH + ticket.getTicketNumber() + ".pdf";
 
         try {
             Rectangle pageSize = new Rectangle(PageSize.A4);
@@ -313,8 +314,7 @@ public class TicketService {
 
     @Scheduled(fixedRate = 60000)
     public void deleteAllPdfFilesInDirectory() {
-        Path path = Paths.get(ticketPath);
-        try (Stream<Path> stream = Files.walk(path)) {
+        try (Stream<Path> stream = Files.walk(TICKET_PATH)) {
             stream.filter(filter -> filter.toString().toLowerCase().endsWith(".pdf"))
                     .forEach(fo -> {
                         try {
