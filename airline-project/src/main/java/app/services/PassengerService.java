@@ -5,7 +5,6 @@ import app.entities.Passenger;
 import app.exceptions.DuplicateFieldException;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.PassengerMapper;
-import app.repositories.BookingRepository;
 import app.repositories.PassengerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
