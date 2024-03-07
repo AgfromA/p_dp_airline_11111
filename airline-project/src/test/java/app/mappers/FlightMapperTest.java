@@ -6,8 +6,12 @@ import app.enums.Airport;
 import app.enums.FlightStatus;
 import app.services.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,23 +24,28 @@ import java.util.Optional;
 import static app.enums.CategoryType.BUSINESS;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+
 class FlightMapperTest {
 
-    @Autowired
+    @InjectMocks
     private final FlightMapper flightMapper = Mappers.getMapper(FlightMapper.class);
-    @MockBean
+    @Mock
     private AircraftService aircraftService;
-    @MockBean
+    @Mock
     private DestinationService destinationService;
-    @MockBean
+    @Mock
     private TicketService ticketService;
-    @MockBean
+    @Mock
     private FlightSeatService flightSeatService;
-    @MockBean
+    @Mock
     private FlightService flightService;
-    @MockBean
+    @Mock
     private SeatService seatService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     void shouldConvertFlightToFlightDtoEntity() throws Exception {

@@ -9,12 +9,18 @@ import app.services.FlightSeatService;
 import app.services.FlightService;
 import app.services.PassengerService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,20 +29,25 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class TicketMapperTest {
-    @Autowired
+public class TicketMapperTest {
+
+    @InjectMocks
     private final TicketMapper ticketMapper = Mappers.getMapper(TicketMapper.class);
-    @MockBean
+    @Mock
     private PassengerService passengerServiceMock;
-    @MockBean
+    @Mock
     private FlightService flightServiceMock;
 
-    @MockBean
+    @Mock
     private BookingService bookingServiceMock;
 
-    @MockBean
+    @Mock
     private FlightSeatService flightSeatServiceMock;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     @DisplayName("Должен корректно конвертировать сущность в ДТО")
