@@ -56,7 +56,7 @@ public class BookingService {
         passengerService.checkIfPassengerExists(bookingDto.getPassengerId());
         flightSeatService.checkIfFlightSeatExist(bookingDto.getFlightSeatId());
 
-        var booking = bookingMapper.toEntity(bookingDto, passengerService, flightSeatService);
+        var booking = bookingMapper.toEntity(bookingDto);
 
         checkIfFlightSeatAvailable(booking.getFlightSeat());
 

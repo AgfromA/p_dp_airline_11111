@@ -6,11 +6,14 @@ import app.entities.*;
 import app.services.FlightService;
 import app.services.SeatService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +25,17 @@ import static org.mockito.Mockito.when;
 
 class FlightSeatMapperTest {
 
+    @InjectMocks
     private final FlightSeatMapper SUT = Mappers.getMapper(FlightSeatMapper.class);
     @Mock
-    private FlightService flightServiceMock = Mockito.mock(FlightService.class);
+    private FlightService flightServiceMock;
     @Mock
-    private SeatService seatService = Mockito.mock(SeatService.class);
+    private SeatService seatService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     @DisplayName("Должен корректно конвертировать сущность в ДТО")
@@ -55,7 +64,7 @@ class FlightSeatMapperTest {
         flightSeat.setFlight(flight);
         flightSeat.setSeat(seat);
 
-        FlightSeatDto result = SUT.toDto(flightSeat, flightServiceMock);
+        FlightSeatDto result = SUT.toDto(flightSeat);
 
         Assertions.assertEquals(flightSeat.getId(), result.getId());
         Assertions.assertEquals(flightSeat.getFare(), result.getFare());
@@ -92,7 +101,7 @@ class FlightSeatMapperTest {
         flightSeatDTO.setSeat(seatDTO);
 
         when(seatService.getSeat(42L)).thenReturn(seat);
-        FlightSeat result = SUT.toEntity(flightSeatDTO, flightServiceMock, seatService);
+        FlightSeat result = SUT.toEntity(flightSeatDTO);
 
         Assertions.assertEquals(flightSeatDTO.getId(), result.getId());
         Assertions.assertEquals(flightSeatDTO.getFare(), result.getFare());
@@ -133,7 +142,7 @@ class FlightSeatMapperTest {
 
         flightSeatList.add(flightSeat);
 
-        List<FlightSeatDto> flightSeatDtoList = SUT.toDtoList(flightSeatList, flightServiceMock);
+        List<FlightSeatDto> flightSeatDtoList = SUT.toDtoList(flightSeatList);
         Assertions.assertEquals(flightSeatList.size(), flightSeatDtoList.size());
         Assertions.assertEquals(flightSeatList.get(0).getId(), flightSeatDtoList.get(0).getId());
         Assertions.assertEquals(flightSeatList.get(0).getFare(), flightSeatDtoList.get(0).getFare());
@@ -172,7 +181,7 @@ class FlightSeatMapperTest {
 
         when(seatService.getSeat(42L)).thenReturn(seat);
         flightSeatDtoList.add(flightSeatDTO);
-        List<FlightSeat> flightSeatList = SUT.toEntityList(flightSeatDtoList, flightServiceMock, seatService);
+        List<FlightSeat> flightSeatList = SUT.toEntityList(flightSeatDtoList);
 
         Assertions.assertEquals(flightSeatDtoList.get(0).getId(), flightSeatList.get(0).getId());
         Assertions.assertEquals(flightSeatDtoList.get(0).getFare(), flightSeatList.get(0).getFare());

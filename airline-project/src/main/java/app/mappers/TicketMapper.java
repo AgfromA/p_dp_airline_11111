@@ -6,16 +6,25 @@ import app.services.BookingService;
 import app.services.FlightSeatService;
 import app.services.FlightService;
 import app.services.PassengerService;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface TicketMapper {
+public abstract class TicketMapper {
+
+    @Autowired
+    protected PassengerService passengerService;
+    @Autowired
+    protected FlightService flightService;
+    @Autowired
+    protected FlightSeatService flightSeatService;
+    @Autowired
+    protected BookingService bookingService;
 
     @Mapping(target = "passengerId", expression = "java(ticket.getPassenger().getId())")
     @Mapping(target = "firstName", expression = "java(ticket.getPassenger().getFirstName())")
@@ -32,30 +41,22 @@ public interface TicketMapper {
             "minusMinutes(40))")
     @Mapping(target = "boardingEndTime", expression = "java(ticket.getFlightSeat().getFlight().getDepartureDateTime()." +
             "minusMinutes(20))")
-    TicketDto toDto(Ticket ticket);
+    public abstract TicketDto toDto(Ticket ticket);
 
     @Mapping(target = "passenger", expression = "java(passengerService.getPassenger(ticketDto.getPassengerId()).get())")
     @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeat(ticketDto.getFlightSeatId()).get())")
     @Mapping(target = "booking", expression = "java(bookingService.getBooking(ticketDto.getBookingId()).get())")
-    Ticket toEntity(TicketDto ticketDto,
-                    @Context PassengerService passengerService,
-                    @Context FlightService flightService,
-                    @Context FlightSeatService flightSeatService,
-                    @Context BookingService bookingService);
+    public abstract Ticket toEntity(TicketDto ticketDto);
 
-    default List<TicketDto> toDtoList(List<Ticket> ticketList) {
+    public List<TicketDto> toDtoList(List<Ticket> ticketList) {
         return ticketList.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    default List<Ticket> toEntityList(List<TicketDto> ticketDtoList,
-                                      PassengerService passengerService,
-                                      FlightService flightService,
-                                      FlightSeatService flightSeatService,
-                                      BookingService bookingService) {
+    public List<Ticket> toEntityList(List<TicketDto> ticketDtoList) {
         return ticketDtoList.stream()
-                .map(ticketDto -> toEntity(ticketDto, passengerService, flightService, flightSeatService, bookingService))
+                .map(this::toEntity)
                 .collect(Collectors.toList());
     }
 }

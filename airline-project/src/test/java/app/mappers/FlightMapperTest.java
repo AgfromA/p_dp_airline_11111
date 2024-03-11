@@ -6,10 +6,15 @@ import app.enums.Airport;
 import app.enums.FlightStatus;
 import app.services.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,21 +24,28 @@ import java.util.Optional;
 import static app.enums.CategoryType.BUSINESS;
 import static org.mockito.Mockito.*;
 
+
 class FlightMapperTest {
 
-    FlightMapper flightMapper = Mappers.getMapper(FlightMapper.class);
+    @InjectMocks
+    private final FlightMapper flightMapper = Mappers.getMapper(FlightMapper.class);
     @Mock
-    private AircraftService aircraftServiceMock = Mockito.mock(AircraftService.class);
+    private AircraftService aircraftService;
     @Mock
-    private DestinationService destinationServiceMock = Mockito.mock(DestinationService.class);
+    private DestinationService destinationService;
     @Mock
-    private TicketService ticketServiceMock = Mockito.mock(TicketService.class);
+    private TicketService ticketService;
     @Mock
-    private FlightSeatService flightSeatServiceMock = Mockito.mock(FlightSeatService.class);
+    private FlightSeatService flightSeatService;
     @Mock
-    private FlightService flightServiceMock = Mockito.mock(FlightService.class);
+    private FlightService flightService;
     @Mock
-    private SeatService seatServiceMock = Mockito.mock(SeatService.class);
+    private SeatService seatService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     void shouldConvertFlightToFlightDtoEntity() throws Exception {
@@ -104,9 +116,9 @@ class FlightMapperTest {
         flightSeat1.setFlight(flight);
         flightSeat2.setFlight(flight);
 
-        when(flightServiceMock.getFlight(1L)).thenReturn(Optional.of(flight));
-        when(seatServiceMock.getSeat(anyLong())).thenReturn(flightSeat1.getSeat());
-        FlightDto flightDto = flightMapper.toDto(flight, flightServiceMock);
+        when(flightService.getFlight(1L)).thenReturn(Optional.of(flight));
+        when(seatService.getSeat(anyLong())).thenReturn(flightSeat1.getSeat());
+        FlightDto flightDto = flightMapper.toDto(flight);
 
         Assertions.assertNotNull(flightDto);
         Assertions.assertEquals(flightDto.getId(), flight.getId());
@@ -140,7 +152,7 @@ class FlightMapperTest {
         flightSeatList.add(flightSeat1);
         flightSeatList.add(flightSeat2);
 
-        when(flightSeatServiceMock.findByFlightId(flightDto.getId())).thenReturn(flightSeatList);
+        when(flightSeatService.findByFlightId(flightDto.getId())).thenReturn(flightSeatList);
 
         Ticket ticket1 = new Ticket();
         ticket1.setId(2001L);
@@ -163,21 +175,20 @@ class FlightMapperTest {
         destinationFrom.setId(4001L);
         destinationFrom.setAirportCode(Airport.ABA);
 
-        when(destinationServiceMock.getDestinationByAirportCode(flightDto.getAirportFrom())).thenReturn(destinationFrom);
+        when(destinationService.getDestinationByAirportCode(flightDto.getAirportFrom())).thenReturn(destinationFrom);
 
         Destination destinationTo = new Destination();
         destinationTo.setId(5001L);
         destinationTo.setAirportCode(Airport.AAQ);
 
-        when(destinationServiceMock.getDestinationByAirportCode(flightDto.getAirportTo())).thenReturn(destinationTo);
+        when(destinationService.getDestinationByAirportCode(flightDto.getAirportTo())).thenReturn(destinationTo);
 
         Aircraft aircraft = new Aircraft();
         aircraft.setId(6001L);
 
-        when(aircraftServiceMock.getAircraft(flightDto.getAircraftId())).thenReturn(aircraft);
+        when(aircraftService.getAircraft(flightDto.getAircraftId())).thenReturn(aircraft);
 
-        Flight flight = flightMapper.toEntity(flightDto, aircraftServiceMock, destinationServiceMock,
-                ticketServiceMock, flightSeatServiceMock);
+        Flight flight = flightMapper.toEntity(flightDto);
 
         Assertions.assertNotNull(flight);
         Assertions.assertEquals(flight.getId(), flightDto.getId());
@@ -261,12 +272,12 @@ class FlightMapperTest {
         flightSeat1.setFlight(flight);
         flightSeat2.setFlight(flight);
 
-        when(flightServiceMock.getFlight(1L)).thenReturn(Optional.of(flight));
-        when(seatServiceMock.getSeat(anyLong())).thenReturn(flightSeat1.getSeat());
+        when(flightService.getFlight(1L)).thenReturn(Optional.of(flight));
+        when(seatService.getSeat(anyLong())).thenReturn(flightSeat1.getSeat());
 
         flightList.add(flight);
 
-        List<FlightDto> flightDtoList = flightMapper.toDtoList(flightList, flightServiceMock);
+        List<FlightDto> flightDtoList = flightMapper.toDtoList(flightList);
 
         Assertions.assertEquals(flightList.size(), flightDtoList.size());
         Assertions.assertEquals(flightDtoList.get(0).getId(), flightList.get(0).getId());
@@ -301,7 +312,7 @@ class FlightMapperTest {
         flightSeatList.add(flightSeat1);
         flightSeatList.add(flightSeat2);
 
-        when(flightSeatServiceMock.findByFlightId(flightDto.getId())).thenReturn(flightSeatList);
+        when(flightSeatService.findByFlightId(flightDto.getId())).thenReturn(flightSeatList);
 
         Ticket ticket1 = new Ticket();
         ticket1.setId(2001L);
@@ -324,23 +335,22 @@ class FlightMapperTest {
         destinationFrom.setId(4001L);
         destinationFrom.setAirportCode(Airport.ABA);
 
-        when(destinationServiceMock.getDestinationByAirportCode(flightDto.getAirportFrom())).thenReturn(destinationFrom);
+        when(destinationService.getDestinationByAirportCode(flightDto.getAirportFrom())).thenReturn(destinationFrom);
 
         Destination destinationTo = new Destination();
         destinationTo.setId(5001L);
         destinationTo.setAirportCode(Airport.AAQ);
 
-        when(destinationServiceMock.getDestinationByAirportCode(flightDto.getAirportTo())).thenReturn(destinationTo);
+        when(destinationService.getDestinationByAirportCode(flightDto.getAirportTo())).thenReturn(destinationTo);
 
         Aircraft aircraft = new Aircraft();
         aircraft.setId(6001L);
 
-        when(aircraftServiceMock.getAircraft(flightDto.getAircraftId())).thenReturn(aircraft);
+        when(aircraftService.getAircraft(flightDto.getAircraftId())).thenReturn(aircraft);
 
         flightDtoList.add(flightDto);
 
-        List<Flight> flightList = flightMapper.toEntityList(flightDtoList, aircraftServiceMock, destinationServiceMock,
-                ticketServiceMock, flightSeatServiceMock);
+        List<Flight> flightList = flightMapper.toEntityList(flightDtoList);
 
         Assertions.assertEquals(flightList.size(), flightDtoList.size());
         Assertions.assertEquals(flightList.get(0).getId(), flightDtoList.get(0).getId());
@@ -354,3 +364,4 @@ class FlightMapperTest {
         Assertions.assertEquals(flightList.get(0).getFlightStatus(), flightDtoList.get(0).getFlightStatus());
     }
 }
+

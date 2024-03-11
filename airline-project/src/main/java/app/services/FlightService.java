@@ -27,26 +27,22 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class FlightService {
 
-    @Lazy // FIXME костыль
-    @Autowired
-    private FlightSeatService flightSeatService;
-    @Lazy // FIXME костыль
-    @Autowired
-    private TicketService ticketService;
+    private static final Pattern LAT_LONG_PATTERN = Pattern.compile("([-+]?\\d{1,2}\\.\\d+),\\s+([-+]?\\d{1,3}\\.\\d+)");
     private final FlightRepository flightRepository;
     private final AircraftService aircraftService;
     private final DestinationService destinationService;
-    private final FlightMapper flightMapper;
-    private static final Pattern LAT_LONG_PATTERN = Pattern.compile("([-+]?\\d{1,2}\\.\\d+),\\s+([-+]?\\d{1,3}\\.\\d+)");
+    @Lazy
+    @Autowired
+    private FlightMapper flightMapper;
 
     public List<FlightDto> getAllFlights() {
         var flights = flightRepository.findAll();
-        return flightMapper.toDtoList(flights, this);
+        return flightMapper.toDtoList(flights);
     }
 
     public Page<FlightDto> getAllFlights(Integer page, Integer size) {
         return flightRepository.findAll(PageRequest.of(page, size))
-                .map(flight -> flightMapper.toDto(flight, this));
+                .map(flight -> flightMapper.toDto(flight));
     }
 
     public List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo, Date departureDate) {
@@ -58,7 +54,7 @@ public class FlightService {
     }
 
     public Optional<FlightDto> getFlightDto(Long id) {
-        return flightRepository.findById(id).map(flight -> flightMapper.toDto(flight, this));
+        return flightRepository.findById(id).map(flight -> flightMapper.toDto(flight));
     }
 
     @Transactional
@@ -67,9 +63,9 @@ public class FlightService {
         flightDto.setFlightStatus(FlightStatus.ON_TIME);
         aircraftService.checkIfAircraftExists(flightDto.getAircraftId());
 
-        var flight = flightMapper.toEntity(flightDto, aircraftService, destinationService, ticketService, flightSeatService);
+        var flight = flightMapper.toEntity(flightDto);
         var savedFlight = flightRepository.save(flight);
-        return flightMapper.toDto(savedFlight, this);
+        return flightMapper.toDto(savedFlight);
     }
 
     @Transactional
@@ -97,7 +93,7 @@ public class FlightService {
             flight.setFlightStatus(flightDto.getFlightStatus());
         }
         var updatedFlight = flightRepository.save(flight);
-        return flightMapper.toDto(updatedFlight, this);
+        return flightMapper.toDto(updatedFlight);
     }
 
     @Transactional

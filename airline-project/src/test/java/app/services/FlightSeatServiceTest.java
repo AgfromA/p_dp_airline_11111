@@ -50,21 +50,21 @@ class FlightSeatServiceTest {
         expectedFlightSeatDtoList.add(new FlightSeatDto());
         expectedFlightSeatDtoList.add(new FlightSeatDto());
 
-        when(flightSeatMapper.toDtoList(flightSeatList, flightService)).thenReturn(expectedFlightSeatDtoList);
+        when(flightSeatMapper.toDtoList(flightSeatList)).thenReturn(expectedFlightSeatDtoList);
 
         List<FlightSeatDto> actualFlightSeatDtoList = flightSeatService.getAllFlightSeats();
 
         assertNotNull(actualFlightSeatDtoList);
         assertEquals(expectedFlightSeatDtoList, actualFlightSeatDtoList);
         verify(flightSeatRepository, times(1)).findAll();
-        verify(flightSeatMapper, times(1)).toDtoList(flightSeatList, flightService);
+        verify(flightSeatMapper, times(1)).toDtoList(flightSeatList);
     }
 
     @Test
     void testGetAllFlightSeats() {
         FlightSeat flightSeat = new FlightSeat();
         FlightSeatDto flightSeatDto = new FlightSeatDto();
-        when(flightSeatMapper.toDto(any(), any())).thenReturn(flightSeatDto);
+        when(flightSeatMapper.toDto(any())).thenReturn(flightSeatDto);
         when(flightSeatRepository.findAll(any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(List.of(flightSeat)));
 
@@ -103,7 +103,7 @@ class FlightSeatServiceTest {
         Page<FlightSeatDto> result = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
 
 
-        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity, flightService)), result);
+        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity)), result);
         verify(flightSeatRepository, times(1))
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable);
         verify(flightSeatRepository, never())
@@ -137,7 +137,7 @@ class FlightSeatServiceTest {
 
         Page<FlightSeatDto> result = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
 
-        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity, flightService)), result);
+        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity)), result);
         verify(flightSeatRepository, never())
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(anyLong(), any(Pageable.class));
         verify(flightSeatRepository, times(1))
@@ -172,7 +172,7 @@ class FlightSeatServiceTest {
 
         Page<FlightSeatDto> result = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
 
-        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity, flightService)), result);
+        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity)), result);
         verify(flightSeatRepository, never())
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(anyLong(), any(Pageable.class));
         verify(flightSeatRepository, never())
@@ -209,7 +209,7 @@ class FlightSeatServiceTest {
         Page<FlightSeatDto> result = flightSeatService
                 .getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
 
-        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity, flightService)), result);
+        assertEquals(flightSeatPage.map(entity -> flightSeatMapper.toDto(entity)), result);
         verify(flightSeatRepository, never())
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(anyLong(), any(Pageable.class));
         verify(flightSeatRepository, never())
@@ -239,14 +239,14 @@ class FlightSeatServiceTest {
         FlightSeat flightSeat = new FlightSeat();
         FlightSeatDto expectedFlightSeatDto = new FlightSeatDto();
         when(flightSeatRepository.findById(anyLong())).thenReturn(Optional.of(flightSeat));
-        when(flightSeatMapper.toDto(flightSeat, flightService)).thenReturn(expectedFlightSeatDto);
+        when(flightSeatMapper.toDto(flightSeat)).thenReturn(expectedFlightSeatDto);
 
         Optional<FlightSeatDto> result = flightSeatService.getFlightSeatDto(anyLong());
 
         assertTrue(result.isPresent());
         assertEquals(expectedFlightSeatDto, result.get());
         verify(flightSeatRepository, times(1)).findById(anyLong());
-        verify(flightSeatMapper, times(1)).toDto(flightSeat, flightService);
+        verify(flightSeatMapper, times(1)).toDto(flightSeat);
     }
 
 
@@ -256,14 +256,14 @@ class FlightSeatServiceTest {
         FlightSeatDto flightSeatDto = new FlightSeatDto();
         when(flightSeatRepository.findFlightSeatsByFlightId(anyLong()))
                 .thenReturn(new HashSet<>(List.of(flightSeat)));
-        when(flightSeatMapper.toDto(any(), any())).thenReturn(flightSeatDto);
+        when(flightSeatMapper.toDto(any())).thenReturn(flightSeatDto);
 
         List<FlightSeatDto> result = flightSeatService.getFlightSeatsByFlightId(1L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(flightSeatRepository, times(1)).findFlightSeatsByFlightId(anyLong());
-        verify(flightSeatMapper, times(1)).toDto(any(), any());
+        verify(flightSeatMapper, times(1)).toDto(any());
     }
 
 
@@ -282,10 +282,10 @@ class FlightSeatServiceTest {
         flightSeat.setId(1L);
         flightSeat.setSeat(seat);
 
-        when(flightSeatMapper.toEntity(flightSeatDto, flightService, seatService)).thenReturn(flightSeat);
+        when(flightSeatMapper.toEntity(flightSeatDto)).thenReturn(flightSeat);
         when(flightSeatRepository.save(flightSeat)).thenReturn(flightSeat);
         when(seatService.getSeat(flightSeatDto.getSeat().getId())).thenReturn(seat);
-        when(flightSeatMapper.toDto(flightSeat, flightService)).thenReturn(flightSeatDto);
+        when(flightSeatMapper.toDto(flightSeat)).thenReturn(flightSeatDto);
 
         FlightSeatDto result = flightSeatService.createFlightSeat(flightSeatDto);
 
@@ -312,7 +312,7 @@ class FlightSeatServiceTest {
         existingFlightSeat.setIsRegistered(false);
 
         when(flightSeatRepository.findById(id)).thenReturn(Optional.of(existingFlightSeat));
-        when(flightSeatMapper.toDto(any(), any())).thenReturn(flightSeatDto);
+        when(flightSeatMapper.toDto(any())).thenReturn(flightSeatDto);
         when(flightSeatRepository.save(existingFlightSeat)).thenReturn(existingFlightSeat);
 
         FlightSeatDto result = flightSeatService.editFlightSeat(id, flightSeatDto);
@@ -324,7 +324,7 @@ class FlightSeatServiceTest {
         assertEquals(flightSeatDto.getIsRegistered(), result.getIsRegistered());
         verify(flightSeatRepository, times(1)).findById(id);
         verify(flightSeatRepository, times(1)).save(existingFlightSeat);
-        verify(flightSeatMapper, times(1)).toDto(existingFlightSeat, flightService);
+        verify(flightSeatMapper, times(1)).toDto(existingFlightSeat);
     }
 
     @Test
@@ -337,7 +337,7 @@ class FlightSeatServiceTest {
         assertThrows(EntityNotFoundException.class, () -> flightSeatService.editFlightSeat(id, flightSeatDto));
         verify(flightSeatRepository, times(1)).findById(id);
         verify(flightSeatRepository, never()).save(any());
-        verify(flightSeatMapper, never()).toDto(any(), any());
+        verify(flightSeatMapper, never()).toDto(any());
     }
 
     @Test
@@ -402,8 +402,8 @@ class FlightSeatServiceTest {
 
         List<FlightSeatDto> flightSeatDtoList = List.of(flightSeatDto);
         Set<FlightSeat> flightSeatList =
-                new HashSet<>(flightSeatMapper.toEntityList(flightSeatDtoList, flightService, seatService));
-        flight.setSeats(flightSeatMapper.toEntityList(flightSeatDtoList, flightService, seatService));
+                new HashSet<>(flightSeatMapper.toEntityList(flightSeatDtoList));
+        flight.setSeats(flightSeatMapper.toEntityList(flightSeatDtoList));
 
         when(flightService.checkIfFlightExists(flightId)).thenReturn(flight);
         when(flightSeatRepository.findFlightSeatsByFlightId(flightId))

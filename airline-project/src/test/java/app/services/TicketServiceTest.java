@@ -342,7 +342,7 @@ class TicketServiceTest {
         savedTicket.setFlightSeat(flightSeat);
         savedTicket.setTicketNumber("LL-4000");
         when(ticketRepository.save(any(Ticket.class))).thenReturn(savedTicket);
-        when(ticketMapper.toEntity(ticketDto, passengerService, flightService, flightSeatService, bookingService)).thenReturn(savedTicket);
+        when(ticketMapper.toEntity(ticketDto)).thenReturn(savedTicket);
 
         Ticket result = ticketService.saveTicket(ticketDto);
 

@@ -8,11 +8,16 @@ import app.enums.CategoryType;
 import app.services.AircraftService;
 import app.services.CategoryService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +26,17 @@ import static org.mockito.Mockito.when;
 
 public class SeatMapperTest {
 
+    @InjectMocks
     private final SeatMapper seatMapper = Mappers.getMapper(SeatMapper.class);
     @Mock
-    private CategoryService categoryService = Mockito.mock(CategoryService.class);
+    private CategoryService categoryService;
     @Mock
-    private AircraftService aircraftService = Mockito.mock(AircraftService.class);
+    private AircraftService aircraftService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     @DisplayName("Должен корректно конвертировать сущность в ДТО")
@@ -79,7 +90,7 @@ public class SeatMapperTest {
         seatDTO.setCategory(category.getCategoryType());
         seatDTO.setAircraftId(aircraft.getId());
 
-        Seat result = seatMapper.toEntity(seatDTO, categoryService, aircraftService);
+        Seat result = seatMapper.toEntity(seatDTO);
         Assertions.assertEquals(seatDTO.getId(), result.getId());
         Assertions.assertEquals(seatDTO.getSeatNumber(), result.getSeatNumber());
         Assertions.assertEquals(seatDTO.getIsNearEmergencyExit(), result.getIsNearEmergencyExit());
@@ -145,7 +156,7 @@ public class SeatMapperTest {
         seatDTO.setAircraftId(aircraft.getId());
         seatDtoList.add(seatDTO);
 
-        List<Seat> seatList = seatMapper.toEntityList(seatDtoList, categoryService, aircraftService);
+        List<Seat> seatList = seatMapper.toEntityList(seatDtoList);
         Assertions.assertEquals(seatDtoList.size(), seatList.size());
         Assertions.assertEquals(seatDtoList.get(0).getId(), seatList.get(0).getId());
         Assertions.assertEquals(seatDtoList.get(0).getSeatNumber(), seatList.get(0).getSeatNumber());

@@ -43,7 +43,6 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final PassengerService passengerService;
-    private final FlightService flightService;
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
     private final Random random = new Random();
@@ -93,7 +92,7 @@ public class TicketService {
             ticketDto.setTicketNumber(generateTicketNumber());
         }
 
-        var ticket = ticketMapper.toEntity(ticketDto, passengerService, flightService, flightSeatService, bookingService);
+        var ticket = ticketMapper.toEntity(ticketDto);
         return ticketRepository.save(ticket);
     }
 
