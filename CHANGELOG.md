@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 - #task_number - short task description
+
+## [1.1.3] - 11.03.2024
 - #412 Испрвил баг Passenger, когда удаляется Passenger по id удаляется и связанный booking и tickets
 - #408 Добавил в TicketService @Scheduled для удаления pdf билетов через 60 секунд
 - #396 - создание pdf файла билета
