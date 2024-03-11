@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class FlightSeatMapper {
+
     @Lazy
     @Autowired
     protected FlightService flightService;
@@ -41,13 +42,13 @@ public abstract class FlightSeatMapper {
 
     public List<FlightSeatDto> toDtoList(List<FlightSeat> flightSeats) {
         return flightSeats.stream()
-                .map(flightSeat -> toDto(flightSeat))
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<FlightSeat> toEntityList(List<FlightSeatDto> flightSeatDtoList) {
         return flightSeatDtoList.stream()
-                .map(flightSeatDTO -> toEntity(flightSeatDTO))
+                .map(this::toEntity)
                 .collect(Collectors.toList());
     }
 }

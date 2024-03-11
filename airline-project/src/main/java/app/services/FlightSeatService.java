@@ -30,7 +30,6 @@ public class FlightSeatService {
     private final FlightSeatRepository flightSeatRepository;
     private final SeatRepository seatRepository;
     private final SeatService seatService;
-
     @Lazy
     @Autowired
     private final FlightService flightService;
@@ -44,7 +43,7 @@ public class FlightSeatService {
 
     public Page<FlightSeatDto> getAllFlightSeats(Integer page, Integer size) {
         return flightSeatRepository.findAll(PageRequest.of(page, size))
-                .map(entity -> flightSeatMapper.toDto(entity));
+                .map(flightSeatMapper::toDto);
     }
 
     @Transactional(readOnly = true)
@@ -66,12 +65,12 @@ public class FlightSeatService {
     }
 
     public Optional<FlightSeatDto> getFlightSeatDto(Long id) {
-        return flightSeatRepository.findById(id).map(flightSeat -> flightSeatMapper.toDto(flightSeat));
+        return flightSeatRepository.findById(id).map(flightSeatMapper::toDto);
     }
 
     public List<FlightSeatDto> getFlightSeatsByFlightId(Long flightId) {
         return flightSeatRepository.findFlightSeatsByFlightId(flightId).stream()
-                .map(flightSeat -> flightSeatMapper.toDto(flightSeat))
+                .map(flightSeatMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -175,25 +174,25 @@ public class FlightSeatService {
         flightService.checkIfFlightExists(flightId);
         return flightSeatRepository
                 .findFlightSeatByFlightIdAndIsSoldFalseAndIsRegisteredFalseAndIsBookedFalse(flightId, pageable)
-                .map(entity -> flightSeatMapper.toDto(entity));
+                .map(flightSeatMapper::toDto);
     }
 
     private Page<FlightSeatDto> getNotSoldFlightSeatsById(Long flightId, Pageable pageable) {
         flightService.checkIfFlightExists(flightId);
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsSoldFalse(flightId, pageable)
-                .map(entity -> flightSeatMapper.toDto(entity));
+                .map(flightSeatMapper::toDto);
     }
 
     private Page<FlightSeatDto> findNotRegisteredFlightSeatsById(Long flightId, Pageable pageable) {
         flightService.checkIfFlightExists(flightId);
         return flightSeatRepository.findAllFlightsSeatByFlightIdAndIsRegisteredFalse(flightId, pageable)
-                .map(entity -> flightSeatMapper.toDto(entity));
+                .map(flightSeatMapper::toDto);
     }
 
     private Page<FlightSeatDto> getFlightSeatsByFlightId(Long flightId, Pageable pageable) {
         flightService.checkIfFlightExists(flightId);
         return flightSeatRepository.findFlightSeatsByFlightId(flightId, pageable)
-                .map(entity -> flightSeatMapper.toDto(entity));
+                .map(flightSeatMapper::toDto);
     }
 
     public List<Long> findFlightSeatIdsByFlight(Flight flight) {

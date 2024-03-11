@@ -62,6 +62,5 @@ public abstract class FlightMapper {
         return flightDtoList.stream()
                 .map(flightDto -> toEntity(flightDto))
                 .collect(Collectors.toList());
-
     }
 }

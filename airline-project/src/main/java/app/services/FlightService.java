@@ -27,20 +27,13 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class FlightService {
 
-    @Lazy // FIXME костыль
-    @Autowired
-    private FlightSeatService flightSeatService;
-    @Lazy // FIXME костыль
-    @Autowired
-    private TicketService ticketService;
-
+    private static final Pattern LAT_LONG_PATTERN = Pattern.compile("([-+]?\\d{1,2}\\.\\d+),\\s+([-+]?\\d{1,3}\\.\\d+)");
     private final FlightRepository flightRepository;
     private final AircraftService aircraftService;
     private final DestinationService destinationService;
     @Lazy
     @Autowired
     private FlightMapper flightMapper;
-    private static final Pattern LAT_LONG_PATTERN = Pattern.compile("([-+]?\\d{1,2}\\.\\d+),\\s+([-+]?\\d{1,3}\\.\\d+)");
 
     public List<FlightDto> getAllFlights() {
         var flights = flightRepository.findAll();

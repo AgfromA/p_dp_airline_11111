@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class TicketMapper {
+
     @Autowired
     protected PassengerService passengerService;
     @Autowired
@@ -55,7 +56,7 @@ public abstract class TicketMapper {
 
     public List<Ticket> toEntityList(List<TicketDto> ticketDtoList) {
         return ticketDtoList.stream()
-                .map(ticketDto -> toEntity(ticketDto))
+                .map(this::toEntity)
                 .collect(Collectors.toList());
     }
 }

@@ -43,7 +43,6 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final PassengerService passengerService;
-    private final FlightService flightService;
     private final FlightSeatService flightSeatService;
     private final BookingService bookingService;
     private final Random random = new Random();
