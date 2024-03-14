@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #381 Добавлена зависимость для работы фнонт модуля, почищен фронт
 
 ## [1.1.3] - 11.03.2024
 - #412 Испрвил баг Passenger, когда удаляется Passenger по id удаляется и связанный booking и tickets
