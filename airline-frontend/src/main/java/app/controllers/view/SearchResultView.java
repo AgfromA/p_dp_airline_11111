@@ -174,9 +174,9 @@ public class SearchResultView extends VerticalLayout {
     private Grid.Column<SearchResultCard> createCategorySeatColumn(Grid<SearchResultCard> grid, boolean isReturn) {
         return grid.addColumn(card -> {
             if (isReturn) {
-                return card.getDataBack() != null ? flightSeatClient.getFlightSeat(card.getDataBack().getFlightSeatId()).getBody().getCategory() : "";
+                return card.getDataBack() != null ? flightSeatClient.getFlightSeat(card.getDataBack().getFlightSeatId()).getBody().getSeat().getCategory() : "";
             } else {
-                return flightSeatClient.getFlightSeat(card.getDataTo().getFlightSeatId()).getBody().getCategory();
+                return flightSeatClient.getFlightSeat(card.getDataTo().getFlightSeatId()).getBody().getSeat().getCategory();
             }
         }).setHeader("Категория места");
     }
