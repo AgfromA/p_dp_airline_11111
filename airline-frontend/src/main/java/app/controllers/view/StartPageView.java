@@ -46,9 +46,6 @@ public class StartPageView extends VerticalLayout {
         VerticalLayout promos = getPromos();
         add(promos);
 
-        VerticalLayout chat = getChat();
-        add(chat);
-
         add(footer);
 
         setSizeFull();
@@ -767,49 +764,6 @@ public class StartPageView extends VerticalLayout {
         promosAndHeader.getElement().getStyle().set("padding-left", "30px");
 
         return promosAndHeader;
-    }
-
-    //ЧАТ
-    private VerticalLayout getChat() {
-        TextField chatField = new TextField();
-        chatField.setPlaceholder("Задайте Ваш вопрос");
-
-        Button chatButton = new Button(new Icon(VaadinIcon.CHAT));
-        chatButton.getElement().getStyle().set("background-color", "#9ACD32");
-        chatButton.getElement().getStyle().set("color", "white");
-
-        chatButton.setHeight("100px");
-        chatButton.setWidth("100px");
-        chatButton.getElement().getThemeList().add("large");
-
-        chatButton.getElement().getStyle().set("position", "fixed");
-        chatButton.getElement().getStyle().set("bottom", "30px");
-        chatButton.getElement().getStyle().set("right", "30px");
-
-        Button sendButton = new Button("Отправить вопрос");
-        sendButton.getElement().getStyle().set("background-color", "#9ACD32");
-        sendButton.getElement().getStyle().set("color", "white");
-
-        VerticalLayout chatFieldAndSendButton = new VerticalLayout(chatField, sendButton);
-        chatFieldAndSendButton.setAlignItems(Alignment.CENTER);
-        Dialog dialog = new Dialog(chatFieldAndSendButton);
-        dialog.setWidth("300px");
-        dialog.setHeight("200px");
-
-        sendButton.addClickListener(e -> dialog.close());
-
-        chatButton.addClickListener(event -> {
-            dialog.open();
-        });
-
-        VerticalLayout chat = new VerticalLayout();
-
-        chat.add(chatButton, dialog);
-        chat.getElement().getStyle().set("position", "fixed");
-        chat.getElement().getStyle().set("bottom", "30px");
-        chat.getElement().getStyle().set("right", "30px");
-
-        return chat;
     }
 }
 
