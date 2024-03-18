@@ -37,6 +37,7 @@ class AccountMapperTest {
         Account account = new Account();
 
         account.setId(1L);
+        account.setUsername("user123");
         account.setFirstName("Ivan");
         account.setLastName("Ivanov");
         account.setBirthDate(LocalDate.of(2023, 8, 3));
@@ -50,6 +51,7 @@ class AccountMapperTest {
         AccountDto accountDTO = accountMapper.toDto(account);
 
         Assertions.assertEquals(account.getId(), accountDTO.getId());
+        Assertions.assertEquals(account.getUsername(), accountDTO.getUsername());
         Assertions.assertEquals(account.getFirstName(), accountDTO.getFirstName());
         Assertions.assertEquals(account.getLastName(), accountDTO.getLastName());
         Assertions.assertEquals(account.getBirthDate(), accountDTO.getBirthDate());
@@ -73,6 +75,7 @@ class AccountMapperTest {
         AccountDto accountDTO = new AccountDto();
 
         accountDTO.setId(1L);
+        accountDTO.setUsername("user123");
         accountDTO.setFirstName("Ivan");
         accountDTO.setLastName("Ivanov");
         accountDTO.setBirthDate(LocalDate.of(2023, 8, 3));
@@ -86,6 +89,7 @@ class AccountMapperTest {
         Account account = accountMapper.toEntity(accountDTO);
 
         Assertions.assertEquals(accountDTO.getId(), account.getId());
+        Assertions.assertEquals(accountDTO.getUsername(), account.getUsername());
         Assertions.assertEquals(accountDTO.getFirstName(), account.getFirstName());
         Assertions.assertEquals(accountDTO.getLastName(), account.getLastName());
         Assertions.assertEquals(accountDTO.getBirthDate(), account.getBirthDate());
@@ -110,6 +114,7 @@ class AccountMapperTest {
         Account accountOne = new Account();
 
         accountOne.setId(1L);
+        accountOne.setUsername("user123");
         accountOne.setFirstName("Ivan");
         accountOne.setLastName("Ivanov");
         accountOne.setBirthDate(LocalDate.of(2023, 8, 3));
@@ -123,6 +128,7 @@ class AccountMapperTest {
         Account accountTwo = new Account();
 
         accountTwo.setId(2L);
+        accountOne.setUsername("user467");
         accountTwo.setFirstName("Petr");
         accountTwo.setLastName("Petrov");
         accountTwo.setBirthDate(LocalDate.of(2022, 10, 4));
@@ -140,6 +146,7 @@ class AccountMapperTest {
         Assertions.assertEquals(accountList.size(), accountDtoList.size());
 
         Assertions.assertEquals(accountList.get(0).getId(), accountDtoList.get(0).getId());
+        Assertions.assertEquals(accountList.get(0).getUsername(), accountDtoList.get(0).getUsername());
         Assertions.assertEquals(accountList.get(0).getFirstName(), accountDtoList.get(0).getFirstName());
         Assertions.assertEquals(accountList.get(0).getLastName(), accountDtoList.get(0).getLastName());
         Assertions.assertEquals(accountList.get(0).getBirthDate(), accountDtoList.get(0).getBirthDate());
@@ -151,6 +158,7 @@ class AccountMapperTest {
         Assertions.assertEquals(accountList.get(0).getRoles().iterator().next().getName(), accountDtoList.get(0).getRoles().iterator().next().getName());
 
         Assertions.assertEquals(accountList.get(1).getId(), accountDtoList.get(1).getId());
+        Assertions.assertEquals(accountList.get(1).getUsername(), accountDtoList.get(1).getUsername());
         Assertions.assertEquals(accountList.get(1).getFirstName(), accountDtoList.get(1).getFirstName());
         Assertions.assertEquals(accountList.get(1).getLastName(), accountDtoList.get(1).getLastName());
         Assertions.assertEquals(accountList.get(1).getBirthDate(), accountDtoList.get(1).getBirthDate());
@@ -174,6 +182,7 @@ class AccountMapperTest {
         AccountDto accountDtoOne = new AccountDto();
 
         accountDtoOne.setId(1L);
+        accountDtoOne.setUsername("user123");
         accountDtoOne.setFirstName("Ivan");
         accountDtoOne.setLastName("Ivanov");
         accountDtoOne.setBirthDate(LocalDate.of(2023, 8, 3));
@@ -187,6 +196,7 @@ class AccountMapperTest {
         AccountDto accountDtoTwo = new AccountDto();
 
         accountDtoTwo.setId(2L);
+        accountDtoTwo.setUsername("user567");
         accountDtoTwo.setFirstName("Petr");
         accountDtoTwo.setLastName("Petrov");
         accountDtoTwo.setBirthDate(LocalDate.of(2022, 10, 4));
@@ -204,6 +214,7 @@ class AccountMapperTest {
         Assertions.assertEquals(accountList.size(), accountDtoList.size());
 
         Assertions.assertEquals(accountDtoList.get(0).getId(), accountList.get(0).getId());
+        Assertions.assertEquals(accountDtoList.get(0).getUsername(), accountList.get(0).getUsername());
         Assertions.assertEquals(accountDtoList.get(0).getFirstName(), accountList.get(0).getFirstName());
         Assertions.assertEquals(accountDtoList.get(0).getLastName(), accountList.get(0).getLastName());
         Assertions.assertEquals(accountDtoList.get(0).getBirthDate(), accountList.get(0).getBirthDate());
@@ -215,6 +226,7 @@ class AccountMapperTest {
         Assertions.assertEquals(accountDtoList.get(0).getRoles().iterator().next().getName(), accountList.get(0).getRoles().iterator().next().getName());
 
         Assertions.assertEquals(accountDtoList.get(1).getId(), accountList.get(1).getId());
+        Assertions.assertEquals(accountDtoList.get(1).getUsername(), accountList.get(1).getUsername());
         Assertions.assertEquals(accountDtoList.get(1).getFirstName(), accountList.get(1).getFirstName());
         Assertions.assertEquals(accountDtoList.get(1).getLastName(), accountList.get(1).getLastName());
         Assertions.assertEquals(accountDtoList.get(1).getBirthDate(), accountList.get(1).getBirthDate());

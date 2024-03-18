@@ -3,7 +3,6 @@ package app.controllers.rest;
 import app.controllers.api.rest.AccountRestApi;
 import app.dto.AccountDto;
 import app.dto.RoleDto;
-import app.security.JwtProviderLite;
 import app.services.AccountService;
 import app.services.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Slf4j
@@ -24,7 +22,6 @@ public class AccountRestController implements AccountRestApi {
 
     private final AccountService accountService;
     private final RoleService roleService;
-    private final JwtProviderLite jwtProvider;
 
     @Override
     public ResponseEntity<Page<AccountDto>> getAllAccounts(Integer page, Integer size) {
@@ -55,23 +52,6 @@ public class AccountRestController implements AccountRestApi {
         return account.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @Override
-    public ResponseEntity<AccountDto> getAuthenticatedAccount(HttpServletRequest request) {
-        log.info("getAuthenticatedAccount: get currently authenticated Account");
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-            var claimsOptional = jwtProvider.extractClaims(token);
-            if (claimsOptional.isPresent()) {
-                String username = claimsOptional.get().getSubject();
-                var authAccount = accountService.getAccountByEmail(username);
-                return ResponseEntity.ok(authAccount);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
 
     @Override
     public ResponseEntity<AccountDto> createAccount(AccountDto accountDTO) {

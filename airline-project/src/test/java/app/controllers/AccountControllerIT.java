@@ -37,6 +37,7 @@ class AccountControllerIT extends IntegrationTestBase {
 
     private AccountDto createAccountDto() {
         var accountDTO = new AccountDto();
+        accountDTO.setUsername("ivanuser");
         accountDTO.setFirstName("Ivan");
         accountDTO.setLastName("Ivanov");
         accountDTO.setBirthDate(LocalDate.of(2023, 3, 23));

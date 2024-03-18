@@ -5,10 +5,10 @@ COPY common/pom.xml .
 COPY common/src /build/src
 RUN mvn -f /build/common/pom.xml clean install
 
-WORKDIR /build/airline-logger-starter
-COPY airline-logger-starter/pom.xml .
-COPY airline-logger-starter/src /build/src
-RUN mvn -f /build/airline-logger-starter/pom.xml clean install
+WORKDIR /build/airline-microservice-starter
+COPY airline-microservice-starter/pom.xml .
+COPY airline-microservice-starter/src /build/src
+RUN mvn -f /build/airline-microservice-starter/pom.xml clean install
 
 WORKDIR /build
 COPY airline-project/pom.xml .

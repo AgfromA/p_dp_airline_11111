@@ -42,6 +42,9 @@ public class Account {
     @Column(name = "account_id")
     private Long id;
 
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "first_name")
     private String firstName;
 

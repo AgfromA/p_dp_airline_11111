@@ -26,3 +26,11 @@ springdoc:
     enabled: true
     oauth2:
       enabled: true
+
+keycloak:
+  auth-server-url: http://localhost:8180
+  realm: airline-realm
+  resource: airline-payment-client
+  public-client: false
+  credentials:
+    secret: V8X7MgxQvMkt0pfOWcgoesaq6KQ4ie7M

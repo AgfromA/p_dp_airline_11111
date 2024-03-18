@@ -50,6 +50,9 @@ public class AccountService {
     @Transactional
     public AccountDto updateAccount(Long id, AccountDto accountDTO) {
         var existingAccount = checkIfAccountSeatExist(id);
+        if (accountDTO.getUsername() != null) {
+            existingAccount.setUsername(accountDTO.getUsername());
+        }
         if (accountDTO.getFirstName() != null) {
             existingAccount.setFirstName(accountDTO.getFirstName());
         }

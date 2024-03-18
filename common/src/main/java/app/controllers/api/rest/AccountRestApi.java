@@ -29,10 +29,6 @@ public interface AccountRestApi {
     @Operation(summary = "Получение сущности")
     ResponseEntity<AccountDto> getAccount(@Parameter(description = "ID сущности") @PathVariable Long id);
 
-    @Hidden
-    @RequestMapping(value = "/api/accounts/auth", method = RequestMethod.GET)
-    ResponseEntity<AccountDto> getAuthenticatedAccount(HttpServletRequest request);
-
     @RequestMapping(value = "/api/accounts", method = RequestMethod.POST)
     @Operation(summary = "Создание сущности")
     ResponseEntity<AccountDto> createAccount(@Parameter(description = "Пользователь") @Valid @RequestBody AccountDto accountDTO);
