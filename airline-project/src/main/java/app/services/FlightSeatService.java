@@ -85,6 +85,7 @@ public class FlightSeatService {
             throw new EntityNotFoundException("Operation was not finished because Seat was not found with id = " + flightSeatDto.getFlightId());
         }
         flightSeat.setSeat(seat);
+        flightSeat.setId(null);
         return flightSeatMapper.toDto(flightSeatRepository.save(flightSeat));
     }
 

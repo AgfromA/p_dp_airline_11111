@@ -68,7 +68,7 @@ public class TicketService {
 
     @Transactional
     public Ticket saveTicket(TicketDto ticketDto) {
-
+        ticketDto.setId(null);
         passengerService.checkIfPassengerExists(ticketDto.getPassengerId());
         flightSeatService.checkIfFlightSeatExist(ticketDto.getFlightSeatId());
         var booking = bookingService.checkIfBookingExist(ticketDto.getBookingId());

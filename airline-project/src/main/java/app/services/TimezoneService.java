@@ -26,6 +26,7 @@ public class TimezoneService {
 
     @Transactional
     public Timezone saveTimezone(TimezoneDto timezoneDto) {
+        timezoneDto.setId(null);
         var timezone = timezoneMapper.toEntity(timezoneDto);
         return timezoneRepository.save(timezone);
     }

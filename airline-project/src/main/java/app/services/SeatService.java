@@ -43,6 +43,7 @@ public class SeatService {
 
     @Transactional
     public SeatDto saveSeat(SeatDto seatDto) {
+        seatDto.setId(null);
         checkIfAircraftExists(seatDto.getAircraftId());
         var seat = seatMapper.toEntity(seatDto);
         return seatMapper.toDto(seatRepository.save(seat));
