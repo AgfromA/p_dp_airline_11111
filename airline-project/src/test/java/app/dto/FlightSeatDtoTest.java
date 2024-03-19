@@ -35,7 +35,6 @@ class FlightSeatDtoTest extends EntityTest {
         flightSeatJson.put("isBooked", true);
         flightSeatJson.put("flightId", 1L);
         flightSeatJson.put("seat", seat);
-        flightSeatJson.put("category", ECONOMY);
 
         return flightSeatJson;
     }
