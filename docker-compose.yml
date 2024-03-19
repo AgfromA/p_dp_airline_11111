@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  app:
+    image: 'denispronin/airline-project:1.1.3'
+    build:
+      context: .
+      dockerfile: Dockerfile_Project
+    container_name: app
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/airline_db
+  app-payment:
+    image: 'denispronin/airline-payments:1.1.3'
+    build:
+      context: .
+      dockerfile: Dockerfile_Payments
+    container_name: app-payment
+    ports:
+      - "8081:8081"
+  db:
+    image: 'postgres:12.12'
+    container_name: db
+    environment:
+      - POSTGRES_DB=airline_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+  keycloak:
+    build:
+      context: .
+      dockerfile: Dockerfile_Keycloak
+    command: start-dev --import-realm
+    container_name: keycloak
+    volumes:
+      - ./airline-microservice-starter/src/main/resources/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    environment:
+      KC_DB: postgres
+      KC_DB_USERNAME: root
+      KC_DB_PASSWORD: root
+      KC_DB_SCHEMA: public
+      KC_DB_URL_DATABASE: airline_db
+      KC_DB_URL_HOST: db
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8180:8080"

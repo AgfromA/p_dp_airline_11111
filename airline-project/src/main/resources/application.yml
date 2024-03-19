@@ -86,9 +86,6 @@ app:
       url: http://localhost:8081
 
 keycloak:
-  auth-server-url: http://localhost:8180
-  realm: airline-realm
   resource: airline-project-client
-  public-client: false
   credentials:
     secret: oQ7YruFeVz4wdKquvpaQw3v1ZACfbxWg

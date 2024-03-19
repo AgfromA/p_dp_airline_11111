@@ -8,22 +8,26 @@ services:
     command: start-dev --import-realm
     container_name: keycloak
     volumes:
-      - ./airline-keycloak-provider/src/main/resources/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./airline-microservice-starter/src/main/resources/realm-export.json:/opt/keycloak/data/import/realm-export.json
     environment:
       KC_DB: postgres
       KC_DB_USERNAME: root
       KC_DB_PASSWORD: root
       KC_DB_SCHEMA: public
       KC_DB_URL_DATABASE: airline_db
-      KC_DB_URL_HOST: postgreS7
+      KC_DB_URL_HOST: db
 
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
 
     ports:
       - "8180:8080"
-    networks:
-      - kc_net
-networks:
-  kc_net:
-    external: true
+  db:
+    image: 'postgres:12.12'
+    container_name: db
+    environment:
+      - POSTGRES_DB=airline_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
