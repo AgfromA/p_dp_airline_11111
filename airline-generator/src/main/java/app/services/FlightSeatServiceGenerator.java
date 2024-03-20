@@ -38,7 +38,6 @@ public class FlightSeatServiceGenerator {
         flightSeatDto.setIsBooked(randomGenerator.random.nextBoolean());
         flightSeatDto.setFlightId(randomGenerator.getRandomBoundId(302)); // т.к. всего 302 полётов в базе
         flightSeatDto.setSeat(randomGenerator.getRandomElementOfList(listSeatDTO));
-        flightSeatDto.setCategory(randomGenerator.randomEnum(CategoryType.class));
         return flightSeatDto;
     }
 

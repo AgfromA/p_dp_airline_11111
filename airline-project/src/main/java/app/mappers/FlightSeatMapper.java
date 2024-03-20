@@ -28,7 +28,6 @@ public abstract class FlightSeatMapper {
     SeatMapper seatMapper = Mappers.getMapper(SeatMapper.class);
 
     @Mapping(target = "flightId", expression = "java(flightSeat.getFlight().getId())")
-    @Mapping(target = "category", expression = "java(flightSeat.getSeat().getCategory().getCategoryType())")
     @Mapping(target = "seat", expression = "java(toSeatDto(flightSeat.getSeat()))")
     public abstract FlightSeatDto toDto(FlightSeat flightSeat);
 
