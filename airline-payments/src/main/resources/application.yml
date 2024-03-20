@@ -28,6 +28,5 @@ springdoc:
       enabled: true
 
 keycloak:
-  resource: airline-payment-client
   credentials:
     secret: V8X7MgxQvMkt0pfOWcgoesaq6KQ4ie7M

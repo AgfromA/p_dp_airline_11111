@@ -39,14 +39,11 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.cors().and().csrf().disable();
-        if (false) {
+        if (true) {
             http
                     .authorizeRequests()
                     .antMatchers("/api/search/**").permitAll()
-                    .anyRequest().hasRole("ADMIN")
-                    .and()
-                    .oauth2ResourceServer((oauth2) -> oauth2
-                            .jwt(Customizer.withDefaults()));
+                    .anyRequest().hasRole("ADMIN");
         } else {
             http
                     .authorizeRequests()
@@ -62,11 +59,5 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Bean
     public BearerTokenResolver keycloakTokenResolver() {
         return new DefaultBearerTokenResolver();
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        String jwkSetUri = "http://localhost:8180/realms/airline-realm/protocol/openid-connect/certs";
-        return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
     }
 }
