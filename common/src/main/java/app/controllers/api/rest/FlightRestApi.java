@@ -18,8 +18,8 @@ public interface FlightRestApi {
     @RequestMapping(value = "/api/flights", method = RequestMethod.GET)
     @Operation(summary = "Получение всех сущностей с пагинацией/без пагинации")
     ResponseEntity<Page<FlightDto>> getAllFlights(
-            @Parameter(name = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
-            @Parameter(name = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size);
+            @Parameter(description = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(description = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size);
 
     @RequestMapping(value = "/api/flights/{id}", method = RequestMethod.GET)
     @Operation(summary = "Получение сущности")

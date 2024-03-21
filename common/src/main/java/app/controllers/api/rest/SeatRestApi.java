@@ -17,8 +17,8 @@ public interface SeatRestApi {
 
     @RequestMapping(value = "/api/seats", method = RequestMethod.GET)
     @Operation(summary = "Получение всех сущностей с пагинацией/без пагинации")
-    ResponseEntity<Page<SeatDto>> getAllSeats(@Parameter(name = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
-                                              @Parameter(name = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size,
+    ResponseEntity<Page<SeatDto>> getAllSeats(@Parameter(description = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
+                                              @Parameter(description = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size,
                                               @Parameter(description = "ID самолета") @RequestParam(value = "aircraftId", required = false) Long aircraftId);
 
     @RequestMapping(value = "/api/seats/{id}", method = RequestMethod.GET)
