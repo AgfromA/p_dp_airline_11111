@@ -4,6 +4,8 @@
 /common/target/
 !.mvn/wrapper/maven-wrapper.jar
 /S7_Airlines_API.postman_collection.json
+dependency-reduced-pom.xml
+*.log
 
 ### STS ###
 .apt_generated

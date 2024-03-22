@@ -59,10 +59,8 @@ public class FlightService {
 
     @Transactional
     public FlightDto createFlight(FlightDto flightDto) {
-
         flightDto.setFlightStatus(FlightStatus.ON_TIME);
         aircraftService.checkIfAircraftExists(flightDto.getAircraftId());
-
         var flight = flightMapper.toEntity(flightDto);
         var savedFlight = flightRepository.save(flight);
         return flightMapper.toDto(savedFlight);

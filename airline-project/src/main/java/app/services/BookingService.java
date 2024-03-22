@@ -51,6 +51,7 @@ public class BookingService {
 
     @Transactional
     public BookingDto saveBooking(BookingDto bookingDto) {
+        bookingDto.setId(null);
         bookingDto.setBookingStatus(BookingStatus.NOT_PAID);
 
         passengerService.checkIfPassengerExists(bookingDto.getPassengerId());

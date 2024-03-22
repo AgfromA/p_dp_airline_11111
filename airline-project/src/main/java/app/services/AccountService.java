@@ -38,6 +38,7 @@ public class AccountService {
     @Transactional
     public AccountDto createAccount(AccountDto accountDTO) {
         checkEmailUnique(accountDTO.getEmail());
+        accountDTO.setId(null);
         accountDTO.setPassword(encoder.encode(accountDTO.getPassword()));
         accountDTO.setRoles(roleService.saveRolesToUser(accountDTO));
         if (accountDTO.getAnswerQuestion() != null) {
@@ -50,6 +51,9 @@ public class AccountService {
     @Transactional
     public AccountDto updateAccount(Long id, AccountDto accountDTO) {
         var existingAccount = checkIfAccountSeatExist(id);
+        if (accountDTO.getUsername() != null) {
+            existingAccount.setUsername(accountDTO.getUsername());
+        }
         if (accountDTO.getFirstName() != null) {
             existingAccount.setFirstName(accountDTO.getFirstName());
         }

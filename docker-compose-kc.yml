@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  keycloak:
+    build:
+      context: .
+      dockerfile: Dockerfile_Keycloak
+    command: start-dev --import-realm
+    container_name: keycloak
+    volumes:
+      - ./airline-microservice-starter/src/main/resources/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    environment:
+      KC_DB: postgres
+      KC_DB_USERNAME: root
+      KC_DB_PASSWORD: root
+      KC_DB_SCHEMA: public
+      KC_DB_URL_DATABASE: airline_db
+      KC_DB_URL_HOST: db
+
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+    ports:
+      - "8180:8080"
+  db:
+    image: 'postgres:12.12'
+    container_name: db
+    environment:
+      - POSTGRES_DB=airline_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
