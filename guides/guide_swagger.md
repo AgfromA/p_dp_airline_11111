@@ -24,12 +24,12 @@
 - @Hidden - Скрывает ресурс, операцию или свойство
 - @Parameter - Предназначена для параметров запроса ресурсов API
 
-**Авторизация в Swagger с помощью JWT:**
+**Security в Swagger с помощью JWT:**
 
-- Получить access и refresh токен [здесь](http://localhost:8084/swagger-ui/index.html#/JWT/login). <code>{"password": "admin", "username": "admin@mail.ru"}</code>
+- Получить access и refresh [guide_security.md](guide_security.md). <code>{"password": "admin", "username": "admin@mail.ru"}</code>
 - Авторизация JWT с помощью access токена, по кнопке Authorize, вводим в формате ```Bearer ``` + полученный ранее токен (Bearer обязательно с пробелом).
 - Далее запросы к серверу уже будут содержать ```accessToken```.
-- Время жизни токенов: ```accessToken``` = 24 часа, ```refreshToken``` = 15 дней.
+- Время жизни access и refresh токенов определяется настройками Keycloak.
 - Дополнительная информация о [JWT](./guide_postman_and_security.md).
 
 Дополнительные материалы:

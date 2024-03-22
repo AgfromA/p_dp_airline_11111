@@ -9,7 +9,7 @@ RUN mvn -f /build/pom.xml clean package
 
 FROM quay.io/keycloak/keycloak:23.0.1
 
-COPY --from=builder /build/target/custom-provider.jar /opt/keycloak/providers/custom-provider.jar
+COPY --from=builder /build/target/airline-keycloak-provider.jar /opt/keycloak/providers/airline-keycloak-provider.jar
 
 ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
