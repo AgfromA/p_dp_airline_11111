@@ -351,4 +351,39 @@ class SeatControllerIT extends IntegrationTestBase {
                 .andExpect(jsonPath("$.id").value(not(33)));
     }
 
+    @Test
+    void shouldPaginateResultsCorrectly() throws Exception {
+
+        var seat1 = new SeatDto();
+        seat1.setSeatNumber("1B");
+        seat1.setIsLockedBack(true);
+        seat1.setIsNearEmergencyExit(false);
+        seat1.setCategory(CategoryType.ECONOMY);
+        seat1.setAircraftId(1L);
+
+        var seat2 = new SeatDto();
+        seat2.setSeatNumber("2B");
+        seat2.setIsLockedBack(true);
+        seat2.setIsNearEmergencyExit(false);
+        seat2.setCategory(CategoryType.ECONOMY);
+        seat2.setAircraftId(1L);
+
+        var seat3 = new SeatDto();
+        seat3.setSeatNumber("3B");
+        seat3.setIsLockedBack(true);
+        seat3.setIsNearEmergencyExit(false);
+        seat3.setCategory(CategoryType.ECONOMY);
+        seat3.setAircraftId(1L);
+
+        int page = 0;
+        int size = 2;
+
+        mockMvc.perform(get("http://localhost:8080/api/seats")
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.number").value(page))
+                .andExpect(jsonPath("$.size").value(size));
+    }
+
 }
