@@ -26,3 +26,7 @@ springdoc:
     enabled: true
     oauth2:
       enabled: true
+
+keycloak:
+  credentials:
+    secret: V8X7MgxQvMkt0pfOWcgoesaq6KQ4ie7M

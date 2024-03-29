@@ -1,0 +1,23 @@
+FROM maven:3.8.4-openjdk-17-slim AS builder
+
+
+WORKDIR /build
+COPY airline-keycloak-provider/pom.xml .
+COPY airline-keycloak-provider/src /build/src
+RUN mvn -f /build/pom.xml clean package
+
+
+FROM quay.io/keycloak/keycloak:23.0.1
+
+COPY --from=builder /build/target/airline-keycloak-provider.jar /opt/keycloak/providers/airline-keycloak-provider.jar
+
+ENV KC_HEALTH_ENABLED=true
+ENV KC_METRICS_ENABLED=true
+
+WORKDIR /opt/keycloak
+RUN keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "CN=server" -alias server -ext "SAN:c=DNS:localhost,IP:127.0.0.1" -keystore conf/server.keystore
+RUN /opt/keycloak/bin/kc.sh build
+
+
+
+

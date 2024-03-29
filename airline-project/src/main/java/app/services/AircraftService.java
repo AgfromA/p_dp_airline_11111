@@ -40,6 +40,7 @@ public class AircraftService {
 
     @Transactional
     public AircraftDto createAircraft(AircraftDto aircraftDTO) {
+        aircraftDTO.setId(null);
         var aircraft = aircraftMapper.toEntity(aircraftDTO);
         return aircraftMapper.toDto(aircraftRepository.save(aircraft));
     }

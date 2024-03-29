@@ -30,6 +30,10 @@ public class AccountDto {
     private Long id;
 
     @NotBlank(message = "Field should not be empty")
+    @Size(min = 2, max = 128, message = "Size username cannot be less than 2 and more than 128 characters")
+    private String username;
+
+    @NotBlank(message = "Field should not be empty")
     @Size(min = 2, max = 128, message = "Size first_name cannot be less than 2 and more than 128 characters")
     @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$", message = "First name must contain only letters")
     private String firstName;

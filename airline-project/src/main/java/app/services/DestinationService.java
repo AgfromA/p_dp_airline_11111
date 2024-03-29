@@ -44,6 +44,7 @@ public class DestinationService {
 
     @Transactional
     public DestinationDto saveDestination(DestinationDto destinationDTO) {
+        destinationDTO.setId(null);
         var destination = destinationMapper.toEntity(destinationDTO);
         return destinationMapper.toDto(destinationRepository.save(destination));
     }

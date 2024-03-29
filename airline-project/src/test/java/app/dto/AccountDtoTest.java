@@ -38,6 +38,7 @@ class AccountDtoTest extends EntityTest {
     private JSONObject initValidableJSONObject() {
         var validableAccountJson = new JSONObject();
         validableAccountJson.put("id", "1002");
+        validableAccountJson.put("username", "user123");
         validableAccountJson.put("firstName", "Olga");
         validableAccountJson.put("lastName", "Alikulieva");
         validableAccountJson.put("birthDate", "1998-01-08");
