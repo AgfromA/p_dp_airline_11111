@@ -41,7 +41,7 @@ public class Ticket {
     @JoinColumn(name = "flight_seat_id")
     private FlightSeat flightSeat;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "booking_id")
     private Booking booking;
 }
