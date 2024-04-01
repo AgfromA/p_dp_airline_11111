@@ -16,7 +16,6 @@
         <module>airline-gateway</module>
         <module>airline-generator</module>
         <module>airline-microservice-starter</module>
-        <module>airline-keycloak-provider</module>
     </modules>
 
     <dependencies>
