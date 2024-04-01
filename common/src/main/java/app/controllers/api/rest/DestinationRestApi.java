@@ -19,8 +19,8 @@ public interface DestinationRestApi {
     @RequestMapping(value = "/api/destinations", method = RequestMethod.GET)
     @Operation(summary = "Получение всех сущностей с пагинацией/без пагинации. Можно указать уточняющие параметры.")
     ResponseEntity<Page<DestinationDto>> getAllDestinations(
-            @Parameter(name = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
-            @Parameter(name = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size,
+            @Parameter(description = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(description = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size,
             @Parameter(description = "Город", example = "Волгоград") @RequestParam(value = "cityName", required = false) String cityName,
             @Parameter(description = "Страна") @RequestParam(value = "countryName", required = false) String countryName,
             @Parameter(description = "Часовой пояс", example = "gmt%20%2b5") @RequestParam(value = "timezone", required = false) String timezone);

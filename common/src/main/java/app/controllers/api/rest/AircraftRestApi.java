@@ -20,8 +20,8 @@ public interface AircraftRestApi {
     @GetMapping("/api/aircrafts")
     @Operation(summary = "Получение всех сущностей с пагинацией/без пагинации")
     ResponseEntity<Page<AircraftDto>> getAllAircrafts(
-            @Parameter(name = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
-            @Parameter(name = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size);
+            @Parameter(description = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(description = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size);
 
     @GetMapping("/api/aircrafts/{id}")
     @Operation(summary = "Получение сущности")

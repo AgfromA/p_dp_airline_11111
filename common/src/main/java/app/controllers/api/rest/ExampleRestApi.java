@@ -21,8 +21,8 @@ public interface ExampleRestApi {
 
     @RequestMapping(value = "/api/example", method = RequestMethod.GET)
     @Operation(summary = "Получение всех сущностей с пагинацией/без пагинации")
-    ResponseEntity<Page<ExampleDto>> getAllExamples(@Parameter(name = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
-                                                    @Parameter(name = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size);
+    ResponseEntity<Page<ExampleDto>> getAllExamples(@Parameter(description = "Номер страницы") @RequestParam(value = "page", required = false) Integer page,
+                                                    @Parameter(description = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size);
 
     @RequestMapping(value = "/api/example{id}", method = RequestMethod.GET)
     @Operation(summary = "Получение сущности")
