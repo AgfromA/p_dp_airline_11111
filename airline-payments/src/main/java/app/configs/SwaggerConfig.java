@@ -9,7 +9,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@OpenAPIDefinition(info = @Info(title = "S7 Airlines API (Payment)", version = "1.1.3",
+@OpenAPIDefinition(info = @Info(title = "S7 Airlines API (Payment)", version = "1.2.0",
         description = "UI для работы с API проекта S7 Airlines. (Payment)"))
 @Configuration
 public class SwaggerConfig {

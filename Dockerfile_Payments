@@ -17,5 +17,5 @@ RUN mvn -f /build/pom.xml clean package
 
 FROM adoptopenjdk:11-jre-hotspot
 COPY --from=build /build/target/airline-payments.jar airline-payments.jar
-EXPOSE 8080
+EXPOSE 8081
 ENTRYPOINT ["java", "-Xmx512m", "-Xms256m", "-jar", "airline-payments.jar"]

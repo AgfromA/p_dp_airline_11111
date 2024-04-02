@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 - #task_number - short task description
+
+## [1.2.0] - 2.04.2024
+- #task_number - short task description
 - #381 Добавлена зависимость для работы фнонт модуля, почищен фронт
 - #362 Убрано задвоени category в FlightSeatDto
 - #405 Возвращен секьюрити. Настройка секьюрити вынесена в microservice starter. Авторизация в keycloak. Старый модуль секьюрити удален. В account добавлено поле юзернейм.
