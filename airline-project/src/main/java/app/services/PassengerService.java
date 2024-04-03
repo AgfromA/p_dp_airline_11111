@@ -112,11 +112,15 @@ public class PassengerService {
     }
 
     @Transactional
-    public void deletePassenger(Long id) {
+    public boolean deletePassenger(Long id) {
+        if (getPassenger(id).isEmpty()) {
+            return false;
+        }
         flightSeatService.makeFlightSeatNotSold(ticketService.getFlightSeatIdsByPassengerId(id));
         ticketService.deleteTicketByPassengerId(id);
         bookingService.deleteBookingByPassengerId(id);
         passengerRepository.deleteById(id);
+        return true;
     }
 
     public Passenger checkIfPassengerExists(Long passengerId) {
