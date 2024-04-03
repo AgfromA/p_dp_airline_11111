@@ -6,12 +6,13 @@ import app.enums.Airport;
 import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,11 @@ public class DestinationService {
     }
 
     public Page<DestinationDto> getAllDestinations(Integer page, Integer size) {
+        if (page == null && size >= 0) {
+            return Page.empty();
+        } else if (page >= 0 && size == null){
+            return Page.empty();
+        }
         return destinationRepository.findAll(PageRequest.of(page, size)).map(destinationMapper::toDto);
     }
 
@@ -36,11 +42,31 @@ public class DestinationService {
         } else if (countryName != null && !countryName.isEmpty()) {
             return destinationRepository.findByCountryNameContainingIgnoreCase(PageRequest.of(page, size), countryName)
                     .map(destinationMapper::toDto);
-        } else {
+        } else  {
             return destinationRepository.findByTimezoneContainingIgnoreCase(PageRequest.of(page, size), timezone)
                     .map(destinationMapper::toDto);
         }
     }
+    @Transactional(readOnly = true)
+    public List<DestinationDto> getByNameOrTimeZoneOrCountry(String cityName, String countryName, String timezone) {
+        if (cityName != null && !cityName.isEmpty()) {
+            return destinationRepository.findByCityName(cityName)
+                    .stream()
+                    .map(destinationMapper::toDto)
+                    .collect(Collectors.toList());
+        } else if (countryName != null && !countryName.isEmpty()) {
+            return destinationRepository.findByCountryName(countryName)
+                    .stream()
+                    .map(destinationMapper::toDto)
+                    .collect(Collectors.toList());
+        } else {
+            return destinationRepository.findByTimezone(timezone)
+                    .stream()
+                    .map(destinationMapper::toDto)
+                    .collect(Collectors.toList());
+        }
+    }
+
 
     @Transactional
     public DestinationDto saveDestination(DestinationDto destinationDTO) {

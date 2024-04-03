@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @CrossOrigin
@@ -24,28 +25,26 @@ public class DestinationRestController implements DestinationRestApi {
     private final DestinationService destinationService;
 
     @Override
-    public ResponseEntity<Page<DestinationDto>> getAllDestinations(Integer page, Integer size, String cityName,
-                                                                   String countryName, String timezone) {
-        log.info("getAllDestinations:");
-        if (page == null || size == null) {
-            return createUnPagedResponse();
-        }
+    public ResponseEntity<Page<DestinationDto>> getAllDestinations(Integer page, Integer size, String cityName, String countryName, String timezone) {
 
-        Page<DestinationDto> destinations;
-        if (cityName == null && countryName == null && timezone == null) {
-            destinations = destinationService.getAllDestinations(page, size);
-            log.info("getAllDestinations: count: {}", destinations.getNumberOfElements());
+
+
+        if(page == null && size == null && cityName == null && countryName == null && timezone == null){
+            return createUnPagedResponse();
+        } else if (cityName == null && countryName == null && timezone == null) {
+            Page<DestinationDto> destinations1 = destinationService.getAllDestinations(page, size);
+            return ResponseEntity.ok(destinations1);
+        } else if (page == null && size == null ) {
+            List<DestinationDto> dtos = destinationService.getByNameOrTimeZoneOrCountry(cityName, countryName, timezone);
+            return ResponseEntity.ok(new PageImpl<>(dtos));
         } else {
-            destinations = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
-            log.info("getAllDestinations: countryName: {}. cityName: {}. timezone: {} found {}",
-                    countryName, cityName, timezone, destinations.getNumberOfElements());
+            Page<DestinationDto> destinations = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
+            return ResponseEntity.ok(destinations);
         }
-        return destinations.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(destinations, HttpStatus.OK);
     }
 
-    private ResponseEntity<Page<DestinationDto>> createUnPagedResponse() {
+
+    public ResponseEntity<Page<DestinationDto>> createUnPagedResponse() {
         var destinations = destinationService.getAllDestinationDTO();
         if (destinations.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
