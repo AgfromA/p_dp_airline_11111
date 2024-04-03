@@ -79,8 +79,11 @@ public class PassengerRestController implements PassengerRestApi {
 
     @Override
     public ResponseEntity<HttpStatus> deletePassenger(Long id) {
+        if (!passengerService.deletePassenger(id)) {
+            log.info("deletePassenger: by id: {}", id);
+            return ResponseEntity.badRequest().build();
+        }
         log.info("deletePassenger: by id: {}", id);
-        passengerService.deletePassenger(id);
         return ResponseEntity.ok().build();
     }
 }
