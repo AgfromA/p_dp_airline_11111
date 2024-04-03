@@ -181,7 +181,7 @@ class DestinationControllerIT extends IntegrationTestBase {
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Transactional
