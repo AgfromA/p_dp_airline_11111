@@ -5,6 +5,7 @@ import app.entities.Destination;
 import app.enums.Airport;
 import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
+import app.repositories.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 public class DestinationService {
 
     private final DestinationRepository destinationRepository;
+    private final FlightRepository flightRepository;
     private final DestinationMapper destinationMapper;
 
     public List<DestinationDto> getAllDestinationDTO() {
@@ -67,5 +69,9 @@ public class DestinationService {
     @Transactional
     public void deleteDestinationById(Long id) {
         destinationRepository.deleteById(id);
+    }
+
+    public boolean checkFlightsWithThisDestination(Long id) {
+        return flightRepository.findByDestinationId(id).isEmpty();
     }
 }
