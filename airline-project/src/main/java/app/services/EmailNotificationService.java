@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class EmailNotificationService {
+public class
+EmailNotificationService {
 
     private final MailClient mailClient;
     private final TicketService ticketService;
@@ -29,17 +30,11 @@ public class EmailNotificationService {
     /**
      * Периодичность проверки наличия рейсов для отправки уведомлений в миллисекундах.
      */
-    @Value("${notification.periodOfDbCheck.milliseconds}")
-    private long periodOfDbCheck;
-
-    /**
-     * Благодаря аннотации Scheduled, метод запускается с указанной периодичностью
-     * и отправлчяет уведомления о приближающихся рейсах
-     */
     @Scheduled(fixedRateString = "${notification.periodOfDbCheck.milliseconds}")
     public void sendEmailNotification() {
-        ticketService.getAllTicketsForEmailNotification(LocalDateTime.now().plusSeconds(beforeDeparture),
-                        LocalDateTime.now().plusSeconds(beforeDeparture - (periodOfDbCheck / 1000)))
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime departureTime = now.plusSeconds(beforeDeparture);
+        ticketService.getAllTicketsForEmailNotification(departureTime, now)
                 .stream()
                 .map(Ticket::getPassenger)
                 .collect(Collectors.toList())
