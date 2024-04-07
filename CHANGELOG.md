@@ -3,6 +3,7 @@
 ## [Unreleased]
 - #task_number - short task description
 - #431 - Исправлен код 500 при повторном удалении пассажира
+- #432 - Исправлен код 500 при отправке Post запроса на api/flights без id в body
 
 ## [1.2.0] - 2.04.2024
 - #task_number - short task description
