@@ -112,15 +112,14 @@ public class PassengerService {
     }
 
     @Transactional
-    public boolean deletePassenger(Long id) {
+    public void deletePassenger(Long id) {
         if (getPassenger(id).isEmpty()) {
-            return false;
+            throw new EntityNotFoundException("The entity has already been deleted");
         }
         flightSeatService.makeFlightSeatNotSold(ticketService.getFlightSeatIdsByPassengerId(id));
         ticketService.deleteTicketByPassengerId(id);
         bookingService.deleteBookingByPassengerId(id);
         passengerRepository.deleteById(id);
-        return true;
     }
 
     public Passenger checkIfPassengerExists(Long passengerId) {
