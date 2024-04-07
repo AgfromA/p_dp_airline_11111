@@ -34,7 +34,7 @@ public abstract class FlightMapper {
     @Mapping(target = "aircraft", expression = "java(aircraftService.getAircraft(flightDto.getAircraftId()))")
     @Mapping(target = "from", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportFrom()))")
     @Mapping(target = "to", expression = "java(destinationService.getDestinationByAirportCode(flightDto.getAirportTo()))")
-    @Mapping(target = "seats", expression = "java(flightSeatService.findByFlightId(flightDto.getId()))")
+    @Mapping(target = "seats", expression = "java(flightDto.getId() != null ? flightSeatService.findByFlightId(flightDto.getId()) : null)")
     public abstract Flight toEntity(FlightDto flightDto);
 
     @Mapping(target = "aircraftId", source = "aircraft.id")
