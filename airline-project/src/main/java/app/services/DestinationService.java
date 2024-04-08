@@ -21,21 +21,17 @@ public class DestinationService {
     private final DestinationRepository destinationRepository;
     private final DestinationMapper destinationMapper;
 
-    public List<DestinationDto> getAllDestinationDTO() {
+    public List<DestinationDto> getAllDestinations() {
         return destinationMapper.toDtoList(destinationRepository.findAll());
     }
 
-    public Page<DestinationDto> getAllDestinations(Integer page, Integer size) {
-        if (page == null && size >= 0) {
-            return Page.empty();
-        } else if (page >= 0 && size == null){
-            return Page.empty();
-        }
+    public Page<DestinationDto> getAllDestinationsPaginated(Integer page, Integer size) {
+        if (page == null || size == null) throw new IllegalArgumentException("Page and size must not be null");
         return destinationRepository.findAll(PageRequest.of(page, size)).map(destinationMapper::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<DestinationDto> getDestinationByNameAndTimezone(Integer page, Integer size, String cityName, String countryName, String timezone) {
+    public Page<DestinationDto> getAllDestinationsFilteredPaginated(Integer page, Integer size, String cityName, String countryName, String timezone) {
         if (cityName != null && !cityName.isEmpty()) {
             return destinationRepository.findByCityNameContainingIgnoreCase(PageRequest.of(page, size), cityName)
                     .map(destinationMapper::toDto);
@@ -48,7 +44,7 @@ public class DestinationService {
         }
     }
     @Transactional(readOnly = true)
-    public List<DestinationDto> getByNameOrTimeZoneOrCountry(String cityName, String countryName, String timezone) {
+    public List<DestinationDto> getAllDestinationsFiltered(String cityName, String countryName, String timezone) {
         if (cityName != null && !cityName.isEmpty()) {
             return destinationRepository.findByCityName(cityName)
                     .stream()
