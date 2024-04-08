@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - short task description
+- #416 Испралено получение всех сущностей Destination по заданным фильтрам
 
 ## [1.2.0] - 2.04.2024
 - #task_number - short task description
