@@ -15,31 +15,34 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class EmailNotificationService {
+public class
+EmailNotificationService {
 
     private final MailClient mailClient;
     private final TicketService ticketService;
 
     /**
-     * Количество секунд до вылета рейса, за которое нужно отправить уведомление
+     Количество секунд до вылета рейса, за которое нужно отправить уведомление.
+      Это значение извлекается из конфигурационного файла и используется для определения
+      времени, когда нужно отправить уведомления о предстоящих рейсах.
      */
     @Value("${notification.beforeDeparture.seconds}")
     private long beforeDeparture;
-
-    /**
-     * Периодичность проверки наличия рейсов для отправки уведомлений в миллисекундах.
-     */
-    @Value("${notification.periodOfDbCheck.milliseconds}")
-    private long periodOfDbCheck;
-
-    /**
-     * Благодаря аннотации Scheduled, метод запускается с указанной периодичностью
-     * и отправлчяет уведомления о приближающихся рейсах
+     /**
+     * @Scheduled аннотация используется для указания периодичности выполнения метода.
+     * Значение для fixedRateString берется из конфигурационного файла и указывает
+     * интервал времени в миллисекундах между вызовами метода.
      */
     @Scheduled(fixedRateString = "${notification.periodOfDbCheck.milliseconds}")
+    /**
+     * Метод, который периодически проверяет базу данных на наличие рейсов,
+     * требующих отправки уведомлений. Периодичность проверки определяется
+     * значением из конфигурационного файла.
+     */
     public void sendEmailNotification() {
-        ticketService.getAllTicketsForEmailNotification(LocalDateTime.now().plusSeconds(beforeDeparture),
-                        LocalDateTime.now().plusSeconds(beforeDeparture - (periodOfDbCheck / 1000)))
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime departureTime = now.plusSeconds(beforeDeparture);
+        ticketService.getAllTicketsForEmailNotification(departureTime, now)
                 .stream()
                 .map(Ticket::getPassenger)
                 .collect(Collectors.toList())
