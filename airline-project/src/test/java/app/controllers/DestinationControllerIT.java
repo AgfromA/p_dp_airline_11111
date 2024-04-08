@@ -1,6 +1,5 @@
 package app.controllers;
 
-import app.dto.AircraftDto;
 import app.dto.DestinationDto;
 import app.entities.Destination;
 import app.enums.Airport;
@@ -56,17 +55,17 @@ class DestinationControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void shouldGetAllDestinationsByNullPage() throws Exception {
+    void shouldNotGetAllDestinationsByNullPage() throws Exception {
         mockMvc.perform(get("http://localhost:8080/api/destinations?size=2"))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void shouldGetAllDestinationsByNullSize() throws Exception {
+    void shouldNotGetAllDestinationsByNullSize() throws Exception {
         mockMvc.perform(get("http://localhost:8080/api/destinations?page=0"))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -90,7 +89,7 @@ class DestinationControllerIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(destinationService
-                        .getAllDestinations(pageable.getPageNumber(), pageable.getPageSize()))));
+                        .getAllDestinationsPaginated(pageable.getPageNumber(), pageable.getPageSize()))));
     }
 
     @Test
@@ -111,7 +110,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "Абакан";
         var country = "";
         var timezone = "";
-        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDto> destination = destinationService.getAllDestinationsFilteredPaginated(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=10")
                         .param("cityName", city)
                         .param("countryName", country)
@@ -127,7 +126,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page destination = destinationService.getAllDestinationsFilteredPaginated(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
@@ -143,7 +142,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "Россия";
         var timezone = "";
-        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDto> destination = destinationService.getAllDestinationsFilteredPaginated(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=3")
                         .param("cityName", city)
                         .param("countryName", country)
@@ -159,7 +158,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "";
         var timezone = "+3";
-        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDto> destination = destinationService.getAllDestinationsFilteredPaginated(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations")
                         .param("cityName", city)
                         .param("countryName", country)
@@ -175,13 +174,13 @@ class DestinationControllerIT extends IntegrationTestBase {
         var city = "";
         var country = "";
         var timezone = "gmt +3";
-        Page<DestinationDto> destination = destinationService.getDestinationByNameAndTimezone(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
+        Page<DestinationDto> destination = destinationService.getAllDestinationsFilteredPaginated(pageable.getPageNumber(), pageable.getPageSize(), city, country, timezone);
         mockMvc.perform(get("http://localhost:8080/api/destinations?page=0&size=10")
                         .param("cityName", city)
                         .param("countryName", country)
                         .param("timezone", timezone))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Transactional
