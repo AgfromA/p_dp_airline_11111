@@ -79,8 +79,6 @@ notification:
   beforeDeparture:
     seconds: 86400
 
-
-
 app:
   feign:
     config:
