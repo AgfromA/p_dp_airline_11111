@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PassengerService {
 
-    @Lazy// FIXME костыль
+    @Lazy
     @Autowired
     private TicketService ticketService;
     @Autowired
@@ -113,6 +113,7 @@ public class PassengerService {
 
     @Transactional
     public void deletePassenger(Long id) {
+        if (getPassenger(id).isEmpty()) throw new EntityNotFoundException("Operation was not finished because Passenger was not found with id = " + id);
         flightSeatService.makeFlightSeatNotSold(ticketService.getFlightSeatIdsByPassengerId(id));
         ticketService.deleteTicketByPassengerId(id);
         bookingService.deleteBookingByPassengerId(id);
