@@ -3,7 +3,6 @@ package app.controllers.rest;
 import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDto;
 import app.services.DestinationService;
-import app.utils.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @CrossOrigin
@@ -24,29 +24,28 @@ public class DestinationRestController implements DestinationRestApi {
     private final DestinationService destinationService;
 
     @Override
-    public ResponseEntity<Page<DestinationDto>> getAllDestinations(Integer page, Integer size, String cityName,
-                                                                   String countryName, String timezone) {
-        log.info("getAllDestinations:");
-        if (page == null || size == null) {
+    public ResponseEntity<Page<DestinationDto>> getAllDestinations(Integer page,
+                                                                   Integer size,
+                                                                   String cityName,
+                                                                   String countryName,
+                                                                   String timezone) {
+        if (page == null && size == null && cityName == null && countryName == null && timezone == null) {
             return createUnPagedResponse();
-        }
-
-        Page<DestinationDto> destinations;
-        if (cityName == null && countryName == null && timezone == null) {
-            destinations = destinationService.getAllDestinations(page, size);
-            log.info("getAllDestinations: count: {}", destinations.getNumberOfElements());
+        } else if (cityName == null && countryName == null && timezone == null) {
+            Page<DestinationDto> destinations = destinationService.getAllDestinationsPaginated(page, size);
+            return ResponseEntity.ok(destinations);
+        } else if (page == null && size == null) {
+            List<DestinationDto> destinations = destinationService.getAllDestinationsFiltered(cityName, countryName, timezone);
+            return ResponseEntity.ok(new PageImpl<>(destinations));
         } else {
-            destinations = destinationService.getDestinationByNameAndTimezone(page, size, cityName, countryName, timezone);
-            log.info("getAllDestinations: countryName: {}. cityName: {}. timezone: {} found {}",
-                    countryName, cityName, timezone, destinations.getNumberOfElements());
+            Page<DestinationDto> destinations = destinationService.getAllDestinationsFilteredPaginated(page, size, cityName, countryName, timezone);
+            return ResponseEntity.ok(destinations);
         }
-        return destinations.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(destinations, HttpStatus.OK);
     }
 
-    private ResponseEntity<Page<DestinationDto>> createUnPagedResponse() {
-        var destinations = destinationService.getAllDestinationDTO();
+
+    public ResponseEntity<Page<DestinationDto>> createUnPagedResponse() {
+        var destinations = destinationService.getAllDestinations();
         if (destinations.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
