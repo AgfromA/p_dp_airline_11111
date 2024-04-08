@@ -32,6 +32,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
   keycloak:
+    image: 'denispronin/airline-keycloak:1.0.0'
     build:
       context: .
       dockerfile: Dockerfile_Keycloak
