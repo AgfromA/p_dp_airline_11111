@@ -39,7 +39,7 @@ public class FlightRestController implements FlightRestApi {
     private ResponseEntity<Page<FlightDto>> createUnPagedResponse() {
         var flights = flightService.getAllFlights();
         if (flights.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(flights)));
         } else {
             log.info("getAllFlights: count {}", flights.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(flights)));

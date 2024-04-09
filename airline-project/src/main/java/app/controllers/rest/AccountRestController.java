@@ -38,7 +38,7 @@ public class AccountRestController implements AccountRestApi {
     private ResponseEntity<Page<AccountDto>> createUnPagedResponse() {
         var account = accountService.getAllAccounts();
         if (account.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(account)));
         } else {
             log.info("getAllAccounts: count {}", account.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(account)));

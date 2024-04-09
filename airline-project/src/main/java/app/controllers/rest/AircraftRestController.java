@@ -38,7 +38,7 @@ public class AircraftRestController implements AircraftRestApi {
     private ResponseEntity<Page<AircraftDto>> createUnPagedResponse() {
         var aircraft = aircraftService.getAllAircrafts();
         if (aircraft.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(aircraft)));
         } else {
             log.info("getAllAircrafts: count {}", aircraft.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(aircraft)));

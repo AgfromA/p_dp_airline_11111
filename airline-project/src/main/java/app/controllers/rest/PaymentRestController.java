@@ -43,7 +43,7 @@ public class PaymentRestController implements PaymentRestApi {
         var payments = paymentService.getAllPayments();
         if (payments.isEmpty()) {
             log.info("getListOfAllPayments: not found any payments");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(payments)));
         } else {
             log.info("getAll: found: {} Payments", payments.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(payments)));

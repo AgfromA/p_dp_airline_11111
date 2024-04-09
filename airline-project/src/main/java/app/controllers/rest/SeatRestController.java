@@ -45,7 +45,7 @@ public class SeatRestController implements SeatRestApi {
     private ResponseEntity<Page<SeatDto>> createUnPagedResponse() {
         var seats = seatService.getAllSeats();
         if (seats.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(seats)));
         } else {
             log.info("getAllSeats: count: {}", seats.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(seats)));

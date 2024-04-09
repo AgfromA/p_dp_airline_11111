@@ -163,7 +163,7 @@ class FlightRestControllerIT extends IntegrationTestBase {
             mockMvc.perform(get("http://localhost:8080/api/flights")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
-                    .andExpect(status().is(204));
+                    .andExpect(status().isOk());
         }
     }
 

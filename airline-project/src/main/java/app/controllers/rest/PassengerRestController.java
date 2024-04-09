@@ -51,7 +51,7 @@ public class PassengerRestController implements PassengerRestApi {
     private ResponseEntity<Page<PassengerDto>> createUnPagedResponse() {
         var passengers = passengerService.getAllPassengers();
         if (passengers.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(passengers)));
         } else {
             log.info("getAllPassengers: count: {}", passengers.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(passengers)));

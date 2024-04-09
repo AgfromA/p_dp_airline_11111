@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +42,7 @@ public class ExampleRestController implements ExampleRestApi {
         var examples = exampleService.findAll();
         if (examples.isEmpty()) {
             log.info("getAllExamples: not found Example");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(examples)));
         } else {
             log.info("getAllExamples: found {} Example", examples.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(examples)));

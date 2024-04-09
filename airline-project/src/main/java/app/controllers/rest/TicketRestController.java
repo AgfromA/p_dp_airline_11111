@@ -44,7 +44,7 @@ public class TicketRestController implements TicketRestApi {
     private ResponseEntity<Page<TicketDto>> createUnPagedResponse() {
         var tickets = ticketService.getAllTickets();
         if (tickets.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(tickets)));
         } else {
             log.info("getAllTickets: count: {}", tickets.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(tickets)));

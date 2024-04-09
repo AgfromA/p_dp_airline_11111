@@ -44,7 +44,7 @@ public class TimezoneRestController implements TimezoneRestApi {
         var timezone = timezoneService.getAllTimeZone();
         if (timezone.isEmpty()) {
             log.error("getAllTimezones: Timezones not found");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(timezone)));
         } else {
             log.info("getAllTimezones: found: {} Timezones", timezone.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(timezone)));
