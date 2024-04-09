@@ -71,7 +71,7 @@ public class DestinationService {
         destinationRepository.deleteById(id);
     }
 
-    public boolean checkFlightsWithThisDestination(Long id) {
+    public boolean checkFlightsWithThisDestinationExist(Long id) {
         return flightRepository.findByDestinationId(id).isEmpty();
     }
 }

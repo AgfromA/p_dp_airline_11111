@@ -76,9 +76,9 @@ public class DestinationRestController implements DestinationRestApi {
     @Override
     public ResponseEntity<HttpStatus> deleteDestination(Long id) {
         log.info("deleteDestinationById: by id: {}", id);
-        if (destinationService.checkFlightsWithThisDestination(id)) {
+        if (destinationService.checkFlightsWithThisDestinationExist(id)) {
             destinationService.deleteDestinationById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -206,7 +206,7 @@ class DestinationControllerIT extends IntegrationTestBase {
         Long id = 3L;
         mockMvc.perform(delete("http://localhost:8080/api/destinations/{id}", id))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     public String convertPageToJson(Page page) throws JsonProcessingException {
