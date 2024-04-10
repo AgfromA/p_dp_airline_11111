@@ -29,10 +29,12 @@ public class AccountRestController implements AccountRestApi {
         if (page == null || size == null) {
             return createUnPagedResponse();
         }
-        var accounts = accountService.getAllAccounts(page, size);
-        return accounts.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : ResponseEntity.ok(accounts);
+        var examples = accountService.getAllAccounts(page, size);
+        if (examples.isEmpty()) {
+            return ResponseEntity.ok(Page.empty());
+        } else {
+            return ResponseEntity.ok(examples);
+        }
     }
 
     private ResponseEntity<Page<AccountDto>> createUnPagedResponse() {

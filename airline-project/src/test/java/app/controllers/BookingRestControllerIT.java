@@ -57,7 +57,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldGetBookingWhenBookingIsEmpty() throws Exception {
         mockMvc.perform(get("http://localhost:8080/api/bookings?page=10&size=5"))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test

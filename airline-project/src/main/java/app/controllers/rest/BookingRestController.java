@@ -29,10 +29,12 @@ public class BookingRestController implements BookingRestApi {
             return createUnPagedResponse();
         }
 
-        var bookings = bookingService.getAllBookings(page, size);
-        return bookings.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(bookings, HttpStatus.OK);
+        var examples = bookingService.getAllBookings(page, size);
+        if (examples.isEmpty()) {
+            return ResponseEntity.ok(Page.empty());
+        } else {
+            return ResponseEntity.ok(examples);
+        }
     }
 
     private ResponseEntity<Page<BookingDto>> createUnPagedResponse() {

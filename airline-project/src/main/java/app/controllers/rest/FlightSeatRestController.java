@@ -36,13 +36,12 @@ public class FlightSeatRestController implements FlightSeatRestApi {
         Page<FlightSeatDto> flightSeats;
         if (flightId == null && isSold == null && isRegistered == null) {
             flightSeats = flightSeatService.getAllFlightSeats(page, size);
+            return ResponseEntity.ok(flightSeats);
         } else {
             log.info("getAllFlightSeats: filtered");
             flightSeats = flightSeatService.getAllFlightSeatsFiltered(page, size, flightId, isSold, isRegistered);
+            return ResponseEntity.ok(flightSeats);
         }
-        return flightSeats.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : ResponseEntity.ok(flightSeats);
     }
 
     private ResponseEntity<Page<FlightSeatDto>> createUnPagedResponse() {

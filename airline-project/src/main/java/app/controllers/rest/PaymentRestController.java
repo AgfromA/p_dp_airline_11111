@@ -34,9 +34,11 @@ public class PaymentRestController implements PaymentRestApi {
         }
 
         var payments = paymentService.pagePagination(page, count);
-        return payments.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(payments, HttpStatus.OK);
+        if (payments.isEmpty()) {
+            return ResponseEntity.ok(Page.empty());
+        } else {
+            return ResponseEntity.ok(payments);
+        }
     }
 
     private ResponseEntity<Page<Payment>> createUnPagedResponse() {

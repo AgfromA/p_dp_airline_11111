@@ -54,4 +54,6 @@ public class Destination {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
+
+
 }

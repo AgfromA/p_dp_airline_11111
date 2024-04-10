@@ -46,7 +46,7 @@ public class CategoryRestController implements CategoryRestApi {
             return new ResponseEntity<>(category, HttpStatus.OK);
         } else {
             log.info("getByCategoryType: not found by Category type: {}", categoryType);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(category,HttpStatus.OK);
         }
     }
 }

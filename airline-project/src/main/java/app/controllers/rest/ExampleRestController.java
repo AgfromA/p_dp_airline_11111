@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 
 @Slf4j
@@ -33,9 +34,11 @@ public class ExampleRestController implements ExampleRestApi {
             return createUnPagedResponse();
         }
         var examples = exampleService.getPage(page, size);
-        return examples.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(examples, HttpStatus.OK);
+        if (examples.isEmpty()) {
+            return ResponseEntity.ok(Page.empty());
+        } else {
+            return ResponseEntity.ok(examples);
+        }
     }
 
     private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {
