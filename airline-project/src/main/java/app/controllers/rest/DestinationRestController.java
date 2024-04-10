@@ -3,7 +3,6 @@ package app.controllers.rest;
 import app.controllers.api.rest.DestinationRestApi;
 import app.dto.DestinationDto;
 import app.services.DestinationService;
-import app.utils.LogsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -76,11 +75,7 @@ public class DestinationRestController implements DestinationRestApi {
     @Override
     public ResponseEntity<HttpStatus> deleteDestination(Long id) {
         log.info("deleteDestinationById: by id: {}", id);
-        if (destinationService.checkFlightsWithThisDestinationExist(id)) {
-            destinationService.deleteDestinationById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        destinationService.deleteDestinationById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

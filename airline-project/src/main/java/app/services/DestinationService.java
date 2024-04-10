@@ -3,6 +3,7 @@ package app.services;
 import app.dto.DestinationDto;
 import app.entities.Destination;
 import app.enums.Airport;
+import app.exceptions.DestinationConnectedFlightsException;
 import app.mappers.DestinationMapper;
 import app.repositories.DestinationRepository;
 import app.repositories.FlightRepository;
@@ -68,10 +69,11 @@ public class DestinationService {
 
     @Transactional
     public void deleteDestinationById(Long id) {
+        if (checkFlightsWithThisDestinationExist(id)) throw new DestinationConnectedFlightsException(id);
         destinationRepository.deleteById(id);
     }
 
     public boolean checkFlightsWithThisDestinationExist(Long id) {
-        return flightRepository.findByDestinationId(id).isEmpty();
+        return !flightRepository.findByDestinationId(id).isEmpty();
     }
 }
