@@ -20,4 +20,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
     List<Flight> getListDirectFlightsByFromAndToAndDepartureDate(Airport airportCodeFrom, Airport airportCodeTo, Date departureDate);
 
     void deleteById(Long id);
+
+    @Query(value = "SELECT f FROM Flight f WHERE f.from.id = :id OR f.to.id = :id")
+    List<Flight> findByDestinationId(Long id);
 }
