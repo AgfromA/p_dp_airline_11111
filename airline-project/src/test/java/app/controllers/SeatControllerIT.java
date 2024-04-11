@@ -205,7 +205,7 @@ class SeatControllerIT extends IntegrationTestBase {
         var aircraftId = 100L;
         mockMvc.perform(get("http://localhost:8080/api/seats?page=0&size=4&aircraftId={aircraftId}", aircraftId))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -296,7 +296,7 @@ class SeatControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/seats")
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     // Тест на проверку невозможности показать несуществующее место

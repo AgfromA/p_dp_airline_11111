@@ -17,7 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * Точка назначения.
+ * Пункт назначения.
  */
 @Entity
 @Getter
@@ -30,6 +30,7 @@ import javax.persistence.Table;
 @Where(clause = "is_deleted = false")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Destination {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_destination")
     @SequenceGenerator(name = "seq_destination", initialValue = 1000, allocationSize = 1)
@@ -53,5 +54,4 @@ public class Destination {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
 }

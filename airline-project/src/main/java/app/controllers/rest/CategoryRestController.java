@@ -29,10 +29,10 @@ public class CategoryRestController implements CategoryRestApi {
         var categories = categoryService.getAllCategories();
         if (categories != null) {
             log.info("getAll: find all Categories");
-            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(categories)));
+            return  ResponseEntity.ok(new PageImpl<>(new ArrayList<>(categories)));
         } else {
             log.info("getAll: Categories not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return  ResponseEntity.ok(new PageImpl<>(new ArrayList<>(categories)));
         }
     }
 
@@ -46,7 +46,7 @@ public class CategoryRestController implements CategoryRestApi {
             return new ResponseEntity<>(category, HttpStatus.OK);
         } else {
             log.info("getByCategoryType: not found by Category type: {}", categoryType);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(category,HttpStatus.OK);
         }
     }
 }

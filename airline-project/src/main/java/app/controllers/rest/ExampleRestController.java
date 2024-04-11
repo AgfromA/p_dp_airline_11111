@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 
 @Slf4j
@@ -32,16 +34,18 @@ public class ExampleRestController implements ExampleRestApi {
             return createUnPagedResponse();
         }
         var examples = exampleService.getPage(page, size);
-        return examples.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(examples, HttpStatus.OK);
+        if (examples.isEmpty()) {
+            return ResponseEntity.ok(Page.empty());
+        } else {
+            return ResponseEntity.ok(examples);
+        }
     }
 
     private ResponseEntity<Page<ExampleDto>> createUnPagedResponse() {
         var examples = exampleService.findAll();
         if (examples.isEmpty()) {
             log.info("getAllExamples: not found Example");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(examples)));
         } else {
             log.info("getAllExamples: found {} Example", examples.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(examples)));

@@ -289,7 +289,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("firstName", firstName))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -299,7 +299,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("lastName", lastName))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -309,7 +309,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("email", email))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -319,7 +319,7 @@ class PassengerRestControllerIT extends IntegrationTestBase {
         mockMvc.perform(get("http://localhost:8080/api/passengers?page=0&size=10")
                         .param("serialNumberPassport", serialNumberPassport))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
 

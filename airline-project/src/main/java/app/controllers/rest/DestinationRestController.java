@@ -47,7 +47,7 @@ public class DestinationRestController implements DestinationRestApi {
     public ResponseEntity<Page<DestinationDto>> createUnPagedResponse() {
         var destinations = destinationService.getAllDestinations();
         if (destinations.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(destinations)));
         } else {
             log.info("getAllDestinations: count: {}", destinations.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(destinations)));

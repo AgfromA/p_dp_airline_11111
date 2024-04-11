@@ -34,17 +34,19 @@ public class TimezoneRestController implements TimezoneRestApi {
             return createUnPagedResponse();
         }
 
-        var timezones = timezoneService.getAllPagesTimezones(page, size);
-        return timezones.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(timezones, HttpStatus.OK);
+        var examples = timezoneService.getAllPagesTimezones(page, size);
+        if (examples.isEmpty()) {
+            return ResponseEntity.ok(Page.empty());
+        } else {
+            return ResponseEntity.ok(examples);
+        }
     }
 
     private ResponseEntity<Page<TimezoneDto>> createUnPagedResponse() {
         var timezone = timezoneService.getAllTimeZone();
         if (timezone.isEmpty()) {
             log.error("getAllTimezones: Timezones not found");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(timezone)));
         } else {
             log.info("getAllTimezones: found: {} Timezones", timezone.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(timezone)));

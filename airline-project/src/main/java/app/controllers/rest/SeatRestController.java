@@ -31,21 +31,18 @@ public class SeatRestController implements SeatRestApi {
             return createUnPagedResponse();
         }
 
-        Page<SeatDto> seats;
-        if (aircraftId != null) {
-            seats = seatService.getAllSeatsByAircraftId(page, size, aircraftId);
+        var examples = seatService.getAllSeats(page, size);
+        if (examples.isEmpty()) {
+            return ResponseEntity.ok(Page.empty());
         } else {
-            seats = seatService.getAllSeats(page, size);
+            return ResponseEntity.ok(examples);
         }
-        return seats.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : ResponseEntity.ok(seats);
     }
 
     private ResponseEntity<Page<SeatDto>> createUnPagedResponse() {
         var seats = seatService.getAllSeats();
         if (seats.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(seats)));
         } else {
             log.info("getAllSeats: count: {}", seats.size());
             return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(seats)));
