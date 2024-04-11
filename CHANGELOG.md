@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+- #420 Исправлено NoSuchFileException при запуске приложения в докере
 - #417 - Возвращает пустой массив статус код 200
 - #task_number - short task description
 - #432 возврат 400 при попытке удалить destination со связанным flight
