@@ -22,8 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static app.enums.Airport.CNN;
-import static app.enums.Airport.RAT;
+import static app.enums.Airport.*;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -94,7 +93,7 @@ class DestinationControllerIT extends IntegrationTestBase {
 
     @Test
     void shouldCreateDestination() throws Exception {
-        var destination = new DestinationDto(4L, Airport.VKO, "GMT +3");
+        var destination = new DestinationDto(4L, Airport.VKO, "GMT +3", "Россия", "Москва", "Внуково");
         System.out.println(objectMapper.writeValueAsString(destination));
         mockMvc.perform(post("http://localhost:8080/api/destinations")
                         .content(objectMapper.writeValueAsString(destination))
@@ -190,8 +189,11 @@ class DestinationControllerIT extends IntegrationTestBase {
         long numberOfDestination = destinationRepository.count();
         DestinationDto rat = new DestinationDto();
         rat.setId(3L);
-        rat.setAirportCode(RAT);
+        rat.setAirportCode(VKO);
         rat.setTimezone("+3");
+        rat.setCityName("Москва");
+        rat.setCountryName("Россия");
+        rat.setAirportName("Внуково");
         mockMvc.perform(patch("http://localhost:8080/api/destinations/{id}", id)
                         .content(objectMapper.writeValueAsString(destinationMapper.toEntity(rat)))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -229,9 +231,12 @@ class DestinationControllerIT extends IntegrationTestBase {
     void shouldNotChangeIdByUserFromPostRequest() throws Exception {
 
         var destinationDto = new DestinationDto();
-        destinationDto.setId(33L);
-        destinationDto.setAirportCode(CNN);
-        destinationDto.setTimezone("GMT +9");
+        destinationDto.setId(3L);
+        destinationDto.setAirportCode(VKO);
+        destinationDto.setTimezone("+3");
+        destinationDto.setCityName("Москва");
+        destinationDto.setCountryName("Россия");
+        destinationDto.setAirportName("Внуково");
 
 
         mockMvc.perform(post("http://localhost:8080/api/destinations")
@@ -248,9 +253,12 @@ class DestinationControllerIT extends IntegrationTestBase {
     void shouldNotChangeIdByUserFromPatchRequest() throws Exception {
 
         var destinationDto = new DestinationDto();
-        destinationDto.setId(33L);
-        destinationDto.setAirportCode(CNN);
-        destinationDto.setTimezone("GMT +9");
+        destinationDto.setId(3L);
+        destinationDto.setAirportCode(VKO);
+        destinationDto.setTimezone("+3");
+        destinationDto.setCityName("Москва");
+        destinationDto.setCountryName("Россия");
+        destinationDto.setAirportName("Внуково");   
         var id = 2L;
 
         mockMvc.perform(patch("http://localhost:8080/api/destinations/{id}", id)

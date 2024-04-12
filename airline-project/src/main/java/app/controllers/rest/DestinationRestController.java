@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Slf4j
 @CrossOrigin
@@ -28,14 +30,15 @@ public class DestinationRestController implements DestinationRestApi {
                                                                    Integer size,
                                                                    String cityName,
                                                                    String countryName,
-                                                                   String timezone) {
-        if (page == null && size == null && cityName == null && countryName == null && timezone == null) {
+                                                                   String timezone,
+                                                                   String airportName) {
+        if (isElementsNull(cityName, countryName, timezone, airportName, page, size)) {
             return createUnPagedResponse();
-        } else if (cityName == null && countryName == null && timezone == null) {
+        } else if (isElementsNull(cityName, countryName, timezone, airportName)) {
             Page<DestinationDto> destinations = destinationService.getAllDestinationsPaginated(page, size);
             return ResponseEntity.ok(destinations);
-        } else if (page == null && size == null) {
-            List<DestinationDto> destinations = destinationService.getAllDestinationsFiltered(cityName, countryName, timezone);
+        } else if (isElementsNull(page, size)) {
+            List<DestinationDto> destinations = destinationService.getAllDestinationsFiltered(cityName, countryName, timezone, airportName);
             return ResponseEntity.ok(new PageImpl<>(destinations));
         } else {
             Page<DestinationDto> destinations = destinationService.getAllDestinationsFilteredPaginated(page, size, cityName, countryName, timezone);
@@ -43,15 +46,16 @@ public class DestinationRestController implements DestinationRestApi {
         }
     }
 
+    public boolean isElementsNull(Object... parameters) {
+        return Stream.of(parameters).allMatch(Objects::isNull);
+    }
 
     public ResponseEntity<Page<DestinationDto>> createUnPagedResponse() {
         var destinations = destinationService.getAllDestinations();
-        if (destinations.isEmpty()) {
-            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(destinations)));
-        } else {
+        if (!destinations.isEmpty()) {
             log.info("getAllDestinations: count: {}", destinations.size());
-            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(destinations)));
         }
+        return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(destinations)));
     }
 
     @Override
