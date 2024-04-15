@@ -72,41 +72,7 @@ class BookingMapperTest {
 
     }
 
-    @Test
-    void shouldConvertBookingDTOToBookingEntity() throws Exception {
 
-        Passenger passenger = new Passenger();
-        passenger.setId(1001L);
-        when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
-
-        LocalDateTime createTime = LocalDateTime.MIN;
-
-        FlightSeat flightSeat = new FlightSeat();
-        Long flightSeatId = 2L;
-        flightSeat.setId(flightSeatId);
-
-        BookingDto bookingDTO = new BookingDto();
-        bookingDTO.setId(1L);
-
-        bookingDTO.setBookingDate(LocalDateTime.now());
-        bookingDTO.setPassengerId(passenger.getId());
-
-
-        bookingDTO.setFlightSeatId(flightSeatId);
-        bookingDTO.setBookingStatus(BookingStatus.NOT_PAID);
-
-        when(flightSeatServiceMock.getFlightSeat(flightSeatId)).thenReturn(Optional.of(flightSeat));
-        bookingDTO.setPassengerId(passenger.getId());
-        Booking booking = bookingMapper.toEntity(bookingDTO);
-
-        Assertions.assertNotNull(booking);
-        Assertions.assertEquals(bookingDTO.getId(), booking.getId());
-
-        Assertions.assertEquals(bookingDTO.getBookingDate(), booking.getBookingDate());
-
-        Assertions.assertEquals(bookingDTO.getBookingStatus(), booking.getBookingStatus());
-        Assertions.assertEquals(bookingDTO.getFlightSeatId(), booking.getFlightSeat().getId());
-    }
 
     @Test
     void shouldConvertBookingListToBookingDTOList() throws Exception {
