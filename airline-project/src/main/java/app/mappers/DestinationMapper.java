@@ -15,9 +15,9 @@ public interface DestinationMapper {
 
     DestinationDto toDto(Destination destination);
 
-    @Mapping(target = "airportName", expression = "java(destinationDto.getAirportCode().getAirportName())")
-    @Mapping(target = "cityName", expression = "java(destinationDto.getAirportCode().getCity())")
-    @Mapping(target = "countryName", expression = "java(destinationDto.getAirportCode().getCountry())")
+    @Mapping(target = "airportName", expression = "java(destinationDto.getAirportName())")
+    @Mapping(target = "cityName", expression = "java(destinationDto.getCityName())")
+    @Mapping(target = "countryName", expression = "java(destinationDto.getCountryName())")
     Destination toEntity(DestinationDto destinationDto);
 
     List<DestinationDto> toDtoList(List<Destination> destinations);

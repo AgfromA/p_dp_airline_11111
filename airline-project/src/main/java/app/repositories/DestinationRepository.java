@@ -34,4 +34,6 @@ public interface DestinationRepository extends JpaRepository<Destination, Long> 
     List<Destination> findByCountryName(String countryName);
 
     List<Destination> findByTimezone(String timezone);
+
+    List<Destination> findByAirportName(String timezone);
 }

@@ -23,7 +23,8 @@ public interface DestinationRestApi {
             @Parameter(description = "Количество элементов на странице") @RequestParam(value = "size", required = false) Integer size,
             @Parameter(description = "Город", example = "Волгоград") @RequestParam(value = "cityName", required = false) String cityName,
             @Parameter(description = "Страна") @RequestParam(value = "countryName", required = false) String countryName,
-            @Parameter(description = "Часовой пояс", example = "gmt%20%2b5") @RequestParam(value = "timezone", required = false) String timezone);
+            @Parameter(description = "Часовой пояс", example = "gmt%20%2b5") @RequestParam(value = "timezone", required = false) String timezone,
+            @Parameter(description = "Аэропорт") @RequestParam(value = "airportName", required = false) String airportName);
 
     @Operation(summary = "Создание сущности")
     @RequestMapping(value = "/api/destinations", method = RequestMethod.POST)
