@@ -9,6 +9,8 @@ import org.mapstruct.factory.Mappers;
 import java.util.ArrayList;
 import java.util.List;
 
+import static app.enums.Airport.SVX;
+import static app.enums.Airport.VKO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DestinationMapperTest {
@@ -42,9 +44,12 @@ public class DestinationMapperTest {
     public void testConvertToDestinationEntity() {
         // Create a Destination object
         DestinationDto destinationDTO = new DestinationDto();
-        destinationDTO.setId(1L);
-        destinationDTO.setAirportCode(Airport.AAQ);
-        destinationDTO.setTimezone("UTC+3");
+        destinationDTO.setId(3L);
+        destinationDTO.setAirportCode(VKO);
+        destinationDTO.setTimezone("+3");
+        destinationDTO.setCityName("Москва");
+        destinationDTO.setCountryName("Россия");
+        destinationDTO.setAirportName("Внуково");
 
         Destination destination = destinationMapper.toEntity(destinationDTO);
 
@@ -99,14 +104,22 @@ public class DestinationMapperTest {
     @Test
     public void testConvertToDestinationEntityList() {
         List<DestinationDto> destinationDtoList = new ArrayList<>();
+
         DestinationDto destinationDtoOne = new DestinationDto();
-        destinationDtoOne.setId(1L);
-        destinationDtoOne.setAirportCode(Airport.AAQ);
-        destinationDtoOne.setTimezone("UTC+3");
+        destinationDtoOne.setId(3L);
+        destinationDtoOne.setAirportCode(VKO);
+        destinationDtoOne.setTimezone("GMT+3");
+        destinationDtoOne.setCityName("Москва");
+        destinationDtoOne.setCountryName("Россия");
+        destinationDtoOne.setAirportName("Внуково");
+
         DestinationDto destinationDtoTwo = new DestinationDto();
         destinationDtoTwo.setId(2L);
-        destinationDtoTwo.setAirportCode(Airport.ABA);
-        destinationDtoTwo.setTimezone("UTC+3");
+        destinationDtoTwo.setAirportCode(SVX);
+        destinationDtoTwo.setTimezone("GMT +5");
+        destinationDtoTwo.setCityName("Екатеринбург");
+        destinationDtoTwo.setCountryName("Россия");
+        destinationDtoTwo.setAirportName("Кольцово");
 
         destinationDtoList.add(destinationDtoOne);
         destinationDtoList.add(destinationDtoTwo);

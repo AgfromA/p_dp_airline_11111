@@ -20,24 +20,24 @@ public class DestinationDtoTest extends EntityTest {
 
     @Test
     public void airportNullShouldValidate() {
-        var testDestination = new DestinationDto(1L, null, "GMT +99999");
+        var testDestination = new DestinationDto(4L, null, "GMT +3", "Россия", "Москва", "Внуково");
         Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testDestination));
     }
     @Test
     public void between2And9CharTimezoneSizeShouldValidate() {
-        var testDestination = new DestinationDto(1L, Airport.AER, "GMT + 3");
+        var testDestination = new DestinationDto(4L, Airport.VKO, "GMT + 3", "Россия", "Москва", "Внуково");
         Assertions.assertTrue(isSetWithViolationIsEmpty(validator, testDestination));
     }
 
     @Test
     public void leesThan2CharTimezoneSizeShouldValidate() {
-        var testDestination = new DestinationDto(1L, Airport.AER, "3");
+        var testDestination = new DestinationDto(4L, Airport.VKO, "3", "Россия", "Москва", "Внуково");
         Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testDestination));
     }
 
     @Test
     public void moreThan9CharTimezoneSizeShouldValidate() {
-        var testDestination = new DestinationDto(1L, Airport.AER, "GMT +99999");
+        var testDestination = new DestinationDto(4L, Airport.VKO, "GMT +99999", "Россия", "Москва", "Внуково");
         Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testDestination));
     }
 
