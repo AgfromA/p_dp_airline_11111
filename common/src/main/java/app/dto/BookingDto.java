@@ -32,4 +32,8 @@ public class BookingDto {
     @NotNull
     @Min(1)
     private Long flightSeatId;
+
+    @NotNull
+    @Min(5)
+    private Long flightId;
 }

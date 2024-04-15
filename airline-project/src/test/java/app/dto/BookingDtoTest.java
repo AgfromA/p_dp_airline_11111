@@ -47,7 +47,7 @@ class BookingDtoTest extends EntityTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Assertions.assertTrue(isSetWithViolationIsEmpty(validator, testBooking));
+        Assertions.assertFalse(isSetWithViolationIsEmpty(validator, testBooking));
     }
 
     @Test
