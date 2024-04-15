@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@OpenAPIDefinition(info = @Info(title = "S7 Airlines API", version = "1.2.0",
+@OpenAPIDefinition(info = @Info(title = "S7 Airlines API", version = "1.3.0",
         description = "UI для работы с API проекта S7 Airlines."))
 @Configuration
 public class SwaggerConfig implements WebMvcConfigurer {
