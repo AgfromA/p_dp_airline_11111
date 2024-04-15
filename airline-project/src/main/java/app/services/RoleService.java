@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dto.AccountDto;
+import app.dto.AccountUpdateDto;
 import app.dto.RoleDto;
 import app.mappers.RoleMapper;
 import app.repositories.RoleRepository;
@@ -25,6 +26,21 @@ public class RoleService {
 
     @Transactional
     public Set<RoleDto> saveRolesToUser(AccountDto user) {
+        // Реализация для AccountDto
+        var userRoles = new HashSet<RoleDto>();
+        user.getRoles().forEach(a -> {
+            var roleFromDb = getRoleByName(a.getName());
+            if (roleFromDb == null) {
+                throw new RuntimeException("role not found");
+            }
+            userRoles.add(roleFromDb);
+        });
+        return userRoles;
+    }
+
+    @Transactional
+    public Set<RoleDto> saveRolesToUser(AccountUpdateDto user) {
+        // Реализация для AccountUpdateDto
         var userRoles = new HashSet<RoleDto>();
         user.getRoles().forEach(a -> {
             var roleFromDb = getRoleByName(a.getName());

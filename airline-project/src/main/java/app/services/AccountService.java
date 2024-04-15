@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dto.AccountDto;
+import app.dto.AccountUpdateDto;
 import app.entities.Account;
 import app.exceptions.DuplicateFieldException;
 import app.exceptions.EntityNotFoundException;
@@ -49,7 +50,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDto updateAccount(Long id, AccountDto accountDTO) {
+    public AccountUpdateDto updateAccount(Long id, AccountUpdateDto accountDTO) {
         var existingAccount = checkIfAccountSeatExist(id);
         if (accountDTO.getUsername() != null) {
             existingAccount.setUsername(accountDTO.getUsername());
@@ -83,7 +84,7 @@ public class AccountService {
             existingAccount.setRoles(new HashSet<>(roleMapper
                     .toEntityList(new ArrayList<>(roleService.saveRolesToUser(accountDTO)))));
         }
-        return accountMapper.toDto(accountRepository.save(existingAccount));
+        return accountMapper.toUpdateDto(accountRepository.save(existingAccount));
     }
 
     public Optional<AccountDto> getAccountById(Long id) {

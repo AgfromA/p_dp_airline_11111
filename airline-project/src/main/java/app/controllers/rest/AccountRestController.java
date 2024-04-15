@@ -2,6 +2,7 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.AccountRestApi;
 import app.dto.AccountDto;
+import app.dto.AccountUpdateDto;
 import app.dto.RoleDto;
 import app.services.AccountService;
 import app.services.RoleService;
@@ -62,7 +63,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountDto> updateAccount(Long id, AccountDto accountDTO) {
+    public ResponseEntity<AccountUpdateDto> updateAccount(Long id, AccountUpdateDto accountDTO) {
         log.info("updateAccount: by id: {}", id);
         return ResponseEntity.ok(accountService.updateAccount(id, accountDTO));
     }

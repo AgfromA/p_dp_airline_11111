@@ -1,6 +1,7 @@
 package app.mappers;
 
 import app.dto.AccountDto;
+import app.dto.AccountUpdateDto;
 import app.entities.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -11,6 +12,7 @@ import java.util.List;
 public interface AccountMapper {
 
     AccountDto toDto(Account account);
+    AccountUpdateDto toUpdateDto(Account account);
 
     Account toEntity(AccountDto accountDto);
 
