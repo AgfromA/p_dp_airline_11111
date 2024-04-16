@@ -162,18 +162,14 @@ class BookingMapperTest {
 
         BookingDto bookingDtoOne = new BookingDto();
         bookingDtoOne.setId(1L);
-
         bookingDtoOne.setBookingDate(LocalDateTime.now());
-
         bookingDtoOne.setFlightSeatId(flightSeatId1);
         bookingDtoOne.setBookingStatus(BookingStatus.NOT_PAID);
         bookingDtoOne.setPassengerId(passenger1.getId());
 
         BookingDto bookingDtoTwo = new BookingDto();
         bookingDtoTwo.setId(2L);
-
         bookingDtoTwo.setBookingDate(LocalDateTime.now());
-
         bookingDtoTwo.setFlightSeatId(flightSeatId2);
         bookingDtoTwo.setBookingStatus(BookingStatus.PAID);
         bookingDtoTwo.setPassengerId(passenger2.getId());
@@ -184,21 +180,13 @@ class BookingMapperTest {
         List<Booking> bookingList = bookingMapper.toEntityList(bookingDtoList);
 
         Assertions.assertEquals(bookingList.size(), bookingDtoList.size());
-
         Assertions.assertEquals(bookingDtoList.get(0).getId(), bookingList.get(0).getId());
-
         Assertions.assertEquals(bookingDtoList.get(0).getBookingDate(), bookingList.get(0).getBookingDate());
-
         Assertions.assertEquals(bookingDtoList.get(0).getFlightSeatId(), bookingList.get(0).getFlightSeat().getId());
-
         Assertions.assertEquals(bookingDtoList.get(0).getBookingStatus(), bookingList.get(0).getBookingStatus());
-
         Assertions.assertEquals(bookingDtoList.get(1).getId(), bookingList.get(1).getId());
-
         Assertions.assertEquals(bookingDtoList.get(1).getBookingDate(), bookingList.get(1).getBookingDate());
-
         Assertions.assertEquals(bookingDtoList.get(1).getFlightSeatId(), bookingList.get(1).getFlightSeat().getId());
-
         Assertions.assertEquals(bookingDtoList.get(1).getBookingStatus(), bookingList.get(1).getBookingStatus());
     }
 }

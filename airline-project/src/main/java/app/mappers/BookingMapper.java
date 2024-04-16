@@ -21,17 +21,14 @@ public abstract class BookingMapper {
     protected PassengerService passengerService;
     @Autowired
     protected FlightSeatService flightSeatService;
-    @Autowired
-    protected FlightService flightService;
 
     @Mapping(target = "passengerId", expression = "java(booking.getPassenger().getId())")
     @Mapping(target = "flightSeatId", expression = "java(booking.getFlightSeat().getId())")
-    @Mapping(target = "flightId", expression = "java(booking.getFlightSeat() != null && booking.getFlightSeat().getFlight() != null ? booking.getFlightSeat().getFlight().getId() : null)")
+    @Mapping(target = "flightId", expression = "java(booking.getFlightSeat().getFlight().getId())")
     public abstract BookingDto toDto(Booking booking);
 
     @Mapping(target = "passenger", expression = "java(passengerService.getPassenger(bookingDto.getPassengerId()).get())")
     @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeat(bookingDto.getFlightSeatId()).get())")
-    @Mapping(target = "flightSeat.flight", expression = "java(bookingDto.getFlightId() != null ? flightService.getFlight(bookingDto.getFlightId()).orElse(null) : null)")
     public abstract Booking toEntity(BookingDto bookingDto);
 
     public List<BookingDto> toDtoList(List<Booking> bookings) {
