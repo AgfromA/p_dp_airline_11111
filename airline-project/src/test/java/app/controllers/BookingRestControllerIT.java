@@ -118,6 +118,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         var bookingDto = new BookingDto();
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
+        bookingDto.setFlightId(5L);
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -132,6 +133,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldNotSaveBookingBecauseFlightSeatIsBooked() throws Exception {
         var bookingDto = new BookingDto();
         bookingDto.setFlightSeatId(4L);
+        bookingDto.setFlightId(5L);
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -182,6 +184,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         var id = 1L;
         var bookingDTO = bookingService.getBookingDto(id).get();
         bookingDTO.setFlightSeatId(5L);
+        bookingDTO.setFlightId(5L);
         var numberOfBookingFlightSeat = bookingDTO.getFlightSeatId();
 
         mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", id)
@@ -276,6 +279,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldNotAllowUserToSetId() throws Exception {
 
         var bookingDto = new BookingDto();
+        bookingDto.setFlightId(5L);
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
 
@@ -296,6 +300,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         bookingDto.setId(16L);
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
+        bookingDto.setFlightId(5L);
 
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto))
@@ -314,6 +319,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         bookingDto.setId(16L);
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
+        bookingDto.setFlightId(5L);
         var id = 1L;
 
         mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", id)
@@ -330,6 +336,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldNotFieldWithNullFromPatchRequest() throws Exception {
 
         var bookingDto = new BookingDto();
+        bookingDto.setFlightId(5L);
         bookingDto.setId(16L);
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
@@ -356,7 +363,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
 
         var bookingDto = new BookingDto();
         bookingDto.setFlightSeatId(5L);
-
+        bookingDto.setFlightId(5L);
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -367,6 +374,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         var bookingDto2 = new BookingDto();
         bookingDto2.setFlightSeatId(5L);
         bookingDto2.setPassengerId(88L);
+        bookingDto2.setFlightId(5L);
 
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto2))
@@ -381,6 +389,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldCreateTicketWhenBookingStatusIsPaid() throws Exception {
         var bookingDto = new BookingDto();
         bookingDto.setBookingStatus(BookingStatus.NOT_PAID);
+        bookingDto.setFlightId(5L);
         bookingDto.setPassengerId(1L);
         bookingDto.setFlightSeatId(5L);
 
@@ -405,7 +414,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         Optional<Ticket> savedTicket = ticketRepository.findByBookingId(bookingId);
         assertTrue(savedTicket.isPresent());
