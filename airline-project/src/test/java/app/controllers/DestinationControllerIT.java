@@ -210,6 +210,15 @@ class DestinationControllerIT extends IntegrationTestBase {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("Проверка отсутствия возможности удалить место назначения при участии его в полете")
+    void shouldNotDeleteDestinationByIdWithConnectedFlight() throws Exception {
+        Long id = 5L;
+        mockMvc.perform(delete("http://localhost:8080/api/destinations/{id}", id))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
     public String convertPageToJson(Page page) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         List<Destination> destinations = page.getContent();
