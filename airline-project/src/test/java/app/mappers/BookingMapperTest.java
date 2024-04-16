@@ -44,16 +44,19 @@ class BookingMapperTest {
         passenger.setId(1001L);
         when(passengerServiceMock.getPassenger(1001L)).thenReturn(Optional.of(passenger));
 
+        Flight flight = new Flight();
+        flight.setId(3L);
+
         FlightSeat flightSeat = new FlightSeat();
         flightSeat.setId(2L);
+        flightSeat.setFlight(flight);
+
 
         LocalDateTime createTime = LocalDateTime.MIN;
 
         Booking booking = new Booking();
         booking.setId(1L);
-
         booking.setBookingDate(LocalDateTime.now());
-
         booking.setFlightSeat(flightSeat);
         booking.setPassenger(passenger);
 
@@ -63,11 +66,8 @@ class BookingMapperTest {
 
         Assertions.assertNotNull(bookingDTO);
         Assertions.assertEquals(booking.getId(), bookingDTO.getId());
-
         Assertions.assertEquals(booking.getBookingDate(), bookingDTO.getBookingDate());
-
         Assertions.assertEquals(booking.getFlightSeat().getId(), bookingDTO.getFlightSeatId());
-
         Assertions.assertEquals(booking.getBookingStatus(), bookingDTO.getBookingStatus());
 
     }
@@ -85,10 +85,19 @@ class BookingMapperTest {
         passenger2.setId(1002L);
         when(passengerServiceMock.getPassenger(1002L)).thenReturn(Optional.of(passenger2));
 
+        Flight flight1 = new Flight();
+        flight1.setId(3L);
+
+        Flight flight2 = new Flight();
+        flight2.setId(5L);
+
         FlightSeat flightSeat1 = new FlightSeat();
         flightSeat1.setId(2L);
+        flightSeat1.setFlight(flight1);
+
         FlightSeat flightSeat2 = new FlightSeat();
         flightSeat2.setId(4L);
+        flightSeat2.setFlight(flight2);
 
         LocalDateTime createTime = LocalDateTime.MIN;
 
@@ -148,6 +157,7 @@ class BookingMapperTest {
         Passenger passenger2 = new Passenger();
         passenger2.setId(1002L);
         when(passengerServiceMock.getPassenger(1002L)).thenReturn(Optional.of(passenger2));
+
 
         FlightSeat flightSeat1 = new FlightSeat();
         Long flightSeatId1 = 2L;
