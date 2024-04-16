@@ -31,7 +31,7 @@ public abstract class BookingMapper {
 
     @Mapping(target = "passenger", expression = "java(passengerService.getPassenger(bookingDto.getPassengerId()).get())")
     @Mapping(target = "flightSeat", expression = "java(flightSeatService.getFlightSeat(bookingDto.getFlightSeatId()).get())")
-    @Mapping(target = "flightSeat.flight", expression = "java(flightService.getFlight(bookingDto.getFlightId()).get())")
+    @Mapping(target = "flightSeat.flight", expression = "java(bookingDto.getFlightId() != null ? flightService.getFlight(bookingDto.getFlightId()).orElse(null) : null)")
     public abstract Booking toEntity(BookingDto bookingDto);
 
     public List<BookingDto> toDtoList(List<Booking> bookings) {
