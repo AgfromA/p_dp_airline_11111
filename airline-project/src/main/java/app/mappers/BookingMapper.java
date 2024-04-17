@@ -21,8 +21,6 @@ public abstract class BookingMapper {
     protected PassengerService passengerService;
     @Autowired
     protected FlightSeatService flightSeatService;
-    @Autowired
-    protected FlightService flightService;
 
     @Mapping(target = "passengerId", expression = "java(booking.getPassenger().getId())")
     @Mapping(target = "flightSeatId", expression = "java(booking.getFlightSeat().getId())")
