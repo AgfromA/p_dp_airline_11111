@@ -63,7 +63,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<AccountUpdateDto> updateAccount(Long id, AccountUpdateDto accountDTO) {
+    public ResponseEntity<AccountDto> updateAccount(Long id, AccountUpdateDto accountDTO) {
         log.info("updateAccount: by id: {}", id);
         return ResponseEntity.ok(accountService.updateAccount(id, accountDTO));
     }

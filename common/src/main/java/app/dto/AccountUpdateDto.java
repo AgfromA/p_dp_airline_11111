@@ -34,7 +34,8 @@ public class AccountUpdateDto {
     @Past(message = "Date of birth can not be a future time")
     private LocalDate birthDate;
 
-    @Email@Size(max = 256, message = "Size email cannot be more than 256 characters")
+    @Email
+    @Size(max = 256, message = "Size email cannot be more than 256 characters")
     @Pattern(regexp = "^[\\w.-]+@[a-zA-Z_-]+\\.[a-zA-Z]{2,}$", message = "Email address must adhere to the standard format: example@example.com")
     private String email;
 

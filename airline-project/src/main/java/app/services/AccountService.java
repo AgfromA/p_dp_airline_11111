@@ -3,6 +3,7 @@ package app.services;
 import app.dto.AccountDto;
 import app.dto.AccountUpdateDto;
 import app.entities.Account;
+import app.entities.Role;
 import app.exceptions.DuplicateFieldException;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.AccountMapper;
@@ -41,7 +42,7 @@ public class AccountService {
         checkEmailUnique(accountDTO.getEmail());
         accountDTO.setId(null);
         accountDTO.setPassword(encoder.encode(accountDTO.getPassword()));
-        accountDTO.setRoles(roleService.saveRolesToUser(accountDTO));
+        accountDTO.setRoles(roleService.getRolesByName(accountDTO.getRoles()));
         if (accountDTO.getAnswerQuestion() != null) {
             accountDTO.setAnswerQuestion(encoder.encode(accountDTO.getAnswerQuestion()));
         }
@@ -49,8 +50,9 @@ public class AccountService {
         return accountMapper.toDto(accountRepository.saveAndFlush(account));
     }
 
+
     @Transactional
-    public AccountUpdateDto updateAccount(Long id, AccountUpdateDto accountDTO) {
+    public AccountDto updateAccount(Long id, AccountUpdateDto accountDTO) {
         var existingAccount = checkIfAccountSeatExist(id);
         if (accountDTO.getUsername() != null) {
             existingAccount.setUsername(accountDTO.getUsername());
@@ -82,9 +84,10 @@ public class AccountService {
         }
         if (accountDTO.getRoles() != null) {
             existingAccount.setRoles(new HashSet<>(roleMapper
-                    .toEntityList(new ArrayList<>(roleService.saveRolesToUser(accountDTO)))));
+                    .toEntityList(new ArrayList<>(roleService.getRolesByName(accountDTO.getRoles())))));
         }
-        return accountMapper.toUpdateDto(accountRepository.save(existingAccount));
+
+        return accountMapper.toDto(accountRepository.save(existingAccount));
     }
 
     public Optional<AccountDto> getAccountById(Long id) {

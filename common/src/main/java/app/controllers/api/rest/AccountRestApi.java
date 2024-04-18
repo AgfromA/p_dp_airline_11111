@@ -34,7 +34,7 @@ public interface AccountRestApi {
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.PATCH)
     @Operation(summary = "Изменение сущности")
-    ResponseEntity<AccountUpdateDto> updateAccount(
+    ResponseEntity<AccountDto> updateAccount(
             @Parameter(description = "ID сущности") @PathVariable Long id,
             @Parameter(description = "Пользователь") @Valid @RequestBody AccountUpdateDto accountDTO);
 

@@ -12,7 +12,6 @@ import java.util.List;
 public interface AccountMapper {
 
     AccountDto toDto(Account account);
-    AccountUpdateDto toUpdateDto(Account account);
 
     Account toEntity(AccountDto accountDto);
 
