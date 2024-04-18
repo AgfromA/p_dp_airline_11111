@@ -4,7 +4,6 @@ import app.dto.BookingDto;
 import app.entities.Booking;
 
 import app.services.FlightSeatService;
-import app.services.FlightService;
 import app.services.PassengerService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
