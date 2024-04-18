@@ -23,6 +23,7 @@ public abstract class BookingMapper {
 
     @Mapping(target = "passengerId", expression = "java(booking.getPassenger().getId())")
     @Mapping(target = "flightSeatId", expression = "java(booking.getFlightSeat().getId())")
+    @Mapping(target = "flightId", expression = "java(booking.getFlightSeat().getFlight().getId())")
     public abstract BookingDto toDto(Booking booking);
 
     @Mapping(target = "passenger", expression = "java(passengerService.getPassenger(bookingDto.getPassengerId()).get())")

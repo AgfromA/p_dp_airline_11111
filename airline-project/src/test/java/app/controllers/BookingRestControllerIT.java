@@ -9,6 +9,7 @@ import app.mappers.BookingMapper;
 import app.repositories.BookingRepository;
 import app.repositories.TicketRepository;
 import app.services.BookingService;
+import com.github.dockerjava.api.exception.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -118,6 +120,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         var bookingDto = new BookingDto();
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
+        bookingDto.setFlightId(5L);
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -132,6 +135,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldNotSaveBookingBecauseFlightSeatIsBooked() throws Exception {
         var bookingDto = new BookingDto();
         bookingDto.setFlightSeatId(4L);
+        bookingDto.setFlightId(5L);
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -182,6 +186,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         var id = 1L;
         var bookingDTO = bookingService.getBookingDto(id).get();
         bookingDTO.setFlightSeatId(5L);
+        bookingDTO.setFlightId(5L);
         var numberOfBookingFlightSeat = bookingDTO.getFlightSeatId();
 
         mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", id)
@@ -276,6 +281,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldNotAllowUserToSetId() throws Exception {
 
         var bookingDto = new BookingDto();
+        bookingDto.setFlightId(5L);
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
 
@@ -296,6 +302,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         bookingDto.setId(16L);
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
+        bookingDto.setFlightId(5L);
 
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto))
@@ -314,6 +321,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         bookingDto.setId(16L);
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
+        bookingDto.setFlightId(5L);
         var id = 1L;
 
         mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", id)
@@ -330,6 +338,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldNotFieldWithNullFromPatchRequest() throws Exception {
 
         var bookingDto = new BookingDto();
+        bookingDto.setFlightId(5L);
         bookingDto.setId(16L);
         bookingDto.setFlightSeatId(5L);
         bookingDto.setPassengerId(1L);
@@ -356,7 +365,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
 
         var bookingDto = new BookingDto();
         bookingDto.setFlightSeatId(5L);
-
+        bookingDto.setFlightId(5L);
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -367,6 +376,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
         var bookingDto2 = new BookingDto();
         bookingDto2.setFlightSeatId(5L);
         bookingDto2.setPassengerId(88L);
+        bookingDto2.setFlightId(5L);
 
         mockMvc.perform(post("http://localhost:8080/api/bookings")
                         .content(objectMapper.writeValueAsString(bookingDto2))
@@ -381,6 +391,7 @@ class BookingRestControllerIT extends IntegrationTestBase {
     void shouldCreateTicketWhenBookingStatusIsPaid() throws Exception {
         var bookingDto = new BookingDto();
         bookingDto.setBookingStatus(BookingStatus.NOT_PAID);
+        bookingDto.setFlightId(5L);
         bookingDto.setPassengerId(1L);
         bookingDto.setFlightSeatId(5L);
 
@@ -393,15 +404,15 @@ class BookingRestControllerIT extends IntegrationTestBase {
                 .andReturn();
 
         String postResponseContent = postResult.getResponse().getContentAsString();
-        var createdBookingDto = objectMapper.readValue(postResponseContent, BookingDto.class);
+        BookingDto createdBookingDto = objectMapper.readValue(postResponseContent, BookingDto.class);
         Long bookingId = createdBookingDto.getId();
 
-        Booking booking = bookingRepository.findById(bookingId).get();
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("Booking not found"));
         BookingDto bookingDto1 = bookingMapper.toDto(booking);
-        bookingDto1.setBookingStatus(BookingStatus.PAID);
+        bookingDto.setBookingStatus(BookingStatus.PAID);
 
         mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", bookingId)
-                        .content(objectMapper.writeValueAsString(bookingDto1))
+                        .content(objectMapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
