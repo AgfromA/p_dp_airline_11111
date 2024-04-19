@@ -1,7 +1,7 @@
 package app.services;
 
-import app.dto.AccountDto;
 import app.dto.RoleDto;
+import app.exceptions.EntityNotFoundException;
 import app.mappers.RoleMapper;
 import app.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class RoleService {
 
@@ -23,13 +24,14 @@ public class RoleService {
         return roleMapper.toDto(roleRepository.findByName(name));
     }
 
-    @Transactional
-    public Set<RoleDto> saveRolesToUser(AccountDto user) {
+    public Set<RoleDto> getRolesByName(Set<RoleDto> roles) {
         var userRoles = new HashSet<RoleDto>();
-        user.getRoles().forEach(a -> {
-            var roleFromDb = getRoleByName(a.getName());
+        roles.forEach(role -> {
+            var roleFromDb = getRoleByName(role.getName());
             if (roleFromDb == null) {
-                throw new RuntimeException("role not found");
+                throw new EntityNotFoundException(
+                        "Operation was not finished because Role was not found with name = " + role.getName()
+                );
             }
             userRoles.add(roleFromDb);
         });

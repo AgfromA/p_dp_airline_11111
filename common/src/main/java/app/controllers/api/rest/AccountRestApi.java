@@ -1,9 +1,9 @@
 package app.controllers.api.rest;
 
 import app.dto.AccountDto;
+import app.dto.AccountUpdateDto;
 import app.dto.RoleDto;
 import io.swagger.annotations.*;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Set;
 
@@ -37,7 +36,7 @@ public interface AccountRestApi {
     @Operation(summary = "Изменение сущности")
     ResponseEntity<AccountDto> updateAccount(
             @Parameter(description = "ID сущности") @PathVariable Long id,
-            @Parameter(description = "Пользователь") @Valid @RequestBody AccountDto accountDTO);
+            @Parameter(description = "Пользователь") @Valid @RequestBody AccountUpdateDto accountDTO);
 
     @RequestMapping(value = "/api/accounts/{id}", method = RequestMethod.DELETE)
     @Operation(summary = "Удаление сущности")

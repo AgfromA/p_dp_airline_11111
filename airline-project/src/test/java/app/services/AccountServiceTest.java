@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dto.AccountDto;
+import app.dto.AccountUpdateDto;
 import app.dto.RoleDto;
 import app.entities.Account;
 import app.exceptions.DuplicateFieldException;
@@ -9,6 +10,9 @@ import app.mappers.AccountMapper;
 import app.repositories.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,12 +21,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -85,11 +90,15 @@ class AccountServiceTest {
         Account account = new Account();
         AccountDto accountDto = new AccountDto();
         accountDto.setPassword("Test#123");
+        // Assuming you need to set roles in accountDto
         Set<RoleDto> rolesDto = new HashSet<>();
-        rolesDto.add(new RoleDto());
+        RoleDto roleDto = new RoleDto();
+        roleDto.setName("RoleName"); // Assuming RoleDto has a setName method
+        rolesDto.add(roleDto);
+        accountDto.setRoles(rolesDto); // Assuming AccountDto has a setRoles method
 
         when(encoder.encode(accountDto.getPassword())).thenReturn(accountDto.getPassword());
-        when(roleService.saveRolesToUser(accountDto)).thenReturn(rolesDto);
+        when(roleService.getRolesByName(accountDto.getRoles())).thenReturn(rolesDto);
         when(accountMapper.toDto(account)).thenReturn(accountDto);
         when(accountMapper.toEntity(accountDto)).thenReturn(account);
         when(accountRepository.saveAndFlush(account)).thenReturn(account);
@@ -99,7 +108,8 @@ class AccountServiceTest {
         assertEquals(accountDto, result);
         verify(accountRepository, times(1)).saveAndFlush(account);
         verify(encoder, times(1)).encode(accountDto.getPassword());
-        verify(roleService, times(1)).saveRolesToUser(accountDto);
+        verify(roleService, times(1)).getRolesByName(rolesDto);
+        // Adjust this assertion based on whether your implementation sets an ID
         assertNull(account.getId());
     }
 
@@ -121,54 +131,265 @@ class AccountServiceTest {
     @Test
     void testUpdateAccount() {
         Long id = 1L;
-        AccountDto accountDto = new AccountDto();
-        accountDto.setFirstName("first");
-        accountDto.setLastName("last");
-        accountDto.setEmail("test@example.com");
-        accountDto.setBirthDate(LocalDate.of(1990, 5, 15));
-        accountDto.setPhoneNumber("1234567890");
-        accountDto.setPassword("Test#123");
-        accountDto.setSecurityQuestion("qwe?");
-        accountDto.setAnswerQuestion("qwe");
-
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
+        accountUpdateDto.setFirstName("first");
+        accountUpdateDto.setLastName("last");
+        accountUpdateDto.setEmail("test@example.com");
+        accountUpdateDto.setPhoneNumber("1234567890");
+        accountUpdateDto.setPassword("Test#123");
+        accountUpdateDto.setSecurityQuestion("qwe?");
+        accountUpdateDto.setAnswerQuestion("qwe");
         Account existingAccount = new Account();
         existingAccount.setId(id);
         existingAccount.setEmail("email@example.com");
 
+        AccountDto expectedAccountDto = new AccountDto();
+        expectedAccountDto.setFirstName(accountUpdateDto.getFirstName());
+        expectedAccountDto.setLastName(accountUpdateDto.getLastName());
+        expectedAccountDto.setEmail(accountUpdateDto.getEmail());
+        expectedAccountDto.setPhoneNumber(accountUpdateDto.getPhoneNumber());
+        expectedAccountDto.setPassword(accountUpdateDto.getPassword());
+        expectedAccountDto.setSecurityQuestion(accountUpdateDto.getSecurityQuestion());
+        expectedAccountDto.setAnswerQuestion(accountUpdateDto.getAnswerQuestion());
+
         when(accountRepository.findById(id)).thenReturn(Optional.of(existingAccount));
         when(accountRepository.save(existingAccount)).thenReturn(existingAccount);
-        when(accountMapper.toDto(existingAccount)).thenReturn(accountDto);
+        when(accountMapper.toDto(existingAccount)).thenReturn(expectedAccountDto);
         when(encoder.encode(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AccountDto result = accountService.updateAccount(id, accountDto);
+        AccountDto result = accountService.updateAccount(id, accountUpdateDto);
 
         assertNotNull(result);
-        assertEquals(accountDto.getFirstName(), result.getFirstName());
-        assertEquals(accountDto.getLastName(), result.getLastName());
-        assertEquals(accountDto.getEmail(), result.getEmail());
-        assertEquals(accountDto.getBirthDate(), result.getBirthDate());
-        assertEquals(accountDto.getPhoneNumber(), result.getPhoneNumber());
-        assertEquals(accountDto.getPassword(), result.getPassword());
-        assertEquals(accountDto.getSecurityQuestion(), result.getSecurityQuestion());
-        assertEquals(accountDto.getAnswerQuestion(), result.getAnswerQuestion());
+        assertEquals(accountUpdateDto.getFirstName(), result.getFirstName());
+        assertEquals(accountUpdateDto.getLastName(), result.getLastName());
+        assertEquals(accountUpdateDto.getEmail(), result.getEmail());
+        assertEquals(accountUpdateDto.getPhoneNumber(), result.getPhoneNumber());
+        assertEquals(accountUpdateDto.getPassword(), result.getPassword());
+        assertEquals(accountUpdateDto.getSecurityQuestion(), result.getSecurityQuestion());
+        assertEquals(accountUpdateDto.getAnswerQuestion(), result.getAnswerQuestion());
+
+
 
         verify(accountRepository, times(1)).findById(id);
         verify(accountRepository, times(1)).save(existingAccount);
-        verify(encoder, times(1)).encode(accountDto.getPassword());
-        verify(encoder, times(1)).encode(accountDto.getAnswerQuestion());
+        verify(encoder, times(1)).encode(accountUpdateDto.getPassword());
+        verify(encoder, times(1)).encode(accountUpdateDto.getAnswerQuestion());
         verify(accountMapper, times(1)).toDto(existingAccount);
         verify(accountRepository, times(1)).save(any(Account.class));
+
+
     }
+//тест для проверки обновления поля email
+
+    @Test
+    void testUpdateAccountEmailField() throws Exception {
+        // Подготовка данных
+        Long id = 1L;
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
+        accountUpdateDto.setEmail("newemail@example.com"); // Устанавливаем только email
+
+        Account existingAccount = new Account();
+        existingAccount.setId(id);
+        existingAccount.setEmail("oldEmail@example.com");
+
+        AccountDto expectedAccountDto = new AccountDto();
+        expectedAccountDto.setEmail(accountUpdateDto.getEmail()); // Ожидаемый email
+
+        // Настройка моков
+        when(accountRepository.findById(id)).thenReturn(Optional.of(existingAccount));
+        when(accountRepository.save(any(Account.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(accountMapper.toDto(any(Account.class))).thenReturn(expectedAccountDto);
+
+
+        // Вызов тестируемого метода
+        AccountDto result = accountService.updateAccount(id, accountUpdateDto);
+
+        // Проверка результата
+        assertEquals(accountUpdateDto.getEmail(), result.getEmail()); // Проверяем только email
+
+        // Проверка вызовов моков
+        verify(accountRepository, times(1)).findById(id);
+        verify(accountRepository, times(1)).save(any(Account.class));
+        verify(accountMapper, times(1)).toDto(any(Account.class));
+
+    }
+    //тест для проверки обновления поля FirstName
+    @Test
+    void testUpdateAccountFirstNameField() throws Exception {
+        // Подготовка данных
+        Long id = 1L;
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
+        accountUpdateDto.setFirstName("Mike"); // Устанавливаем только FirstName
+
+        Account existingAccount = new Account();
+        existingAccount.setId(id);
+        existingAccount.setFirstName("Kit");
+
+        AccountDto expectedAccountDto = new AccountDto();
+        expectedAccountDto.setFirstName(accountUpdateDto.getFirstName()); // Ожидаемый FirstName
+
+        // Настройка моков
+        when(accountRepository.findById(id)).thenReturn(Optional.of(existingAccount));
+        when(accountRepository.save(existingAccount)).thenReturn(existingAccount);
+        when(accountMapper.toDto(existingAccount)).thenReturn(expectedAccountDto);
+
+
+        // Вызов тестируемого метода
+        AccountDto result = accountService.updateAccount(id, accountUpdateDto);
+
+        // Проверка результата
+        assertEquals(accountUpdateDto.getFirstName(), result.getFirstName()); // Проверяем только FirstName
+
+        // Проверка вызовов моков
+        verify(accountRepository, times(1)).findById(id);
+        verify(accountRepository, times(1)).save(existingAccount);
+        verify(accountMapper, times(1)).toDto(existingAccount);
+
+    }
+    //тест для проверки
+    @Test
+    void testUpdateAccountLastNameField() throws Exception {
+        // Подготовка данных
+        Long id = 1L;
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
+        accountUpdateDto.setLastName("Smith"); // Устанавливаем только LastName
+
+        Account existingAccount = new Account();
+        existingAccount.setId(id);
+        existingAccount.setLastName("Kale");
+
+        AccountDto expectedAccountDto = new AccountDto();
+        expectedAccountDto.setLastName(accountUpdateDto.getLastName()); // Ожидаемый LastName
+
+        // Настройка моков
+        when(accountRepository.findById(id)).thenReturn(Optional.of(existingAccount));
+        when(accountRepository.save(existingAccount)).thenReturn(existingAccount);
+        when(accountMapper.toDto(existingAccount)).thenReturn(expectedAccountDto);
+
+
+        // Вызов тестируемого метода
+        AccountDto result = accountService.updateAccount(id, accountUpdateDto);
+
+        // Проверка результата
+        assertEquals(accountUpdateDto.getLastName(), result.getLastName()); // Проверяем только LastName
+
+        // Проверка вызовов моков
+        verify(accountRepository, times(1)).findById(id);
+        verify(accountRepository, times(1)).save(existingAccount);
+        verify(accountMapper, times(1)).toDto(existingAccount);
+
+    }
+    //тест для проверки обновления поля PhoneNumber
+    @Test
+    void testUpdateAccountPhoneNumberField() throws Exception {
+        // Подготовка данных
+        Long id = 1L;
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
+        accountUpdateDto.setPhoneNumber("8999999999"); // Устанавливаем только PhoneNumber
+
+        Account existingAccount = new Account();
+        existingAccount.setId(id);
+        existingAccount.setPhoneNumber("8999999991");
+
+        AccountDto expectedAccountDto = new AccountDto();
+        expectedAccountDto.setPhoneNumber(accountUpdateDto.getPhoneNumber()); // Ожидаемый PhoneNumber
+
+        // Настройка моков
+        when(accountRepository.findById(id)).thenReturn(Optional.of(existingAccount));
+        when(accountRepository.save(existingAccount)).thenReturn(existingAccount);
+        when(accountMapper.toDto(existingAccount)).thenReturn(expectedAccountDto);
+
+
+        // Вызов тестируемого метода
+        AccountDto result = accountService.updateAccount(id, accountUpdateDto);
+
+        // Проверка результата
+        assertEquals(accountUpdateDto.getPhoneNumber(), result.getPhoneNumber()); // Проверяем только PhoneNumber
+
+        // Проверка вызовов моков
+        verify(accountRepository, times(1)).findById(id);
+        verify(accountRepository, times(1)).save(existingAccount);
+        verify(accountMapper, times(1)).toDto(existingAccount);
+    }
+
+    @Test
+    void testUpdateAccountSecurityQuestionField() throws Exception {
+        // Подготовка данных
+        Long id = 1L;
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
+        accountUpdateDto.setSecurityQuestion("rly?"); // Устанавливаем только PhoneNumber
+
+        Account existingAccount = new Account();
+        existingAccount.setId(id);
+        existingAccount.setSecurityQuestion("why?");
+
+        AccountDto expectedAccountDto = new AccountDto();
+        expectedAccountDto.setSecurityQuestion(accountUpdateDto.getSecurityQuestion()); // Ожидаемый PhoneNumber
+
+        // Настройка моков
+        when(accountRepository.findById(id)).thenReturn(Optional.of(existingAccount));
+        when(accountRepository.save(existingAccount)).thenReturn(existingAccount);
+        when(accountMapper.toDto(existingAccount)).thenReturn(expectedAccountDto);
+
+
+        // Вызов тестируемого метода
+        AccountDto result = accountService.updateAccount(id, accountUpdateDto);
+
+        // Проверка результата
+        assertEquals(accountUpdateDto.getSecurityQuestion(), result.getSecurityQuestion()); // Проверяем только PhoneNumber
+
+        // Проверка вызовов моков
+        verify(accountRepository, times(1)).findById(id);
+        verify(accountRepository, times(1)).save(existingAccount);
+        verify(accountMapper, times(1)).toDto(existingAccount);
+
+    }
+
+    //тест для проверки обновления пароля и ответа на секретный вопрос
+        @Test
+    void testUpdatePasswordAndAnswer() {
+        Long id = 1L;
+        AccountDto accountDto = new AccountDto();
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
+        accountUpdateDto.setPassword("NewPassword#123");
+        accountUpdateDto.setAnswerQuestion("NewAnswer");
+        Account existingAccount = new Account();
+        existingAccount.setId(id);
+        accountDto.setAnswerQuestion(accountUpdateDto.getSecurityQuestion());
+        accountDto.setPassword(accountUpdateDto.getPassword());
+
+        // Настройка моков
+        when(accountRepository.findById(id)).thenReturn(Optional.of(existingAccount));
+        when(accountRepository.save( existingAccount)).thenAnswer(invocation -> invocation.getArgument(0));
+        when(encoder.encode(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(accountMapper.toDto( existingAccount)).thenReturn(accountDto);
+
+        // Вызов метода обновления
+        AccountDto result = accountService.updateAccount(id, accountUpdateDto);
+
+        // Проверка результата
+        assertEquals(accountDto.getPassword(), result.getPassword());
+        assertEquals(accountDto.getAnswerQuestion(), result.getAnswerQuestion());
+
+        // Проверка вызовов моков
+        verify(accountRepository, times(1)).findById(id);
+        verify(accountRepository, times(1)).save( existingAccount);
+        verify(encoder, times(1)).encode(accountUpdateDto.getPassword());
+        verify(encoder, times(1)).encode(accountUpdateDto.getAnswerQuestion());
+        verify(accountMapper, times(1)).toDto( existingAccount);
+    }
+
+
 
     @Test
     void testUpdateAccountById_AccountNotFound_ThrowsException() {
         Long id = 123L;
-        AccountDto accountDto = new AccountDto();
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
 
         when(accountRepository.findById(id)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
-            accountService.updateAccount(id, accountDto);
+            accountService.updateAccount(id, accountUpdateDto);
         });
         assertEquals("Operation was not finished because Account was not found with id = " + id, exception.getMessage());
     }
@@ -178,14 +399,14 @@ class AccountServiceTest {
         String emailNew = "test2@mail.com";
         Long id = 1L;
         Account existingAccount = new Account();
-        AccountDto accountDto = new AccountDto();
-        accountDto.setEmail(emailNew);
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto();
+        accountUpdateDto.setEmail(emailNew);
 
         when(accountRepository.findById(id)).thenReturn(Optional.of(existingAccount));
         when(accountRepository.getAccountByEmail(emailNew)).thenReturn(existingAccount);
 
         Exception exception = assertThrows(DuplicateFieldException.class, () -> {
-            accountService.updateAccount(id, accountDto);
+            accountService.updateAccount(id, accountUpdateDto);
         });
         assertEquals("Email already exists", exception.getMessage());
     }

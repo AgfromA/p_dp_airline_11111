@@ -1,8 +1,9 @@
 # Changelog
 
 ## [Unreleased]
-- #task_number - short task description
+- #task_number - краткое описание задачи
 - #420 - добавлено поле flightId в BookingDto
+- #419 - теперь PATCH в Account может обновлять отдельные поля
 
 ## [1.3.0] - 15.04.2024
 - #420 Исправлено NoSuchFileException при запуске приложения в докере
