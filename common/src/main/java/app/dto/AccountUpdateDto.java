@@ -9,13 +9,11 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Set;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
-@ToString
 @JsonTypeName(value = "accountUpdate")
 public class AccountUpdateDto {
+
     @ReadOnlyProperty
     private Long id;
 
@@ -42,12 +40,10 @@ public class AccountUpdateDto {
     @Size(max = 64, message = "Size phone cannot be less than 6 and more than 64 characters")
     private String phoneNumber;
 
-
     private String password;
 
     @Size(max = 256, message = "Size security question cannot be more than 256 characters")
     private String securityQuestion;
-
 
     private String answerQuestion;
 

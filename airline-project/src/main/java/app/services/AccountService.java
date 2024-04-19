@@ -3,7 +3,6 @@ package app.services;
 import app.dto.AccountDto;
 import app.dto.AccountUpdateDto;
 import app.entities.Account;
-import app.entities.Role;
 import app.exceptions.DuplicateFieldException;
 import app.exceptions.EntityNotFoundException;
 import app.mappers.AccountMapper;
