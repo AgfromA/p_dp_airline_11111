@@ -1,4 +1,4 @@
-package app.exceptions.handlers;
+package exceptions.handlers;
 
 import app.dto.ExceptionResponseDto;
 import jakarta.validation.ConstraintViolationException;

@@ -1,7 +1,7 @@
-package app.exceptions.handlers;
+package exceptions.handlers;
 
 import app.dto.ExceptionResponseDto;
-import app.exceptions.BusinessException;
+import exceptions.BusinessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

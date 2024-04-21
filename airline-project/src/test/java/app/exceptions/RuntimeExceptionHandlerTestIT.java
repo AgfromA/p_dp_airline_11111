@@ -2,7 +2,7 @@ package app.exceptions;
 
 import app.controllers.IntegrationTestBase;
 import app.controllers.rest.AccountRestController;
-import app.exceptions.handlers.BusinessExceptionHandler;
+import exceptions.handlers.BusinessExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.mockito.Mock;
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
-@Sql(value = {"/sqlQuery/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/sqlQuery/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class RuntimeExceptionHandlerTestIT extends IntegrationTestBase {
 
     @Mock
@@ -27,7 +27,7 @@ class RuntimeExceptionHandlerTestIT extends IntegrationTestBase {
                 .setControllerAdvice(BusinessExceptionHandler.class).build();
     }
 
-//    @Test
+    //@Test
     public void runtimeExceptionHandlerTestIT() throws Exception {
         Long id = 1L;
 

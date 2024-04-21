@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   SecurityConfig,\
-  KeycloakResolver
+  KeycloakResolver,\
+  ExceptionConfig

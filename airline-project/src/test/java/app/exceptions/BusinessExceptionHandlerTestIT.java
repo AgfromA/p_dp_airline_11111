@@ -28,10 +28,11 @@ class BusinessExceptionHandlerTestIT extends IntegrationTestBase {
     void testHandleSearchControllerException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/search")
                         .param("airportFrom", "AAQ")
-                        .param("airportTo", (String) null)
+                        .param("airportTo", "AAQ")
                         .param("departureDate", "2022-01-01")
                         .param("returnDate", "2022-01-10")
-                        .param("numberOfPassengers", "2")) // Количество пассажиров устанавливаем 0
+                        .param("numberOfPassengers", "0") // Количество пассажиров устанавливаем 0
+                        .param("categoryOfSeats", "FIRST"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(jsonPath("$.requestId").exists());
     }

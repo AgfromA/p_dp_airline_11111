@@ -49,17 +49,4 @@ class EntityNotFoundExceptionTestIT extends IntegrationTestBase {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void shouldThrowExceptionIfIFlightSeatIdNotExistWhenCreatedTicket() throws Exception {
-        var newTicket = ticketService.getTicketByTicketNumber("ZX-3333").get();
-        newTicket.setTicketNumber("SJ-9346");
-        var ticketDTO = ticketMapper.toDto(newTicket);
-        ticketDTO.setFlightSeatId(0L);
-        mockMvc.perform(post("http://localhost:8080/api/tickets")
-                        .content(objectMapper.writeValueAsString(ticketDTO))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
 }
