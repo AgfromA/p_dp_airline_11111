@@ -100,7 +100,6 @@ class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                // TODO добавить проверку на содержимое тела ответа
                 .andExpect(result -> {
                     ExceptionResponseDto responseDto = objectMapper.readValue(result.getResponse().getContentAsString(), ExceptionResponseDto.class);
                     Assertions.assertEquals("{firstName=[Size first_name cannot be less than 2 and more than 128 characters]}", responseDto.getMessage());
