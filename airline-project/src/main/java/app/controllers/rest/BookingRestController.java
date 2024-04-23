@@ -2,6 +2,7 @@ package app.controllers.rest;
 
 import app.controllers.api.rest.BookingRestApi;
 import app.dto.BookingDto;
+import app.dto.BookingUpdateDto;
 import app.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +62,7 @@ public class BookingRestController implements BookingRestApi {
     }
 
     @Override
-    public ResponseEntity<BookingDto> updateBooking(Long id, BookingDto bookingDto) {
+    public ResponseEntity<BookingDto> updateBooking(Long id, BookingUpdateDto bookingDto) {
         log.info("update: edit Booking with id = {}", id);
         return new ResponseEntity<>(bookingService.updateBooking(id, bookingDto), HttpStatus.OK);
     }

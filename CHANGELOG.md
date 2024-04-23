@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - #task_number - краткое описание задачи
+- #439 - PATCH в Booking может обновлять отдельные поля
 - #420 - добавлено поле flightId в BookingDto
 - #419 - теперь PATCH в Account может обновлять отдельные поля
 

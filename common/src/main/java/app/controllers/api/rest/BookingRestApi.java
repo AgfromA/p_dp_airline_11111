@@ -1,6 +1,7 @@
 package app.controllers.api.rest;
 
 import app.dto.BookingDto;
+import app.dto.BookingUpdateDto;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,7 +45,7 @@ public interface BookingRestApi {
     @Operation(summary = "Изменение сущности")
     ResponseEntity<BookingDto> updateBooking(
             @Parameter(description = "ID сущности") @PathVariable @Min(1) Long id,
-            @Parameter(description = "Бронирование") @RequestBody @Valid BookingDto bookingDto);
+            @Parameter(description = "Бронирование") @RequestBody @Valid BookingUpdateDto bookingDto);
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление сущности")

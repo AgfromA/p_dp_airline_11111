@@ -2,6 +2,7 @@ package app.controllers;
 
 
 import app.dto.BookingDto;
+import app.dto.BookingUpdateDto;
 import app.entities.Booking;
 import app.entities.Ticket;
 import app.enums.BookingStatus;
@@ -420,5 +421,26 @@ class BookingRestControllerIT extends IntegrationTestBase {
 
         Optional<Ticket> savedTicket = ticketRepository.findByBookingId(bookingId);
         assertTrue(savedTicket.isPresent());
+    }
+
+    @Test
+    @DisplayName("PATCH запрос, где заполнено только одно поле")
+    void shouldEditOnlyOneField() throws Exception {
+        long numberOfExistedBookings = bookingRepository.count();
+        var id = 3L;
+        BookingUpdateDto bookingUpdateDto = new BookingUpdateDto();
+        bookingUpdateDto.setId(id);
+        bookingUpdateDto.setFlightSeatId(null);
+        bookingUpdateDto.setPassengerId(null);
+        bookingUpdateDto.setBookingStatus(BookingStatus.PAID);
+        bookingService.updateBooking(id, bookingUpdateDto);
+
+        mockMvc.perform(patch("http://localhost:8080/api/bookings/{id}", id)
+                        .content(objectMapper.writeValueAsString(bookingUpdateDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(result -> assertThat(bookingRepository.count()
+                        , equalTo(numberOfExistedBookings)));
     }
 }
