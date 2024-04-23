@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Sql({"/sqlQuery/delete-from-tables.sql"})
@@ -54,7 +55,9 @@ class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.message").value("Email already exists"));
     }
 
     @Test
@@ -95,7 +98,12 @@ class GeneralExceptionHandlerTestIT extends IntegrationTestBase {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
-        // TODO добавить проверку на содержимое тела ответа
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(result -> {
+                    ExceptionResponseDto responseDto = objectMapper.readValue(result.getResponse().getContentAsString(), ExceptionResponseDto.class);
+                    Assertions.assertEquals("{firstName=[Size first_name cannot be less than 2 and more than 128 characters]}", responseDto.getMessage());
+                    Assertions.assertNotNull(responseDto.getRequestId());
+                });
     }
 }

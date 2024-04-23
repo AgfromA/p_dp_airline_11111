@@ -1,5 +1,6 @@
 package app.exceptions;
 
+import exceptions.BusinessException;
 import org.springframework.http.HttpStatus;
 
 public class DestinationConnectedFlightsException extends BusinessException {

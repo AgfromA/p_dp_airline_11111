@@ -1,4 +1,4 @@
-package app.exceptions.handlers;
+package exceptions.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
