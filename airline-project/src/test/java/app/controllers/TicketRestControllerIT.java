@@ -1,6 +1,7 @@
 package app.controllers;
 
 import app.dto.BookingDto;
+import app.dto.BookingUpdateDto;
 import app.dto.TicketDto;
 import app.enums.BookingStatus;
 import app.exceptions.EntityNotFoundException;
@@ -18,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-
 
 
 import java.time.LocalDateTime;
@@ -191,12 +191,13 @@ class TicketRestControllerIT extends IntegrationTestBase {
     void shouldUpdatePassengerAndFlightSeatInTicket() throws Exception {
         var updatedTicket = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333").get());
 
-        var bookingDto = bookingService.getBookingDto(3L).get();
-        bookingDto.setFlightSeatId(4L);
-        bookingDto.setPassengerId(4L);
-        bookingDto.setBookingStatus(BookingStatus.PAID);
-        bookingDto.setBookingDate(LocalDateTime.of(2023, 3, 27, 11, 20, 00));
-        bookingService.updateBooking(3L, bookingDto);
+        BookingUpdateDto bookingUpdateDto = new BookingUpdateDto();
+        bookingUpdateDto.setId(3L);
+        bookingUpdateDto.setFlightSeatId(4L);
+        bookingUpdateDto.setPassengerId(4L);
+        bookingUpdateDto.setBookingStatus(BookingStatus.PAID);
+        bookingUpdateDto.setBookingDate(LocalDateTime.of(2023, 3, 27, 11, 20, 00));
+        bookingService.updateBooking(3L, bookingUpdateDto);
 
         updatedTicket.setFlightSeatId(4L);
         updatedTicket.setPassengerId(4L);
@@ -350,12 +351,14 @@ class TicketRestControllerIT extends IntegrationTestBase {
     @Test
     void shouldIgnoreIdInPatchRequest() throws Exception {
         var updatedTicket = ticketMapper.toDto(ticketService.getTicketByTicketNumber("ZX-3333").get());
-        var bookingDto = bookingService.getBookingDto(3L).get();
-        bookingDto.setFlightSeatId(4L);
-        bookingDto.setPassengerId(4L);
-        bookingDto.setBookingStatus(BookingStatus.PAID);
-        bookingDto.setBookingDate(LocalDateTime.of(2023, 3, 27, 11, 20, 00));
-        bookingService.updateBooking(3L, bookingDto);
+
+        BookingUpdateDto bookingUpdateDto = new BookingUpdateDto();
+        bookingUpdateDto.setId(3L);
+        bookingUpdateDto.setFlightSeatId(4L);
+        bookingUpdateDto.setPassengerId(4L);
+        bookingUpdateDto.setBookingStatus(BookingStatus.PAID);
+        bookingUpdateDto.setBookingDate(LocalDateTime.of(2023, 3, 27, 11, 20, 00));
+        bookingService.updateBooking(3L, bookingUpdateDto);
 
         updatedTicket.setId(100L);
         updatedTicket.setFlightSeatId(4L);

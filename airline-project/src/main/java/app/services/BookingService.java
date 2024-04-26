@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dto.BookingDto;
+import app.dto.BookingUpdateDto;
 import app.dto.FlightSeatDto;
 import app.entities.Booking;
 import app.entities.FlightSeat;
@@ -66,25 +67,25 @@ public class BookingService {
     }
 
     @Transactional
-    public BookingDto updateBooking(Long id, BookingDto bookingDto) {
-        var booking = checkIfBookingExist(id);
+    public BookingDto updateBooking(Long id, BookingUpdateDto bookingDto) {
+        var existingBooking = checkIfBookingExist(id);
 
         // TODO После реализации платежей запретить управление статусом бронирования
-        if (bookingDto.getBookingStatus() != null && !bookingDto.getBookingStatus().equals(booking.getBookingStatus())) {
-            booking.setBookingStatus(bookingDto.getBookingStatus());
+        if (bookingDto.getBookingStatus() != null && !bookingDto.getBookingStatus().equals(existingBooking.getBookingStatus())) {
+            existingBooking.setBookingStatus(bookingDto.getBookingStatus());
         }
-        if (bookingDto.getFlightSeatId() != null && !bookingDto.getFlightSeatId().equals(booking.getFlightSeat().getId())) {
-            unbookFlightSeat(booking.getFlightSeat());
+        if (bookingDto.getFlightSeatId() != null && !bookingDto.getFlightSeatId().equals(existingBooking.getFlightSeat().getId())) {
+            unbookFlightSeat(existingBooking.getFlightSeat());
 
             var newFlightSeat = flightSeatService.checkIfFlightSeatExist(bookingDto.getFlightSeatId());
             checkIfFlightSeatAvailable(newFlightSeat);
-            booking.setFlightSeat(newFlightSeat);
+            existingBooking.setFlightSeat(newFlightSeat);
         }
-        if (bookingDto.getPassengerId() != null && !bookingDto.getPassengerId().equals(booking.getPassenger().getId())) {
+        if (bookingDto.getPassengerId() != null && !bookingDto.getPassengerId().equals(existingBooking.getPassenger().getId())) {
             var passenger = passengerService.checkIfPassengerExists(bookingDto.getPassengerId());
-            booking.setPassenger(passenger);
+            existingBooking.setPassenger(passenger);
         }
-        var savedBooking = bookingRepository.save(booking);
+        var savedBooking = bookingRepository.save(existingBooking);
         if (savedBooking.getBookingStatus() == BookingStatus.PAID) {
             ticketService.generatePaidTicket(savedBooking.getId());
         }
